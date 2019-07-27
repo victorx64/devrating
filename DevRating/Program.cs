@@ -11,8 +11,6 @@ namespace DevRating
                 .UpdatedRating(new Rating.Elo.Rating());
             
             rating.PrintToConsole();
-
-            Console.ReadKey();
         }
     }
 }

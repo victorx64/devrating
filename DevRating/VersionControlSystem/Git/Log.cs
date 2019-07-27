@@ -12,11 +12,61 @@ namespace DevRating.VersionControlSystem.Git
             _process = process;
         }
 
-        public ICollection<Commit> Commits()
+        public IEnumerable<File> ModifiedFiles()
         {
-            var output = _process.Output("git", "log -U0 --no-merges --pretty=oneline");
+            Console.WriteLine("Fetching git log...");
             
-            throw new NotImplementedException();
+            var stream = _process.Output("git", "--no-pager log --reverse --no-merges -U0 --pretty=format:commit,%H,%aE");
+
+            string hash = string.Empty,
+                author = string.Empty,
+                path = string.Empty;
+            
+            var blocks = new List<LinesBlock>();
+
+            var fileUpdates = new List<File>();
+
+            while (!stream.EndOfStream)
+            {
+                var line = stream.ReadLine();
+
+                if (line.StartsWith("commit,"))
+                {
+                    var parts = line.Split(',');
+
+                    hash = parts[1];
+
+                    author = parts[2];
+                }
+                else if (line.StartsWith("--- "))
+                {
+                    if (blocks.Count > 0)
+                    {
+                        fileUpdates.Add(new File(_process, hash, path, author, blocks));
+                    
+                        blocks = new List<LinesBlock>();
+                    }
+                    
+                    path = line.Substring(6);
+                }
+                else if (line.StartsWith("@@ "))
+                {
+                    var parts = line.Split(' ');
+
+                    var removed = parts[1].Substring(1).Split(',');
+
+                    var index = Convert.ToInt32(removed[0]);
+
+                    var length = removed.Length > 1 ? Convert.ToInt32(removed[1]) : 1;
+
+                    if (length > 0)
+                    {
+                        blocks.Add(new LinesBlock(index, length));
+                    }
+                }
+            }
+
+            return fileUpdates;
         }
     }
 }

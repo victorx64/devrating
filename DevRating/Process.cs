@@ -1,16 +1,20 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace DevRating
 {
     public class Process : IProcess
     {
-        public string Output(string name, string arguments)
+        public StreamReader Output(string name, string arguments)
         {
             var info = new ProcessStartInfo(name, arguments)
             {
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                
+                RedirectStandardError = true,
+                
+                RedirectStandardInput = true
             };
 
             var process = System.Diagnostics.Process.Start(info);
@@ -19,15 +23,8 @@ namespace DevRating
             {
                 throw new Exception("Process.Start(info) returned null");
             }
-            
-            process.WaitForExit();
 
-            if (process.ExitCode != 0)
-            {
-                throw new Exception(process.StandardError.ReadToEnd());
-            }
-
-            return process.StandardOutput.ReadToEnd();
+            return process.StandardOutput;
         }
     }
 }

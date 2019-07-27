@@ -1,7 +1,9 @@
+using System.IO;
+
 namespace DevRating
 {
     public interface IProcess
     {
-        string Output(string name, string arguments);
+        StreamReader Output(string name, string arguments);
     }
 }

@@ -2,17 +2,25 @@ using System;
 
 namespace DevRating.Rating.Elo
 {
-    public class Player
+    public class Player : IComparable<Player>
     {
         private readonly double _points;
+
         private readonly int _games;
 
-        public Player() : this(1000, 0) { }
+        private readonly string _id;
 
-        private Player(double points, int games)
+        public Player(string id) : this(id, 1000, 0)
+        {
+        }
+
+        private Player(string id, double points, int games)
         {
             _points = points;
+            
             _games = games;
+            
+            _id = id;
         }
 
         public double Points()
@@ -27,42 +35,63 @@ namespace DevRating.Rating.Elo
 
         public Player Win(double opponentPoints, int opponentGames)
         {
-            const double winOutcome = 1d;
-            
-            return UpdatedPlayer(winOutcome, opponentPoints, opponentGames);
+            const double win = 1d;
+
+            var expectation = ExpectedOutcome(opponentPoints);
+
+            return UpdatedPlayer(win, expectation, opponentGames);
         }
 
         public Player Lose(double opponentPoints, int opponentGames)
         {
-            const double loseOutcome = 0d;
+            const double lose = 0d;
             
-            return UpdatedPlayer(loseOutcome, opponentPoints, opponentGames);
+            var expectation = ExpectedOutcome(opponentPoints);
+
+            return UpdatedPlayer(lose, expectation, opponentGames);
         }
 
         public void PrintToConsole()
         {
-            Console.Write($"{_points} {_games}");
+            Console.WriteLine(FormattableString.Invariant($"{_id}, {_points:F2}, {_games}"));
         }
 
-        private Player UpdatedPlayer(double actualOutcome, double opponentPoints, int opponentGames)
+        public int CompareTo(Player other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+
+            return _points.CompareTo(other._points);
+        }
+
+        private Player UpdatedPlayer(double actualOutcome, double expectedOutcome, int opponentGames)
         {
             const int gamesInReplacement = 400;
-            
-            var points = opponentGames < gamesInReplacement
-                ? _points 
-                : UpdatedPoints(actualOutcome, opponentPoints);
 
-            return new Player(points, _games + 1);
+            var points = opponentGames < gamesInReplacement
+                ? _points
+                : UpdatedPoints(actualOutcome, expectedOutcome);
+
+            return new Player(_id, points, _games + 1);
         }
 
         private double ExpectedOutcome(double opponentPoints)
         {
             var ra = _points;
+            
             var rb = opponentPoints;
 
             const double n = 400d;
 
             var qa = Math.Pow(10d, ra / n);
+            
             var qb = Math.Pow(10d, rb / n);
 
             var ea = qa / (qa + qb);
@@ -70,11 +99,11 @@ namespace DevRating.Rating.Elo
             return ea;
         }
 
-        private double UpdatedPoints(double actualOutcome, double opponentPoints)
+        private double UpdatedPoints(double actualOutcome, double expectedOutcome)
         {
             const double k = 1d;
-            
-            return _points + k * (actualOutcome - ExpectedOutcome(opponentPoints));
+
+            return _points + k * (actualOutcome - expectedOutcome);
         }
     }
 }

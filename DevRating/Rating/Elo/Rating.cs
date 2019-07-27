@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DevRating.Rating.Elo
 {
@@ -7,22 +7,30 @@ namespace DevRating.Rating.Elo
     {
         private readonly Dictionary<string, Player> _players;
 
-        public Rating() : this(new Dictionary<string, Player>()) { }
-
-        private Rating(Dictionary<string, Player> points)
+        public Rating() : this(new Dictionary<string, Player>())
         {
-            _players = points;
         }
-        
+
+        private Rating(Dictionary<string, Player> players)
+        {
+            _players = players;
+        }
+
         public IRating Update(string loserId, string winnerId)
         {
-            var loser = _players.ContainsKey(loserId) ? _players[loserId] : new Player();
-            
-            var winner = _players.ContainsKey(winnerId) ? _players[winnerId] : new Player();
+            if (loserId.Equals(winnerId))
+            {
+                return this;
+            }
+
+            var loser = _players.ContainsKey(loserId) ? _players[loserId] : new Player(loserId);
+
+            var winner = _players.ContainsKey(winnerId) ? _players[winnerId] : new Player(winnerId);
 
             var players = new Dictionary<string, Player>(_players)
             {
-                [loserId] = loser.Lose(winner.Points(), winner.Games()), 
+                [loserId] = loser.Lose(winner.Points(), winner.Games()),
+
                 [winnerId] = winner.Win(loser.Points(), loser.Games())
             };
 
@@ -31,11 +39,15 @@ namespace DevRating.Rating.Elo
 
         public void PrintToConsole()
         {
-            foreach (var player in _players)
+            var players = _players.Values.ToList();
+
+            players.Sort();
+
+            players.Reverse();
+
+            foreach (var player in players)
             {
-                Console.WriteLine($"{player.Key} ");
-                
-                player.Value.PrintToConsole();
+                player.PrintToConsole();
             }
         }
     }

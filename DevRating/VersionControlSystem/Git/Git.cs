@@ -1,4 +1,6 @@
-﻿using DevRating.Rating;
+﻿using System;
+using System.Linq;
+using DevRating.Rating;
 
 namespace DevRating.VersionControlSystem.Git
 {
@@ -15,23 +17,26 @@ namespace DevRating.VersionControlSystem.Git
         {
             var log = new Log(_process);
 
-            var commits = log.Commits();
+            var files = log.ModifiedFiles();
 
-            foreach (var commit in commits)
+            var index = 0;
+
+            var length = files.Count();
+            
+            foreach (var file in files)
             {
-                var files = commit.FileUpdates();
+                Console.Write($"{index++} / {length} ");
 
-                foreach (var file in files)
+                file.PrintToConsole();
+                
+                var modifications = file.Modifications();
+                
+                foreach (var modification in modifications)
                 {
-                    var lines = file.RemovedLines();
-
-                    foreach (var line in lines)
-                    {
-                        rating = line.UpdatedRating(rating);
-                    }
+                    rating = modification.UpdatedRating(rating);
                 }
             }
-
+            
             return rating;
         }
     }
