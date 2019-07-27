@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,7 @@ namespace DevRating.Rating.Elo
             _players = players;
         }
 
-        public IRating Update(string loserId, string winnerId)
+        public IRating UpdatedRating(string loserId, string winnerId)
         {
             if (loserId.Equals(winnerId))
             {
@@ -29,9 +30,9 @@ namespace DevRating.Rating.Elo
 
             var players = new Dictionary<string, Player>(_players)
             {
-                [loserId] = loser.Lose(winner.Points(), winner.Games()),
+                [loserId] = loser.Loser(winner.Points(), winner.Games()),
 
-                [winnerId] = winner.Win(loser.Points(), loser.Games())
+                [winnerId] = winner.Winner(loser.Points(), loser.Games())
             };
 
             return new Rating(players);
@@ -44,6 +45,8 @@ namespace DevRating.Rating.Elo
             players.Sort();
 
             players.Reverse();
+
+            Console.WriteLine("Player, Wins, Defeats, Points");
 
             foreach (var player in players)
             {

@@ -17,7 +17,7 @@ namespace DevRating.VersionControlSystem.Git
 
         public IRating UpdatedRating(IRating rating)
         {
-            return rating.Update(_previous, _next);
+            return rating.UpdatedRating(_previous, _next);
         }
     }
 }

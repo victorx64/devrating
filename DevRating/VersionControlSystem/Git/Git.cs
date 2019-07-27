@@ -13,7 +13,7 @@ namespace DevRating.VersionControlSystem.Git
             _process = process;
         }
         
-        public IRating UpdatedRating(IRating rating)
+        public IRating Rating()
         {
             var log = new Log(_process);
 
@@ -22,6 +22,8 @@ namespace DevRating.VersionControlSystem.Git
             var index = 0;
 
             var length = files.Count();
+            
+            IRating rating = new Rating.Elo.Rating();
             
             foreach (var file in files)
             {

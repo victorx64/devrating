@@ -53,11 +53,11 @@ namespace DevRating.VersionControlSystem.Git
                 {
                     var parts = line.Split(' ');
 
-                    var removed = parts[1].Substring(1).Split(',');
+                    var deletions = parts[1].Substring(1).Split(',');
 
-                    var index = Convert.ToInt32(removed[0]);
+                    var index = Convert.ToInt32(deletions[0]);
 
-                    var length = removed.Length > 1 ? Convert.ToInt32(removed[1]) : 1;
+                    var length = deletions.Length > 1 ? Convert.ToInt32(deletions[1]) : 1;
 
                     if (length > 0)
                     {

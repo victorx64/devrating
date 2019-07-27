@@ -6,19 +6,23 @@ namespace DevRating.Rating.Elo
     {
         private readonly double _points;
 
-        private readonly int _games;
+        private readonly int _wins;
+        
+        private readonly int _defeats;
 
         private readonly string _id;
 
-        public Player(string id) : this(id, 1000, 0)
+        public Player(string id) : this(id, 1200, 0, 0)
         {
         }
 
-        private Player(string id, double points, int games)
+        private Player(string id, double points, int wins, int defeats)
         {
             _points = points;
             
-            _games = games;
+            _wins = wins;
+            
+            _defeats = defeats;
             
             _id = id;
         }
@@ -30,30 +34,34 @@ namespace DevRating.Rating.Elo
 
         public int Games()
         {
-            return _games;
+            return _wins + _defeats;
         }
 
-        public Player Win(double opponentPoints, int opponentGames)
+        public Player Winner(double opponentPoints, int opponentGames)
         {
             const double win = 1d;
 
             var expectation = ExpectedOutcome(opponentPoints);
 
-            return UpdatedPlayer(win, expectation, opponentGames);
+            var points = UpdatedPoints(win, expectation, opponentGames);
+
+            return new Player(_id, points, _wins + 1, _defeats);
         }
 
-        public Player Lose(double opponentPoints, int opponentGames)
+        public Player Loser(double opponentPoints, int opponentGames)
         {
             const double lose = 0d;
             
             var expectation = ExpectedOutcome(opponentPoints);
 
-            return UpdatedPlayer(lose, expectation, opponentGames);
+            var points = UpdatedPoints(lose, expectation, opponentGames);
+
+            return new Player(_id, points, _wins, _defeats + 1);
         }
 
         public void PrintToConsole()
         {
-            Console.WriteLine(FormattableString.Invariant($"{_id}, {_points:F2}, {_games}"));
+            Console.WriteLine(FormattableString.Invariant($"{_id}, {_wins}, {_defeats}, {_points:F2}"));
         }
 
         public int CompareTo(Player other)
@@ -69,17 +77,6 @@ namespace DevRating.Rating.Elo
             }
 
             return _points.CompareTo(other._points);
-        }
-
-        private Player UpdatedPlayer(double actualOutcome, double expectedOutcome, int opponentGames)
-        {
-            const int gamesInReplacement = 400;
-
-            var points = opponentGames < gamesInReplacement
-                ? _points
-                : UpdatedPoints(actualOutcome, expectedOutcome);
-
-            return new Player(_id, points, _games + 1);
         }
 
         private double ExpectedOutcome(double opponentPoints)
@@ -99,11 +96,15 @@ namespace DevRating.Rating.Elo
             return ea;
         }
 
-        private double UpdatedPoints(double actualOutcome, double expectedOutcome)
+        private double UpdatedPoints(double actualOutcome, double expectedOutcome, int opponentGames)
         {
+            const int gamesInReplacement = 400;
+            
             const double k = 1d;
 
-            return _points + k * (actualOutcome - expectedOutcome);
+            return opponentGames < gamesInReplacement
+                ? _points
+                : _points + k * (actualOutcome - expectedOutcome);
         }
     }
 }

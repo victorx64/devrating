@@ -1,5 +1,4 @@
-﻿using System;
-using DevRating.VersionControlSystem.Git;
+﻿using DevRating.VersionControlSystem.Git;
 
 namespace DevRating
 {
@@ -7,10 +6,9 @@ namespace DevRating
     {
         private static void Main(string[] args)
         {
-            var rating = new Git(new Process())
-                .UpdatedRating(new Rating.Elo.Rating());
-            
-            rating.PrintToConsole();
+            new Git(new Process(new WorkingDirectory(args)))
+                .Rating()
+                .PrintToConsole();
         }
     }
 }

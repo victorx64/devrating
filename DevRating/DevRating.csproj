@@ -19,6 +19,9 @@
         <Compile Update="Rating\Elo\RatingTest.cs">
             <DependentUpon>Rating.cs</DependentUpon>
         </Compile>
+        <Compile Update="WorkingDirectory.cs">
+          <DependentUpon>IWorkingDirectory.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

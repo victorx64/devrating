@@ -54,7 +54,7 @@ namespace DevRating.VersionControlSystem.Git
                         modifications.Add(new Modification(author, _author));
                     }
                 }
-                catch (Exception exception)
+                catch
                 {
                     Console.WriteLine($"Couldn't parse line: {line}");
                 }
