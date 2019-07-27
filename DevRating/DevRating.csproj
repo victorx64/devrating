@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <StartupObject>DevRating.Program</StartupObject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="nunit" Version="3.11.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Process.cs">
+            <DependentUpon>IProcess.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Rating\Elo\RatingTest.cs">
+            <DependentUpon>Rating.cs</DependentUpon>
+        </Compile>
+        <Compile Update="WorkingDirectory.cs">
+          <DependentUpon>IWorkingDirectory.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+</Project>
