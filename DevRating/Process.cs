@@ -6,13 +6,6 @@ namespace DevRating
 {
     public class Process : IProcess
     {
-        private readonly IWorkingDirectory _workingDirectory;
-
-        public Process(IWorkingDirectory workingDirectory)
-        {
-            _workingDirectory = workingDirectory;
-        }
-
         public StreamReader Output(string name, string arguments)
         {
             var info = new ProcessStartInfo(name, arguments)
@@ -21,9 +14,7 @@ namespace DevRating
 
                 RedirectStandardError = true,
 
-                RedirectStandardInput = true,
-
-                WorkingDirectory = _workingDirectory.ToString()
+                RedirectStandardInput = true
             };
 
             var process = System.Diagnostics.Process.Start(info);

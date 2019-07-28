@@ -1,26 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Library</OutputType>
+        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.2</TargetFramework>
-        <StartupObject>DevRating.Program</StartupObject>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>devrating</ToolCommandName>
+        <PackageOutputPath>../Package</PackageOutputPath>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1.0</PackageVersion>
+        <Authors>Victor Semenov</Authors>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="nunit" Version="3.11.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    </ItemGroup>
 
     <ItemGroup>
         <Compile Update="Process.cs">
             <DependentUpon>IProcess.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Rating\Elo\RatingTest.cs">
-            <DependentUpon>Rating.cs</DependentUpon>
-        </Compile>
-        <Compile Update="WorkingDirectory.cs">
-          <DependentUpon>IWorkingDirectory.cs</DependentUpon>
         </Compile>
     </ItemGroup>
 

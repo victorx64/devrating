@@ -4,9 +4,9 @@ namespace DevRating
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
-            new Git(new Process(new WorkingDirectory(args)))
+            new Git(new Process())
                 .Rating()
                 .PrintToConsole();
         }
