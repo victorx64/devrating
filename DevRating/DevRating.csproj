@@ -10,6 +10,10 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageVersion>0.1.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
+        <Title>DevRating</Title>
+        <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
