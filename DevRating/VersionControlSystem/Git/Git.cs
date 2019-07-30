@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using DevRating.Rating;
+﻿using DevRating.Rating;
 
 namespace DevRating.VersionControlSystem.Git
 {
@@ -17,26 +15,13 @@ namespace DevRating.VersionControlSystem.Git
         {
             var log = new Log(_process);
 
-            var files = log.ModifiedFiles();
+            var blobs = log.ModifiedBlobs();
 
-            var index = 0;
-
-            var length = files.Count();
-            
             IRating rating = new Rating.Elo.Rating();
             
-            foreach (var file in files)
+            foreach (var blob in blobs)
             {
-                Console.Write($"{index++} / {length} ");
-
-                file.PrintToConsole();
-                
-                var modifications = file.Modifications();
-                
-                foreach (var modification in modifications)
-                {
-                    rating = modification.UpdatedRating(rating);
-                }
+                rating = blob.UpdateRating(rating);
             }
             
             return rating;
