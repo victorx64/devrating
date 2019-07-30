@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/v/DevRating.svg)](https://www.nuget.org/packages/DevRating/)
+
 # DevRating
 
 Calculates developers rating based on a history of files modifications. Works in a git repository. Every code line modification gives points to a modifier and lowers points of the previous author of the line. Uses [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system).
