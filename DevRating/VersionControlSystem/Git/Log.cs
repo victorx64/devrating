@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DevRating.VersionControlSystem.Git
@@ -11,22 +12,19 @@ namespace DevRating.VersionControlSystem.Git
             _process = process;
         }
 
-        public IEnumerable<Blob> ModifiedBlobs()
+        public IEnumerable<File> ModifiedFiles()
         {
-            var stream = _process.Output("git",
-                "--no-pager log --reverse -U0 --pretty=format:commit,%aE --full-index --use-mailmap");
+            Console.WriteLine("Fetching git log...");
+            
+            var stream = _process.Output("git", "--no-pager log --reverse --no-merges -U0 --pretty=format:commit,%H,%aE");
 
-            const string initial = "0000000000000000000000000000000000000000";
+            string hash = string.Empty,
+                author = string.Empty,
+                path = string.Empty;
+            
+            var blocks = new List<LinesBlock>();
 
-            string author = string.Empty,
-                previous = string.Empty,
-                next = string.Empty;
-
-            var deletions = new List<LinesBlock>();
-            var additions = new List<LinesBlock>();
-
-
-            var blobs = new Dictionary<string, Blob> {{initial, new Blob()}};
+            var fileUpdates = new List<File>();
 
             while (!stream.EndOfStream)
             {
@@ -34,49 +32,41 @@ namespace DevRating.VersionControlSystem.Git
 
                 if (line.StartsWith("commit,"))
                 {
-                    author = line.Substring("commit,".Length);
+                    var parts = line.Split(',');
+
+                    hash = parts[1];
+
+                    author = parts[2];
                 }
-                else if (line.StartsWith("index "))
+                else if (line.StartsWith("--- "))
                 {
-                    if (blobs.ContainsKey(previous)) // check if blob has a 'new file mode' commit
+                    if (blocks.Count > 0)
                     {
-                        if (next.Equals(initial))
-                        {
-                            next = MaskDeletedBlobHash(previous);
-                        }
-
-                        if (!blobs.ContainsKey(next)) // some blobs can be created multiple times. we ignore them
-                        {
-                            var authors = blobs[previous].Authors();
-
-                            blobs.Add(next, new Blob(authors, deletions, additions));
-                        }
+                        fileUpdates.Add(new File(_process, hash, path, author, blocks));
+                    
+                        blocks = new List<LinesBlock>();
                     }
-
-                    deletions = new List<LinesBlock>();
-                    additions = new List<LinesBlock>();
-
-                    var parts = line.Split(' ', '.');
-
-                    previous = parts[1];
-
-                    next = parts[3];
+                    
+                    path = line.Substring(6);
                 }
                 else if (line.StartsWith("@@ "))
                 {
                     var parts = line.Split(' ');
 
-                    deletions.Add(new LinesBlock(author, parts[1]));
-                    additions.Add(new LinesBlock(author, parts[2]));
+                    var deletions = parts[1].Substring(1).Split(',');
+
+                    var index = Convert.ToInt32(deletions[0]);
+
+                    var length = deletions.Length > 1 ? Convert.ToInt32(deletions[1]) : 1;
+
+                    if (length > 0)
+                    {
+                        blocks.Add(new LinesBlock(index, length));
+                    }
                 }
             }
 
-            return blobs.Values;
-        }
-
-        private string MaskDeletedBlobHash(string previousHash)
-        {
-            return "deleted-" + previousHash;
+            return fileUpdates;
         }
     }
 }
