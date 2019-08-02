@@ -60,45 +60,37 @@ namespace DevRating.VersionControlSystem.Git
 
             foreach (var difference in differences)
             {
-                if (difference.Status == ChangeKind.Added ||
-                    difference.Status == ChangeKind.Copied ||
-                    difference.Status == ChangeKind.Deleted ||
-                    difference.Status == ChangeKind.Modified ||
-                    difference.Status == ChangeKind.Renamed)
+                var previous = difference.Status == ChangeKind.Added
+                    ? new File(new string[0], false)
+                    : before[difference.OldPath];
+
+                var binary = difference.IsBinaryComparison ||
+                             difference.Status == ChangeKind.TypeChanged;
+
+                var file = UpdateFile(previous, author, difference.Patch, binary);
+
+                rating = file.UpdateRating(rating);
+
+                if (difference.Status != ChangeKind.Added &&
+                    difference.Status != ChangeKind.Copied)
                 {
-                    if (difference.Status != ChangeKind.Added &&
-                        difference.Status != ChangeKind.Copied)
-                    {
-                        files.Remove(difference.OldPath);
-                    }
-
-                    if (difference.Status != ChangeKind.Deleted)
-                    {
-                        var previous = difference.Status == ChangeKind.Added
-                            ? new File(new string[0], false)
-                            : before[difference.OldPath];
-
-                        var file = UpdateFile(previous, author, difference.Patch, difference.IsBinaryComparison);
-
-                        rating = file.UpdateRating(rating);
-
-                        files.Add(difference.Path, file);
-                    }
+                    files.Remove(difference.OldPath);
                 }
-                else
+
+                if (difference.Status != ChangeKind.Deleted)
                 {
-                    ; // TODO Handle other statuses, e.g. Submodules
+                    files.Add(difference.Path, file);
                 }
             }
 
             return rating;
         }
 
-        private File UpdateFile(File previous, string author, string patch, bool binaryComparison)
+        private File UpdateFile(File previous, string author, string patch, bool binary)
         {
-            var file = new File(previous.Authors(), previous.Binary() || binaryComparison);
+            var file = new File(previous.Authors(), previous.Binary() || binary);
 
-            if (!binaryComparison)
+            if (!binary)
             {
                 var lines = patch.Split('\n');
 

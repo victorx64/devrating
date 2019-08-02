@@ -10,11 +10,11 @@ namespace DevRating.VersionControlSystem.Git
         private readonly int _index;
         private readonly int _count;
 
-        public LinesBlock(string author, string hunkHeader)
+        public LinesBlock(string author, string hunk)
         {
             _author = author;
             
-            var parts = hunkHeader.Substring(1).Split(',');
+            var parts = hunk.Substring(1).Split(',');
 
             var oneBasedIndex = Convert.ToInt32(parts[0]);
 
