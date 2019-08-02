@@ -17,9 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Update="Process.cs">
-            <DependentUpon>IProcess.cs</DependentUpon>
-        </Compile>
+      <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
     </ItemGroup>
 
 </Project>
