@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DevRating.Rating;
 using LibGit2Sharp;
 
@@ -33,17 +34,18 @@ namespace DevRating.VersionControlSystem.Git
                              CommitSortStrategies.Reverse
                 };
 
-                Tree tree = null;
+                var index = 0;
+                var count = repo.Commits.QueryBy(filter).Count();
 
-                var i = 0;
+                Tree tree = null;
 
                 foreach (var current in repo.Commits.QueryBy(filter))
                 {
-                    Console.WriteLine(++i);
+                    Console.WriteLine($"{++index} / {count}");
 
                     var differences = repo.Diff.Compare<Patch>(tree, current.Tree, options);
 
-                    UpdateRating(files, current.Author.Email, differences, rating);
+                    rating = UpdateRating(files, current.Author.Email, differences, rating);
 
                     tree = current.Tree;
                 }
@@ -52,90 +54,67 @@ namespace DevRating.VersionControlSystem.Git
             return rating;
         }
 
-        private void UpdateRating(IDictionary<string, File> files, string author, Patch differences, IRating rating)
+        private IRating UpdateRating(IDictionary<string, File> files, string author, Patch differences, IRating rating)
         {
             var before = new Dictionary<string, File>(files);
 
             foreach (var difference in differences)
             {
-                switch (difference.Status)
+                if (difference.Status == ChangeKind.Added ||
+                    difference.Status == ChangeKind.Copied ||
+                    difference.Status == ChangeKind.Deleted ||
+                    difference.Status == ChangeKind.Modified ||
+                    difference.Status == ChangeKind.Renamed)
                 {
-                    case ChangeKind.Added:
+                    if (difference.Status != ChangeKind.Added &&
+                        difference.Status != ChangeKind.Copied)
                     {
-                        var file = new File(new string[0], difference.IsBinaryComparison);
-
-                        UpdateFile(file, author, difference.Patch);
-
-                        files.Add(difference.Path, file);
-                    }
-                        break;
-                    case ChangeKind.Deleted:
-                    {
-                        var file = new File(before[difference.OldPath].Authors(),before[difference.OldPath].Binary() || difference.IsBinaryComparison);
-
-                        UpdateFile(file, author, difference.Patch);
-
                         files.Remove(difference.OldPath);
                     }
-                        break;
-                    case ChangeKind.Modified:
+
+                    if (difference.Status != ChangeKind.Deleted)
                     {
-                        var file = new File(before[difference.OldPath].Authors(),before[difference.OldPath].Binary() || difference.IsBinaryComparison);
+                        var previous = difference.Status == ChangeKind.Added
+                            ? new File(new string[0], false)
+                            : before[difference.OldPath];
 
-                        UpdateFile(file, author, difference.Patch);
+                        var file = UpdateFile(previous, author, difference.Patch, difference.IsBinaryComparison);
 
-                        files.Remove(difference.OldPath);
+                        rating = file.UpdateRating(rating);
 
                         files.Add(difference.Path, file);
                     }
-                        break;
-                    case ChangeKind.Renamed:
-                    {
-                        var file = new File(before[difference.OldPath].Authors(),before[difference.OldPath].Binary() || difference.IsBinaryComparison);
-
-                        UpdateFile(file, author, difference.Patch);
-
-                        files.Remove(difference.OldPath);
-
-                        files.Add(difference.Path, file);
-                    }
-                        break;
-                    case ChangeKind.Copied:
-                    {
-                        var file = new File(before[difference.OldPath].Authors(),before[difference.OldPath].Binary() || difference.IsBinaryComparison);
-
-                        UpdateFile(file, author, difference.Patch);
-
-                        files.Add(difference.Path, file);
-                    }
-                        break;
-                    case ChangeKind.Ignored:
-                    case ChangeKind.Untracked:
-                    case ChangeKind.TypeChanged:
-                    case ChangeKind.Unreadable:
-                    case ChangeKind.Conflicted:
-                    case ChangeKind.Unmodified:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                }
+                else
+                {
+                    ; // TODO Handle other statuses, e.g. Submodules
                 }
             }
+
+            return rating;
         }
 
-        private void UpdateFile(File file, string author, string patch)
+        private File UpdateFile(File previous, string author, string patch, bool binaryComparison)
         {
-            var lines = patch.Split('\n');
+            var file = new File(previous.Authors(), previous.Binary() || binaryComparison);
 
-            foreach (var line in lines)
+            if (!binaryComparison)
             {
-                if (line.StartsWith("@@ "))
-                {
-                    var parts = line.Split(' ');
+                var lines = patch.Split('\n');
 
-                    file.AddDeletion(new LinesBlock(author, parts[1]));
-                    file.AddAddition(new LinesBlock(author, parts[2]));
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("@@ "))
+                    {
+                        var parts = line.Split(' ');
+
+                        file.AddDeletion(new LinesBlock(author, parts[1]));
+                        file.AddAddition(new LinesBlock(author, parts[2]));
+                    }
                 }
             }
+
+            return file;
         }
     }
 }

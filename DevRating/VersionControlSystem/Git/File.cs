@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.Rating;
 
 namespace DevRating.VersionControlSystem.Git
 {
     public class File
     {
-        private readonly IEnumerable<string> _authors;
+        private readonly IList<string> _authors;
         private readonly bool _binary;
         private readonly IList<LinesBlock> _deletions;
         private readonly IList<LinesBlock> _additions;
         
-        public File(IEnumerable<string> authors, bool binary)
+        public File(IList<string> authors, bool binary)
         {
             _authors = authors;
             _binary = binary;
@@ -33,14 +34,14 @@ namespace DevRating.VersionControlSystem.Git
             return _binary;
         }
 
-        public IEnumerable<string> Authors()
+        public IList<string> Authors()
         {
             if (_binary)
             {
                 return new string[0];
             }
             
-            IEnumerable<string> authors = new List<string>(_authors);
+            IList<string> authors = new List<string>(_authors);
 
             foreach (var deletion in DescendingDeletions())
             {
@@ -55,15 +56,33 @@ namespace DevRating.VersionControlSystem.Git
             return authors;
         }
 
-        private IEnumerable<LinesBlock> DescendingDeletions()
+        public IRating UpdateRating(IRating rating)
+        {
+            if (_binary)
+            {
+                return rating;
+            }
+            
+            foreach (var deletion in AscendingDeletions())
+            {
+                rating = deletion.UpdateRating(rating, _authors);
+            }
+
+            return rating;
+        }
+
+        private IEnumerable<LinesBlock> AscendingDeletions()
         {
             var deletions = _deletions.ToList();
 
             deletions.Sort();
 
-            deletions.Reverse();
-
             return deletions;
+        }
+
+        private IEnumerable<LinesBlock> DescendingDeletions()
+        {
+            return AscendingDeletions().Reverse();
         }
 
         private IEnumerable<LinesBlock> AscendingAdditions()

@@ -23,7 +23,7 @@ namespace DevRating.VersionControlSystem.Git
             _count = parts.Length > 1 ? Convert.ToInt32(parts[1]) : 1;
         }
 
-        public IEnumerable<string> AddTo(IEnumerable<string> authors)
+        public IList<string> AddTo(IEnumerable<string> authors)
         {
             var output = new List<string>(authors);
 
@@ -35,7 +35,7 @@ namespace DevRating.VersionControlSystem.Git
             return output;
         }
         
-        public IEnumerable<string> DeleteFrom(IEnumerable<string> authors)
+        public IList<string> DeleteFrom(IEnumerable<string> authors)
         {
             var output = new List<string>(authors);
 
@@ -47,13 +47,11 @@ namespace DevRating.VersionControlSystem.Git
             return output;
         }
 
-        public IRating UpdateRating(IRating rating, IEnumerable<string> authors)
+        public IRating UpdateRating(IRating rating, IList<string> authors)
         {
-            var list = new List<string>(authors);
-            
             for (var i = _index; i < _index + _count; i++)
             {
-                rating = rating.UpdatedRating(list[i], _author);
+                rating = rating.UpdatedRating(authors[i], _author);
             }
 
             return rating;
