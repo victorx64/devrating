@@ -4,6 +4,6 @@ namespace DevRating.VersionControlSystem
 {
     public interface IVersionControlSystem
     {
-        IRating Rating();
+        IRating UpdatedRating();
     }
 }

@@ -1,118 +1,78 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 
 namespace DevRating.VersionControlSystem.Git
 {
     public class File
     {
-        private readonly IProcess _process;
+        private readonly IEnumerable<string> _authors;
+        private readonly bool _binary;
+        private readonly IList<LinesBlock> _deletions;
+        private readonly IList<LinesBlock> _additions;
         
-        private readonly string _hash;
-        
-        private readonly string _path;
-        
-        private readonly string _author;
-        
-        private readonly List<LinesBlock> _blocks;
-
-        public File(IProcess process, string hash, string path, string author, List<LinesBlock> blocks)
+        public File(IEnumerable<string> authors, bool binary)
         {
-            _process = process;
-            
-            _hash = hash;
-            
-            _path = path;
-            
-            _author = author;
-            
-            _blocks = blocks;
+            _authors = authors;
+            _binary = binary;
+            _deletions = new List<LinesBlock>();
+            _additions = new List<LinesBlock>();
         }
 
-        public IEnumerable<Modification> Modifications()
+        public void AddDeletion(LinesBlock deletion)
         {
-            var modifications = new List<Modification>();
+            _deletions.Add(deletion);
+        }
+        
+        public void AddAddition(LinesBlock addition)
+        {
+            _additions.Add(addition);
+        }
 
-            var stream = BlameStream();
+        public bool Binary()
+        {
+            return _binary;
+        }
 
-            while (!stream.EndOfStream)
+        public IEnumerable<string> Authors()
+        {
+            if (_binary)
             {
-                var line = stream.ReadLine();
-                
-                try
-                {
-                    var metadata = Metadata(line);
+                return new string[0];
+            }
+            
+            IEnumerable<string> authors = new List<string>(_authors);
 
-                    var author = Author(metadata);
-
-                    var index = LineIndex(metadata);
-
-                    var removed = Removed(index);
-
-                    if (removed)
-                    {
-                        modifications.Add(new Modification(author, _author));
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine($"Couldn't parse line: {line}");
-                }
+            foreach (var deletion in DescendingDeletions())
+            {
+                authors = deletion.DeleteFrom(authors);
             }
 
-            return modifications;
-        }
-
-        public void PrintToConsole()
-        {
-            Console.WriteLine($"{_hash} {_author} {_path}");
-        }
-
-        private int LineIndex(string[] metadata)
-        {
-            return Convert.ToInt32(metadata[metadata.Length - 1]);
-        }
-
-        private string Author(string[] metadata)
-        {
-            return metadata[0].Trim('<', '>');
-        }
-
-        private StreamReader BlameStream()
-        {
-            _blocks.Sort();
-
-            var start = _blocks[0].Start();
-
-            var end = _blocks[_blocks.Count - 1].End();
-
-            return _process.Output("git", $"blame -t -L {start},{end} -e {_hash}~1 -- {_path}");
-        }
-
-        private bool Removed(int lineIndex)
-        {
-            foreach (var block in _blocks)
+            foreach (var addition in AscendingAdditions())
             {
-                if (block.InRange(lineIndex))
-                {
-                    return true;
-                }
+                authors = addition.AddTo(authors);
             }
 
-            return false;
+            return authors;
         }
 
-        private string[] Metadata(string line)
+        private IEnumerable<LinesBlock> DescendingDeletions()
         {
-            var start = line.IndexOf('(');
+            var deletions = _deletions.ToList();
 
-            var end = line.IndexOf(')');
+            deletions.Sort();
 
-            var length = end - start - 1;
+            deletions.Reverse();
 
-            var metadata = line.Substring(start + 1, length);
-            
-            return metadata.Split(' ');
+            return deletions;
+        }
+
+        private IEnumerable<LinesBlock> AscendingAdditions()
+        {
+            var additions = _additions.ToList();
+
+            additions.Sort();
+
+            return additions;
         }
     }
 }

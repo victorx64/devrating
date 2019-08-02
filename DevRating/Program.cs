@@ -6,8 +6,8 @@ namespace DevRating
     {
         private static void Main()
         {
-            new Git(new Process())
-                .Rating()
+            new Git(new Rating.Elo.Rating())
+                .UpdatedRating()
                 .PrintToConsole();
         }
     }

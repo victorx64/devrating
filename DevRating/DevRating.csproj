@@ -17,9 +17,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Update="Process.cs">
-            <DependentUpon>IProcess.cs</DependentUpon>
-        </Compile>
+      <Compile Remove="VersionControlSystem\Git\Log.cs" />
+      <None Include="VersionControlSystem\Git\Log.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
     </ItemGroup>
 
 </Project>
