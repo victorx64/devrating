@@ -4,48 +4,65 @@ using DevRating.Rating;
 
 namespace DevRating.Git
 {
-    public sealed class File
+    public sealed class File : IFile
     {
         private readonly IList<string> _authors;
-        private readonly bool _binary;
         private readonly IList<IDeletionHunk> _deletions;
         private readonly IList<IAdditionHunk> _additions;
 
-        public File(IList<string> authors, bool binary) : this(authors, binary, new List<IDeletionHunk>(),
-            new List<IAdditionHunk>())
+        public File() : this(new List<string>(), new List<IDeletionHunk>(), new List<IAdditionHunk>())
         {
         }
 
-        public File(IList<string> authors, bool binary, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
+        public File(IList<string> authors) : this(authors, new List<IDeletionHunk>(), new List<IAdditionHunk>())
+        {
+        }
+
+        public File(IList<string> authors, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
         {
             _authors = authors;
-            _binary = binary;
             _deletions = deletions;
             _additions = additions;
         }
 
-        public void AddDeletion(IDeletionHunk deletion)
+        public IFile SolidifiedFile(bool binary)
         {
-            _deletions.Add(deletion);
-        }
-
-        public void AddAddition(IAdditionHunk addition)
-        {
-            _additions.Add(addition);
-        }
-
-        public bool Binary()
-        {
-            return _binary;
-        }
-
-        public IList<string> Authors()
-        {
-            if (_binary)
+            if (binary)
             {
-                return new string[0];
+                return new BinaryFile();
             }
 
+            return new File(Authors());
+        }
+        
+        public void ApplyPatch(string author, string patch)
+        {
+            var lines = patch.Split('\n');
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("@@ "))
+                {
+                    var parts = line.Split(' ');
+
+                    _deletions.Add(new DeletionHunk(author, parts[1]));
+                    _additions.Add(new AdditionHunk(author, parts[2]));
+                }
+            }
+        }
+
+        public IPlayers UpdatedPlayers(IPlayers players)
+        {
+            foreach (var deletion in AscendingDeletions())
+            {
+                players = deletion.UpdatedPlayers(players, _authors);
+            }
+
+            return players;
+        }
+
+        private IList<string> Authors()
+        {
             IList<string> authors = new List<string>(_authors);
 
             foreach (var deletion in DescendingDeletions())
@@ -59,21 +76,6 @@ namespace DevRating.Git
             }
 
             return authors;
-        }
-
-        public IPlayers UpdatedPlayers(IPlayers players)
-        {
-            if (_binary)
-            {
-                return players;
-            }
-
-            foreach (var deletion in AscendingDeletions())
-            {
-                players = deletion.UpdatedPlayers(players, _authors);
-            }
-
-            return players;
         }
 
         private IEnumerable<IDeletionHunk> AscendingDeletions()

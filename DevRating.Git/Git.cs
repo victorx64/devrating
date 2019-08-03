@@ -19,7 +19,7 @@ namespace DevRating.Git
         {
             var developers = _developers;
 
-            var files = new Dictionary<string, File>();
+            var files = new Dictionary<string, IFile>();
 
             using (var repo = new Repository("."))
             {
@@ -54,22 +54,25 @@ namespace DevRating.Git
             return developers;
         }
 
-        private IPlayers UpdateRating(IDictionary<string, File> files, string author, Patch differences, IPlayers players)
+        private IPlayers UpdateRating(IDictionary<string, IFile> files, string author, Patch differences,
+            IPlayers developers)
         {
-            var before = new Dictionary<string, File>(files);
+            var before = new Dictionary<string, IFile>(files);
 
             foreach (var difference in differences)
             {
                 var previous = difference.Status == ChangeKind.Added
-                    ? new File(new string[0], false)
+                    ? new File()
                     : before[difference.OldPath];
 
                 var binary = difference.IsBinaryComparison ||
                              difference.Status == ChangeKind.TypeChanged;
 
-                var file = UpdateFile(previous, author, difference.Patch, binary);
+                var file = previous.SolidifiedFile(binary);
 
-                players = file.UpdatedPlayers(players);
+                file.ApplyPatch(author, difference.Patch);
+                    
+                developers = file.UpdatedPlayers(developers);
 
                 if (difference.Status != ChangeKind.Added &&
                     difference.Status != ChangeKind.Copied)
@@ -83,30 +86,7 @@ namespace DevRating.Git
                 }
             }
 
-            return players;
-        }
-
-        private File UpdateFile(File previous, string author, string patch, bool binary)
-        {
-            var file = new File(previous.Authors(), previous.Binary() || binary);
-
-            if (!binary)
-            {
-                var lines = patch.Split('\n');
-
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith("@@ "))
-                    {
-                        var parts = line.Split(' ');
-
-                        file.AddDeletion(new DeletionHunk(author, parts[1]));
-                        file.AddAddition(new AdditionHunk(author, parts[2]));
-                    }
-                }
-            }
-
-            return file;
+            return developers;
         }
     }
 }
