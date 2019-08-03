@@ -8,15 +8,15 @@ namespace DevRating.Git
     {
         private readonly IList<string> _authors;
         private readonly bool _binary;
-        private readonly IList<LinesBlock> _deletions;
-        private readonly IList<LinesBlock> _additions;
+        private readonly IList<IDeletionHunk> _deletions;
+        private readonly IList<IAdditionHunk> _additions;
 
-        public File(IList<string> authors, bool binary) : this(authors, binary, new List<LinesBlock>(),
-            new List<LinesBlock>())
+        public File(IList<string> authors, bool binary) : this(authors, binary, new List<IDeletionHunk>(),
+            new List<IAdditionHunk>())
         {
         }
 
-        public File(IList<string> authors, bool binary, IList<LinesBlock> deletions, IList<LinesBlock> additions)
+        public File(IList<string> authors, bool binary, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
         {
             _authors = authors;
             _binary = binary;
@@ -24,12 +24,12 @@ namespace DevRating.Git
             _additions = additions;
         }
 
-        public void AddDeletion(LinesBlock deletion)
+        public void AddDeletion(IDeletionHunk deletion)
         {
             _deletions.Add(deletion);
         }
 
-        public void AddAddition(LinesBlock addition)
+        public void AddAddition(IAdditionHunk addition)
         {
             _additions.Add(addition);
         }
@@ -76,7 +76,7 @@ namespace DevRating.Git
             return players;
         }
 
-        private IEnumerable<LinesBlock> AscendingDeletions()
+        private IEnumerable<IDeletionHunk> AscendingDeletions()
         {
             var deletions = _deletions.ToList();
 
@@ -85,12 +85,12 @@ namespace DevRating.Git
             return deletions;
         }
 
-        private IEnumerable<LinesBlock> DescendingDeletions()
+        private IEnumerable<IDeletionHunk> DescendingDeletions()
         {
             return AscendingDeletions().Reverse();
         }
 
-        private IEnumerable<LinesBlock> AscendingAdditions()
+        private IEnumerable<IAdditionHunk> AscendingAdditions()
         {
             var additions = _additions.ToList();
 

@@ -100,8 +100,8 @@ namespace DevRating.Git
                     {
                         var parts = line.Split(' ');
 
-                        file.AddDeletion(new LinesBlock(author, parts[1]));
-                        file.AddAddition(new LinesBlock(author, parts[2]));
+                        file.AddDeletion(new DeletionHunk(author, parts[1]));
+                        file.AddAddition(new AdditionHunk(author, parts[2]));
                     }
                 }
             }
