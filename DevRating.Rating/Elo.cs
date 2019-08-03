@@ -2,7 +2,7 @@ using System;
 
 namespace DevRating.Rating
 {
-    public class Elo : IPointsFormula
+    public sealed class Elo : IPointsFormula
     {
         private readonly int _replacements;
         private readonly double _k;

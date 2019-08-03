@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DevRating.Git
 {
-    public class AdditionHunk : Hunk, IAdditionHunk
+    public sealed class AdditionHunk : Hunk, IAdditionHunk
     {
         public AdditionHunk(string author, string header) : base(author, header)
         {

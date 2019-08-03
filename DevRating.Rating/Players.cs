@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DevRating.Rating
 {
-    public class Players : IPlayers
+    public sealed class Players : IPlayers
     {
         private readonly IDictionary<string, IPlayer> _players;
 

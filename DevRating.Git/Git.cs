@@ -6,7 +6,7 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public class Git
+    public sealed class Git
     {
         private readonly IPlayers _developers;
 

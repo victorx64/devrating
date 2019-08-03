@@ -3,7 +3,7 @@ using DevRating.Rating;
 
 namespace DevRating.Git
 {
-    public class DeletionHunk : Hunk, IDeletionHunk
+    public sealed class DeletionHunk : Hunk, IDeletionHunk
     {
         public DeletionHunk(string author, string header) : base(author, header)
         {

@@ -1,6 +1,6 @@
 namespace DevRating.Rating
 {
-    public class Player : IPlayer
+    public sealed class Player : IPlayer
     {
         private readonly IPointsFormula _formula;
         private readonly double _points;

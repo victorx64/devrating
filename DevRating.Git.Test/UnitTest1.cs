@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace DevRating.Git.Test
 {
-    public class Tests
+    public sealed class Tests
     {
         [SetUp]
         public void Setup()

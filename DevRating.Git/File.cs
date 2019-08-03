@@ -4,7 +4,7 @@ using DevRating.Rating;
 
 namespace DevRating.Git
 {
-    public class File
+    public sealed class File
     {
         private readonly IList<string> _authors;
         private readonly bool _binary;
