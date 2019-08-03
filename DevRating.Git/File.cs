@@ -14,10 +14,6 @@ namespace DevRating.Git
         {
         }
 
-        public File(IList<string> authors) : this(authors, new List<IDeletionHunk>(), new List<IAdditionHunk>())
-        {
-        }
-
         public File(IList<string> authors, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
         {
             _authors = authors;
@@ -25,18 +21,16 @@ namespace DevRating.Git
             _additions = additions;
         }
 
-        public IFile SolidifiedFile(bool binary)
+        public IFile PatchedFile(bool binary, string author, string patch)
         {
             if (binary)
             {
                 return new BinaryFile();
             }
 
-            return new File(Authors());
-        }
-        
-        public void ApplyPatch(string author, string patch)
-        {
+            var deletions = new List<IDeletionHunk>();
+            var additions = new List<IAdditionHunk>();
+            
             var lines = patch.Split('\n');
 
             foreach (var line in lines)
@@ -45,10 +39,12 @@ namespace DevRating.Git
                 {
                     var parts = line.Split(' ');
 
-                    _deletions.Add(new DeletionHunk(author, parts[1]));
-                    _additions.Add(new AdditionHunk(author, parts[2]));
+                    deletions.Add(new DeletionHunk(author, parts[1]));
+                    additions.Add(new AdditionHunk(author, parts[2]));
                 }
             }
+            
+            return new File(Authors(), deletions, additions);
         }
 
         public IPlayers UpdatedPlayers(IPlayers players)
@@ -65,7 +61,7 @@ namespace DevRating.Git
         {
             IList<string> authors = new List<string>(_authors);
 
-            foreach (var deletion in DescendingDeletions())
+            foreach (var deletion in AscendingDeletions().Reverse())
             {
                 authors = deletion.DeleteFrom(authors);
             }
@@ -85,11 +81,6 @@ namespace DevRating.Git
             deletions.Sort();
 
             return deletions;
-        }
-
-        private IEnumerable<IDeletionHunk> DescendingDeletions()
-        {
-            return AscendingDeletions().Reverse();
         }
 
         private IEnumerable<IAdditionHunk> AscendingAdditions()

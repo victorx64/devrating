@@ -4,8 +4,7 @@ namespace DevRating.Git
 {
     public interface IFile
     {
-        IFile SolidifiedFile(bool binary);
         IPlayers UpdatedPlayers(IPlayers players);
-        void ApplyPatch(string author, string patch);
+        IFile PatchedFile(bool binary, string author, string patch);
     }
 }

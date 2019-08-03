@@ -68,10 +68,8 @@ namespace DevRating.Git
                 var binary = difference.IsBinaryComparison ||
                              difference.Status == ChangeKind.TypeChanged;
 
-                var file = previous.SolidifiedFile(binary);
+                var file = previous.PatchedFile(binary, author, difference.Patch);
 
-                file.ApplyPatch(author, difference.Patch);
-                    
                 developers = file.UpdatedPlayers(developers);
 
                 if (difference.Status != ChangeKind.Added &&
