@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.1</TargetFramework>
-        <PackAsTool>true</PackAsTool>
-        <ToolCommandName>devrating</ToolCommandName>
-        <PackageOutputPath>../Package</PackageOutputPath>
-        <IsPackable>true</IsPackable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>false</IsPackable>
         <PackageVersion>0.1.1</PackageVersion>
         <Authors>Victor Semenov</Authors>
-        <Title>DevRating.Console</Title>
+        <Title>DevRating.Rating.Test</Title>
         <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DevRating.Git\DevRating.Git.csproj" />
+        <PackageReference Include="nunit" Version="3.11.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
     </ItemGroup>
 
 </Project>

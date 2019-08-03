@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace DevRating.Test
+namespace DevRating.Git.Test
 {
     public class Tests
     {

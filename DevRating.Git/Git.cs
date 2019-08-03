@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.Rating;
 using LibGit2Sharp;
 
-namespace DevRating
+namespace DevRating.Git
 {
-    public class Git : IPlayersHub
+    public class Git
     {
-        private readonly IPlayers _players;
+        private readonly IPlayers _developers;
 
-        public Git(IPlayers players)
+        public Git(IPlayers developers)
         {
-            _players = players;
+            _developers = developers;
         }
 
-        public IPlayers Players()
+        public IPlayers Developers()
         {
-            var rating = _players;
+            var developers = _developers;
 
             var files = new Dictionary<string, File>();
 
@@ -44,13 +45,13 @@ namespace DevRating
 
                     var differences = repo.Diff.Compare<Patch>(tree, current.Tree, options);
 
-                    rating = UpdateRating(files, current.Author.Email, differences, rating);
+                    developers = UpdateRating(files, current.Author.Email, differences, developers);
 
                     tree = current.Tree;
                 }
             }
 
-            return rating;
+            return developers;
         }
 
         private IPlayers UpdateRating(IDictionary<string, File> files, string author, Patch differences, IPlayers players)
@@ -68,7 +69,7 @@ namespace DevRating
 
                 var file = UpdateFile(previous, author, difference.Patch, binary);
 
-                players = file.UpdateRating(players);
+                players = file.UpdatedPlayers(players);
 
                 if (difference.Status != ChangeKind.Added &&
                     difference.Status != ChangeKind.Copied)

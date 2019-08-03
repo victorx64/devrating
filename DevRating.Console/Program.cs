@@ -1,11 +1,13 @@
-﻿namespace DevRating.Console
+﻿using DevRating.Rating;
+
+namespace DevRating.Console
 {
     internal static class Program
     {
         private static void Main()
         {
-            new Git(new Players())
-                .Players();
+            new Git.Git(new Players())
+                .Developers();
         }
     }
 }

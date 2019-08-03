@@ -1,24 +1,22 @@
-namespace DevRating
+namespace DevRating.Rating
 {
-    public class Developer : IPlayer
+    public class Player : IPlayer
     {
         private readonly IPointsFormula _formula;
         private readonly double _points;
         private readonly int _wins;
         private readonly int _defeats;
-        private readonly string _id;
 
-        public Developer(IPointsFormula formula, string id) : this(formula, id, 1200, 0, 0)
+        public Player(IPointsFormula formula) : this(formula, 1200, 0, 0)
         {
         }
 
-        public Developer(IPointsFormula formula, string id, double points, int wins, int defeats)
+        public Player(IPointsFormula formula, double points, int wins, int defeats)
         {
             _formula = formula;
             _points = points;
             _wins = wins;
             _defeats = defeats;
-            _id = id;
         }
 
         public double Points()
@@ -35,14 +33,14 @@ namespace DevRating
         {
             var points = _formula.UpdatedPoints(1d, this, opponent);
 
-            return new Developer(_formula, _id, points, _wins + 1, _defeats);
+            return new Player(_formula, points, _wins + 1, _defeats);
         }
 
         public IPlayer Loser(IPlayer opponent)
         {
             var points = _formula.UpdatedPoints(0d, this, opponent);
 
-            return new Developer(_formula, _id, points, _wins, _defeats + 1);
+            return new Player(_formula, points, _wins, _defeats + 1);
         }
     }
 }

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.Rating;
 
-namespace DevRating
+namespace DevRating.Git
 {
     public class File
     {
@@ -60,7 +61,7 @@ namespace DevRating
             return authors;
         }
 
-        public IPlayers UpdateRating(IPlayers players)
+        public IPlayers UpdatedPlayers(IPlayers players)
         {
             if (_binary)
             {
@@ -69,7 +70,7 @@ namespace DevRating
 
             foreach (var deletion in AscendingDeletions())
             {
-                players = deletion.UpdateRating(players, _authors);
+                players = deletion.UpdatedPlayers(players, _authors);
             }
 
             return players;

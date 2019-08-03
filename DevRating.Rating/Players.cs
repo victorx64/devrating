@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DevRating
+namespace DevRating.Rating
 {
     public class Players : IPlayers
     {

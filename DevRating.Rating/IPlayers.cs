@@ -1,4 +1,4 @@
-namespace DevRating
+namespace DevRating.Rating
 {
     public interface IPlayers
     {

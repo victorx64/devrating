@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.Rating;
 
-namespace DevRating
+namespace DevRating.Git
 {
     public class LinesBlock : IComparable<LinesBlock>
     {
@@ -10,8 +11,7 @@ namespace DevRating
         private readonly int _index;
         private readonly int _count;
 
-        public LinesBlock(string author, string hunk) : this(author, Index(HunkParts(hunk)[0]),
-            Convert.ToInt32(HunkParts(hunk)[1]))
+        public LinesBlock(string author, string hunk) : this(author, Index(hunk), Count(hunk))
         {
         }
 
@@ -46,7 +46,7 @@ namespace DevRating
             return output;
         }
 
-        public IPlayers UpdateRating(IPlayers players, IList<string> authors)
+        public IPlayers UpdatedPlayers(IPlayers players, IList<string> authors)
         {
             for (var i = _index; i < _index + _count; i++)
             {
@@ -71,26 +71,34 @@ namespace DevRating
             return _index.CompareTo(other._index);
         }
 
-        private static IList<string> HunkParts(string hunk)
+        private static int Index(string hunk)
         {
             var parts = hunk
                 .Substring(1)
-                .Split(',')
-                .ToList();
+                .Split(',');
 
-            if (parts.Count == 1)
+            var index = Convert.ToInt32(parts[0]) - 1;
+
+            if (index > 0)
             {
-                parts.Add("1");
+                return index;
             }
 
-            return parts;
+            return 0;
         }
 
-        private static int Index(string part)
+        private static int Count(string hunk)
         {
-            var index = Convert.ToInt32(part) - 1;
+            var parts = hunk
+                .Substring(1)
+                .Split(',');
 
-            return index > 0 ? index : 0;
+            if (parts.Length == 1)
+            {
+                return 1;
+            }
+
+            return Convert.ToInt32(parts[1]);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace DevRating
+namespace DevRating.Rating
 {
     public class Elo : IPointsFormula
     {

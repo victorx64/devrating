@@ -2,8 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
-
         <IsPackable>false</IsPackable>
+        <PackageVersion>0.1.1</PackageVersion>
+        <Authors>Victor Semenov</Authors>
+        <Title>DevRating.Git.Test</Title>
+        <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DevRating\DevRating.csproj" />
+      <ProjectReference Include="..\DevRating.Git\DevRating.Git.csproj" />
     </ItemGroup>
 
 </Project>

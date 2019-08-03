@@ -2,14 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
-        <PackAsTool>true</PackAsTool>
-        <ToolCommandName>devrating</ToolCommandName>
-        <PackageOutputPath>../Package</PackageOutputPath>
-        <IsPackable>true</IsPackable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageVersion>0.1.1</PackageVersion>
         <Authors>Victor Semenov</Authors>
-        <Title>DevRating</Title>
+        <Title>DevRating.Git</Title>
         <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -17,6 +12,10 @@
 
     <ItemGroup>
       <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
     </ItemGroup>
 
 </Project>
