@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using DevRating.Rating;
 
-namespace DevRating.VersionControlSystem.Git
+namespace DevRating
 {
     public class File
     {
@@ -10,20 +9,25 @@ namespace DevRating.VersionControlSystem.Git
         private readonly bool _binary;
         private readonly IList<LinesBlock> _deletions;
         private readonly IList<LinesBlock> _additions;
-        
-        public File(IList<string> authors, bool binary)
+
+        public File(IList<string> authors, bool binary) : this(authors, binary, new List<LinesBlock>(),
+            new List<LinesBlock>())
+        {
+        }
+
+        public File(IList<string> authors, bool binary, IList<LinesBlock> deletions, IList<LinesBlock> additions)
         {
             _authors = authors;
             _binary = binary;
-            _deletions = new List<LinesBlock>();
-            _additions = new List<LinesBlock>();
+            _deletions = deletions;
+            _additions = additions;
         }
 
         public void AddDeletion(LinesBlock deletion)
         {
             _deletions.Add(deletion);
         }
-        
+
         public void AddAddition(LinesBlock addition)
         {
             _additions.Add(addition);
@@ -40,7 +44,7 @@ namespace DevRating.VersionControlSystem.Git
             {
                 return new string[0];
             }
-            
+
             IList<string> authors = new List<string>(_authors);
 
             foreach (var deletion in DescendingDeletions())
@@ -56,19 +60,19 @@ namespace DevRating.VersionControlSystem.Git
             return authors;
         }
 
-        public IRating UpdateRating(IRating rating)
+        public IPlayers UpdateRating(IPlayers players)
         {
             if (_binary)
             {
-                return rating;
-            }
-            
-            foreach (var deletion in AscendingDeletions())
-            {
-                rating = deletion.UpdateRating(rating, _authors);
+                return players;
             }
 
-            return rating;
+            foreach (var deletion in AscendingDeletions())
+            {
+                players = deletion.UpdateRating(players, _authors);
+            }
+
+            return players;
         }
 
         private IEnumerable<LinesBlock> AscendingDeletions()

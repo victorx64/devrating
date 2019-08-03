@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DevRating.Rating;
+using System.Linq;
 
-namespace DevRating.VersionControlSystem.Git
+namespace DevRating
 {
     public class LinesBlock : IComparable<LinesBlock>
     {
@@ -10,17 +10,16 @@ namespace DevRating.VersionControlSystem.Git
         private readonly int _index;
         private readonly int _count;
 
-        public LinesBlock(string author, string hunk)
+        public LinesBlock(string author, string hunk) : this(author, Index(HunkParts(hunk)[0]),
+            Convert.ToInt32(HunkParts(hunk)[1]))
+        {
+        }
+
+        public LinesBlock(string author, int index, int count)
         {
             _author = author;
-            
-            var parts = hunk.Substring(1).Split(',');
-
-            var oneBasedIndex = Convert.ToInt32(parts[0]);
-
-            _index = oneBasedIndex == 0 ? 0 : oneBasedIndex - 1;
-
-            _count = parts.Length > 1 ? Convert.ToInt32(parts[1]) : 1;
+            _index = index;
+            _count = count;
         }
 
         public IList<string> AddTo(IEnumerable<string> authors)
@@ -34,7 +33,7 @@ namespace DevRating.VersionControlSystem.Git
 
             return output;
         }
-        
+
         public IList<string> DeleteFrom(IEnumerable<string> authors)
         {
             var output = new List<string>(authors);
@@ -47,16 +46,16 @@ namespace DevRating.VersionControlSystem.Git
             return output;
         }
 
-        public IRating UpdateRating(IRating rating, IList<string> authors)
+        public IPlayers UpdateRating(IPlayers players, IList<string> authors)
         {
             for (var i = _index; i < _index + _count; i++)
             {
-                rating = rating.UpdatedRating(authors[i], _author);
+                players = players.UpdatedPlayers(authors[i], _author);
             }
 
-            return rating;
+            return players;
         }
-        
+
         public int CompareTo(LinesBlock other)
         {
             if (ReferenceEquals(this, other))
@@ -70,6 +69,28 @@ namespace DevRating.VersionControlSystem.Git
             }
 
             return _index.CompareTo(other._index);
+        }
+
+        private static IList<string> HunkParts(string hunk)
+        {
+            var parts = hunk
+                .Substring(1)
+                .Split(',')
+                .ToList();
+
+            if (parts.Count == 1)
+            {
+                parts.Add("1");
+            }
+
+            return parts;
+        }
+
+        private static int Index(string part)
+        {
+            var index = Convert.ToInt32(part) - 1;
+
+            return index > 0 ? index : 0;
         }
     }
 }

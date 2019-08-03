@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevRating.Rating;
 using LibGit2Sharp;
 
-namespace DevRating.VersionControlSystem.Git
+namespace DevRating
 {
-    public class Git : IVersionControlSystem
+    public class Git : IPlayersHub
     {
-        private readonly IRating _rating;
+        private readonly IPlayers _players;
 
-        public Git(IRating rating)
+        public Git(IPlayers players)
         {
-            _rating = rating;
+            _players = players;
         }
 
-        public IRating UpdatedRating()
+        public IPlayers Players()
         {
-            var rating = _rating;
+            var rating = _players;
 
             var files = new Dictionary<string, File>();
 
@@ -54,7 +53,7 @@ namespace DevRating.VersionControlSystem.Git
             return rating;
         }
 
-        private IRating UpdateRating(IDictionary<string, File> files, string author, Patch differences, IRating rating)
+        private IPlayers UpdateRating(IDictionary<string, File> files, string author, Patch differences, IPlayers players)
         {
             var before = new Dictionary<string, File>(files);
 
@@ -69,7 +68,7 @@ namespace DevRating.VersionControlSystem.Git
 
                 var file = UpdateFile(previous, author, difference.Patch, binary);
 
-                rating = file.UpdateRating(rating);
+                players = file.UpdateRating(players);
 
                 if (difference.Status != ChangeKind.Added &&
                     difference.Status != ChangeKind.Copied)
@@ -83,7 +82,7 @@ namespace DevRating.VersionControlSystem.Git
                 }
             }
 
-            return rating;
+            return players;
         }
 
         private File UpdateFile(File previous, string author, string patch, bool binary)
