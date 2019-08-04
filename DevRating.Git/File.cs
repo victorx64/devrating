@@ -47,14 +47,14 @@ namespace DevRating.Git
             return new File(Authors(), deletions, additions);
         }
 
-        public IPlayers UpdatedPlayers(IPlayers players)
+        public IPlayers UpdatedDevelopers(IPlayers developers)
         {
             foreach (var deletion in AscendingDeletions())
             {
-                players = deletion.UpdatedPlayers(players, _authors);
+                developers = deletion.UpdatedPlayers(developers, _authors);
             }
 
-            return players;
+            return developers;
         }
 
         private IList<string> Authors()

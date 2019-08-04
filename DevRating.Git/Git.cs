@@ -19,7 +19,7 @@ namespace DevRating.Git
         {
             var developers = _developers;
 
-            var files = new Dictionary<string, IFile>();
+            IDictionary<string, IFile> files = new Dictionary<string, IFile>();
 
             using (var repo = new Repository("."))
             {
@@ -34,18 +34,15 @@ namespace DevRating.Git
                              CommitSortStrategies.Reverse
                 };
 
-                var index = 0;
-                var count = repo.Commits.QueryBy(filter).Count();
-
                 Tree tree = null;
 
                 foreach (var current in repo.Commits.QueryBy(filter))
                 {
-                    Console.WriteLine($"{++index} / {count}");
-
                     var differences = repo.Diff.Compare<Patch>(tree, current.Tree, options);
 
-                    developers = UpdateRating(files, current.Author.Email, differences, developers);
+                    developers = UpdatedDevelopers(files, differences, developers);
+
+                    files = UpdatedFiles(files, current.Author.Email, differences);
 
                     tree = current.Tree;
                 }
@@ -54,34 +51,41 @@ namespace DevRating.Git
             return developers;
         }
 
-        private IPlayers UpdateRating(IDictionary<string, IFile> files, string author, Patch differences,
-            IPlayers developers)
+        private IDictionary<string, IFile> UpdatedFiles(IDictionary<string, IFile> files, string author,
+            Patch differences)
         {
-            var before = new Dictionary<string, IFile>(files);
+            var after = new Dictionary<string, IFile>(files);
 
             foreach (var difference in differences)
             {
-                var previous = difference.Status == ChangeKind.Added
-                    ? new File()
-                    : before[difference.OldPath];
-
-                var binary = difference.IsBinaryComparison ||
-                             difference.Status == ChangeKind.TypeChanged;
-
-                var file = previous.PatchedFile(binary, author, difference.Patch);
-
-                developers = file.UpdatedPlayers(developers);
-
                 if (difference.Status != ChangeKind.Added &&
                     difference.Status != ChangeKind.Copied)
                 {
-                    files.Remove(difference.OldPath);
+                    after.Remove(difference.OldPath);
                 }
 
                 if (difference.Status != ChangeKind.Deleted)
                 {
-                    files.Add(difference.Path, file);
+                    var binary = difference.IsBinaryComparison ||
+                                 difference.Status == ChangeKind.TypeChanged;
+
+                    var previous = difference.Status == ChangeKind.Added ? new File() : files[difference.OldPath];
+
+                    var file = previous.PatchedFile(binary, author, difference.Patch);
+
+                    after.Add(difference.Path, file);
                 }
+            }
+
+            return after;
+        }
+
+        private IPlayers UpdatedDevelopers(IDictionary<string, IFile> files, Patch differences, IPlayers developers)
+        {
+            foreach (var difference in differences)
+            {
+                developers = files[difference.Path]
+                    .UpdatedDevelopers(developers);
             }
 
             return developers;

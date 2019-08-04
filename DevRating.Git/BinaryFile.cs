@@ -4,9 +4,9 @@ namespace DevRating.Git
 {
     public sealed class BinaryFile : IFile
     {
-        public IPlayers UpdatedPlayers(IPlayers players)
+        public IPlayers UpdatedDevelopers(IPlayers developers)
         {
-            return players;
+            return developers;
         }
 
         public IFile PatchedFile(bool binary, string author, string patch)
