@@ -1,4 +1,5 @@
-﻿using DevRating.Rating;
+﻿using System.Collections.Generic;
+using DevRating.Rating;
 
 namespace DevRating.Console
 {
@@ -6,7 +7,7 @@ namespace DevRating.Console
     {
         private static void Main()
         {
-            new Git.Git(new Players())
+            new Git.Git(new List<IPlayer>())
                 .Developers();
         }
     }

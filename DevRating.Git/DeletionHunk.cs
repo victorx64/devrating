@@ -5,13 +5,13 @@ namespace DevRating.Git
 {
     public sealed class DeletionHunk : Hunk, IDeletionHunk
     {
-        public DeletionHunk(string author, string header) : base(author, header)
+        public DeletionHunk(IPlayer author, string header) : base(author, header)
         {
         }
 
-        public IList<string> DeleteFrom(IEnumerable<string> authors)
+        public IList<IPlayer> DeleteFrom(IList<IPlayer> authors)
         {
-            var output = new List<string>(authors);
+            var output = new List<IPlayer>(authors);
 
             if (Count > 0)
             {
@@ -21,14 +21,23 @@ namespace DevRating.Git
             return output;
         }
 
-        public IPlayers UpdatedPlayers(IPlayers players, IList<string> authors)
+        public IList<IPlayer> UpdatedPlayers(IList<IPlayer> players)
         {
+            var result = new List<IPlayer>(players);
+
             for (var i = Index; i < Index + Count; i++)
             {
-                players = players.UpdatedPlayers(authors[i], Author);
+                var l = players[i];
+                var w = Author;
+
+                result.Remove(l);
+                result.Remove(w);
+
+                result.Add(l.Loser(w));
+                result.Add(w.Winner(l));
             }
 
-            return players;
+            return result;
         }
     }
 }

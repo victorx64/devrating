@@ -6,22 +6,22 @@ namespace DevRating.Git
 {
     public sealed class File : IFile
     {
-        private readonly IList<string> _authors;
+        private readonly IList<IPlayer> _authors;
         private readonly IList<IDeletionHunk> _deletions;
         private readonly IList<IAdditionHunk> _additions;
 
-        public File() : this(new List<string>(), new List<IDeletionHunk>(), new List<IAdditionHunk>())
+        public File() : this(new List<IPlayer>(), new List<IDeletionHunk>(), new List<IAdditionHunk>())
         {
         }
 
-        public File(IList<string> authors, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
+        public File(IList<IPlayer> authors, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
         {
             _authors = authors;
             _deletions = deletions;
             _additions = additions;
         }
 
-        public IFile PatchedFile(bool binary, string author, string patch)
+        public IFile PatchedFile(bool binary, IPlayer author, string patch)
         {
             if (binary)
             {
@@ -35,19 +35,21 @@ namespace DevRating.Git
 
             foreach (var line in lines)
             {
-                if (line.StartsWith("@@ "))
+                if (!line.StartsWith("@@ "))
                 {
-                    var parts = line.Split(' ');
-
-                    deletions.Add(new DeletionHunk(author, parts[1]));
-                    additions.Add(new AdditionHunk(author, parts[2]));
+                    continue;
                 }
+                
+                var parts = line.Split(' ');
+
+                deletions.Add(new DeletionHunk(author, parts[1]));
+                additions.Add(new AdditionHunk(author, parts[2]));
             }
             
             return new File(Authors(), deletions, additions);
         }
 
-        public IPlayers UpdatedDevelopers(IPlayers developers)
+        public IList<IPlayer> UpdatedDevelopers(IList<IPlayer> developers)
         {
             foreach (var deletion in AscendingDeletions())
             {
@@ -57,9 +59,9 @@ namespace DevRating.Git
             return developers;
         }
 
-        private IList<string> Authors()
+        private IList<IPlayer> Authors()
         {
-            IList<string> authors = new List<string>(_authors);
+            IList<IPlayer> authors = new List<IPlayer>(_authors);
 
             foreach (var deletion in AscendingDeletions().Reverse())
             {

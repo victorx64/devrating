@@ -1,18 +1,19 @@
 using System;
+using DevRating.Rating;
 
 namespace DevRating.Git
 {
     public abstract class Hunk : IComparable<Hunk>
     {
-        protected readonly string Author;
+        protected readonly IPlayer Author;
         protected readonly int Index;
         protected readonly int Count;
 
-        protected Hunk(string author, string header) : this(author, IndexFromHeader(header), CountFromHeader(header))
+        protected Hunk(IPlayer author, string header) : this(author, IndexFromHeader(header), CountFromHeader(header))
         {
         }
 
-        protected Hunk(string author, int index, int count)
+        protected Hunk(IPlayer author, int index, int count)
         {
             Author = author;
             Index = index;

@@ -5,7 +5,7 @@ namespace DevRating.Git
 {
     public interface IDeletionHunk
     {
-        IList<string> DeleteFrom(IEnumerable<string> authors);
-        IPlayers UpdatedPlayers(IPlayers players, IList<string> authors);
+        IList<IPlayer> DeleteFrom(IList<IPlayer> authors);
+        IList<IPlayer> UpdatedPlayers(IList<IPlayer> players);
     }
 }

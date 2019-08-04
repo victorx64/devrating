@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using DevRating.Rating;
 
 namespace DevRating.Git
 {
     public sealed class BinaryFile : IFile
     {
-        public IPlayers UpdatedDevelopers(IPlayers developers)
+        public IList<IPlayer> UpdatedDevelopers(IList<IPlayer> developers)
         {
             return developers;
         }

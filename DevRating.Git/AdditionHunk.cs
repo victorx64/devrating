@@ -1,16 +1,17 @@
 using System.Collections.Generic;
+using DevRating.Rating;
 
 namespace DevRating.Git
 {
     public sealed class AdditionHunk : Hunk, IAdditionHunk
     {
-        public AdditionHunk(string author, string header) : base(author, header)
+        public AdditionHunk(IPlayer author, string header) : base(author, header)
         {
         }
 
-        public IList<string> AddTo(IEnumerable<string> authors)
+        public IList<IPlayer> AddTo(IEnumerable<IPlayer> authors)
         {
-            var output = new List<string>(authors);
+            var output = new List<IPlayer>(authors);
 
             for (var i = 0; i < Count; i++)
             {
