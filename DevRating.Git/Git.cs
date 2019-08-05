@@ -7,12 +7,14 @@ namespace DevRating.Git
     public sealed class Git : IGit
     {
         private readonly IDictionary<string, IPlayer> _authors;
-        private readonly IPlayer _initial;
+        private readonly IPlayer _author;
+        private readonly IFile _file;
 
-        public Git(IDictionary<string, IPlayer> authors, IPlayer initial)
+        public Git(IDictionary<string, IPlayer> authors, IPlayer author, IFile file)
         {
             _authors = authors;
-            _initial = initial;
+            _author = author;
+            _file = file;
         }
 
         public IDictionary<string, IPlayer> Authors()
@@ -57,13 +59,13 @@ namespace DevRating.Git
 
         private IDictionary<string, IFile> WithAddedFiles(IDictionary<string, IFile> files, Patch differences)
         {
-            var result = new Dictionary<string, IFile>(files);
+            var result = files; // new Dictionary<string, IFile>(files);
 
             foreach (var difference in differences)
             {
                 if (difference.Status == ChangeKind.Added)
                 {
-                    result.Add(difference.Path, new File());
+                    result.Add(difference.Path, _file);
                 }
 
                 if (difference.Status == ChangeKind.Renamed ||
@@ -79,7 +81,7 @@ namespace DevRating.Git
         private IDictionary<string, IFile> PatchedFiles(IDictionary<string, IFile> files, string author,
             Patch differences)
         {
-            var result = new Dictionary<string, IFile>(files);
+            var result = files; // new Dictionary<string, IFile>(files);
 
             foreach (var difference in differences)
             {
@@ -101,7 +103,7 @@ namespace DevRating.Git
 
                 foreach (var change in changes)
                 {
-                    authors = change.UpdatedAuthors(authors, _initial);
+                    authors = change.UpdatedAuthors(authors, _author);
                 }
             }
 
@@ -110,7 +112,7 @@ namespace DevRating.Git
 
         private IDictionary<string, IFile> WithoutRemovedFiles(IDictionary<string, IFile> files, Patch differences)
         {
-            var result = new Dictionary<string, IFile>(files);
+            var result = files; // new Dictionary<string, IFile>(files);
 
             foreach (var difference in differences)
             {

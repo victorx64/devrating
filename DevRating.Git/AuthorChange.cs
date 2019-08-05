@@ -16,7 +16,7 @@ namespace DevRating.Git
 
         public IDictionary<string, IPlayer> UpdatedAuthors(IDictionary<string, IPlayer> authors, IPlayer initial)
         {
-            var result = new Dictionary<string, IPlayer>(authors);
+            var result = authors; // new Dictionary<string, IPlayer>(authors);
             
             IPlayer previous, next;
 

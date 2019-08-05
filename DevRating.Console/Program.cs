@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DevRating.Git;
 using DevRating.Rating;
 
 namespace DevRating.Console
@@ -11,7 +12,8 @@ namespace DevRating.Console
                     new Git.Git(
                         new Dictionary<string, IPlayer>(),
                         new Player(
-                            new Elo())),
+                            new Elo()),
+                        new File()),
                     new OutputChannels(
                         arguments,
                         new QuiteConsoleOutput(),
