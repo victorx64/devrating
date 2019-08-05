@@ -1,27 +1,26 @@
 using System.Collections.Generic;
 using System.Linq;
-using DevRating.Rating;
 
 namespace DevRating.Git
 {
     public sealed class File : IFile
     {
-        private readonly IList<IPlayer> _authors;
+        private readonly IList<string> _authors;
         private readonly IList<IDeletionHunk> _deletions;
         private readonly IList<IAdditionHunk> _additions;
 
-        public File() : this(new List<IPlayer>(), new List<IDeletionHunk>(), new List<IAdditionHunk>())
+        public File() : this(new List<string>(), new List<IDeletionHunk>(), new List<IAdditionHunk>())
         {
         }
 
-        public File(IList<IPlayer> authors, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
+        public File(IList<string> authors, IList<IDeletionHunk> deletions, IList<IAdditionHunk> additions)
         {
             _authors = authors;
             _deletions = deletions;
             _additions = additions;
         }
 
-        public IFile PatchedFile(bool binary, IPlayer author, string patch)
+        public IFile PatchedFile(bool binary, string author, string patch)
         {
             if (binary)
             {
@@ -30,7 +29,7 @@ namespace DevRating.Git
 
             var deletions = new List<IDeletionHunk>();
             var additions = new List<IAdditionHunk>();
-            
+
             var lines = patch.Split('\n');
 
             foreach (var line in lines)
@@ -39,29 +38,31 @@ namespace DevRating.Git
                 {
                     continue;
                 }
-                
+
                 var parts = line.Split(' ');
 
                 deletions.Add(new DeletionHunk(author, parts[1]));
                 additions.Add(new AdditionHunk(author, parts[2]));
             }
-            
+
             return new File(Authors(), deletions, additions);
         }
 
-        public IList<IPlayer> UpdatedDevelopers(IList<IPlayer> developers)
+        public IEnumerable<AuthorChange> ChangedAuthors()
         {
+            var changes = new List<AuthorChange>();
+
             foreach (var deletion in AscendingDeletions())
             {
-                developers = deletion.UpdatedPlayers(developers, _authors);
+                changes.AddRange(deletion.ChangedAuthors(_authors));
             }
 
-            return developers;
+            return changes;
         }
 
-        private IList<IPlayer> Authors()
+        private IList<string> Authors()
         {
-            IList<IPlayer> authors = new List<IPlayer>(_authors);
+            IList<string> authors = new List<string>(_authors);
 
             foreach (var deletion in AscendingDeletions().Reverse())
             {

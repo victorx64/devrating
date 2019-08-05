@@ -1,11 +1,11 @@
+using System;
 using System.Collections.Generic;
-using DevRating.Rating;
 
 namespace DevRating.Git
 {
-    public interface IDeletionHunk
+    public interface IDeletionHunk : IComparable<IDeletionHunk>
     {
-        IList<IPlayer> DeleteFrom(IList<IPlayer> authors);
-        IList<IPlayer> UpdatedPlayers(IList<IPlayer> players);
+        IList<string> DeleteFrom(IEnumerable<string> authors);
+        IEnumerable<AuthorChange> ChangedAuthors(IList<string> authors);
     }
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace DevRating.Rating
 {
     public sealed class Player : IPlayer
@@ -41,6 +43,18 @@ namespace DevRating.Rating
             var points = _formula.UpdatedPoints(0d, this, opponent);
 
             return new Player(_formula, points, _wins, _defeats + 1);
+        }
+
+        public void Print(IOutput output)
+        {
+            output.WriteLine(FormattableString.Invariant($"{_wins}, {_defeats}, {_points:F2}"));
+        }
+
+        public int CompareTo(IPlayer other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return other.Points().CompareTo(_points);
         }
     }
 }

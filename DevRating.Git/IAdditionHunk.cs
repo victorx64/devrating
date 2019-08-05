@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
-using DevRating.Rating;
 
 namespace DevRating.Git
 {
-    public interface IAdditionHunk
+    public interface IAdditionHunk : IComparable<IAdditionHunk>
     {
-        IList<IPlayer> AddTo(IEnumerable<IPlayer> authors);
+        IList<string> AddTo(IEnumerable<string> authors);
     }
 }

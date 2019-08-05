@@ -1,38 +1,22 @@
 using System;
-using DevRating.Rating;
 
 namespace DevRating.Git
 {
     public abstract class Hunk : IComparable<Hunk>
     {
-        protected readonly IPlayer Author;
+        protected readonly string Author;
         protected readonly int Index;
         protected readonly int Count;
 
-        protected Hunk(IPlayer author, string header) : this(author, IndexFromHeader(header), CountFromHeader(header))
+        protected Hunk(string author, string header) : this(author, IndexFromHeader(header), CountFromHeader(header))
         {
         }
 
-        protected Hunk(IPlayer author, int index, int count)
+        protected Hunk(string author, int index, int count)
         {
             Author = author;
             Index = index;
             Count = count;
-        }
-
-        public int CompareTo(Hunk other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return 0;
-            }
-
-            if (ReferenceEquals(null, other))
-            {
-                return 1;
-            }
-
-            return Index.CompareTo(other.Index);
         }
 
         private static int IndexFromHeader(string header)
@@ -63,6 +47,13 @@ namespace DevRating.Git
             }
 
             return Convert.ToInt32(parts[1]);
+        }
+
+        public int CompareTo(Hunk other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return Index.CompareTo(other.Index);
         }
     }
 }

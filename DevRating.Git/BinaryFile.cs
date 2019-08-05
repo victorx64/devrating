@@ -1,13 +1,12 @@
 using System.Collections.Generic;
-using DevRating.Rating;
 
 namespace DevRating.Git
 {
     public sealed class BinaryFile : IFile
     {
-        public IList<IPlayer> UpdatedDevelopers(IList<IPlayer> developers)
+        public IEnumerable<AuthorChange> ChangedAuthors()
         {
-            return developers;
+            return new List<AuthorChange>();
         }
 
         public IFile PatchedFile(bool binary, string author, string patch)
