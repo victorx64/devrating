@@ -1,20 +1,19 @@
 using System;
-using DevRating.Rating;
 
-namespace DevRating.Git
+namespace DevRating.Rating
 {
-    public sealed class Author : Player
+    public sealed class DefaultPlayer : Player
     {
         private readonly PointsFormula _formula;
         private readonly double _points;
         private readonly int _wins;
         private readonly int _defeats;
 
-        public Author(PointsFormula formula) : this(formula, 1200, 0, 0)
+        public DefaultPlayer(PointsFormula formula) : this(formula, 1200, 0, 0)
         {
         }
 
-        public Author(PointsFormula formula, double points, int wins, int defeats)
+        public DefaultPlayer(PointsFormula formula, double points, int wins, int defeats)
         {
             _formula = formula;
             _points = points;
@@ -36,14 +35,14 @@ namespace DevRating.Git
         {
             var points = _formula.UpdatedPoints(1d, this, opponent);
 
-            return new Author(_formula, points, _wins + 1, _defeats);
+            return new DefaultPlayer(_formula, points, _wins + 1, _defeats);
         }
 
         public Player Loser(Player opponent)
         {
             var points = _formula.UpdatedPoints(0d, this, opponent);
 
-            return new Author(_formula, points, _wins, _defeats + 1);
+            return new DefaultPlayer(_formula, points, _wins, _defeats + 1);
         }
 
         public void Print(Output output)

@@ -6,14 +6,14 @@ namespace DevRating.Git
     public sealed class TextFile : File
     {
         private readonly IList<string> _authors;
-        private readonly IList<Deletion> _deletions;
-        private readonly IList<Addition> _additions;
+        private readonly IList<DefaultHunk> _deletions;
+        private readonly IList<DefaultHunk> _additions;
 
-        public TextFile() : this(new List<string>(), new List<Deletion>(), new List<Addition>())
+        public TextFile() : this(new List<string>(), new List<DefaultHunk>(), new List<DefaultHunk>())
         {
         }
 
-        public TextFile(IList<string> authors, IList<Deletion> deletions, IList<Addition> additions)
+        public TextFile(IList<string> authors, IList<DefaultHunk> deletions, IList<DefaultHunk> additions)
         {
             _authors = authors;
             _deletions = deletions;
@@ -27,8 +27,8 @@ namespace DevRating.Git
                 return new BinaryFile();
             }
 
-            var deletions = new List<Deletion>();
-            var additions = new List<Addition>();
+            var deletions = new List<DefaultHunk>();
+            var additions = new List<DefaultHunk>();
 
             var lines = patch.Split('\n');
 
@@ -41,16 +41,16 @@ namespace DevRating.Git
 
                 var parts = line.Split(' ');
 
-                deletions.Add(new DeletionHunk(author, parts[1]));
-                additions.Add(new AdditionHunk(author, parts[2]));
+                deletions.Add(new DefaultHunk(author, parts[1]));
+                additions.Add(new DefaultHunk(author, parts[2]));
             }
 
             return new TextFile(Authors(), deletions, additions);
         }
 
-        public IEnumerable<AuthorChange> ChangedAuthors()
+        public IEnumerable<DefaultAuthorChange> ChangedAuthors()
         {
-            var changes = new List<AuthorChange>();
+            var changes = new List<DefaultAuthorChange>();
 
             foreach (var deletion in AscendingDeletions())
             {
@@ -77,7 +77,7 @@ namespace DevRating.Git
             return authors;
         }
 
-        private IEnumerable<Deletion> AscendingDeletions()
+        private IEnumerable<DefaultHunk> AscendingDeletions()
         {
             var deletions = _deletions.ToList();
 
@@ -86,7 +86,7 @@ namespace DevRating.Git
             return deletions;
         }
 
-        private IEnumerable<Addition> AscendingAdditions()
+        private IEnumerable<DefaultHunk> AscendingAdditions()
         {
             var additions = _additions.ToList();
 

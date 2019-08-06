@@ -11,7 +11,7 @@ namespace DevRating.Console
             new Report(
                     new Git.Git(
                         new Dictionary<string, Player>(),
-                        new Author(
+                        new DefaultPlayer(
                             new Elo()),
                         new TextFile()),
                     new OutputChannels(
