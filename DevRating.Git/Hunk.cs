@@ -19,6 +19,21 @@ namespace DevRating.Git
             Count = count;
         }
 
+        public int CompareTo(Hunk other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+            
+            return Index.CompareTo(other.Index);
+        }
+
         private static int IndexFromHeader(string header)
         {
             var parts = header
@@ -47,13 +62,6 @@ namespace DevRating.Git
             }
 
             return Convert.ToInt32(parts[1]);
-        }
-
-        public int CompareTo(Hunk other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
-            return Index.CompareTo(other.Index);
         }
     }
 }

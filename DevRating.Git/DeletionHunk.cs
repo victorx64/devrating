@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DevRating.Git
 {
-    public sealed class DeletionHunk : Hunk, IDeletionHunk
+    public sealed class DeletionHunk : Hunk, Deletion
     {
         public DeletionHunk(string author, string header) : base(author, header)
         {
@@ -28,16 +28,16 @@ namespace DevRating.Git
             {
                 if (!authors[i].Equals(Author))
                 {
-                    result.Add(new AuthorChange(authors[i], Author));
+                    result.Add(new AuthorChange(authors[i], Author)); // TODO remove 'new'
                 }
             }
 
             return result;
         }
 
-        public int CompareTo(IDeletionHunk other)
+        public int CompareTo(Deletion other)
         {
-            return base.CompareTo((Hunk)other);
+            return base.CompareTo((Hunk) other);
         }
     }
 }

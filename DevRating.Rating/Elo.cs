@@ -2,7 +2,7 @@ using System;
 
 namespace DevRating.Rating
 {
-    public sealed class Elo : IPointsFormula
+    public sealed class Elo : PointsFormula
     {
         private readonly int _replacements;
         private readonly double _k;
@@ -19,11 +19,11 @@ namespace DevRating.Rating
             _n = n;
         }
 
-        public double UpdatedPoints(double outcome, IPlayer player, IPlayer opponent)
+        public double UpdatedPoints(double outcome, Player player, Player contender)
         {
-            var expectedOutcome = ExpectedOutcome(player.Points(), opponent.Points());
+            var expectedOutcome = ExpectedOutcome(player.Points(), contender.Points());
 
-            return opponent.Games() < _replacements
+            return contender.Games() < _replacements
                 ? player.Points()
                 : player.Points() + _k * (outcome - expectedOutcome);
         }

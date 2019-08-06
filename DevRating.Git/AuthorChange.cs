@@ -14,11 +14,11 @@ namespace DevRating.Git
             _next = next;
         }
 
-        public IDictionary<string, IPlayer> UpdatedAuthors(IDictionary<string, IPlayer> authors, IPlayer initial)
+        public IDictionary<string, Player> UpdatedAuthors(IDictionary<string, Player> authors, Player initial)
         {
             var result = authors; // new Dictionary<string, IPlayer>(authors);
             
-            IPlayer previous, next;
+            Player previous, next;
 
             if (result.ContainsKey(_previous))
             {

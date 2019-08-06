@@ -2,16 +2,13 @@ using NUnit.Framework;
 
 namespace DevRating.Rating.Test
 {
-    public sealed class Tests
+    public sealed class EloTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void Test1()
         {
+            var elo = new Elo();
+            
             Assert.Pass();
         }
     }

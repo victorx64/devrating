@@ -2,7 +2,7 @@ using DevRating.Rating;
 
 namespace DevRating.Console
 {
-    public sealed class QuiteConsoleOutput : IOutput
+    public sealed class QuiteConsoleOutput : Output
     {
         public void Write(string line)
         {

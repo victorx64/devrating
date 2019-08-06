@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DevRating.Git
 {
-    public sealed class AdditionHunk : Hunk, IAdditionHunk
+    public sealed class AdditionHunk : Hunk, Addition
     {
         public AdditionHunk(string author, string header) : base(author, header)
         {
@@ -20,7 +20,7 @@ namespace DevRating.Git
             return output;
         }
 
-        public int CompareTo(IAdditionHunk other)
+        public int CompareTo(Addition other)
         {
             return base.CompareTo((Hunk)other);
         }

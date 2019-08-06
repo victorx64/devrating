@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DevRating.Git
 {
-    public interface IAdditionHunk : IComparable<IAdditionHunk>
+    public interface Addition : IComparable<Addition>
     {
         IList<string> AddTo(IEnumerable<string> authors);
     }

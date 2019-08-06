@@ -4,24 +4,24 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public sealed class Git : IGit
+    public sealed class Git : AuthorsCollection
     {
-        private readonly IDictionary<string, IPlayer> _authors;
-        private readonly IPlayer _author;
-        private readonly IFile _file;
+        private readonly IDictionary<string, Player> _authors;
+        private readonly Player _author;
+        private readonly File _file;
 
-        public Git(IDictionary<string, IPlayer> authors, IPlayer author, IFile file)
+        public Git(IDictionary<string, Player> authors, Player author, File file)
         {
             _authors = authors;
             _author = author;
             _file = file;
         }
 
-        public IDictionary<string, IPlayer> Authors()
+        public IDictionary<string, Player> Authors()
         {
             var authors = _authors;
 
-            IDictionary<string, IFile> files = new Dictionary<string, IFile>();
+            IDictionary<string, File> files = new Dictionary<string, File>();
 
             using (var repo = new Repository("."))
             {
@@ -57,7 +57,7 @@ namespace DevRating.Git
             return authors;
         }
 
-        private IDictionary<string, IFile> WithAddedFiles(IDictionary<string, IFile> files, Patch differences)
+        private IDictionary<string, File> WithAddedFiles(IDictionary<string, File> files, Patch differences)
         {
             var result = files; // new Dictionary<string, IFile>(files);
 
@@ -78,7 +78,7 @@ namespace DevRating.Git
             return result;
         }
 
-        private IDictionary<string, IFile> PatchedFiles(IDictionary<string, IFile> files, string author,
+        private IDictionary<string, File> PatchedFiles(IDictionary<string, File> files, string author,
             Patch differences)
         {
             var result = files; // new Dictionary<string, IFile>(files);
@@ -94,8 +94,8 @@ namespace DevRating.Git
             return result;
         }
 
-        private IDictionary<string, IPlayer> UpdatedAuthors(IDictionary<string, IFile> files,
-            IDictionary<string, IPlayer> authors, Patch differences)
+        private IDictionary<string, Player> UpdatedAuthors(IDictionary<string, File> files,
+            IDictionary<string, Player> authors, Patch differences)
         {
             foreach (var difference in differences)
             {
@@ -110,7 +110,7 @@ namespace DevRating.Git
             return authors;
         }
 
-        private IDictionary<string, IFile> WithoutRemovedFiles(IDictionary<string, IFile> files, Patch differences)
+        private IDictionary<string, File> WithoutRemovedFiles(IDictionary<string, File> files, Patch differences)
         {
             var result = files; // new Dictionary<string, IFile>(files);
 

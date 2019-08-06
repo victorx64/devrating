@@ -1,6 +1,6 @@
 namespace DevRating.Rating
 {
-    public interface IOutput
+    public interface Output
     {
         void Write(string line);
         void WriteLine(string line);

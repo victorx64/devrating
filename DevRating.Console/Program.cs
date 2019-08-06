@@ -10,10 +10,10 @@ namespace DevRating.Console
         {
             new Report(
                     new Git.Git(
-                        new Dictionary<string, IPlayer>(),
-                        new Player(
+                        new Dictionary<string, Player>(),
+                        new Author(
                             new Elo()),
-                        new File()),
+                        new TextFile()),
                     new OutputChannels(
                         arguments,
                         new QuiteConsoleOutput(),

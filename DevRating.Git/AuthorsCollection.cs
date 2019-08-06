@@ -3,8 +3,8 @@ using DevRating.Rating;
 
 namespace DevRating.Git
 {
-    public interface IGit
+    public interface AuthorsCollection
     {
-        IDictionary<string, IPlayer> Authors();
+        IDictionary<string, Player> Authors();
     }
 }
