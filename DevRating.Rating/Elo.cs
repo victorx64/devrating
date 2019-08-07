@@ -4,28 +4,24 @@ namespace DevRating.Rating
 {
     public sealed class Elo : PointsFormula
     {
-        private readonly int _replacements;
         private readonly double _k;
         private readonly double _n;
 
-        public Elo() : this(400, 1d, 400d)
+        public Elo() : this(1d, 400d)
         {
         }
 
-        public Elo(int replacements, double k, double n)
+        public Elo(double k, double n)
         {
-            _replacements = replacements;
             _k = k;
             _n = n;
         }
 
-        public double UpdatedPoints(double outcome, Player player, Player contender)
+        public double UpdatedPoints(double outcome, double points, double contender)
         {
-            var expectedOutcome = ExpectedOutcome(player.Points(), contender.Points());
+            var expectedOutcome = ExpectedOutcome(points, contender);
 
-            return contender.Games() < _replacements
-                ? player.Points()
-                : player.Points() + _k * (outcome - expectedOutcome);
+            return points + _k * (outcome - expectedOutcome);
         }
 
         private double ExpectedOutcome(double points, double opponentPoints)

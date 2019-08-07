@@ -33,14 +33,14 @@ namespace DevRating.Rating
 
         public Player Winner(Player opponent)
         {
-            var points = _formula.UpdatedPoints(1d, this, opponent);
+            var points = _formula.UpdatedPoints(1d, _points, opponent.Points());
 
             return new DefaultPlayer(_formula, points, _wins + 1, _defeats);
         }
 
         public Player Loser(Player opponent)
         {
-            var points = _formula.UpdatedPoints(0d, this, opponent);
+            var points = _formula.UpdatedPoints(0d, _points, opponent.Points());
 
             return new DefaultPlayer(_formula, points, _wins, _defeats + 1);
         }
