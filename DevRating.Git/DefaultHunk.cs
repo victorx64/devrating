@@ -32,7 +32,7 @@ namespace DevRating.Git
             return result;
         }
 
-        public IEnumerable<DefaultAuthorChange> ChangedAuthors(IList<string> authors)
+        public IEnumerable<AuthorChange> ChangedAuthors(IList<string> authors)
         {
             var result = new List<DefaultAuthorChange>();
 

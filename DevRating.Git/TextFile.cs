@@ -48,9 +48,9 @@ namespace DevRating.Git
             return new TextFile(Authors(), deletions, additions);
         }
 
-        public IEnumerable<DefaultAuthorChange> ChangedAuthors()
+        public IEnumerable<AuthorChange> ChangedAuthors()
         {
-            var changes = new List<DefaultAuthorChange>();
+            var changes = new List<AuthorChange>();
 
             foreach (var deletion in AscendingDeletions())
             {

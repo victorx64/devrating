@@ -4,9 +4,9 @@ namespace DevRating.Git
 {
     public sealed class BinaryFile : File
     {
-        public IEnumerable<DefaultAuthorChange> ChangedAuthors()
+        public IEnumerable<AuthorChange> ChangedAuthors()
         {
-            return new List<DefaultAuthorChange>();
+            return new List<AuthorChange>();
         }
 
         public File PatchedFile(bool binary, string author, string patch)
