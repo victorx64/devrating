@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <PackageVersion>0.1.1</PackageVersion>
+        <Authors>Victor Semenov</Authors>
+        <Title>DevRating.Git</Title>
+        <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
+    </ItemGroup>
+
+</Project>
