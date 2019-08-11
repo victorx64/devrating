@@ -1,4 +1,4 @@
-[![NuGet](https://img.shields.io/nuget/v/DevRating.svg)](https://www.nuget.org/packages/DevRating/)
+[![NuGet](https://img.shields.io/nuget/v/DevRating.svg)](https://www.nuget.org/packages/DevRating.Console/)
 
 # DevRating
 
