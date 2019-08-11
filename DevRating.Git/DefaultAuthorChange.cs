@@ -7,14 +7,16 @@ namespace DevRating.Git
     {
         private readonly string _previous;
         private readonly string _next;
+        private readonly Player _initial;
 
-        public DefaultAuthorChange(string previous, string next)
+        public DefaultAuthorChange(string previous, string next, Player initial)
         {
             _previous = previous;
             _next = next;
+            _initial = initial;
         }
 
-        public IDictionary<string, Player> UpdatedAuthors(IDictionary<string, Player> authors, Player initial)
+        public IDictionary<string, Player> UpdatedAuthors(IDictionary<string, Player> authors)
         {
             var result = authors; // new Dictionary<string, IPlayer>(authors);
             
@@ -26,7 +28,7 @@ namespace DevRating.Git
             }
             else
             {
-                previous = initial;
+                previous = _initial;
             }
             
             if (result.ContainsKey(_next))
@@ -35,7 +37,7 @@ namespace DevRating.Git
             }
             else
             {
-                next = initial;
+                next = _initial;
             }
 
             var loser = previous.Loser(next);

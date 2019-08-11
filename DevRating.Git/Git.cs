@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DevRating.Rating;
 using LibGit2Sharp;
 
@@ -6,124 +9,141 @@ namespace DevRating.Git
 {
     public sealed class Git : AuthorsCollection
     {
-        private readonly IDictionary<string, Player> _authors;
-        private readonly Player _author;
-        private readonly File _file;
+        private readonly Player _initial;
+        private readonly string _oldest;
+        private readonly string _newest;
+        private readonly Process _process;
 
-        public Git(IDictionary<string, Player> authors, Player author, File file)
+        public Git(Player initial, string oldest, string newest) : this(initial, oldest, newest, new DefaultProcess())
         {
-            _authors = authors;
-            _author = author;
-            _file = file;
         }
 
-        public IDictionary<string, Player> Authors()
+        public Git(Player initial, string oldest, string newest, Process process)
         {
-            var authors = _authors;
+            _initial = initial;
+            _oldest = oldest;
+            _newest = newest;
+            _process = process;
+        }
 
-            IDictionary<string, File> files = new Dictionary<string, File>();
+        public async Task<IDictionary<string, Player>> Authors()
+        {
+            var filter = new CommitFilter
+            {
+                SortBy = CommitSortStrategies.Topological |
+                         CommitSortStrategies.Reverse
+            };
+
+            if (!string.IsNullOrEmpty(_oldest))
+            {
+                filter.ExcludeReachableFrom = new ObjectId(_oldest);
+            }
+
+            if (!string.IsNullOrEmpty(_newest))
+            {
+                filter.IncludeReachableFrom = new ObjectId(_newest);
+            }
+
+            return Authors(await Task.WhenAll(BlameTasks(filter, new CompareOptions {ContextLines = 0})));
+        }
+
+        private IDictionary<string, Player> Authors(IEnumerable<IEnumerable<AuthorChange>> collections)
+        {
+            IDictionary<string, Player> authors = new Dictionary<string, Player>();
+
+            foreach (var changes in collections)
+            {
+                foreach (var change in changes)
+                {
+                    authors = change.UpdatedAuthors(authors);
+                }
+            }
+
+            return authors;
+        }
+
+        private IEnumerable<Task<IEnumerable<AuthorChange>>> BlameTasks(CommitFilter filter, CompareOptions options)
+        {
+            var tasks = new List<Task<IEnumerable<AuthorChange>>>();
 
             using (var repo = new Repository("."))
             {
-                var options = new CompareOptions()
-                {
-                    ContextLines = 0
-                };
-
-                var filter = new CommitFilter
-                {
-                    SortBy = CommitSortStrategies.Topological |
-                             CommitSortStrategies.Reverse
-                };
-
-                Tree tree = null;
-
                 foreach (var current in repo.Commits.QueryBy(filter))
                 {
-                    var differences = repo.Diff.Compare<Patch>(tree, current.Tree, options);
+                    if (current.Parents.Count() == 1)
+                    {
+                        var author = repo.Mailmap.ResolveSignature(current.Author).Email;
 
-                    files = WithAddedFiles(files, differences);
+                        var parent = current.Parents.First();
 
-                    files = PatchedFiles(files, current.Author.Email, differences);
+                        var differences = repo.Diff.Compare<Patch>(parent.Tree, current.Tree, options);
 
-                    authors = UpdatedAuthors(files, authors, differences);
-
-                    files = WithoutRemovedFiles(files, differences);
-
-                    tree = current.Tree;
+                        foreach (var difference in differences)
+                        {
+                            if (!difference.IsBinaryComparison &&
+                                difference.OldMode == Mode.NonExecutableFile &&
+                                difference.Mode == Mode.NonExecutableFile &&
+                                (difference.Status == ChangeKind.Deleted ||
+                                 difference.Status == ChangeKind.Modified))
+                            {
+                                tasks.Add(Task.Run(() =>
+                                    AuthorChanges(difference.OldPath, difference.Patch, parent.Sha, author)));
+                            }
+                        }
+                    }
                 }
             }
 
-            return authors;
+            return tasks;
         }
 
-        private IDictionary<string, File> WithAddedFiles(IDictionary<string, File> files, Patch differences)
+        private IEnumerable<AuthorChange> AuthorChanges(string path, string patch, string commit, string author)
         {
-            var result = files; // new Dictionary<string, IFile>(files);
+            var changes = new List<AuthorChange>();
 
-            foreach (var difference in differences)
+            var blames = _process
+                .Output("git", $"blame -t -e {commit} -- \"{path}\"")
+                .Split('\n');
+
+            foreach (var line in patch.Split('\n'))
             {
-                if (difference.Status == ChangeKind.Added)
+                if (line.StartsWith("@@ "))
                 {
-                    result.Add(difference.Path, _file);
-                }
+                    var parts = line.Split(' ')[1]
+                        .Substring(1)
+                        .Split(',');
 
-                if (difference.Status == ChangeKind.Renamed ||
-                    difference.Status == ChangeKind.Copied)
-                {
-                    result.Add(difference.Path, result[difference.OldPath]);
+                    var index = Convert.ToInt32(parts[0]) - 1;
+
+                    var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+
+                    for (var i = index; i < index + count; i++)
+                    {
+                        var loser = LineAuthor(blames[i]);
+
+                        if (loser.Equals(author))
+                        {
+                            continue;
+                        }
+
+                        changes.Add(new DefaultAuthorChange(loser, author, _initial));
+                    }
                 }
             }
 
-            return result;
+            return changes;
         }
 
-        private IDictionary<string, File> PatchedFiles(IDictionary<string, File> files, string author,
-            Patch differences)
+        private string LineAuthor(string line)
         {
-            var result = files; // new Dictionary<string, IFile>(files);
+            var start = line.IndexOf('(');
+            var end = line.IndexOf(')');
 
-            foreach (var difference in differences)
-            {
-                var binary = difference.IsBinaryComparison ||
-                             difference.Status == ChangeKind.TypeChanged;
-
-                result[difference.Path] = result[difference.Path].PatchedFile(binary, author, difference.Patch);
-            }
-
-            return result;
-        }
-
-        private IDictionary<string, Player> UpdatedAuthors(IDictionary<string, File> files,
-            IDictionary<string, Player> authors, Patch differences)
-        {
-            foreach (var difference in differences)
-            {
-                var changes = files[difference.Path].ChangedAuthors();
-
-                foreach (var change in changes)
-                {
-                    authors = change.UpdatedAuthors(authors, _author);
-                }
-            }
-
-            return authors;
-        }
-
-        private IDictionary<string, File> WithoutRemovedFiles(IDictionary<string, File> files, Patch differences)
-        {
-            var result = files; // new Dictionary<string, IFile>(files);
-
-            foreach (var difference in differences)
-            {
-                if (difference.Status == ChangeKind.Deleted ||
-                    difference.Status == ChangeKind.Renamed)
-                {
-                    result.Remove(difference.OldPath);
-                }
-            }
-
-            return result;
+            return line
+                .Substring(start + 1, end - start - 1)
+                .Split(' ')[0]
+                .TrimStart('<')
+                .TrimEnd('>');
         }
     }
 }

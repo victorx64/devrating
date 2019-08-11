@@ -8,33 +8,32 @@ namespace DevRating.Console
     public sealed class Report
     {
         private readonly AuthorsCollection _authors;
-        private readonly OutputChannels _channels;
+        private readonly Output _channel;
 
-        public Report(AuthorsCollection authors, OutputChannels channels)
+        public Report(AuthorsCollection authors, Output channel)
         {
             _authors = authors;
-            _channels = channels;
+            _channel = channel;
         }
 
         public void Print()
         {
             var authors = _authors
                 .Authors()
+                .Result
                 .ToList();
 
             authors.Sort(Comparison);
 
             authors.Reverse();
 
-            var channel = _channels.Channel();
-
-            channel.WriteLine("Author, Wins, Defeats, Points");
+            _channel.WriteLine("Author, Wins, Defeats, Points");
             
             foreach (var author in authors)
             {
-                channel.Write($"{author.Key}, ");
+                _channel.Write($"{author.Key}, ");
 
-                author.Value.Print(channel);
+                author.Value.Print(_channel);
             }
         }
 

@@ -8,7 +8,7 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.1.1</PackageVersion>
+        <PackageVersion>0.1.2</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.Console</Title>
         <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
