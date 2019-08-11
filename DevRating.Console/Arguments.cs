@@ -2,7 +2,8 @@ namespace DevRating.Console
 {
     public interface Arguments
     {
-        string CommitFrom();
+        string OldestCommit();
+        string NewestCommit();
         bool Verbose();
     }
 }

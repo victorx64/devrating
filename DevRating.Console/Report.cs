@@ -8,12 +8,12 @@ namespace DevRating.Console
     public sealed class Report
     {
         private readonly AuthorsCollection _authors;
-        private readonly Output _channels;
+        private readonly Output _channel;
 
-        public Report(AuthorsCollection authors, Output channels)
+        public Report(AuthorsCollection authors, Output channel)
         {
             _authors = authors;
-            _channels = channels;
+            _channel = channel;
         }
 
         public void Print()
@@ -27,13 +27,13 @@ namespace DevRating.Console
 
             authors.Reverse();
 
-            _channels.WriteLine("Author, Wins, Defeats, Points");
+            _channel.WriteLine("Author, Wins, Defeats, Points");
             
             foreach (var author in authors)
             {
-                _channels.Write($"{author.Key}, ");
+                _channel.Write($"{author.Key}, ");
 
-                author.Value.Print(_channels);
+                author.Value.Print(_channel);
             }
         }
 

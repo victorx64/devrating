@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace DevRating.Git
 {
     public interface Process

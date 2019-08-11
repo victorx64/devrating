@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DevRating.Rating;
+﻿using DevRating.Rating;
 
 namespace DevRating.Console
 {
@@ -11,11 +10,10 @@ namespace DevRating.Console
 
             new Report(
                     new Git.Git(
-                        new Dictionary<string, Player>(),
                         new DefaultPlayer(
                             new Elo()),
-                        arguments.CommitFrom(),
-                        arguments.CommitTo()),
+                        arguments.OldestCommit(),
+                        arguments.NewestCommit()),
                     arguments.Verbose()
                         ? (Output) new VerboseConsoleOutput()
                         : (Output) new QuiteConsoleOutput())

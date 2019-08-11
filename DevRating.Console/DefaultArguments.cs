@@ -9,7 +9,7 @@ namespace DevRating.Console
             _arguments = arguments;
         }
         
-        public string CommitFrom()
+        public string OldestCommit()
         {
             if (_arguments.Length > 0)
             {
@@ -19,7 +19,7 @@ namespace DevRating.Console
             return string.Empty;
         }
         
-        public string CommitTo()
+        public string NewestCommit()
         {
             if (_arguments.Length > 1)
             {

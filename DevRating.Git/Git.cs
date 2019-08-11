@@ -9,29 +9,25 @@ namespace DevRating.Git
 {
     public sealed class Git : AuthorsCollection
     {
-        private readonly IDictionary<string, Player> _authors;
         private readonly Player _initial;
         private readonly string _oldest;
-        private readonly string _latest;
-        private readonly Process _process = new DefaultProcess();
+        private readonly string _newest;
+        private readonly Process _process;
 
-        public Git(IDictionary<string, Player> authors, Player initial, string oldest, string latest)
+        public Git(Player initial, string oldest, string newest) : this(initial, oldest, newest, new DefaultProcess())
         {
-            _authors = authors;
+        }
+
+        public Git(Player initial, string oldest, string newest, Process process)
+        {
             _initial = initial;
             _oldest = oldest;
-            _latest = latest;
+            _newest = newest;
+            _process = process;
         }
 
         public async Task<IDictionary<string, Player>> Authors()
         {
-            var authors = _authors;
-
-            var compareOptions = new CompareOptions
-            {
-                ContextLines = 0
-            };
-
             var filter = new CommitFilter
             {
                 SortBy = CommitSortStrategies.Topological |
@@ -43,11 +39,31 @@ namespace DevRating.Git
                 filter.ExcludeReachableFrom = new ObjectId(_oldest);
             }
 
-            if (!string.IsNullOrEmpty(_latest))
+            if (!string.IsNullOrEmpty(_newest))
             {
-                filter.IncludeReachableFrom = new ObjectId(_latest);
+                filter.IncludeReachableFrom = new ObjectId(_newest);
             }
 
+            return Authors(await Task.WhenAll(BlameTasks(filter, new CompareOptions {ContextLines = 0})));
+        }
+
+        private IDictionary<string, Player> Authors(IEnumerable<IEnumerable<AuthorChange>> collections)
+        {
+            IDictionary<string, Player> authors = new Dictionary<string, Player>();
+
+            foreach (var changes in collections)
+            {
+                foreach (var change in changes)
+                {
+                    authors = change.UpdatedAuthors(authors);
+                }
+            }
+
+            return authors;
+        }
+
+        private IEnumerable<Task<IEnumerable<AuthorChange>>> BlameTasks(CommitFilter filter, CompareOptions options)
+        {
             var tasks = new List<Task<IEnumerable<AuthorChange>>>();
 
             using (var repo = new Repository("."))
@@ -59,8 +75,8 @@ namespace DevRating.Git
                         var author = repo.Mailmap.ResolveSignature(current.Author).Email;
 
                         var parent = current.Parents.First();
-                        
-                        var differences = repo.Diff.Compare<Patch>(parent.Tree, current.Tree, compareOptions);
+
+                        var differences = repo.Diff.Compare<Patch>(parent.Tree, current.Tree, options);
 
                         foreach (var difference in differences)
                         {
@@ -71,37 +87,25 @@ namespace DevRating.Git
                                  difference.Status == ChangeKind.Modified))
                             {
                                 tasks.Add(Task.Run(() =>
-                                    Changes(difference.OldPath, difference.Patch, parent.Sha, author)));
+                                    AuthorChanges(difference.OldPath, difference.Patch, parent.Sha, author)));
                             }
                         }
                     }
                 }
-
-                var collections = await Task.WhenAll(tasks);
-
-                foreach (var changes in collections)
-                {
-                    foreach (var change in changes)
-                    {
-                        authors = change.UpdatedAuthors(authors);
-                    }
-                }
             }
 
-            return authors;
+            return tasks;
         }
 
-        private IEnumerable<AuthorChange> Changes(string path, string patch, string commit, string author)
+        private IEnumerable<AuthorChange> AuthorChanges(string path, string patch, string commit, string author)
         {
             var changes = new List<AuthorChange>();
 
-            var lines = patch.Split('\n');
+            var blames = _process
+                .Output("git", $"blame -t -e {commit} -- \"{path}\"")
+                .Split('\n');
 
-            var output = _process.Output("git", $"blame -t -e {commit} -- \"{path}\"");
-
-            var blames = output.Split('\n');
-
-            foreach (var line in lines)
+            foreach (var line in patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
                 {
@@ -115,9 +119,7 @@ namespace DevRating.Git
 
                     for (var i = index; i < index + count; i++)
                     {
-                        var meta = Metadata(blames[i]);
-
-                        var loser = Author(meta);
+                        var loser = LineAuthor(blames[i]);
 
                         if (loser.Equals(author))
                         {
@@ -132,22 +134,14 @@ namespace DevRating.Git
             return changes;
         }
 
-        private string[] Metadata(string line)
+        private string LineAuthor(string line)
         {
             var start = line.IndexOf('(');
-
             var end = line.IndexOf(')');
 
-            var length = end - start - 1;
-
-            var metadata = line.Substring(start + 1, length);
-
-            return metadata.Split(' ');
-        }
-
-        private string Author(IReadOnlyList<string> metadata)
-        {
-            return metadata[0]
+            return line
+                .Substring(start + 1, end - start - 1)
+                .Split(' ')[0]
                 .TrimStart('<')
                 .TrimEnd('>');
         }
