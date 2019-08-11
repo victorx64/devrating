@@ -4,6 +4,6 @@ namespace DevRating.Git
 {
     public interface Process
     {
-        StreamReader Output(string name, string arguments);
+        string Output(string name, string arguments);
     }
 }

@@ -6,6 +6,6 @@ namespace DevRating.Git
 {
     public interface AuthorsCollection
     {
-        Task<IDictionary<string, Player>>  Authors();
+        Task<IDictionary<string, Player>> Authors();
     }
 }

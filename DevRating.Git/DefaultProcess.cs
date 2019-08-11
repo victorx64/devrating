@@ -1,12 +1,11 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace DevRating.Git
 {
     public class DefaultProcess : Process
     {
-        public StreamReader Output(string name, string arguments)
+        public string Output(string name, string arguments)
         {
             var info = new ProcessStartInfo(name, arguments)
             {
@@ -22,7 +21,16 @@ namespace DevRating.Git
                 throw new Exception("Process.Start(info) returned null");
             }
 
-            return process.StandardOutput;
+            var output = process.StandardOutput.ReadToEnd();
+            
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception(process.StandardError.ReadToEnd());
+            }
+
+            return output;
         }
     }
 }

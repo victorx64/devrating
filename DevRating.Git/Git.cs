@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DevRating.Rating;
 using LibGit2Sharp;
@@ -53,15 +54,19 @@ namespace DevRating.Git
             {
                 foreach (var current in repo.Commits.QueryBy(filter))
                 {
-                    var author = repo.Mailmap.ResolveSignature(current.Author).Email;
-
-                    foreach (var parent in current.Parents)
+                    if (current.Parents.Count() == 1)
                     {
+                        var author = repo.Mailmap.ResolveSignature(current.Author).Email;
+
+                        var parent = current.Parents.First();
+                        
                         var differences = repo.Diff.Compare<Patch>(parent.Tree, current.Tree, compareOptions);
 
                         foreach (var difference in differences)
                         {
                             if (!difference.IsBinaryComparison &&
+                                difference.OldMode == Mode.NonExecutableFile &&
+                                difference.Mode == Mode.NonExecutableFile &&
                                 (difference.Status == ChangeKind.Deleted ||
                                  difference.Status == ChangeKind.Modified))
                             {
@@ -88,13 +93,13 @@ namespace DevRating.Git
 
         private IEnumerable<AuthorChange> Changes(string path, string patch, string commit, string author)
         {
-            var lines = patch.Split('\n');
-
             var changes = new List<AuthorChange>();
 
-            var output = _process.Output("git", $"blame -t -e {commit} -- {path}");
+            var lines = patch.Split('\n');
 
-            var blames = output.ReadToEnd().Split('\n');
+            var output = _process.Output("git", $"blame -t -e {commit} -- \"{path}\"");
+
+            var blames = output.Split('\n');
 
             foreach (var line in lines)
             {
@@ -126,7 +131,7 @@ namespace DevRating.Git
 
             return changes;
         }
-        
+
         private string[] Metadata(string line)
         {
             var start = line.IndexOf('(');
@@ -136,13 +141,15 @@ namespace DevRating.Git
             var length = end - start - 1;
 
             var metadata = line.Substring(start + 1, length);
-            
+
             return metadata.Split(' ');
         }
 
-        private string Author(string[] metadata)
+        private string Author(IReadOnlyList<string> metadata)
         {
-            return metadata[0].Trim('<', '>');
+            return metadata[0]
+                .TrimStart('<')
+                .TrimEnd('>');
         }
     }
 }
