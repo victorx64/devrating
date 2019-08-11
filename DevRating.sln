@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Rating", "DevRati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git.Test", "DevRating.Git.Test\DevRating.Git.Test.csproj", "{48DB334C-FEA7-463B-ABCF-23D34271747E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibGit2Sharp", "libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj", "{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{48DB334C-FEA7-463B-ABCF-23D34271747E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48DB334C-FEA7-463B-ABCF-23D34271747E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48DB334C-FEA7-463B-ABCF-23D34271747E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

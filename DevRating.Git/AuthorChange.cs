@@ -5,6 +5,6 @@ namespace DevRating.Git
 {
     public interface AuthorChange
     {
-        IDictionary<string, Player> UpdatedAuthors(IDictionary<string, Player> authors, Player initial);
+        IDictionary<string, Player> UpdatedAuthors(IDictionary<string, Player> authors);
     }
 }

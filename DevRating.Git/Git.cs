@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using DevRating.Rating;
 using LibGit2Sharp;
 
@@ -7,123 +9,140 @@ namespace DevRating.Git
     public sealed class Git : AuthorsCollection
     {
         private readonly IDictionary<string, Player> _authors;
-        private readonly Player _author;
-        private readonly File _file;
+        private readonly Player _initial;
+        private readonly string _oldest;
+        private readonly string _latest;
+        private readonly Process _process = new DefaultProcess();
 
-        public Git(IDictionary<string, Player> authors, Player author, File file)
+        public Git(IDictionary<string, Player> authors, Player initial, string oldest, string latest)
         {
             _authors = authors;
-            _author = author;
-            _file = file;
+            _initial = initial;
+            _oldest = oldest;
+            _latest = latest;
         }
 
-        public IDictionary<string, Player> Authors()
+        public async Task<IDictionary<string, Player>> Authors()
         {
             var authors = _authors;
 
-            IDictionary<string, File> files = new Dictionary<string, File>();
+            var compareOptions = new CompareOptions
+            {
+                ContextLines = 0
+            };
+
+            var filter = new CommitFilter
+            {
+                SortBy = CommitSortStrategies.Topological |
+                         CommitSortStrategies.Reverse
+            };
+
+            if (!string.IsNullOrEmpty(_oldest))
+            {
+                filter.ExcludeReachableFrom = new ObjectId(_oldest);
+            }
+
+            if (!string.IsNullOrEmpty(_latest))
+            {
+                filter.IncludeReachableFrom = new ObjectId(_latest);
+            }
+
+            var tasks = new List<Task<IEnumerable<AuthorChange>>>();
 
             using (var repo = new Repository("."))
             {
-                var options = new CompareOptions()
-                {
-                    ContextLines = 0
-                };
-
-                var filter = new CommitFilter
-                {
-                    SortBy = CommitSortStrategies.Topological |
-                             CommitSortStrategies.Reverse
-                };
-
-                Tree tree = null;
-
                 foreach (var current in repo.Commits.QueryBy(filter))
                 {
-                    var differences = repo.Diff.Compare<Patch>(tree, current.Tree, options);
+                    var author = repo.Mailmap.ResolveSignature(current.Author).Email;
 
-                    files = WithAddedFiles(files, differences);
+                    foreach (var parent in current.Parents)
+                    {
+                        var differences = repo.Diff.Compare<Patch>(parent.Tree, current.Tree, compareOptions);
 
-                    files = PatchedFiles(files, current.Author.Email, differences);
+                        foreach (var difference in differences)
+                        {
+                            if (!difference.IsBinaryComparison &&
+                                (difference.Status == ChangeKind.Deleted ||
+                                 difference.Status == ChangeKind.Modified))
+                            {
+                                tasks.Add(Task.Run(() =>
+                                    Changes(difference.OldPath, difference.Patch, parent.Sha, author)));
+                            }
+                        }
+                    }
+                }
 
-                    authors = UpdatedAuthors(files, authors, differences);
+                var collections = await Task.WhenAll(tasks);
 
-                    files = WithoutRemovedFiles(files, differences);
-
-                    tree = current.Tree;
+                foreach (var changes in collections)
+                {
+                    foreach (var change in changes)
+                    {
+                        authors = change.UpdatedAuthors(authors);
+                    }
                 }
             }
 
             return authors;
         }
 
-        private IDictionary<string, File> WithAddedFiles(IDictionary<string, File> files, Patch differences)
+        private IEnumerable<AuthorChange> Changes(string path, string patch, string commit, string author)
         {
-            var result = files; // new Dictionary<string, IFile>(files);
+            var lines = patch.Split('\n');
 
-            foreach (var difference in differences)
+            var changes = new List<AuthorChange>();
+
+            var output = _process.Output("git", $"blame -t -e {commit} -- {path}");
+
+            var blames = output.ReadToEnd().Split('\n');
+
+            foreach (var line in lines)
             {
-                if (difference.Status == ChangeKind.Added)
+                if (line.StartsWith("@@ "))
                 {
-                    result.Add(difference.Path, _file);
-                }
+                    var parts = line.Split(' ')[1]
+                        .Substring(1)
+                        .Split(',');
 
-                if (difference.Status == ChangeKind.Renamed ||
-                    difference.Status == ChangeKind.Copied)
-                {
-                    result.Add(difference.Path, result[difference.OldPath]);
+                    var index = Convert.ToInt32(parts[0]) - 1;
+
+                    var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+
+                    for (var i = index; i < index + count; i++)
+                    {
+                        var meta = Metadata(blames[i]);
+
+                        var loser = Author(meta);
+
+                        if (loser.Equals(author))
+                        {
+                            continue;
+                        }
+
+                        changes.Add(new DefaultAuthorChange(loser, author, _initial));
+                    }
                 }
             }
 
-            return result;
+            return changes;
+        }
+        
+        private string[] Metadata(string line)
+        {
+            var start = line.IndexOf('(');
+
+            var end = line.IndexOf(')');
+
+            var length = end - start - 1;
+
+            var metadata = line.Substring(start + 1, length);
+            
+            return metadata.Split(' ');
         }
 
-        private IDictionary<string, File> PatchedFiles(IDictionary<string, File> files, string author,
-            Patch differences)
+        private string Author(string[] metadata)
         {
-            var result = files; // new Dictionary<string, IFile>(files);
-
-            foreach (var difference in differences)
-            {
-                var binary = difference.IsBinaryComparison ||
-                             difference.Status == ChangeKind.TypeChanged;
-
-                result[difference.Path] = result[difference.Path].PatchedFile(binary, author, difference.Patch);
-            }
-
-            return result;
-        }
-
-        private IDictionary<string, Player> UpdatedAuthors(IDictionary<string, File> files,
-            IDictionary<string, Player> authors, Patch differences)
-        {
-            foreach (var difference in differences)
-            {
-                var changes = files[difference.Path].ChangedAuthors();
-
-                foreach (var change in changes)
-                {
-                    authors = change.UpdatedAuthors(authors, _author);
-                }
-            }
-
-            return authors;
-        }
-
-        private IDictionary<string, File> WithoutRemovedFiles(IDictionary<string, File> files, Patch differences)
-        {
-            var result = files; // new Dictionary<string, IFile>(files);
-
-            foreach (var difference in differences)
-            {
-                if (difference.Status == ChangeKind.Deleted ||
-                    difference.Status == ChangeKind.Renamed)
-                {
-                    result.Remove(difference.OldPath);
-                }
-            }
-
-            return result;
+            return metadata[0].Trim('<', '>');
         }
     }
 }

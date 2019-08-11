@@ -11,11 +11,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
+      <ProjectReference Include="..\libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj" />
     </ItemGroup>
 
 </Project>
