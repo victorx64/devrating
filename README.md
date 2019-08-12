@@ -12,7 +12,7 @@ Creating a new file doesn't affect anything. Removing a file gives points. Ignor
 
 ## Install
 ```Batchfile
-dotnet tool install -g DevRating.Console --version 0.1.2
+dotnet tool install -g DevRating.Console --version 0.1.3
 ```
 
 ## Run
