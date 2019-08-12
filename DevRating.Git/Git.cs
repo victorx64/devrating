@@ -72,7 +72,10 @@ namespace DevRating.Git
                 {
                     if (current.Parents.Count() == 1)
                     {
-                        var author = repo.Mailmap.ResolveSignature(current.Author).Email;
+                        var author = string.IsNullOrEmpty(current.Author.Name) ||
+                                     string.IsNullOrEmpty(current.Author.Email)
+                            ? current.Author.Email
+                            : repo.Mailmap.ResolveSignature(current.Author).Email;
 
                         var parent = current.Parents.First();
 
