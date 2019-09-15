@@ -12,6 +12,7 @@ namespace DevRating.Console
                     new Git.Git(
                         new DefaultPlayer(
                             new Elo()),
+                        ".",
                         arguments.OldestCommit(),
                         arguments.NewestCommit()),
                     arguments.Verbose()
