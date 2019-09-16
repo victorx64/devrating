@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DevRating.Git\DevRating.Git.csproj" />
+      <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
     </ItemGroup>
 
 </Project>
