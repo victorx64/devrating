@@ -28,10 +28,5 @@ namespace DevRating.Console
 
             return string.Empty;
         }
-
-        public bool Verbose()
-        {
-            return true;
-        }
     }
 }

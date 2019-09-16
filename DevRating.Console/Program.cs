@@ -1,6 +1,4 @@
-﻿using DevRating.Rating;
-
-namespace DevRating.Console
+﻿namespace DevRating.Console
 {
     internal static class Program
     {
@@ -8,17 +6,11 @@ namespace DevRating.Console
         {
             var arguments = new DefaultArguments(args);
 
-            new Report(
-                    new Git.Git(
-                        new DefaultPlayer(
-                            new Elo()),
-                        ".",
-                        arguments.OldestCommit(),
-                        arguments.NewestCommit()),
-                    arguments.Verbose()
-                        ? (Output) new VerboseConsoleOutput()
-                        : (Output) new QuiteConsoleOutput())
-                .Print();
+            var git = new Git.Git(
+                ".",
+                arguments.OldestCommit(),
+                arguments.NewestCommit());
+            ;
         }
     }
 }

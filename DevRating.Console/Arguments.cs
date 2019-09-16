@@ -4,6 +4,5 @@ namespace DevRating.Console
     {
         string OldestCommit();
         string NewestCommit();
-        bool Verbose();
     }
 }
