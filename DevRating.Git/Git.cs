@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public sealed class Git
+    public sealed class Git : AuthorChangesCollection
     {
         private readonly string _path;
         private readonly string _oldest;
@@ -18,14 +19,27 @@ namespace DevRating.Git
             _newest = newest;
         }
 
-        public async Task<Repository> Repository()
+        public async Task ExtendAuthorChanges(AuthorChanges changes, Author empty)
         {
             var filter = CommitFilter();
 
-            using (var repo = new LibGit2Sharp.Repository(_path))
+            using (var repo = new Repository(_path))
             {
-                return new Repository(
-                    await Task.WhenAll(PatchTasks(repo, filter, new CompareOptions {ContextLines = 0})));
+                var options = new CompareOptions
+                {
+                    ContextLines = 0
+                };
+
+                var tasks = HunkTasks(repo, filter, options);
+
+                var collections = await Task.WhenAll(tasks);
+
+                var hunks = collections.SelectMany(h => h);
+
+                foreach (var hunk in hunks)
+                {
+                    await hunk.ExtendAuthorChanges(changes, empty);
+                }
             }
         }
 
@@ -50,39 +64,42 @@ namespace DevRating.Git
             return filter;
         }
 
-        private IEnumerable<Task<Patch>> PatchTasks(IRepository repo, CommitFilter filter, CompareOptions options)
+        private IEnumerable<Task<IEnumerable<Hunk>>> HunkTasks(IRepository repo, CommitFilter filter,
+            CompareOptions options)
         {
-            var tasks = new List<Task<Patch>>();
+            var tasks = new List<Task<IEnumerable<Hunk>>>();
 
             foreach (var commit in repo.Commits.QueryBy(filter))
             {
-                tasks.AddRange(CommitPatchTasks(repo, options, commit));
+                tasks.AddRange(CommitHunkTasks(repo, options, commit));
             }
 
             return tasks;
         }
 
-        private IEnumerable<Task<Patch>> CommitPatchTasks(IRepository repo, CompareOptions options, Commit commit)
+        private IEnumerable<Task<IEnumerable<Hunk>>> CommitHunkTasks(IRepository repo, CompareOptions options,
+            Commit commit)
         {
-            var tasks = new List<Task<Patch>>();
+            var tasks = new List<Task<IEnumerable<Hunk>>>();
 
-            var author = new Author(Email(repo, commit.Author));
+            var author = new DefaultAuthor(Email(repo, commit.Author));
 
             foreach (var parent in commit.Parents)
             {
-                tasks.AddRange(ParentCommitPatchTasks(repo, options, commit, parent, author));
+                tasks.AddRange(ParentCommitHunkTasks(repo, options, commit, parent, author));
             }
 
             return tasks;
         }
 
-        private IEnumerable<Task<Patch>> ParentCommitPatchTasks(IRepository repo, CompareOptions options, Commit commit,
+        private IEnumerable<Task<IEnumerable<Hunk>>> ParentCommitHunkTasks(IRepository repo, CompareOptions options,
+            Commit commit,
             Commit parent,
             Author author)
         {
-            var tasks = new List<Task<Patch>>();
+            var tasks = new List<Task<IEnumerable<Hunk>>>();
 
-            var patches = repo.Diff.Compare<LibGit2Sharp.Patch>(parent.Tree, commit.Tree, options);
+            var patches = repo.Diff.Compare<Patch>(parent.Tree, commit.Tree, options);
 
             foreach (var patch in patches)
             {
@@ -92,18 +109,17 @@ namespace DevRating.Git
                     (patch.Status == ChangeKind.Deleted ||
                      patch.Status == ChangeKind.Modified))
                 {
-                    tasks.Add(Task.Run(() => Patch(repo, patch, commit, parent, author)));
+                    tasks.Add(Task.Run(() => Hunks(repo, patch, commit, parent, author)));
                 }
             }
 
             return tasks;
         }
 
-        private Patch Patch(IRepository repo, PatchEntryChanges patch, GitObject commit,
+        private IEnumerable<Hunk> Hunks(IRepository repo, PatchEntryChanges patch, GitObject commit,
             Commit parent, Author author)
         {
-            var additions = 0;
-            var deletions = new List<Author>();
+            var hunks = new List<Hunk>();
 
             var blame = repo.Blame(patch.OldPath, new BlameOptions
             {
@@ -117,12 +133,11 @@ namespace DevRating.Git
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
                     var parts = line.Split(' ');
 
-                    deletions.AddRange(Deletions(repo, parts[1], blame));
-                    additions += Additions(parts[2]);
+                    hunks.Add(new Hunk(author, Deletions(repo, parts[1], blame), Additions(parts[2]), commit.Sha));
                 }
             }
 
-            return new Patch(author, deletions, additions, commit.Sha);
+            return hunks;
         }
 
         private IEnumerable<Author> Deletions(IRepository repo, string hunk, BlameHunkCollection blame)
@@ -139,7 +154,7 @@ namespace DevRating.Git
 
             for (var i = index; i < index + count; i++)
             {
-                deletions.Add(new Author(Email(repo, blame.HunkForLine(i).FinalSignature)));
+                deletions.Add(new DefaultAuthor(Email(repo, blame.HunkForLine(i).FinalSignature)));
             }
 
             return deletions;
