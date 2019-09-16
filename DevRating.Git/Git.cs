@@ -1,28 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using DevRating.Rating;
 using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public sealed class Git : AuthorsCollection
+    public sealed class Git
     {
-        private readonly Player _initial;
         private readonly string _path;
         private readonly string _oldest;
         private readonly string _newest;
 
-        public Git(Player initial, string path, string oldest, string newest)
+        public Git(string path, string oldest, string newest)
         {
-            _initial = initial;
             _path = path;
             _oldest = oldest;
             _newest = newest;
         }
 
-        public async Task<IDictionary<string, Player>> Authors()
+        public async Task<Repository> Repository()
+        {
+            var filter = CommitFilter();
+
+            using (var repo = new LibGit2Sharp.Repository(_path))
+            {
+                return new Repository(
+                    await Task.WhenAll(PatchTasks(repo, filter, new CompareOptions {ContextLines = 0})));
+            }
+        }
+
+        private CommitFilter CommitFilter()
         {
             var filter = new CommitFilter
             {
@@ -40,100 +47,121 @@ namespace DevRating.Git
                 filter.IncludeReachableFrom = new ObjectId(_newest);
             }
 
-            using (var repo = new Repository(_path))
-            {
-                return Authors(await Task.WhenAll(BlameTasks(repo, filter, new CompareOptions {ContextLines = 0})));
-            }
+            return filter;
         }
 
-        private IDictionary<string, Player> Authors(IEnumerable<IEnumerable<AuthorChange>> collections)
+        private IEnumerable<Task<Patch>> PatchTasks(IRepository repo, CommitFilter filter, CompareOptions options)
         {
-            IDictionary<string, Player> authors = new Dictionary<string, Player>();
+            var tasks = new List<Task<Patch>>();
 
-            foreach (var changes in collections)
+            foreach (var commit in repo.Commits.QueryBy(filter))
             {
-                foreach (var change in changes)
-                {
-                    authors = change.UpdatedAuthors(authors);
-                }
+                tasks.AddRange(CommitPatchTasks(repo, options, commit));
             }
 
-            return authors;
+            return tasks;
         }
 
-        private IEnumerable<Task<IEnumerable<AuthorChange>>> BlameTasks(IRepository repo, CommitFilter filter,
-            CompareOptions options)
+        private IEnumerable<Task<Patch>> CommitPatchTasks(IRepository repo, CompareOptions options, Commit commit)
         {
-            var tasks = new List<Task<IEnumerable<AuthorChange>>>();
+            var tasks = new List<Task<Patch>>();
 
-            foreach (var current in repo.Commits.QueryBy(filter))
+            var author = new Author(Email(repo, commit.Author));
+
+            foreach (var parent in commit.Parents)
             {
-                if (current.Parents.Count() == 1)
+                tasks.AddRange(ParentCommitPatchTasks(repo, options, commit, parent, author));
+            }
+
+            return tasks;
+        }
+
+        private IEnumerable<Task<Patch>> ParentCommitPatchTasks(IRepository repo, CompareOptions options, Commit commit,
+            Commit parent,
+            Author author)
+        {
+            var tasks = new List<Task<Patch>>();
+
+            var patches = repo.Diff.Compare<LibGit2Sharp.Patch>(parent.Tree, commit.Tree, options);
+
+            foreach (var patch in patches)
+            {
+                if (!patch.IsBinaryComparison &&
+                    patch.OldMode == Mode.NonExecutableFile &&
+                    patch.Mode == Mode.NonExecutableFile &&
+                    (patch.Status == ChangeKind.Deleted ||
+                     patch.Status == ChangeKind.Modified))
                 {
-                    var author = string.IsNullOrEmpty(current.Author.Name) ||
-                                 string.IsNullOrEmpty(current.Author.Email)
-                        ? current.Author.Email
-                        : repo.Mailmap.ResolveSignature(current.Author).Email;
-
-                    var parent = current.Parents.First();
-
-                    var differences = repo.Diff.Compare<Patch>(parent.Tree, current.Tree, options);
-
-                    foreach (var difference in differences)
-                    {
-                        if (!difference.IsBinaryComparison &&
-                            difference.OldMode == Mode.NonExecutableFile &&
-                            difference.Mode == Mode.NonExecutableFile &&
-                            (difference.Status == ChangeKind.Deleted ||
-                             difference.Status == ChangeKind.Modified))
-                        {
-                            tasks.Add(Task.Run(() =>
-                                AuthorChanges(repo, difference, parent, author)));
-                        }
-                    }
+                    tasks.Add(Task.Run(() => Patch(repo, patch, commit, parent, author)));
                 }
             }
 
             return tasks;
         }
 
-        private IEnumerable<AuthorChange> AuthorChanges(IRepository repo, PatchEntryChanges difference, Commit commit,
-            string author)
+        private Patch Patch(IRepository repo, PatchEntryChanges patch, GitObject commit,
+            Commit parent, Author author)
         {
-            var changes = new List<AuthorChange>();
+            var additions = 0;
+            var deletions = new List<Author>();
 
-            var blame = repo.Blame(difference.OldPath, new BlameOptions
+            var blame = repo.Blame(patch.OldPath, new BlameOptions
             {
-                StartingAt = commit
+                StartingAt = parent
             });
 
-            foreach (var line in difference.Patch.Split('\n'))
+            foreach (var line in patch.Patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
                 {
-                    var parts = line.Split(' ')[1]
-                        .Substring(1)
-                        .Split(',');
+                    // line must be like "@@ -3,9 +3,9 @@ blah..."
+                    var parts = line.Split(' ');
 
-                    var index = Convert.ToInt32(parts[0]) - 1;
-
-                    var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
-
-                    for (var i = index; i < index + count; i++)
-                    {
-                        var loser = repo.Mailmap.ResolveSignature(blame.HunkForLine(i).FinalSignature).Email;
-
-                        if (loser.Equals(author))
-                        {
-                            continue;
-                        }
-
-                        changes.Add(new DefaultAuthorChange(loser, author, _initial));
-                    }
+                    deletions.AddRange(Deletions(repo, parts[1], blame));
+                    additions += Additions(parts[2]);
                 }
             }
 
-            return changes;
+            return new Patch(author, deletions, additions, commit.Sha);
+        }
+
+        private IEnumerable<Author> Deletions(IRepository repo, string hunk, BlameHunkCollection blame)
+        {
+            var deletions = new List<Author>();
+
+            var parts = hunk
+                .Substring(1)
+                .Split(',');
+
+            var index = Convert.ToInt32(parts[0]) - 1;
+
+            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+
+            for (var i = index; i < index + count; i++)
+            {
+                deletions.Add(new Author(Email(repo, blame.HunkForLine(i).FinalSignature)));
+            }
+
+            return deletions;
+        }
+
+        private int Additions(string hunk)
+        {
+            var parts = hunk
+                .Substring(1)
+                .Split(',');
+
+            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+
+            return count;
+        }
+
+        private string Email(IRepository repo, Signature signature)
+        {
+            return string.IsNullOrEmpty(signature.Name) ||
+                   string.IsNullOrEmpty(signature.Email)
+                ? signature.Email
+                : repo.Mailmap.ResolveSignature(signature).Email;
         }
     }
 }
