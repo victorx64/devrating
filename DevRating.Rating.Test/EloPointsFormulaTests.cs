@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace DevRating.Rating.Test
 {
-    public sealed class EloTests
+    public sealed class EloPointsFormulaTests
     {
         [Test]
         public void IncreaseHigherRatedPlayerPoints()
