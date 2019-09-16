@@ -4,6 +4,6 @@ namespace DevRating.Git
 {
     public interface AuthorChangesCollection
     {
-        Task ExtendAuthorChanges(AuthorChanges changes, string empty);
+        Task ExtendAuthorChanges(AuthorChanges changes);
     }
 }

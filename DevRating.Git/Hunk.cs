@@ -18,7 +18,7 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public Task ExtendAuthorChanges(AuthorChanges changes, string empty)
+        public Task ExtendAuthorChanges(AuthorChanges changes)
         {
             foreach (var deletion in _deletions)
             {
@@ -27,7 +27,7 @@ namespace DevRating.Git
 
             for (var i = 0; i < _additions; i++)
             {
-                changes.AddChange(empty, _author, _commit);
+                changes.AddChange(_author, _commit);
             }
             
             return Task.CompletedTask;

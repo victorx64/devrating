@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 
@@ -19,27 +18,31 @@ namespace DevRating.Git
             _newest = newest;
         }
 
-        public async Task ExtendAuthorChanges(AuthorChanges changes, string empty)
+        public async Task ExtendAuthorChanges(AuthorChanges changes)
+        {
+            foreach (var hunks in await Patches())
+            {
+                foreach (var hunk in hunks)
+                {
+                    await hunk.ExtendAuthorChanges(changes);
+                }
+            }
+        }
+
+        private async Task<IEnumerable<IEnumerable<Hunk>>> Patches()
         {
             var filter = CommitFilter();
 
+            var options = new CompareOptions
+            {
+                ContextLines = 0
+            };
+
             using (var repo = new Repository(_path))
             {
-                var options = new CompareOptions
-                {
-                    ContextLines = 0
-                };
-
                 var tasks = HunkTasks(repo, filter, options);
 
-                var collections = await Task.WhenAll(tasks);
-
-                var hunks = collections.SelectMany(h => h);
-
-                foreach (var hunk in hunks)
-                {
-                    await hunk.ExtendAuthorChanges(changes, empty);
-                }
+                return await Task.WhenAll(tasks);
             }
         }
 
