@@ -1,6 +1,6 @@
 namespace DevRating.Git
 {
-    public class DefaultAuthor : Author
+    public sealed class DefaultAuthor : Author
     {
         private readonly string _email;
 

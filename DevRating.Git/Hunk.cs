@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
-    public class Hunk : AuthorChangesCollection
+    public sealed class Hunk : AuthorChangesCollection
     {
         private readonly Author _author;
         private readonly IEnumerable<Author> _deletions;

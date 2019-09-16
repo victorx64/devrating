@@ -1,6 +1,6 @@
 namespace DevRating.Git
 {
-    public class EmptyAuthor : Author
+    public sealed class EmptyAuthor : Author
     {
         
     }
