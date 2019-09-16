@@ -5,7 +5,7 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public sealed class Git : AuthorChangesCollection
+    public sealed class Git
     {
         private readonly string _path;
         private readonly string _oldest;
@@ -18,13 +18,13 @@ namespace DevRating.Git
             _newest = newest;
         }
 
-        public async Task ExtendAuthorChanges(AuthorChanges changes)
+        public async Task LogAuthorChanges(AuthorsLog log)
         {
             foreach (var hunks in await Patches())
             {
                 foreach (var hunk in hunks)
                 {
-                    await hunk.ExtendAuthorChanges(changes);
+                    hunk.LogAuthorChanges(log);
                 }
             }
         }

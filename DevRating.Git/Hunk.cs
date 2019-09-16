@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
-    public sealed class Hunk : AuthorChangesCollection
+    public sealed class Hunk
     {
         private readonly string _author;
         private readonly IEnumerable<string> _deletions;
@@ -18,19 +17,17 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public Task ExtendAuthorChanges(AuthorChanges changes)
+        public void LogAuthorChanges(AuthorsLog log)
         {
             foreach (var deletion in _deletions)
             {
-                changes.AddChange(deletion, _author, _commit);
+                log.LogAuthorDeletion(deletion, _author, _commit);
             }
 
             for (var i = 0; i < _additions; i++)
             {
-                changes.AddChange(_author, _commit);
+                log.LogAuthorAddition(_author, _commit);
             }
-            
-            return Task.CompletedTask;
         }
     }
 }
