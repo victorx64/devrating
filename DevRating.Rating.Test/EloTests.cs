@@ -7,7 +7,7 @@ namespace DevRating.Rating.Test
         [Test]
         public void IncreaseHigherRatedPlayerPoints()
         {
-            var elo = new Elo(32, 400);
+            var elo = new EloPointsFormula(32, 400);
 
             var points = elo.UpdatedPoints(1, 2400, 2000);
             
@@ -17,7 +17,7 @@ namespace DevRating.Rating.Test
         [Test]
         public void DecreaseLowerRatedPlayerPoints()
         {
-            var elo = new Elo(32, 400);
+            var elo = new EloPointsFormula(32, 400);
 
             var points = elo.UpdatedPoints(0, 2000, 2400);
             
@@ -27,7 +27,7 @@ namespace DevRating.Rating.Test
         [Test]
         public void DecreaseHigherRatedPlayerPoints()
         {
-            var elo = new Elo(32, 400);
+            var elo = new EloPointsFormula(32, 400);
 
             var points = elo.UpdatedPoints(0, 2400, 2000);
             
@@ -37,7 +37,7 @@ namespace DevRating.Rating.Test
         [Test]
         public void IncreaseLowerRatedPlayerPoints()
         {
-            var elo = new Elo(32, 400);
+            var elo = new EloPointsFormula(32, 400);
 
             var points = elo.UpdatedPoints(1, 2000, 2400);
             
