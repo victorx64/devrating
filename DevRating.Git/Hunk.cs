@@ -5,12 +5,12 @@ namespace DevRating.Git
 {
     public sealed class Hunk : AuthorChangesCollection
     {
-        private readonly Author _author;
-        private readonly IEnumerable<Author> _deletions;
+        private readonly string _author;
+        private readonly IEnumerable<string> _deletions;
         private readonly int _additions;
         private readonly string _commit;
 
-        public Hunk(Author author, IEnumerable<Author> deletions, int additions, string commit)
+        public Hunk(string author, IEnumerable<string> deletions, int additions, string commit)
         {
             _author = author;
             _deletions = deletions;
@@ -18,7 +18,7 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public Task ExtendAuthorChanges(AuthorChanges changes, Author empty)
+        public Task ExtendAuthorChanges(AuthorChanges changes, string empty)
         {
             foreach (var deletion in _deletions)
             {

@@ -19,7 +19,7 @@ namespace DevRating.Git
             _newest = newest;
         }
 
-        public async Task ExtendAuthorChanges(AuthorChanges changes, Author empty)
+        public async Task ExtendAuthorChanges(AuthorChanges changes, string empty)
         {
             var filter = CommitFilter();
 
@@ -82,7 +82,7 @@ namespace DevRating.Git
         {
             var tasks = new List<Task<IEnumerable<Hunk>>>();
 
-            var author = new DefaultAuthor(Email(repo, commit.Author));
+            var author = Email(repo, commit.Author);
 
             foreach (var parent in commit.Parents)
             {
@@ -95,7 +95,7 @@ namespace DevRating.Git
         private IEnumerable<Task<IEnumerable<Hunk>>> ParentCommitHunkTasks(IRepository repo, CompareOptions options,
             Commit commit,
             Commit parent,
-            Author author)
+            string author)
         {
             var tasks = new List<Task<IEnumerable<Hunk>>>();
 
@@ -117,7 +117,7 @@ namespace DevRating.Git
         }
 
         private IEnumerable<Hunk> Hunks(IRepository repo, PatchEntryChanges patch, GitObject commit,
-            Commit parent, Author author)
+            Commit parent, string author)
         {
             var hunks = new List<Hunk>();
 
@@ -140,9 +140,9 @@ namespace DevRating.Git
             return hunks;
         }
 
-        private IEnumerable<Author> Deletions(IRepository repo, string hunk, BlameHunkCollection blame)
+        private IEnumerable<string> Deletions(IRepository repo, string hunk, BlameHunkCollection blame)
         {
-            var deletions = new List<Author>();
+            var deletions = new List<string>();
 
             var parts = hunk
                 .Substring(1)
@@ -154,7 +154,7 @@ namespace DevRating.Git
 
             for (var i = index; i < index + count; i++)
             {
-                deletions.Add(new DefaultAuthor(Email(repo, blame.HunkForLine(i).FinalSignature)));
+                deletions.Add(Email(repo, blame.HunkForLine(i).FinalSignature));
             }
 
             return deletions;

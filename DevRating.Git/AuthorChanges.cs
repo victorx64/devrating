@@ -2,6 +2,6 @@ namespace DevRating.Git
 {
     public interface AuthorChanges
     {
-        void AddChange(Author previous, Author next, string commit);
+        void AddChange(string previous, string next, string commit);
     }
 }
