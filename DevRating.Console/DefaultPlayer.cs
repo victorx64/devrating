@@ -1,24 +1,34 @@
+using System.Collections.Generic;
+using System.Linq;
 using DevRating.Game;
 
 namespace DevRating.Console
 {
     public sealed class DefaultPlayer : Player
     {
-        private readonly double _points;
+        private readonly IList<Game> _games;
 
-        public DefaultPlayer(double points) 
+        public DefaultPlayer(Game game) : this(new List<Game> {game})
         {
-            _points = points;
+        }
+
+        public DefaultPlayer(IList<Game> games)
+        {
+            _games = games;
         }
 
         public Player PerformedPlayer(string contender, string commit, double points, double reward, int rounds)
         {
-            return new DefaultPlayer(points);
+            return new DefaultPlayer(
+                new List<Game>(_games)
+                {
+                    new DefaultGame(contender, commit, points, reward, rounds)
+                });
         }
 
         public double Points()
         {
-            return _points;
+            return _games.Last().PointsAfter();
         }
     }
 }

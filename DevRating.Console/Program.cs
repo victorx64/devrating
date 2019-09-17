@@ -15,7 +15,8 @@ namespace DevRating.Console
                 .WriteInto(
                     new GamesLog(
                         new DictionaryPlayers(
-                            new DefaultPlayer(1200d)),
+                            new DefaultPlayer(
+                                new DefaultGame(1200d))),
                         new EloFormula(),
                         2000d));
         }
