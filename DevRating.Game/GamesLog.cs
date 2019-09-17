@@ -6,34 +6,31 @@ namespace DevRating.Game
     public sealed class GamesLog : Log
     {
         private readonly Players _players;
-        private readonly Player _default;
-        private readonly Player _emptiness;
         private readonly PointsFormula _formula;
+        private readonly double _threshold;
 
-        public GamesLog(Players players, Player @default, Player emptiness, PointsFormula formula)
+        public GamesLog(Players players, PointsFormula formula, double threshold)
         {
             _players = players;
-            _default = @default;
-            _emptiness = emptiness;
             _formula = formula;
+            _threshold = threshold;
         }
 
         public void LogDeletion(int count, string victim, string initiator, string commit)
         {
             lock (_players)
             {
-                var loser = PlayerOrDefault(victim);
-                var winner = PlayerOrDefault(initiator);
+                var loser = _players.PlayerOrDefault(victim);
+                var winner = _players.PlayerOrDefault(initiator);
 
                 // multiplying to 'count' is gross simplification
                 var extra = _formula.WinnerExtraPoints(winner.Points(), loser.Points()) * count;
                 var reward = _formula.WinProbability(winner.Points(), loser.Points()) * count;
 
-                AddOrUpdatePlayer(victim,
-                    loser.NewPlayer(new DefaultGame(initiator, commit, loser.Points() - extra, 0d, count)));
-
-                AddOrUpdatePlayer(initiator,
-                    winner.NewPlayer(new DefaultGame(victim, commit, winner.Points() + extra, reward, count)));
+                _players.AddOrUpdatePlayer(victim,
+                    loser.PerformedPlayer(initiator, commit, loser.Points() - extra, 0d, count));
+                _players.AddOrUpdatePlayer(initiator,
+                    winner.PerformedPlayer(victim, commit, winner.Points() + extra, reward, count));
             }
         }
 
@@ -41,34 +38,12 @@ namespace DevRating.Game
         {
             lock (_players)
             {
-                var winner = PlayerOrDefault(initiator);
+                var winner = _players.PlayerOrDefault(initiator);
 
-                var reward = _formula.WinProbability(winner.Points(), _emptiness.Points()) * count;
+                var reward = _formula.WinProbability(winner.Points(), _threshold) * count;
 
-                AddOrUpdatePlayer(initiator,
-                    winner.NewPlayer(new DefaultGame("emptiness", commit, winner.Points(), reward, count)));
-            }
-        }
-
-        private Player PlayerOrDefault(string name)
-        {
-            if (_players.Exists(name))
-            {
-                return _players.Player(name);
-            }
-
-            return _default;
-        }
-
-        private void AddOrUpdatePlayer(string name, Player player)
-        {
-            if (_players.Exists(name))
-            {
-                _players.Update(name, player);
-            }
-            else
-            {
-                _players.Add(name, player);
+                _players.AddOrUpdatePlayer(initiator,
+                    winner.PerformedPlayer("emptiness", commit, winner.Points(), reward, count)); // TODO "emptiness" can collide
             }
         }
     }
