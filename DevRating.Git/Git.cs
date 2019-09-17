@@ -18,7 +18,7 @@ namespace DevRating.Git
             _newest = newest;
         }
 
-        public async Task WriteInto(ChangeLog log)
+        public async Task WriteInto(Log log)
         {
             foreach (var hunks in await Patches())
             {

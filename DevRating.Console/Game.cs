@@ -4,7 +4,7 @@ namespace DevRating.Console
     {
         private readonly double _points;
 
-        public Game() : this("none", "none", 1200d, 0d, 1)
+        public Game(string contender, double points) : this(contender, string.Empty, points, 0d, 1)
         {
         }
         

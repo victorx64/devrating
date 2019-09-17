@@ -3,22 +3,22 @@ using System.Linq;
 
 namespace DevRating.Console
 {
-    public sealed class SimplePlayer : Player
+    public sealed class DefaultPlayer : Player
     {
         private readonly IList<Game> _games;
 
-        public SimplePlayer() : this(new List<Game> {new Game()})
+        public DefaultPlayer(Game game) : this(new List<Game> {game})
         {
         }
 
-        public SimplePlayer(IList<Game> games)
+        public DefaultPlayer(IList<Game> games)
         {
             _games = games;
         }
 
         public Player NewPlayer(Game game)
         {
-            return new SimplePlayer(new List<Game>(_games) {game});
+            return new DefaultPlayer(new List<Game>(_games) {game});
         }
 
         public double Points()

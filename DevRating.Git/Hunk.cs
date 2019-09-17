@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DevRating.Git
 {
@@ -17,11 +18,13 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public void WriteInto(ChangeLog log)
+        public void WriteInto(Log log)
         {
-            foreach (var deletion in _deletions)
+            var deletions = _deletions.GroupBy(d => d); 
+            
+            foreach (var deletion in deletions)
             {
-                log.LogDeletion(deletion, _author, _commit);
+                log.LogDeletion(deletion.Count(), deletion.Key, _author, _commit);
             }
 
             log.LogAddition(_additions, _author, _commit);
