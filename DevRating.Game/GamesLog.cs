@@ -1,7 +1,7 @@
 using DevRating.Git;
 using DevRating.Rating;
 
-namespace DevRating.Console
+namespace DevRating.Game
 {
     public sealed class GamesLog : Log
     {

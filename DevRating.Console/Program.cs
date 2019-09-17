@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DevRating.Game;
 using DevRating.Rating;
 
 namespace DevRating.Console

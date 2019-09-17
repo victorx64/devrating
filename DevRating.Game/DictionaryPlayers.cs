@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DevRating.Console
+namespace DevRating.Game
 {
     public sealed class DictionaryPlayers : Players
     {
