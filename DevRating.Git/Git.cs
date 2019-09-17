@@ -18,13 +18,13 @@ namespace DevRating.Git
             _newest = newest;
         }
 
-        public async Task LogAuthorChanges(AuthorsLog log)
+        public async Task WriteInto(ChangeLog log)
         {
             foreach (var hunks in await Patches())
             {
                 foreach (var hunk in hunks)
                 {
-                    hunk.LogAuthorChanges(log);
+                    hunk.WriteInto(log);
                 }
             }
         }

@@ -17,16 +17,16 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public void LogAuthorChanges(AuthorsLog log)
+        public void WriteInto(ChangeLog log)
         {
             foreach (var deletion in _deletions)
             {
-                log.LogAuthorDeletion(deletion, _author, _commit);
+                log.LogDeletion(deletion, _author, _commit);
             }
 
             for (var i = 0; i < _additions; i++)
             {
-                log.LogAuthorAddition(_author, _commit);
+                log.LogAddition(_author, _commit);
             }
         }
     }

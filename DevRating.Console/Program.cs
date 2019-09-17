@@ -13,7 +13,7 @@ namespace DevRating.Console
 
             var authors = new Players();
 
-            await git.LogAuthorChanges(authors);
+            await git.WriteInto(authors);
 
             authors.PrintToConsole();
         }

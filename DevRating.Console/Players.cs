@@ -5,7 +5,7 @@ using DevRating.Rating;
 
 namespace DevRating.Console
 {
-    internal class Players : AuthorsLog
+    internal class Players : ChangeLog
     {
         private readonly IDictionary<string, Player> _players;
         private readonly Player _new;
@@ -22,32 +22,32 @@ namespace DevRating.Console
             _empty = empty;
         }
 
-        public void LogAuthorDeletion(string author, string deleter, string commit)
+        public void LogDeletion(string victim, string initiator, string commit)
         {
-            if (author.Equals(deleter))
+            if (victim.Equals(initiator))
                 return;
             
             lock (_new)
             {
-                var previous = RemovedPlayer(author);
-                var next = RemovedPlayer(deleter);
+                var previous = RemovedPlayer(victim);
+                var next = RemovedPlayer(initiator);
 
                 var loser = previous.Loser(next);
                 var winner = next.Winner(previous);
 
-                _players.Add(author, loser);
-                _players.Add(deleter, winner);
+                _players.Add(victim, loser);
+                _players.Add(initiator, winner);
             }
         }
 
-        public void LogAuthorAddition(string author, string commit)
+        public void LogAddition(string initiator, string commit)
         {
-            lock (_new)
-            {
-                var winner = RemovedPlayer(author).Winner(_empty);
-
-                _players.Add(author, winner);
-            }
+//            lock (_new)
+//            {
+//                var winner = RemovedPlayer(author).Winner(_empty);
+//
+//                _players.Add(author, winner);
+//            }
         }
 
         public void PrintToConsole()
