@@ -56,12 +56,12 @@ namespace DevRating.Git
 
             if (!string.IsNullOrEmpty(_oldest))
             {
-                filter.ExcludeReachableFrom = new ObjectId(_oldest);
+                filter.ExcludeReachableFrom = _oldest;
             }
 
             if (!string.IsNullOrEmpty(_newest))
             {
-                filter.IncludeReachableFrom = new ObjectId(_newest);
+                filter.IncludeReachableFrom = _newest;
             }
 
             return filter;
