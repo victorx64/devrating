@@ -3,7 +3,7 @@ namespace DevRating.Rating
     public interface Player
     {
         double Points();
-        Player Winner(Player opponent);
-        Player Loser(Player opponent);
+        Player Winner(Player contender);
+        Player Loser(Player contender);
     }
 }

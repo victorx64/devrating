@@ -24,19 +24,19 @@ namespace DevRating.Rating
             return _points;
         }
 
-        public Player Winner(Player opponent)
+        public Player Winner(Player contender)
         {
-            return UpdatedPlayer(1d, opponent);
+            return UpdatedPlayer(1d, contender);
         }
 
-        public Player Loser(Player opponent)
+        public Player Loser(Player contender)
         {
-            return UpdatedPlayer(0d, opponent);
+            return UpdatedPlayer(0d, contender);
         }
         
-        private Player UpdatedPlayer(double outcome, Player opponent)
+        private Player UpdatedPlayer(double outcome, Player contender)
         {
-            var points = _formula.UpdatedPoints(0d, _points, opponent.Points());
+            var points = _formula.UpdatedPoints(outcome, _points, contender.Points());
 
             return new DefaultPlayer(_formula, points);
         }
