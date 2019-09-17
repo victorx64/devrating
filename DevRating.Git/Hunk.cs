@@ -24,10 +24,7 @@ namespace DevRating.Git
                 log.LogDeletion(deletion, _author, _commit);
             }
 
-            for (var i = 0; i < _additions; i++)
-            {
-                log.LogAddition(_author, _commit);
-            }
+            log.LogAddition(_additions, _author, _commit);
         }
     }
 }

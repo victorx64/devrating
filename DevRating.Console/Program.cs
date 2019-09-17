@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DevRating.Rating;
 
 namespace DevRating.Console
 {
@@ -11,9 +12,11 @@ namespace DevRating.Console
                 "151bdb5ebfd0cfbcad0aa10d6327ff79e534fda5",
                 "HEAD");
 
-            var authors = new Players();
+            var authors = new DictionaryPlayers();
 
-            await git.WriteInto(authors);
+            var log = new PlayersChangeLog(authors, new SimplePlayer(), new EloPointsFormula());
+
+            await git.WriteInto(log);
 
             authors.PrintToConsole();
         }

@@ -2,6 +2,7 @@ namespace DevRating.Rating
 {
     public interface PointsFormula
     {
-        double UpdatedPoints(double outcome, double points, double contender);
+        double WinProbability(double winner, double loser);
+        double WinnerExtraPoints(double winner, double loser);
     }
 }

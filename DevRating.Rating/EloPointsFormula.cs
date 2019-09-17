@@ -17,22 +17,18 @@ namespace DevRating.Rating
             _n = n;
         }
 
-        public double UpdatedPoints(double outcome, double points, double contender)
+        public double WinnerExtraPoints(double winner, double loser)
         {
-            var expectedOutcome = ExpectedOutcome(points, contender);
+            var probability = WinProbability(winner, loser);
 
-            return points + _k * (outcome - expectedOutcome);
+            return _k * (1d - probability);
         }
 
-        private double ExpectedOutcome(double points, double opponentPoints)
+        public double WinProbability(double winner, double loser)
         {
-            var ra = points;
+            var qa = Math.Pow(10d, winner / _n);
 
-            var rb = opponentPoints;
-
-            var qa = Math.Pow(10d, ra / _n);
-
-            var qb = Math.Pow(10d, rb / _n);
+            var qb = Math.Pow(10d, loser / _n);
 
             var ea = qa / (qa + qb);
 
