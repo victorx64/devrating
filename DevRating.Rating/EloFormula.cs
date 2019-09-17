@@ -2,16 +2,16 @@ using System;
 
 namespace DevRating.Rating
 {
-    public sealed class EloPointsFormula : PointsFormula
+    public sealed class EloFormula : Formula
     {
         private readonly double _k;
         private readonly double _n;
 
-        public EloPointsFormula() : this(2d, 400d)
+        public EloFormula() : this(2d, 400d)
         {
         }
 
-        public EloPointsFormula(double k, double n)
+        public EloFormula(double k, double n)
         {
             _k = k;
             _n = n;

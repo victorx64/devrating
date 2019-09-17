@@ -17,7 +17,7 @@ namespace DevRating.Console
                         new DictionaryPlayers(
                             new DefaultPlayer(
                                 new DefaultGame(1200d))),
-                        new EloPointsFormula(),
+                        new EloFormula(),
                         2000d));
         }
     }

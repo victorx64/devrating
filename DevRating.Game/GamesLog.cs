@@ -6,10 +6,10 @@ namespace DevRating.Game
     public sealed class GamesLog : Log
     {
         private readonly Players _players;
-        private readonly PointsFormula _formula;
+        private readonly Formula _formula;
         private readonly double _threshold;
 
-        public GamesLog(Players players, PointsFormula formula, double threshold)
+        public GamesLog(Players players, Formula formula, double threshold)
         {
             _players = players;
             _formula = formula;

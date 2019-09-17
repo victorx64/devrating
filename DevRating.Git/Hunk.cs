@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DevRating.Git
 {
-    public sealed class Hunk
+    internal sealed class Hunk
     {
         private readonly string _author;
         private readonly IEnumerable<string> _deletions;

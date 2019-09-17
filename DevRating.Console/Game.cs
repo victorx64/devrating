@@ -1,4 +1,4 @@
-namespace DevRating.Game
+namespace DevRating.Console
 {
     public interface Game
     {

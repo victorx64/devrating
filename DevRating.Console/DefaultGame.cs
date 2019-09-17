@@ -1,6 +1,6 @@
 namespace DevRating.Console
 {
-    public sealed class DefaultGame : Game.Game
+    public sealed class DefaultGame : Game
     {
         private readonly double _points;
 

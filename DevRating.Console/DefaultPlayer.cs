@@ -6,13 +6,13 @@ namespace DevRating.Console
 {
     public sealed class DefaultPlayer : Player
     {
-        private readonly IList<Game.Game> _games;
+        private readonly IList<Game> _games;
 
-        public DefaultPlayer(Game.Game game) : this(new List<Game.Game> {game})
+        public DefaultPlayer(Game game) : this(new List<Game> {game})
         {
         }
 
-        public DefaultPlayer(IList<Game.Game> games)
+        public DefaultPlayer(IList<Game> games)
         {
             _games = games;
         }
@@ -20,7 +20,7 @@ namespace DevRating.Console
         public Player PerformedPlayer(string contender, string commit, double points, double reward, int rounds)
         {
             return new DefaultPlayer(
-                new List<Game.Game>(_games)
+                new List<Game>(_games)
                 {
                     new DefaultGame(contender, commit, points, reward, rounds)
                 });
