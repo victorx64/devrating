@@ -56,7 +56,7 @@ namespace DevRating.Console
 
         private int PairComparison(KeyValuePair<string, Player> x, KeyValuePair<string, Player> y)
         {
-            return x.Value.Points().CompareTo(y.Value.Points());
+            return y.Value.Points().CompareTo(x.Value.Points());
         }
     }
 }

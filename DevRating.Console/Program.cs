@@ -9,15 +9,15 @@ namespace DevRating.Console
         {
             var git = new Git.Git(
                 ".",
-                "151bdb5ebfd0cfbcad0aa10d6327ff79e534fda5",
+                "HEAD~3",
                 "HEAD");
 
             var players = new DictionaryPlayers();
 
             var log = new GamesLog(
                 players: players,
-                @default: new DefaultPlayer(new Game("default", 1200d)),
-                entropy: new DefaultPlayer(new Game("entropy", 1200d)), 
+                @default: new DefaultPlayer(new DefaultGame(1200d)),
+                emptiness: new DefaultPlayer(new DefaultGame(2000d)),
                 formula: new EloPointsFormula());
 
             await git.WriteInto(log);

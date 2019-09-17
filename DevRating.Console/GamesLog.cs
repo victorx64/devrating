@@ -7,14 +7,14 @@ namespace DevRating.Console
     {
         private readonly Players _players;
         private readonly Player _default;
-        private readonly Player _entropy;
+        private readonly Player _emptiness;
         private readonly PointsFormula _formula;
 
-        public GamesLog(Players players, Player @default, Player entropy, PointsFormula formula)
+        public GamesLog(Players players, Player @default, Player emptiness, PointsFormula formula)
         {
             _players = players;
             _default = @default;
-            _entropy = entropy;
+            _emptiness = emptiness;
             _formula = formula;
         }
 
@@ -24,16 +24,16 @@ namespace DevRating.Console
             {
                 var loser = PlayerOrDefault(victim);
                 var winner = PlayerOrDefault(initiator);
-                
+
                 // multiplying to 'count' is gross simplification
                 var extra = _formula.WinnerExtraPoints(winner.Points(), loser.Points()) * count;
                 var reward = _formula.WinProbability(winner.Points(), loser.Points()) * count;
 
                 AddOrUpdatePlayer(victim,
-                    loser.NewPlayer(new Game(initiator, commit, loser.Points() - extra, 0d, count)));
+                    loser.NewPlayer(new DefaultGame(initiator, commit, loser.Points() - extra, 0d, count)));
 
                 AddOrUpdatePlayer(initiator,
-                    winner.NewPlayer(new Game(victim, commit, winner.Points() + extra, reward, count)));
+                    winner.NewPlayer(new DefaultGame(victim, commit, winner.Points() + extra, reward, count)));
             }
         }
 
@@ -42,11 +42,11 @@ namespace DevRating.Console
             lock (_players)
             {
                 var winner = PlayerOrDefault(initiator);
-                
-                var reward = _formula.WinProbability(winner.Points(), _entropy.Points()) * count;
+
+                var reward = _formula.WinProbability(winner.Points(), _emptiness.Points()) * count;
 
                 AddOrUpdatePlayer(initiator,
-                    winner.NewPlayer(new Game("entropy", commit, winner.Points(), reward, count)));
+                    winner.NewPlayer(new DefaultGame("emptiness", commit, winner.Points(), reward, count)));
             }
         }
 
