@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 
@@ -8,66 +7,31 @@ namespace DevRating.Git
     public sealed class Git : Watchdog, IDisposable
     {
         private readonly Repository _repo;
-        private readonly string _oldest;
-        private readonly string _newest;
+        private readonly string _commit;
 
-        public Git(string path, string oldest, string newest) : this(new Repository(path), oldest, newest)
+        public Git(string path, string commit) : this(new Repository(path), commit)
         {
         }
 
-        public Git(Repository repo, string oldest, string newest)
+        public Git(Repository repo, string commit)
         {
-            _oldest = oldest;
-            _newest = newest;
             _repo = repo;
+            _commit = commit;
         }
 
-        public async Task WriteInto(Log log)
+        public Task WriteInto(Log log)
         {
-            foreach (var commit in Commits())
-            {
-                await commit.WriteInto(log);
-            }
+            return Commit().WriteInto(log);
         }
 
-        private IEnumerable<Commit> Commits()
+        private Commit Commit()
         {
-            var filter = CommitFilter();
-
             var options = new CompareOptions
             {
                 ContextLines = 0
             };
 
-            var commits = new List<Commit>();
-
-            foreach (var commit in _repo.Commits.QueryBy(filter))
-            {
-                commits.Add(new Commit(_repo, options, commit));
-            }
-
-            return commits;
-        }
-
-        private CommitFilter CommitFilter()
-        {
-            var filter = new CommitFilter
-            {
-                SortBy = CommitSortStrategies.Topological |
-                         CommitSortStrategies.Reverse
-            };
-
-            if (!string.IsNullOrEmpty(_oldest))
-            {
-                filter.ExcludeReachableFrom = _oldest;
-            }
-
-            if (!string.IsNullOrEmpty(_newest))
-            {
-                filter.IncludeReachableFrom = _newest;
-            }
-
-            return filter;
+            return new Commit(_repo, options, _repo.Lookup<LibGit2Sharp.Commit>(_commit));
         }
 
         public void Dispose()

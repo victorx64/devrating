@@ -19,15 +19,13 @@ namespace DevRating.Git
 
         public async Task WriteInto(Log log)
         {
-            foreach (var difference in ParentsDifferences())
+            foreach (var difference in DifferencesFromParents())
             {
                 await difference.WriteInto(log);
             }
-            
-            await log.Save();
         }
 
-        private IEnumerable<CommitsDifference> ParentsDifferences()
+        private IEnumerable<CommitsDifference> DifferencesFromParents()
         {
             var differences = new List<CommitsDifference>();
 

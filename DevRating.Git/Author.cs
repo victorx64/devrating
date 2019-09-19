@@ -2,7 +2,7 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public class Author
+    internal sealed class Author
     {
         private readonly IRepository _repo;
         private readonly Signature _signature;
