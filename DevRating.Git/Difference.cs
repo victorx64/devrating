@@ -4,21 +4,21 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    internal sealed class CommitsDifference : Watchdog
+    internal sealed class Difference : Watchdog
     {
-        private readonly IRepository _repo;
+        private readonly IRepository _repository;
         private readonly CompareOptions _options;
-        private readonly LibGit2Sharp.Commit _commit;
-        private readonly LibGit2Sharp.Commit _parent;
+        private readonly LibGit2Sharp.Commit _first;
+        private readonly LibGit2Sharp.Commit _second;
         private readonly string _author;
 
-        public CommitsDifference(IRepository repo, CompareOptions options, LibGit2Sharp.Commit commit,
-            LibGit2Sharp.Commit parent, string author)
+        public Difference(IRepository repository, CompareOptions options, LibGit2Sharp.Commit first,
+            LibGit2Sharp.Commit second, string author)
         {
-            _repo = repo;
+            _repository = repository;
             _options = options;
-            _commit = commit;
-            _parent = parent;
+            _first = first;
+            _second = second;
             _author = author;
         }
 
@@ -34,7 +34,7 @@ namespace DevRating.Git
         {
             var patches = new List<FilePatch>();
 
-            var differences = _repo.Diff.Compare<Patch>(_parent.Tree, _commit.Tree, _options);
+            var differences = _repository.Diff.Compare<Patch>(_second.Tree, _first.Tree, _options);
 
             foreach (var difference in differences)
             {
@@ -44,7 +44,7 @@ namespace DevRating.Git
                     (difference.Status == ChangeKind.Deleted ||
                      difference.Status == ChangeKind.Modified))
                 {
-                    patches.Add(new FilePatch(_repo, difference, _commit, _parent, _author));
+                    patches.Add(new FilePatch(_repository, difference, _first.Sha, _second, _author));
                 }
             }
 

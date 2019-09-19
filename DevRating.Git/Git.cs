@@ -6,16 +6,16 @@ namespace DevRating.Git
 {
     public sealed class Git : Watchdog, IDisposable
     {
-        private readonly Repository _repo;
+        private readonly IRepository _repository;
         private readonly string _commit;
 
         public Git(string path, string commit) : this(new Repository(path), commit)
         {
         }
 
-        public Git(Repository repo, string commit)
+        public Git(IRepository repository, string commit)
         {
-            _repo = repo;
+            _repository = repository;
             _commit = commit;
         }
 
@@ -31,12 +31,12 @@ namespace DevRating.Git
                 ContextLines = 0
             };
 
-            return new Commit(_repo, options, _repo.Lookup<LibGit2Sharp.Commit>(_commit));
+            return new Commit(_repository, options, _repository.Lookup<LibGit2Sharp.Commit>(_commit));
         }
 
         public void Dispose()
         {
-            _repo.Dispose();
+            _repository.Dispose();
         }
     }
 }

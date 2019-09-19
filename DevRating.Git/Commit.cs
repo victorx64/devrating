@@ -6,13 +6,13 @@ namespace DevRating.Git
 {
     internal sealed class Commit : Watchdog
     {
-        private readonly IRepository _repo;
+        private readonly IRepository _repository;
         private readonly CompareOptions _options;
         private readonly LibGit2Sharp.Commit _commit;
 
-        public Commit(IRepository repo, CompareOptions options, LibGit2Sharp.Commit commit)
+        public Commit(IRepository repository, CompareOptions options, LibGit2Sharp.Commit commit)
         {
-            _repo = repo;
+            _repository = repository;
             _options = options;
             _commit = commit;
         }
@@ -25,15 +25,15 @@ namespace DevRating.Git
             }
         }
 
-        private IEnumerable<CommitsDifference> DifferencesFromParents()
+        private IEnumerable<Difference> DifferencesFromParents()
         {
-            var differences = new List<CommitsDifference>();
+            var differences = new List<Difference>();
 
-            var author = new Author(_repo, _commit.Author);
+            var author = new Author(_repository, _commit.Author);
 
             foreach (var parent in _commit.Parents)
             {
-                differences.Add(new CommitsDifference(_repo, _options, _commit, parent, author.Email()));
+                differences.Add(new Difference(_repository, _options, _commit, parent, author.Email()));
             }
 
             return differences;
