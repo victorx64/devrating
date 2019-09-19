@@ -5,31 +5,32 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public sealed class Git
+    public sealed class Git : Watchdog, IDisposable
     {
-        private readonly string _path;
+        private readonly Repository _repo;
         private readonly string _oldest;
         private readonly string _newest;
 
-        public Git(string path, string oldest, string newest)
+        public Git(string path, string oldest, string newest) : this(new Repository(path), oldest, newest)
         {
-            _path = path;
+        }
+
+        public Git(Repository repo, string oldest, string newest)
+        {
             _oldest = oldest;
             _newest = newest;
+            _repo = repo;
         }
 
         public async Task WriteInto(Log log)
         {
-            foreach (var hunks in await Patches())
+            foreach (var commit in Commits())
             {
-                foreach (var hunk in hunks)
-                {
-                    hunk.WriteInto(log);
-                }
+                await commit.WriteInto(log);
             }
         }
 
-        private async Task<IEnumerable<IEnumerable<Hunk>>> Patches()
+        private IEnumerable<Commit> Commits()
         {
             var filter = CommitFilter();
 
@@ -38,12 +39,14 @@ namespace DevRating.Git
                 ContextLines = 0
             };
 
-            using (var repo = new Repository(_path))
-            {
-                var tasks = HunkTasks(repo, filter, options);
+            var commits = new List<Commit>();
 
-                return await Task.WhenAll(tasks);
+            foreach (var commit in _repo.Commits.QueryBy(filter))
+            {
+                commits.Add(new Commit(_repo, options, commit));
             }
+
+            return commits;
         }
 
         private CommitFilter CommitFilter()
@@ -67,119 +70,9 @@ namespace DevRating.Git
             return filter;
         }
 
-        private IEnumerable<Task<IEnumerable<Hunk>>> HunkTasks(IRepository repo, CommitFilter filter,
-            CompareOptions options)
+        public void Dispose()
         {
-            var tasks = new List<Task<IEnumerable<Hunk>>>();
-
-            foreach (var commit in repo.Commits.QueryBy(filter))
-            {
-                tasks.AddRange(CommitHunkTasks(repo, options, commit));
-            }
-
-            return tasks;
-        }
-
-        private IEnumerable<Task<IEnumerable<Hunk>>> CommitHunkTasks(IRepository repo, CompareOptions options,
-            Commit commit)
-        {
-            var tasks = new List<Task<IEnumerable<Hunk>>>();
-
-            var author = Email(repo, commit.Author);
-
-            foreach (var parent in commit.Parents)
-            {
-                tasks.AddRange(ParentCommitHunkTasks(repo, options, commit, parent, author));
-            }
-
-            return tasks;
-        }
-
-        private IEnumerable<Task<IEnumerable<Hunk>>> ParentCommitHunkTasks(IRepository repo, CompareOptions options,
-            Commit commit,
-            Commit parent,
-            string author)
-        {
-            var tasks = new List<Task<IEnumerable<Hunk>>>();
-
-            var patches = repo.Diff.Compare<Patch>(parent.Tree, commit.Tree, options);
-
-            foreach (var patch in patches)
-            {
-                if (!patch.IsBinaryComparison &&
-                    patch.OldMode == Mode.NonExecutableFile &&
-                    patch.Mode == Mode.NonExecutableFile &&
-                    (patch.Status == ChangeKind.Deleted ||
-                     patch.Status == ChangeKind.Modified))
-                {
-                    tasks.Add(Task.Run(() => Hunks(repo, patch, commit, parent, author)));
-                }
-            }
-
-            return tasks;
-        }
-
-        private IEnumerable<Hunk> Hunks(IRepository repo, PatchEntryChanges patch, GitObject commit,
-            Commit parent, string author)
-        {
-            var hunks = new List<Hunk>();
-
-            var blame = repo.Blame(patch.OldPath, new BlameOptions
-            {
-                StartingAt = parent
-            });
-
-            foreach (var line in patch.Patch.Split('\n'))
-            {
-                if (line.StartsWith("@@ "))
-                {
-                    // line must be like "@@ -3,9 +3,9 @@ blah..."
-                    var parts = line.Split(' ');
-
-                    hunks.Add(new Hunk(author, Deletions(repo, parts[1], blame), Additions(parts[2]), commit.Sha));
-                }
-            }
-
-            return hunks;
-        }
-
-        private IEnumerable<string> Deletions(IRepository repo, string hunk, BlameHunkCollection blame)
-        {
-            var deletions = new List<string>();
-
-            var parts = hunk
-                .Substring(1)
-                .Split(',');
-
-            var index = Convert.ToInt32(parts[0]) - 1;
-
-            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
-
-            for (var i = index; i < index + count; i++)
-            {
-                deletions.Add(Email(repo, blame.HunkForLine(i).FinalSignature));
-            }
-
-            return deletions;
-        }
-
-        private int Additions(string hunk)
-        {
-            var parts = hunk
-                .Substring(1)
-                .Split(',');
-
-            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
-
-            return count;
-        }
-
-        private string Email(IRepository repo, Signature signature)
-        {
-            return string.IsNullOrEmpty(signature.Name) ||
-                   string.IsNullOrEmpty(signature.Email)
-                ? signature.Email
-                : repo.Mailmap.ResolveSignature(signature).Email;
+            _repo.Dispose();
         }
     }
 }
