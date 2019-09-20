@@ -1,8 +1,9 @@
 namespace DevRating.Game
 {
-    public interface Game
+    public interface Match
     {
-        double PointsAfter();
+        string Player();
+        double Points();
         string Commit();
         string Contender();
         int Rounds();
