@@ -29,11 +29,9 @@ namespace DevRating.Git
         {
             var differences = new List<Difference>();
 
-            var author = new Author(_repository, _commit.Author);
-
             foreach (var parent in _commit.Parents)
             {
-                differences.Add(new Difference(_repository, _options, _commit, parent, author.Email()));
+                differences.Add(new Difference(_repository, _options, _commit, parent));
             }
 
             return differences;

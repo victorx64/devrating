@@ -1,34 +1,32 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
     internal sealed class Hunk : Watchdog
     {
-        private readonly string _author;
         private readonly IEnumerable<string> _deletions;
         private readonly int _additions;
-        private readonly string _commit;
 
-        public Hunk(string author, IEnumerable<string> deletions, int additions, string commit)
+        public Hunk(IEnumerable<string> deletions, int additions)
         {
-            _author = author;
             _deletions = deletions;
             _additions = additions;
-            _commit = commit;
         }
 
-        public async Task WriteInto(Log log)
+        public Task WriteInto(Log log)
         {
-            var deletions = _deletions.GroupBy(d => d); 
-            
-            foreach (var deletion in deletions)
+            foreach (var deletion in _deletions)
             {
-                await log.LogDeletion(deletion.Count(), deletion.Key, _author, _commit);
+                log.LogDeletion(deletion);
             }
 
-            await log.LogAddition(_additions, _author, _commit);
+            for (var i = 0; i < _additions; i++)
+            {
+                log.LogAddition();
+            }
+            
+            return Task.CompletedTask;
         }
     }
 }

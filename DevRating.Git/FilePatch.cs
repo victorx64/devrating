@@ -9,18 +9,13 @@ namespace DevRating.Git
     {
         private readonly IRepository _repo;
         private readonly PatchEntryChanges _patch;
-        private readonly string _commit;
         private readonly LibGit2Sharp.Commit _parent;
-        private readonly string _author;
 
-        public FilePatch(IRepository repo, PatchEntryChanges patch, string commit, LibGit2Sharp.Commit parent,
-            string author)
+        public FilePatch(IRepository repo, PatchEntryChanges patch, LibGit2Sharp.Commit parent)
         {
             _repo = repo;
             _patch = patch;
-            _commit = commit;
             _parent = parent;
-            _author = author;
         }
 
         public async Task WriteInto(Log log)
@@ -47,7 +42,7 @@ namespace DevRating.Git
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
                     var parts = line.Split(' ');
 
-                    hunks.Add(new Hunk(_author, Deletions(_repo, parts[1], blame), Additions(parts[2]), _commit));
+                    hunks.Add(new Hunk(Deletions(_repo, parts[1], blame), Additions(parts[2])));
                 }
             }
 

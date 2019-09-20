@@ -10,16 +10,14 @@ namespace DevRating.Git
         private readonly CompareOptions _options;
         private readonly LibGit2Sharp.Commit _first;
         private readonly LibGit2Sharp.Commit _second;
-        private readonly string _author;
 
         public Difference(IRepository repository, CompareOptions options, LibGit2Sharp.Commit first,
-            LibGit2Sharp.Commit second, string author)
+            LibGit2Sharp.Commit second)
         {
             _repository = repository;
             _options = options;
             _first = first;
             _second = second;
-            _author = author;
         }
 
         public async Task WriteInto(Log log)
@@ -44,7 +42,7 @@ namespace DevRating.Git
                     (difference.Status == ChangeKind.Deleted ||
                      difference.Status == ChangeKind.Modified))
                 {
-                    patches.Add(new FilePatch(_repository, difference, _first.Sha, _second, _author));
+                    patches.Add(new FilePatch(_repository, difference, _second));
                 }
             }
 

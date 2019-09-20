@@ -24,6 +24,12 @@ namespace DevRating.Git
             return Commit().WriteInto(log);
         }
 
+        public string AuthorEmail()
+        {
+            return new Author(_repository, _repository.Lookup<LibGit2Sharp.Commit>(_commit).Author)
+                .Email();
+        }
+
         private Commit Commit()
         {
             var options = new CompareOptions
