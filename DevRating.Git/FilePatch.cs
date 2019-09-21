@@ -18,11 +18,11 @@ namespace DevRating.Git
             _parent = parent;
         }
 
-        public async Task WriteInto(Log log)
+        public async Task WriteInto(History history)
         {
             foreach (var hunk in await Task.Run(Hunks))
             {
-                await hunk.WriteInto(log);
+                await hunk.WriteInto(history);
             }
         }
 

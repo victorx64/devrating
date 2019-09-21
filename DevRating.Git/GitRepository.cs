@@ -4,27 +4,32 @@ using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    public sealed class Git : Watchdog, IDisposable
+    public sealed class GitRepository : IDisposable
     {
         private readonly IRepository _repository;
         private readonly string _commit;
 
-        public Git(string path, string commit) : this(new Repository(path), commit)
+        public GitRepository(string path, string commit) : this(new Repository(path), commit)
         {
         }
 
-        public Git(IRepository repository, string commit)
+        public GitRepository(IRepository repository, string commit)
         {
             _repository = repository;
             _commit = commit;
         }
 
-        public Task WriteInto(Log log)
+        public async Task<History> History(HistoryFactory factory)
         {
-            return Commit().WriteInto(log);
+            var history = factory.History(_commit, AuthorEmail());
+
+            await Commit()
+                .WriteInto(history);
+
+            return history;
         }
 
-        public string AuthorEmail()
+        private string AuthorEmail()
         {
             return new Author(_repository, _repository.Lookup<LibGit2Sharp.Commit>(_commit).Author)
                 .Email();

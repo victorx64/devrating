@@ -4,6 +4,6 @@ namespace DevRating.Git
 {
     internal interface Watchdog
     {
-        Task WriteInto(Log log);
+        Task WriteInto(History history);
     }
 }

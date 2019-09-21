@@ -14,17 +14,14 @@ namespace DevRating.Git
             _additions = additions;
         }
 
-        public Task WriteInto(Log log)
+        public Task WriteInto(History history)
         {
             foreach (var deletion in _deletions)
             {
-                log.LogDeletion(deletion);
+                history.LogDeletion(deletion);
             }
 
-            for (var i = 0; i < _additions; i++)
-            {
-                log.LogAddition();
-            }
+            history.LogAdditions(_additions);
             
             return Task.CompletedTask;
         }

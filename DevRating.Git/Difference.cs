@@ -20,11 +20,11 @@ namespace DevRating.Git
             _second = second;
         }
 
-        public async Task WriteInto(Log log)
+        public async Task WriteInto(History history)
         {
             foreach (var patch in FilePatches())
             {
-                await patch.WriteInto(log);
+                await patch.WriteInto(history);
             }
         }
 
