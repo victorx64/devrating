@@ -2,24 +2,13 @@ using DevRating.Game;
 
 namespace DevRating.AzureTable
 {
-    public class AzureMatch : Match
+    internal class AzureMatch : Match
     {
         private readonly MatchTableEntity _entity;
 
-        public AzureMatch(string player, string contender, byte type, string commit, double points, double reward, int rounds)
+        public AzureMatch(MatchTableEntity entity)
         {
-            _entity = new MatchTableEntity
-            {
-                Commit = commit,
-                Contender = contender,
-                Type = type,
-                Player = player,
-                Points = points,
-                Reward = reward,
-                Rounds = rounds,
-                PartitionKey = player,
-                RowKey = commit
-            };
+            _entity = entity;
         }
 
         public string Player()

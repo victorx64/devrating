@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DevRating.Game;
@@ -5,52 +6,125 @@ using Microsoft.Azure.Cosmos.Table;
 
 namespace DevRating.AzureTable
 {
-    public class AzureMatches : Matches
+    public sealed class AzureMatches : Matches
     {
+        private readonly string _container;
+        private readonly string _connection;
         private readonly CloudTable _table;
+        private readonly IDictionary<string, Player> _players;
 
-        public AzureMatches()
+        public AzureMatches(string connection, string container, string table)
+            : this(connection, container, Table(connection, table))
         {
         }
 
-        public AzureMatches(CloudTable table)
+        public AzureMatches(string connection, string container, CloudTable table)
         {
+            _connection = connection;
             _table = table;
+            _container = container;
+            _players = new Dictionary<string, Player>();
         }
-        
-        public Task<double> Points(string player)
+
+        public async Task<double> Points(string player)
         {
-            throw new System.NotImplementedException();
+            var key = _players[player].LastMatchKey();
+
+            var operation = TableOperation.Retrieve<MatchTableEntity>(player, key);
+
+            var result = await _table.ExecuteAsync(operation);
+
+            var match = (MatchTableEntity) result.Result;
+
+            return match.Points;
         }
 
         public Task Add(string player, string contender, string commit, double points, double reward, int rounds)
         {
-            throw new System.NotImplementedException();
+            var type = player.Equals(contender) ? (byte) 1 : (byte) 0;
+
+            return Add(player, contender, commit, points, reward, rounds, type);
         }
 
         public Task Add(string player, string commit, double points, double reward, int rounds)
         {
-            throw new System.NotImplementedException();
+            return Add(player, string.Empty, commit, points, reward, rounds, 2);
+        }
+
+        private Task Add(string player, string contender, string commit, double points, double reward, int rounds,
+            byte type)
+        {
+            _players[player].MoveLastMatchKey();
+
+            var key = _players[player].LastMatchKey();
+
+            var match = new MatchTableEntity(key, player, contender, type, commit, points, reward, rounds);
+
+            var operation = TableOperation.InsertOrReplace(match);
+
+            return _table.ExecuteAsync(operation);
         }
 
         public Task<IEnumerable<Match>> Matches(string player)
         {
-            throw new System.NotImplementedException();
+            var query = new TableQuery<MatchTableEntity>()
+                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, player));
+
+            var matches = new List<Match>();
+
+            foreach (var entity in _table.ExecuteQuery(query)) // TODO Consider using ExecuteQuerySegmentedAsync
+            {
+                matches.Add(new AzureMatch(entity));
+            }
+
+            return Task.FromResult((IEnumerable<Match>) matches);
         }
 
-        public Task Lock(string player)
+        public async Task Lock(string player)
         {
-            throw new System.NotImplementedException();
+            _players.Add(player, new Player(player, _container, _connection));
+
+            await _players[player].Lock();
         }
 
-        public Task Unlock(string player)
+        public async Task Unlock(string player)
         {
-            throw new System.NotImplementedException();
+            await _players[player].Unlock();
+
+            _players.Remove(player);
         }
 
-        public Task Sync()
+        public async Task Sync()
         {
-            throw new System.NotImplementedException();
+            foreach (var player in _players.Values)
+            {
+                player.ThrowIfNotLocked();
+            }
+
+            try
+            {
+                foreach (var player in _players.Values)
+                {
+                    await player.Sync();
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Error has occured while syncing", exception);
+            }
+        }
+
+        private static CloudTable Table(string connection, string table)
+        {
+            var storageAccount = CloudStorageAccount.Parse(connection);
+
+            var client = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
+
+            var reference = client.GetTableReference(table);
+
+            reference.CreateIfNotExists();
+
+            return reference;
         }
     }
 }

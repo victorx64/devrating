@@ -13,7 +13,7 @@ namespace DevRating.Console
             var history = (GamesHistory) await new GitRepository(".", "HEAD")
                 .History(new GamesHistoryFactory(new EloFormula(), 2000d));
 
-            await history.PushInto(new AzureMatches());
+            await history.PushInto(new AzureMatches("","key","match"));
         }
     }
 }
