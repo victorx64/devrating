@@ -2,7 +2,7 @@ using Microsoft.Azure.Cosmos.Table;
 
 namespace DevRating.AzureTable
 {
-    public class MatchTableEntity : TableEntity
+    internal sealed class MatchTableEntity : TableEntity
     {
         public string Player { get; set; }
         public string Contender { get; set; }
