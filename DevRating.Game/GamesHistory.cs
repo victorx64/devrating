@@ -6,23 +6,21 @@ using DevRating.Rating;
 
 namespace DevRating.Game
 {
-    public sealed class GamesLog : Log
+    public sealed class GamesHistory : History
     {
-        private readonly Matches _matches;
-        private readonly Formula _formula;
-        private readonly double _threshold;
         private readonly string _commit;
         private readonly string _author;
+        private readonly Formula _formula;
+        private readonly double _threshold;
         private readonly IDictionary<string, int> _deletions;
         private int _additions;
 
-        public GamesLog(Matches matches, Formula formula, double threshold, string commit, string author)
+        public GamesHistory(string commit, string author, Formula formula, double threshold)
         {
-            _matches = matches;
-            _formula = formula;
-            _threshold = threshold;
             _commit = commit;
             _author = author;
+            _formula = formula;
+            _threshold = threshold;
 
             _deletions = new Dictionary<string, int>();
         }
@@ -39,12 +37,12 @@ namespace DevRating.Game
             }
         }
 
-        public void LogAddition()
+        public void LogAdditions(int count)
         {
-            ++_additions;
+            _additions += count;
         }
 
-        public async Task Push()
+        public async Task PushInto(Matches matches)
         {
             var authors = _deletions.Keys.ToList();
 
@@ -59,14 +57,14 @@ namespace DevRating.Game
             {
                 foreach (var author in authors)
                 {
-                    await _matches.Lock(author);
+                    await matches.Lock(author);
                 }
 
-                await PushDeletionMatches();
+                await PushDeletionMatches(matches);
 
-                await PushAdditionMatches();
+                await PushAdditionMatches(matches);
 
-                await _matches.Sync();
+                await matches.Sync();
             }
             finally
             {
@@ -74,36 +72,36 @@ namespace DevRating.Game
 
                 foreach (var author in authors)
                 {
-                    await _matches.Unlock(author);
+                    await matches.Unlock(author);
                 }
             }
         }
 
-        private async Task PushAdditionMatches()
+        private async Task PushAdditionMatches(Matches matches)
         {
-            var winner = await _matches.Points(_author);
+            var winner = await matches.Points(_author);
 
             var reward = _formula.WinProbability(winner, _threshold) * _additions;
 
-            await _matches.Add(_author, _commit, winner, reward, _additions);
+            await matches.Add(_author, _commit, winner, reward, _additions);
         }
 
-        private async Task PushDeletionMatches()
+        private async Task PushDeletionMatches(Matches matches)
         {
             foreach (var deletion in _deletions)
             {
                 var victim = deletion.Key;
                 var count = deletion.Value;
 
-                var loser = await _matches.Points(victim);
-                var winner = await _matches.Points(_author);
+                var loser = await matches.Points(victim);
+                var winner = await matches.Points(_author);
 
                 // multiplying to 'count' is gross simplification
                 var extra = _formula.WinnerExtraPoints(winner, loser) * count;
                 var reward = _formula.WinProbability(winner, loser) * count;
 
-                await _matches.Add(victim, _author, _commit, loser - extra, 0d, count);
-                await _matches.Add(_author, victim, _commit, winner + extra, reward, count);
+                await matches.Add(victim, _author, _commit, loser - extra, 0d, count);
+                await matches.Add(_author, victim, _commit, winner + extra, reward, count);
             }
         }
     }
