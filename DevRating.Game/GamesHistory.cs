@@ -60,9 +60,9 @@ namespace DevRating.Game
                     await matches.Lock(author);
                 }
 
-                await PushDeletionMatches(matches);
+                await PushDeletionsInto(matches);
 
-                await PushAdditionMatches(matches);
+                await PushAdditionsInto(matches);
 
                 await matches.Sync();
             }
@@ -77,7 +77,7 @@ namespace DevRating.Game
             }
         }
 
-        private async Task PushAdditionMatches(Matches matches)
+        private async Task PushAdditionsInto(Matches matches)
         {
             var winner = await matches.Points(_author);
 
@@ -86,7 +86,7 @@ namespace DevRating.Game
             await matches.Add(_author, _commit, winner, reward, _additions);
         }
 
-        private async Task PushDeletionMatches(Matches matches)
+        private async Task PushDeletionsInto(Matches matches)
         {
             foreach (var deletion in _deletions)
             {
