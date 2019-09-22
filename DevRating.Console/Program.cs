@@ -1,24 +1,26 @@
-﻿using DevRating.Rating;
+﻿using System.Threading.Tasks;
+using DevRating.AzureTable;
+using DevRating.Game;
+using DevRating.Git;
+using DevRating.InMemoryStorage;
+using DevRating.Rating;
 
 namespace DevRating.Console
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main()
         {
-            var arguments = new DefaultArguments(args);
+            var history = (Games) await new GitRepository(".", "HEAD")
+                .History(new GamesFactory(new EloFormula(), 2000d));
 
-            new Report(
-                    new Git.Git(
-                        new DefaultPlayer(
-                            new Elo()),
-                        ".",
-                        arguments.OldestCommit(),
-                        arguments.NewestCommit()),
-                    arguments.Verbose()
-                        ? (Output) new VerboseConsoleOutput()
-                        : (Output) new QuiteConsoleOutput())
-                .Print();
+//            await history.PushInto(new AzureMatches("","key","match"));
+
+            var matches = new InMemoryMatches(1200d);
+
+            await history.PushInto(matches);
+            
+            matches.PrintToConsole();
         }
     }
 }
