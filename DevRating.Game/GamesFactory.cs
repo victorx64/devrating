@@ -3,20 +3,20 @@ using DevRating.Rating;
 
 namespace DevRating.Game
 {
-    public sealed class GamesHistoryFactory : HistoryFactory
+    public sealed class GamesFactory : ModificationsFactory
     {
         private readonly Formula _formula;
         private readonly double _threshold;
 
-        public GamesHistoryFactory(Formula formula, double threshold)
+        public GamesFactory(Formula formula, double threshold)
         {
             _formula = formula;
             _threshold = threshold;
         }
         
-        public History History(string commit, string author)
+        public Modifications Modifications(string commit, string author)
         {
-            return new GamesHistory(commit, author, _formula, _threshold);
+            return new Games(commit, author, _formula, _threshold);
         }
     }
 }

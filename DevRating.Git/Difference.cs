@@ -20,12 +20,16 @@ namespace DevRating.Git
             _second = second;
         }
 
-        public async Task WriteInto(History history)
+        public async Task WriteInto(Modifications modifications)
         {
+            var tasks = new List<Task>();
+            
             foreach (var patch in FilePatches())
             {
-                await patch.WriteInto(history);
+                tasks.Add(patch.WriteInto(modifications));
             }
+
+            await Task.WhenAll(tasks);
         }
 
         private IEnumerable<FilePatch> FilePatches()

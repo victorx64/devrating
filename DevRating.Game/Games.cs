@@ -6,7 +6,7 @@ using DevRating.Rating;
 
 namespace DevRating.Game
 {
-    public sealed class GamesHistory : History
+    public sealed class Games : Modifications
     {
         private readonly string _commit;
         private readonly string _author;
@@ -15,7 +15,7 @@ namespace DevRating.Game
         private readonly IDictionary<string, int> _deletions;
         private int _additions;
 
-        public GamesHistory(string commit, string author, Formula formula, double threshold)
+        public Games(string commit, string author, Formula formula, double threshold)
         {
             _commit = commit;
             _author = author;
@@ -25,21 +25,27 @@ namespace DevRating.Game
             _deletions = new Dictionary<string, int>();
         }
 
-        public void LogDeletion(string victim)
+        public void AddDeletion(string victim)
         {
-            if (_deletions.ContainsKey(victim))
+            lock (_deletions)
             {
-                ++_deletions[victim];
-            }
-            else
-            {
-                _deletions.Add(victim, 1);
+                if (_deletions.ContainsKey(victim))
+                {
+                    ++_deletions[victim];
+                }
+                else
+                {
+                    _deletions.Add(victim, 1);
+                }
             }
         }
 
-        public void LogAdditions(int count)
+        public void AddAdditions(int count)
         {
-            _additions += count;
+            lock (_deletions)
+            {
+                _additions += count;
+            }
         }
 
         public async Task PushInto(Matches matches)

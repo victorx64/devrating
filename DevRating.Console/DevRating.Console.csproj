@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DevRating.AzureTable\DevRating.AzureTable.csproj" />
+      <ProjectReference Include="..\DevRating.InMemoryStorage\DevRating.InMemoryStorage.csproj" />
     </ItemGroup>
 
 </Project>

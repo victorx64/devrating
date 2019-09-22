@@ -8,26 +8,31 @@ namespace DevRating.AzureTable
 {
     public sealed class AzureMatches : Matches
     {
+        private readonly double _points;
         private readonly string _container;
         private readonly string _connection;
         private readonly CloudTable _table;
         private readonly IDictionary<string, Player> _players;
 
-        public AzureMatches(string connection, string container, string table)
-            : this(connection, container, Table(connection, table))
+        public AzureMatches(string connection, string container, string table, double points)
+            : this(connection, container, Table(connection, table), points)
         {
         }
 
-        public AzureMatches(string connection, string container, CloudTable table)
+        public AzureMatches(string connection, string container, CloudTable table, double points)
         {
             _connection = connection;
             _table = table;
             _container = container;
+            _points = points;
             _players = new Dictionary<string, Player>();
         }
 
         public async Task<double> Points(string player)
         {
+            // TODO Make methods atomic
+            // TODO Return _points id _players[player] doesn't exist
+
             var key = _players[player].LastMatchKey();
 
             var operation = TableOperation.Retrieve<MatchTableEntity>(player, key);

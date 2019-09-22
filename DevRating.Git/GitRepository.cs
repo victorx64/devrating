@@ -19,12 +19,11 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public async Task<History> History(HistoryFactory factory)
+        public async Task<Modifications> History(ModificationsFactory factory)
         {
-            var history = factory.History(_commit, AuthorEmail());
+            var history = factory.Modifications(_commit, AuthorEmail());
 
-            await Commit()
-                .WriteInto(history);
+            await Commit().WriteInto(history);
 
             return history;
         }

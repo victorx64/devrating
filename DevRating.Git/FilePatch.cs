@@ -7,28 +7,28 @@ namespace DevRating.Git
 {
     internal sealed class FilePatch : Watchdog
     {
-        private readonly IRepository _repo;
+        private readonly IRepository _repository;
         private readonly PatchEntryChanges _patch;
         private readonly LibGit2Sharp.Commit _parent;
 
-        public FilePatch(IRepository repo, PatchEntryChanges patch, LibGit2Sharp.Commit parent)
+        public FilePatch(IRepository repository, PatchEntryChanges patch, LibGit2Sharp.Commit parent)
         {
-            _repo = repo;
+            _repository = repository;
             _patch = patch;
             _parent = parent;
         }
 
-        public async Task WriteInto(History history)
+        public async Task WriteInto(Modifications modifications)
         {
             foreach (var hunk in await Task.Run(Hunks))
             {
-                await hunk.WriteInto(history);
+                await hunk.WriteInto(modifications);
             }
         }
 
         private IEnumerable<Hunk> Hunks()
         {
-            var blame = _repo.Blame(_patch.OldPath, new BlameOptions
+            var blame = _repository.Blame(_patch.OldPath, new BlameOptions
             {
                 StartingAt = _parent
             });
@@ -42,7 +42,7 @@ namespace DevRating.Git
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
                     var parts = line.Split(' ');
 
-                    hunks.Add(new Hunk(Deletions(_repo, parts[1], blame), Additions(parts[2])));
+                    hunks.Add(new Hunk(Deletions(_repository, parts[1], blame), Additions(parts[2])));
                 }
             }
 

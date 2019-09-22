@@ -17,11 +17,11 @@ namespace DevRating.Git
             _commit = commit;
         }
 
-        public async Task WriteInto(History history)
+        public async Task WriteInto(Modifications modifications)
         {
             foreach (var difference in DifferencesFromParents())
             {
-                await difference.WriteInto(history);
+                await difference.WriteInto(modifications);
             }
         }
 
