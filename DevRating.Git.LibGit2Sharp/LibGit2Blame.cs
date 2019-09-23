@@ -7,6 +7,11 @@ namespace DevRating.Git.LibGit2Sharp
         private readonly BlameHunkCollection _collection;
         private readonly IRepository _repository;
 
+        public LibGit2Blame(string path, string sha, IRepository repository)
+            : this(repository.Blame(path, new BlameOptions {StartingAt = sha}), repository)
+        {
+        }
+
         public LibGit2Blame(BlameHunkCollection collection, IRepository repository)
         {
             _collection = collection;

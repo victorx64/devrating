@@ -40,25 +40,14 @@ namespace DevRating.Git.LibGit2Sharp
                         (difference.Status == ChangeKind.Deleted ||
                          difference.Status == ChangeKind.Modified))
                     {
-                        var blame = Blame(difference.OldPath, parent.Sha);
+                        var blame = new LibGit2Blame(difference.OldPath, parent.Sha, _repository);
 
                         patches.Add(new FilePatch(difference.Patch, blame));
                     }
                 }
             }
 
-
             return patches;
-        }
-
-        private Blame Blame(string path, string sha)
-        {
-            var blame = _repository.Blame(path, new BlameOptions
-            {
-                StartingAt = sha
-            });
-
-            return new LibGit2Blame(blame, _repository);
         }
 
         public string Author(string sha)

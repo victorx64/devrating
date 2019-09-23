@@ -1,21 +1,36 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DevRating.Git.Test
 {
     public class FakeModifications : Modifications
     {
+        private readonly IList<string> _deletions = new List<string>();
+        private int _additions;
+        
         public void AddDeletion(string victim)
         {
-            throw new NotImplementedException();
+            lock (_deletions)
+            {
+                _deletions.Add(victim);
+            }
         }
 
         public void AddAdditions(int count)
         {
-            throw new NotImplementedException();
+            lock (_deletions)
+            {
+                _additions += count;    
+            }
+        }
+
+        public IEnumerable<string> Deletions()
+        {
+            return _deletions;
+        }
+
+        public int Additions()
+        {
+            return _additions;
         }
     }
 }
