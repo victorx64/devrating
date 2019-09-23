@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
-    internal interface Watchdog
+    public interface Watchdog
     {
         Task WriteInto(Modifications modifications);
     }

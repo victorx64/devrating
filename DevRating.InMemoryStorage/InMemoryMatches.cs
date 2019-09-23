@@ -52,7 +52,7 @@ namespace DevRating.InMemoryStorage
 
         public Task<IEnumerable<Match>> Matches(string player)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task Lock(string player)
