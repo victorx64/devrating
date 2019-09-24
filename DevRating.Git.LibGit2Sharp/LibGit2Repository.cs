@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LibGit2Sharp;
 
 namespace DevRating.Git.LibGit2Sharp
@@ -17,11 +18,9 @@ namespace DevRating.Git.LibGit2Sharp
             _repository = repository;
         }
 
-        public IEnumerable<Watchdog> FilePatches(string sha)
+        public IEnumerable<Task<Watchdog>> FilePatches(string sha)
         {
             var commit = _repository.Lookup<global::LibGit2Sharp.Commit>(sha);
-
-            var patches = new List<FilePatch>();
 
             var options = new CompareOptions
             {
@@ -40,14 +39,12 @@ namespace DevRating.Git.LibGit2Sharp
                         (difference.Status == ChangeKind.Deleted ||
                          difference.Status == ChangeKind.Modified))
                     {
-                        var blame = new LibGit2Blame(difference.OldPath, parent.Sha, _repository);
-
-                        patches.Add(new FilePatch(difference.Patch, blame));
+                        yield return Task.Run(() =>
+                            (Watchdog) new FilePatch(difference.Patch,
+                                new LibGit2Blame(difference.OldPath, parent.Sha, _repository)));
                     }
                 }
             }
-
-            return patches;
         }
 
         public string Author(string sha)

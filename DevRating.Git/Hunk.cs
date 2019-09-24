@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
@@ -14,7 +13,7 @@ namespace DevRating.Git
             _additions = additions;
         }
 
-        public Task WriteInto(Modifications modifications)
+        public void WriteInto(Modifications modifications)
         {
             foreach (var deletion in _deletions)
             {
@@ -22,8 +21,6 @@ namespace DevRating.Git
             }
 
             modifications.AddAdditions(_additions);
-            
-            return Task.CompletedTask;
         }
     }
 }

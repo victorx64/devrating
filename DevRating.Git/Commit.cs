@@ -20,9 +20,9 @@ namespace DevRating.Git
 
             var tasks = new List<Task>();
 
-            foreach (var patch in _repository.FilePatches(_sha))
+            foreach (var task in _repository.FilePatches(_sha))
             {
-                tasks.Add(patch.WriteInto(modifications));
+                tasks.Add(task.ContinueWith(task1 => task1.Result.WriteInto(modifications)));
             }
 
             await Task.WhenAll(tasks);

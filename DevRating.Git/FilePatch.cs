@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
@@ -15,18 +14,8 @@ namespace DevRating.Git
             _blame = blame;
         }
 
-        public async Task WriteInto(Modifications modifications)
+        public void WriteInto(Modifications modifications)
         {
-            foreach (var hunk in await Task.Run(Hunks))
-            {
-                await hunk.WriteInto(modifications);
-            }
-        }
-
-        private IEnumerable<Hunk> Hunks()
-        {
-            var hunks = new List<Hunk>();
-            
             foreach (var line in _patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
@@ -34,11 +23,10 @@ namespace DevRating.Git
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
                     var parts = line.Split(' ');
 
-                    hunks.Add(new Hunk(Deletions(parts[1], _blame), Additions(parts[2])));
+                    new Hunk(Deletions(parts[1], _blame), Additions(parts[2]))
+                        .WriteInto(modifications);
                 }
             }
-
-            return hunks;
         }
 
         private IEnumerable<string> Deletions(string hunk, Blame blame)

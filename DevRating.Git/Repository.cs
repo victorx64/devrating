@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DevRating.Git
 {
     public interface Repository
     {
-        IEnumerable<Watchdog> FilePatches(string sha);
+        IEnumerable<Task<Watchdog>> FilePatches(string sha);
         string Author(string sha);
     }
 }
