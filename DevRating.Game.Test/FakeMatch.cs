@@ -6,13 +6,15 @@ namespace DevRating.Game.Test
         private readonly string _contender;
         private readonly double _points;
         private readonly int _rounds;
+        private readonly double _reward;
 
-        public FakeMatch(string player, string contender, double points, int rounds)
+        public FakeMatch(string player, string contender, double points, int rounds, double reward)
         {
             _player = player;
             _contender = contender;
             _points = points;
             _rounds = rounds;
+            _reward = reward;
         }
         
         public string Player()
@@ -42,7 +44,7 @@ namespace DevRating.Game.Test
 
         public double Reward()
         {
-            throw new System.NotImplementedException();
+            return _reward;
         }
     }
 }

@@ -31,13 +31,13 @@ namespace DevRating.Game.Test
         {
             if (_players.ContainsKey(player))
             {
-                _players[player].Add(new FakeMatch(player, contender, points, rounds));
+                _players[player].Add(new FakeMatch(player, contender, points, rounds, reward));
             }
             else
             {
                 _players[player] = new List<Match>
                 {
-                    new FakeMatch(player, contender, points, rounds)
+                    new FakeMatch(player, contender, points, rounds, reward)
                 };
             }
 
