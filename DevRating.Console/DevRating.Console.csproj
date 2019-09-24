@@ -20,7 +20,6 @@
     <ItemGroup>
       <ProjectReference Include="..\DevRating.AzureTable\DevRating.AzureTable.csproj" />
       <ProjectReference Include="..\DevRating.Git.LibGit2Sharp\DevRating.Git.LibGit2Sharp.csproj" />
-      <ProjectReference Include="..\DevRating.InMemoryStorage\DevRating.InMemoryStorage.csproj" />
     </ItemGroup>
 
 </Project>
