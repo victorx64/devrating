@@ -3,7 +3,6 @@ using DevRating.AzureTable;
 using DevRating.Game;
 using DevRating.Git;
 using DevRating.Git.LibGit2Sharp;
-using DevRating.InMemoryStorage;
 using DevRating.Rating;
 
 namespace DevRating.Console
@@ -12,19 +11,12 @@ namespace DevRating.Console
     {
         private static async Task Main()
         {
-            for (var i = 0; i < 10; i++)
-            {
-                using var repository = new LibGit2Repository(".");
-                
-                var history = (Games) await new Commit(repository, "HEAD")
-                    .Modifications(new GamesFactory(new EloFormula(), 2000d));
+            using var repository = new LibGit2Repository(".");
 
-//                    await history.PushInto(new AzureMatches("","key","match"));
+            var history = (Games) await new Commit(repository, "HEAD")
+                .Modifications(new GamesFactory(new EloFormula(), 2000d));
 
-//                    var matches = new InMemoryMatches(1200d);
-//
-//                    await history.PushInto(matches);
-            }
+//            await history.PushInto(new AzureMatches("", "key", "match", 1200d));
         }
     }
 }

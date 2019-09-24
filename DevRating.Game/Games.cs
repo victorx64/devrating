@@ -85,6 +85,11 @@ namespace DevRating.Game
 
         private async Task PushAdditionsInto(Matches matches)
         {
+            if (_additions == 0)
+            {
+                return;
+            }
+
             var winner = await matches.Points(_author);
 
             var reward = _formula.WinProbability(winner, _threshold) * _additions;
