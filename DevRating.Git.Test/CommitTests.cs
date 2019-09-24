@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace DevRating.Git.Test
 {
-    public class GitSourceControlTests
+    public class CommitTests
     {
         [Test]
         public async Task ParseSingleHunk()
