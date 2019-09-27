@@ -14,9 +14,9 @@ namespace DevRating.Game
             _threshold = threshold;
         }
         
-        public Modifications Modifications(string commit, string author)
+        public Modifications Modifications(string sha, string author)
         {
-            return new Games(commit, author, _formula, _threshold);
+            return new Games(sha, author, _formula, _threshold);
         }
     }
 }

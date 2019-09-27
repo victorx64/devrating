@@ -22,10 +22,10 @@ namespace DevRating.AzureTable
             RowKey = key;
         }
         
-        public string Player { get; set; }
-        public string Contender { get; set; }
+        public string Player { get; set; } = string.Empty;
+        public string Contender { get; set; } = string.Empty;
         public byte Type { get; set; }
-        public string Commit { get; set; }
+        public string Commit { get; set; } = string.Empty;
         public double Points { get; set; }
         public int Rounds { get; set; }
         public double Reward { get; set; }

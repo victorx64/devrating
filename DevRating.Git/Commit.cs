@@ -1,40 +1,33 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    internal sealed class Commit : Watchdog
+    public sealed class Commit
     {
-        private readonly IRepository _repository;
-        private readonly CompareOptions _options;
-        private readonly LibGit2Sharp.Commit _commit;
+        private readonly Repository _repository;
+        private readonly string _sha;
 
-        public Commit(IRepository repository, CompareOptions options, LibGit2Sharp.Commit commit)
+        public Commit(Repository repository, string sha)
         {
             _repository = repository;
-            _options = options;
-            _commit = commit;
+            _sha = sha;
         }
 
-        public async Task WriteInto(Modifications modifications)
+        public async Task<Modifications> Modifications(ModificationsFactory factory)
         {
-            foreach (var difference in DifferencesFromParents())
-            {
-                await difference.WriteInto(modifications);
-            }
-        }
+            var modifications = factory.Modifications(_sha, _repository.Author(_sha));
 
-        private IEnumerable<Difference> DifferencesFromParents()
-        {
-            var differences = new List<Difference>();
+            var tasks = new List<Task>();
 
-            foreach (var parent in _commit.Parents)
+            foreach (var task in _repository.FilePatches(_sha))
             {
-                differences.Add(new Difference(_repository, _options, _commit, parent));
+                tasks.Add(task.ContinueWith(task1 => task1.Result.WriteInto(modifications)));
             }
 
-            return differences;
+            await Task.WhenAll(tasks);
+
+            return modifications;
         }
     }
 }

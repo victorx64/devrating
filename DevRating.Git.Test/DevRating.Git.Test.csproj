@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <PackageVersion>0.1.1</PackageVersion>
         <Authors>Victor Semenov</Authors>
@@ -9,6 +9,7 @@
         <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

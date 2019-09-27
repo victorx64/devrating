@@ -1,55 +1,35 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using LibGit2Sharp;
 
 namespace DevRating.Git
 {
-    internal sealed class FilePatch : Watchdog
+    public sealed class FilePatch : Watchdog
     {
-        private readonly IRepository _repository;
-        private readonly PatchEntryChanges _patch;
-        private readonly LibGit2Sharp.Commit _parent;
+        private readonly string _patch;
+        private readonly Blame _blame;
 
-        public FilePatch(IRepository repository, PatchEntryChanges patch, LibGit2Sharp.Commit parent)
+        public FilePatch(string patch, Blame blame)
         {
-            _repository = repository;
             _patch = patch;
-            _parent = parent;
+            _blame = blame;
         }
 
-        public async Task WriteInto(Modifications modifications)
+        public void WriteInto(Modifications modifications)
         {
-            foreach (var hunk in await Task.Run(Hunks))
-            {
-                await hunk.WriteInto(modifications);
-            }
-        }
-
-        private IEnumerable<Hunk> Hunks()
-        {
-            var blame = _repository.Blame(_patch.OldPath, new BlameOptions
-            {
-                StartingAt = _parent
-            });
-
-            var hunks = new List<Hunk>();
-            
-            foreach (var line in _patch.Patch.Split('\n'))
+            foreach (var line in _patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
                 {
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
                     var parts = line.Split(' ');
 
-                    hunks.Add(new Hunk(Deletions(_repository, parts[1], blame), Additions(parts[2])));
+                    new Hunk(Deletions(parts[1], _blame), Additions(parts[2]))
+                        .WriteInto(modifications);
                 }
             }
-
-            return hunks;
         }
 
-        private IEnumerable<string> Deletions(IRepository repo, string hunk, BlameHunkCollection blame)
+        private IEnumerable<string> Deletions(string hunk, Blame blame)
         {
             var deletions = new List<string>();
 
@@ -63,7 +43,7 @@ namespace DevRating.Git
 
             for (var i = index; i < index + count; i++)
             {
-                deletions.Add(new Author(repo, blame.HunkForLine(i).FinalSignature).Email());
+                deletions.Add(blame.AuthorOf(i));
             }
 
             return deletions;

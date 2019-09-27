@@ -28,20 +28,9 @@ namespace DevRating.AzureTable
             _players = new Dictionary<string, Player>();
         }
 
-        public async Task<double> Points(string player)
+        public Task<double> Points(string player)
         {
-            // TODO Make methods atomic
-            // TODO Return _points id _players[player] doesn't exist
-
-            var key = _players[player].LastMatchKey();
-
-            var operation = TableOperation.Retrieve<MatchTableEntity>(player, key);
-
-            var result = await _table.ExecuteAsync(operation);
-
-            var match = (MatchTableEntity) result.Result;
-
-            return match.Points;
+            return _players[player].Points();
         }
 
         public Task Add(string player, string contender, string commit, double points, double reward, int rounds)
@@ -59,35 +48,17 @@ namespace DevRating.AzureTable
         private Task Add(string player, string contender, string commit, double points, double reward, int rounds,
             byte type)
         {
-            _players[player].MoveLastMatchKey();
-
-            var key = _players[player].LastMatchKey();
-
-            var match = new MatchTableEntity(key, player, contender, type, commit, points, reward, rounds);
-
-            var operation = TableOperation.InsertOrReplace(match);
-
-            return _table.ExecuteAsync(operation);
+            return _players[player].AddMatch(contender, commit, points, reward, rounds, type);
         }
 
         public Task<IEnumerable<Match>> Matches(string player)
         {
-            var query = new TableQuery<MatchTableEntity>()
-                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, player));
-
-            var matches = new List<Match>();
-
-            foreach (var entity in _table.ExecuteQuery(query)) // TODO Consider using ExecuteQuerySegmentedAsync
-            {
-                matches.Add(new AzureMatch(entity));
-            }
-
-            return Task.FromResult((IEnumerable<Match>) matches);
+            return _players[player].Matches();
         }
 
         public async Task Lock(string player)
         {
-            _players.Add(player, new Player(player, _container, _connection));
+            _players.Add(player, new Player(player, _container, _connection, _table, _points));
 
             await _players[player].Lock();
         }
