@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\DevRating.Git\DevRating.Git.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Octokit.GraphQL" Version="0.1.4-beta" />
+    </ItemGroup>
+
+</Project>
