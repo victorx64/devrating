@@ -1,7 +1,6 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DevRating.GitHubApp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -21,7 +20,7 @@ namespace DevRating.AzureFunction
             
             if (@event.Equals("push"))
             {
-                var payload = JsonSerializer.Deserialize<PushEventPayload>(new StreamReader(request.Body).ReadToEnd());
+                var payload = JsonSerializer.Deserialize<Octokit.PushEventPayload>(new StreamReader(request.Body).ReadToEnd());
 
                 await new Application(Path.Combine(context.FunctionDirectory, "(PrivateKey)", "devrating.2019-09-26.private-key.pem"))
                     .HandlePushEvent(payload);

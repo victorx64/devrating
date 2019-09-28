@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DevRating.Git;
 using LibGit2Sharp;
+using Repository = DevRating.Git.Repository;
 
-namespace DevRating.Git.LibGit2Sharp
+namespace DevRating.LibGit2Sharp
 {
     public class LibGit2Repository : Repository, IDisposable
     {

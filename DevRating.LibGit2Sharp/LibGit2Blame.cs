@@ -1,6 +1,7 @@
+using DevRating.Git;
 using LibGit2Sharp;
 
-namespace DevRating.Git.LibGit2Sharp
+namespace DevRating.LibGit2Sharp
 {
     public class LibGit2Blame : Blame
     {

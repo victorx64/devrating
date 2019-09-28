@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git", "DevRating.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Rating.Test", "DevRating.Rating.Test\DevRating.Rating.Test.csproj", "{317886B4-5111-467C-9745-332D59FEE6E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Console", "DevRating.Console\DevRating.Console.csproj", "{97A5CF0E-BB60-4D78-9407-5EC6198D1F4B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Rating", "DevRating.Rating\DevRating.Rating.csproj", "{17B823C9-E039-4D8D-AA7B-E54283CF019A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git.Test", "DevRating.Git.Test\DevRating.Git.Test.csproj", "{48DB334C-FEA7-463B-ABCF-23D34271747E}"
@@ -19,13 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Game", "DevRating
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.AzureTable", "DevRating.AzureTable\DevRating.AzureTable.csproj", "{49AB74B9-19D9-4B21-9584-06A63BFA011A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git.LibGit2Sharp", "DevRating.Git.LibGit2Sharp\DevRating.Git.LibGit2Sharp.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.LibGit2Sharp", "DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.GitHubApp", "DevRating.GitHubApp\DevRating.GitHubApp.csproj", "{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Game.Test", "DevRating.Game.Test\DevRating.Game.Test.csproj", "{25E4C3E1-4D63-4183-8EDB-2E920F276C4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git.GitHubClient", "DevRating.Git.GitHubClient\DevRating.Git.GitHubClient.csproj", "{CB28FC3A-214D-4DFD-A9A9-A6520CB97EC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.GitHubClient", "DevRating.GitHubClient\DevRating.GitHubClient.csproj", "{CB28FC3A-214D-4DFD-A9A9-A6520CB97EC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.AzureFunction", "DevRating.AzureFunction\DevRating.AzureFunction.csproj", "{339AE433-FD4C-4A0F-8F73-5697C9F753E3}"
 EndProject
@@ -43,10 +41,6 @@ Global
 		{317886B4-5111-467C-9745-332D59FEE6E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{317886B4-5111-467C-9745-332D59FEE6E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317886B4-5111-467C-9745-332D59FEE6E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97A5CF0E-BB60-4D78-9407-5EC6198D1F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97A5CF0E-BB60-4D78-9407-5EC6198D1F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97A5CF0E-BB60-4D78-9407-5EC6198D1F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97A5CF0E-BB60-4D78-9407-5EC6198D1F4B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Release|Any CPU.ActiveCfg = Release|Any CPU
