@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
+using DevRating.Git;
+using LibGit2Sharp;
 
-namespace DevRating.Git
+namespace DevRating.LibGit2Sharp
 {
-    public sealed class FilePatch : Watchdog
+    internal sealed class FilePatch
     {
         private readonly string _patch;
-        private readonly Blame _blame;
+        private readonly BlameHunkCollection _blame;
+        private readonly IRepository _repository;
 
-        public FilePatch(string patch, Blame blame)
+        public FilePatch(string patch, BlameHunkCollection blame, IRepository repository)
         {
             _patch = patch;
             _blame = blame;
+            _repository = repository;
         }
 
         public void WriteInto(Modifications modifications)
@@ -21,15 +25,20 @@ namespace DevRating.Git
                 if (line.StartsWith("@@ "))
                 {
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
+                    // TODO Throw exception on contextual lines. Patch must be without contextual lines (git log -U0)
                     var parts = line.Split(' ');
 
-                    new Hunk(Deletions(parts[1], _blame), Additions(parts[2]))
-                        .WriteInto(modifications);
+                    foreach (var deletion in Deletions(parts[1]))
+                    {
+                        modifications.AddDeletion(deletion);
+                    }
+
+                    modifications.AddAdditions(Additions(parts[2]));
                 }
             }
         }
 
-        private IEnumerable<string> Deletions(string hunk, Blame blame)
+        private IEnumerable<string> Deletions(string hunk)
         {
             var deletions = new List<string>();
 
@@ -43,7 +52,7 @@ namespace DevRating.Git
 
             for (var i = index; i < index + count; i++)
             {
-                deletions.Add(blame.AuthorOf(i));
+                deletions.Add(_repository.Mailmap.ResolveSignature(_blame.HunkForLine(i).FinalSignature).Email);
             }
 
             return deletions;

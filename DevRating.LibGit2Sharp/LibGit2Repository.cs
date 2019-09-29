@@ -7,7 +7,7 @@ using Repository = DevRating.Git.Repository;
 
 namespace DevRating.LibGit2Sharp
 {
-    public class LibGit2Repository : Repository, IDisposable
+    public sealed class LibGit2Repository : Repository, IDisposable
     {
         private readonly IRepository _repository;
 
@@ -20,10 +20,28 @@ namespace DevRating.LibGit2Sharp
             _repository = repository;
         }
 
-        public IEnumerable<Task<Watchdog>> FilePatches(string sha)
+        public async Task<Modifications> Modifications(ModificationsFactory factory, string sha)
         {
-            var commit = _repository.Lookup<global::LibGit2Sharp.Commit>(sha);
+            var commit = _repository.Lookup<Commit>(sha);
 
+            var author = _repository.Mailmap.ResolveSignature(commit.Author).Email;
+            
+            var modifications = factory.Modifications(sha, author);
+
+            var tasks = new List<Task>();
+
+            foreach (var task in FilePatches(commit))
+            {
+                tasks.Add(task.ContinueWith(task1 => task1.Result.WriteInto(modifications)));
+            }
+
+            await Task.WhenAll(tasks);
+
+            return modifications;
+        }
+        
+        private IEnumerable<Task<FilePatch>> FilePatches(Commit commit)
+        {
             var options = new CompareOptions
             {
                 ContextLines = 0
@@ -42,20 +60,14 @@ namespace DevRating.LibGit2Sharp
                          difference.Status == ChangeKind.Modified))
                     {
                         yield return Task.Run(() =>
-                            (Watchdog) new FilePatch(difference.Patch,
-                                new LibGit2Blame(difference.OldPath, parent.Sha, _repository)));
+                        {
+                            var collection = _repository.Blame(difference.OldPath, new BlameOptions {StartingAt = parent.Sha});
+
+                            return new FilePatch(difference.Patch, collection, _repository);
+                        });
                     }
                 }
             }
-        }
-
-        public string Author(string sha)
-        {
-            var sign = _repository.Lookup<global::LibGit2Sharp.Commit>(sha).Author;
-
-            var resolved = _repository.Mailmap.ResolveSignature(sign);
-
-            return resolved.Email;
         }
 
         public void Dispose()

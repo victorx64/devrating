@@ -90,6 +90,11 @@ namespace DevRating.AzureTable
             }
         }
 
+        public string Report(string commit)
+        {
+            throw new NotImplementedException();
+        }
+
         private static CloudTable Table(string connection, string table)
         {
             var storageAccount = CloudStorageAccount.Parse(connection);

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DevRating.Game.Test
 {
-    public class FakeMatches : Matches
+    public sealed class FakeMatches : Matches
     {
         private readonly double _points;
         private readonly IDictionary<string, IList<Match>> _players;
@@ -13,6 +14,25 @@ namespace DevRating.Game.Test
         {
             _points = points;
             _players = new Dictionary<string, IList<Match>>();
+        }
+
+        public string Report(string commit)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var player in _players)
+            {
+                foreach (var match in player.Value)
+                {
+                    if (match.Commit().Equals(commit))
+                    {
+                        builder.Append(
+                            $"{match.Player()} > {match.Contender()}: +{match.Reward()} Reward, +{match.Points()} Pts");
+                    }
+                }
+            }
+
+            return builder.ToString();
         }
 
         public Task<double> Points(string player)

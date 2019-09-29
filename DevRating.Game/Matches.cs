@@ -12,5 +12,6 @@ namespace DevRating.Game
         Task Lock(string player);
         Task Unlock(string player);
         Task Sync();
+        string Report(string commit);
     }
 }
