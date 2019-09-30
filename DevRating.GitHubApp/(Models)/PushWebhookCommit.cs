@@ -8,34 +8,31 @@ namespace DevRating.GitHubApp
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class PushWebhookCommit
     {
-        public string Id { get; protected set; }
+        public string Id { get; protected set; } = string.Empty;
 
-        public string TreeId { get; protected set; }
+        public string TreeId { get; protected set; } = string.Empty;
 
-        public bool Distinct { get; protected set; }
+        public bool Distinct { get; protected set; } = default;
 
-        public string Message { get; protected set; }
+        public string Message { get; protected set; } = string.Empty;
 
-        public DateTimeOffset Timestamp { get; protected set; }
+        public DateTimeOffset Timestamp { get; protected set; } = default;
 
-        public Uri Url { get; protected set; }
+        public Uri Url { get; protected set; } = new Uri(string.Empty);
 
-        public PushWebhookCommitter Author { get; protected set; }
+        public PushWebhookCommitter Author { get; protected set; } = new PushWebhookCommitter();
 
-        public PushWebhookCommitter Committer { get; protected set; }
+        public PushWebhookCommitter Committer { get; protected set; } = new PushWebhookCommitter();
 
-        public IReadOnlyList<string> Added { get; protected set; }
+        public IReadOnlyList<string> Added { get; protected set; } = new string[] { };
 
-        public IReadOnlyList<string> Removed { get; protected set; }
+        public IReadOnlyList<string> Removed { get; protected set; } = new string[] { };
 
-        public IReadOnlyList<string> Modified { get; protected set; }
+        public IReadOnlyList<string> Modified { get; protected set; } = new string[] { };
 
         internal string DebuggerDisplay
         {
-            get
-            {
-                return string.Format(CultureInfo.InvariantCulture, "Sha: {0}", Id);
-            }
+            get { return string.Format(CultureInfo.InvariantCulture, "Sha: {0}", Id); }
         }
     }
 }

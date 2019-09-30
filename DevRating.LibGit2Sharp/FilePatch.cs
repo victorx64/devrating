@@ -10,12 +10,14 @@ namespace DevRating.LibGit2Sharp
         private readonly string _patch;
         private readonly BlameHunkCollection _blame;
         private readonly IRepository _repository;
+        private readonly string _author;
 
-        public FilePatch(string patch, BlameHunkCollection blame, IRepository repository)
+        public FilePatch(string patch, BlameHunkCollection blame, IRepository repository, string author)
         {
             _patch = patch;
             _blame = blame;
             _repository = repository;
+            _author = author;
         }
 
         public void WriteInto(Modifications modifications)
@@ -30,10 +32,10 @@ namespace DevRating.LibGit2Sharp
 
                     foreach (var deletion in Deletions(parts[1]))
                     {
-                        modifications.AddDeletion(deletion);
+                        modifications.AddDeletion(_author, deletion);
                     }
 
-                    modifications.AddAdditions(Additions(parts[2]));
+                    modifications.AddAdditions(_author, Additions(parts[2]));
                 }
             }
         }

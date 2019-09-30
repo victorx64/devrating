@@ -9,53 +9,56 @@ namespace DevRating.Game
     public sealed class Games : Modifications
     {
         private readonly string _sha;
-        private readonly string _author;
         private readonly Formula _formula;
         private readonly double _threshold;
-        private readonly IDictionary<string, int> _deletions;
-        private int _additions;
+        private readonly IDictionary<PlayersPair, int> _deletions;
+        private readonly IDictionary<string, int> _additions;
 
-        public Games(string sha, string author, Formula formula, double threshold)
+        public Games(string sha, Formula formula, double threshold)
         {
             _sha = sha;
-            _author = author;
             _formula = formula;
             _threshold = threshold;
 
-            _deletions = new Dictionary<string, int>();
+            _deletions = new Dictionary<PlayersPair, int>();
+            _additions = new Dictionary<string, int>();
         }
 
-        public void AddDeletion(string victim)
+        public void AddDeletion(string author, string victim)
         {
             lock (_deletions)
             {
-                if (_deletions.ContainsKey(victim))
+                var pair = new PlayersPair(author, victim);
+
+                if (_deletions.ContainsKey(pair))
                 {
-                    ++_deletions[victim];
+                    ++_deletions[pair];
                 }
                 else
                 {
-                    _deletions.Add(victim, 1);
+                    _deletions.Add(pair, 1);
                 }
             }
         }
 
-        public void AddAdditions(int count)
+        public void AddAdditions(string author, int count)
         {
             lock (_deletions)
             {
-                _additions += count;
+                if (_additions.ContainsKey(author))
+                {
+                    _additions[author] += count;
+                }
+                else
+                {
+                    _additions.Add(author, count);
+                }
             }
         }
 
         public async Task PushInto(Matches matches)
         {
-            var authors = _deletions.Keys.ToList();
-
-            if (!authors.Contains(_author))
-            {
-                authors.Add(_author);
-            }
+            var authors = UniqueAuthors();
 
             authors.Sort();
 
@@ -83,36 +86,50 @@ namespace DevRating.Game
             }
         }
 
+        private List<string> UniqueAuthors()
+        {
+            var keys = _deletions.Keys
+                .SelectMany(k => new[] {k.First(), k.Second()})
+                .ToList();
+
+            keys.AddRange(_additions.Keys);
+
+            var authors = keys
+                .Distinct()
+                .ToList();
+
+            return authors;
+        }
+
         private async Task PushAdditionsInto(Matches matches)
         {
-            if (_additions == 0)
+            foreach (var addition in _additions)
             {
-                return;
+                var winner = await matches.Points(addition.Key);
+
+                var reward = _formula.WinProbability(winner, _threshold) * addition.Value;
+
+                await matches.Add(addition.Key, _sha, winner, reward, addition.Value);
             }
-
-            var winner = await matches.Points(_author);
-
-            var reward = _formula.WinProbability(winner, _threshold) * _additions;
-
-            await matches.Add(_author, _sha, winner, reward, _additions);
         }
 
         private async Task PushDeletionsInto(Matches matches)
         {
             foreach (var deletion in _deletions)
             {
-                var victim = deletion.Key;
+                var author = deletion.Key.First();
+                var victim = deletion.Key.Second();
                 var count = deletion.Value;
 
                 var loser = await matches.Points(victim);
-                var winner = await matches.Points(_author);
+                var winner = await matches.Points(author);
 
                 // multiplying to 'count' is gross simplification
                 var extra = _formula.WinnerExtraPoints(winner, loser) * count;
                 var reward = _formula.WinProbability(winner, loser) * count;
 
-                await matches.Add(victim, _author, _sha, loser - extra, 0d, count);
-                await matches.Add(_author, victim, _sha, winner + extra, reward, count);
+                await matches.Add(victim, author, _sha, loser - extra, 0d, count);
+                await matches.Add(author, victim, _sha, winner + extra, reward, count);
             }
         }
     }

@@ -12,9 +12,9 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
 
-            games.AddAdditions(1);
+            games.AddAdditions("author", 1);
 
             await games.PushInto(matches);
 
@@ -26,10 +26,10 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
 
-            games.AddAdditions(1);
-            games.AddAdditions(1);
+            games.AddAdditions("author", 1);
+            games.AddAdditions("author", 1);
 
             await games.PushInto(matches);
 
@@ -41,9 +41,9 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
 
-            games.AddDeletion("victim");
+            games.AddDeletion("author", "victim");
 
             await games.PushInto(matches);
 
@@ -58,10 +58,10 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
 
-            games.AddDeletion("victim");
-            games.AddDeletion("victim");
+            games.AddDeletion("author", "victim");
+            games.AddDeletion("author", "victim");
 
             await games.PushInto(matches);
 
@@ -76,14 +76,14 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var first = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
-            var second = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
+            var first = new Games("sha", new EloFormula(2d, 400d), 2000);
+            var second = new Games("sha", new EloFormula(2d, 400d), 2000);
 
-            first.AddAdditions(1);
+            first.AddAdditions("author", 1);
 
             await first.PushInto(matches);
 
-            second.AddDeletion("victim");
+            second.AddDeletion("author", "victim");
 
             await second.PushInto(matches);
 
@@ -98,8 +98,8 @@ namespace DevRating.Game.Test
             var authorPointsBefore = await matches.Points("author");
             var victimPointsBefore = await matches.Points("victim");
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
-            games.AddDeletion("victim");
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
+            games.AddDeletion("author", "victim");
             await games.PushInto(matches);
 
             var authorPointsAfter = await matches.Points("author");
@@ -115,8 +115,8 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
-            games.AddAdditions(1);
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
+            games.AddAdditions("author", 1);
             await games.PushInto(matches);
 
             Assert.AreEqual(1200d, await matches.Points("author"));
@@ -127,8 +127,8 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
-            games.AddAdditions(1);
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
+            games.AddAdditions("author", 1);
             await games.PushInto(matches);
 
             var reward = (await matches.Matches("author")).Last().Reward();
@@ -141,8 +141,8 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
-            games.AddDeletion("victim");
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
+            games.AddDeletion("author", "victim");
             await games.PushInto(matches);
 
             var reward = (await matches.Matches("author")).Last().Reward();
@@ -155,8 +155,8 @@ namespace DevRating.Game.Test
         {
             var matches = new FakeMatches(1200d);
 
-            var games = new Games("sha", "author", new EloFormula(2d, 400d), 2000);
-            games.AddDeletion("victim");
+            var games = new Games("sha", new EloFormula(2d, 400d), 2000);
+            games.AddDeletion("author", "victim");
             await games.PushInto(matches);
 
             var reward = (await matches.Matches("victim")).Last().Reward();

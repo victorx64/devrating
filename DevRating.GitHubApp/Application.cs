@@ -6,6 +6,7 @@ using DevRating.LibGit2Sharp;
 using DevRating.Rating;
 using LibGit2Sharp;
 using Octokit;
+using Repository = DevRating.Git.Repository;
 
 namespace DevRating.GitHubApp
 {
@@ -58,18 +59,19 @@ namespace DevRating.GitHubApp
             var path = global::LibGit2Sharp.Repository.Clone(source, "repo.git", new CloneOptions
             {
                 IsBare = true,
-                BranchName = payload.Repository.DefaultBranch
+                BranchName = payload.Repository.DefaultBranch,
+                RecurseSubmodules = false
             });
-
-            var factory = new GamesFactory(new EloFormula(), 2000d);
 
             var matches = new FakeMatches(1200d);
 
-            var repository = new LibGit2Repository(new global::LibGit2Sharp.Repository(path));
+            Repository repository = new LibGit2Repository(path);
 
             foreach (var commit in payload.Commits)
             {
-                var games = (Games) await repository.Modifications(factory, commit.Id);
+                var games = new Games(commit.Id, new EloFormula(), 2000d);
+
+                await repository.WriteInto(games, commit.Id);
 
                 await games.PushInto(matches);
 

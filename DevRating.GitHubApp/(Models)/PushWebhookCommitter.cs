@@ -27,11 +27,11 @@ namespace DevRating.GitHubApp
 
         /// <summary>Gets the name of the author or committer.</summary>
         /// <value>The name.</value>
-        public string Name { get; protected set; }
+        public string Name { get; protected set; } = string.Empty;
 
         /// <summary>Gets the email of the author or committer.</summary>
         /// <value>The email.</value>
-        public string Email { get; protected set; }
+        public string Email { get; protected set; } = string.Empty;
 
         /// <summary>
         /// Gets the username of the author or committer.
@@ -39,7 +39,7 @@ namespace DevRating.GitHubApp
         /// <value>
         /// The username.
         /// </value>
-        public string Username { get; protected set; }
+        public string Username { get; protected set; } = string.Empty;
 
         internal string DebuggerDisplay
         {

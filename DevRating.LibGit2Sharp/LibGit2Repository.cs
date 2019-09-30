@@ -20,24 +20,16 @@ namespace DevRating.LibGit2Sharp
             _repository = repository;
         }
 
-        public async Task<Modifications> Modifications(ModificationsFactory factory, string sha)
+        public async Task WriteInto(Modifications modifications, string sha)
         {
-            var commit = _repository.Lookup<Commit>(sha);
-
-            var author = _repository.Mailmap.ResolveSignature(commit.Author).Email;
-            
-            var modifications = factory.Modifications(sha, author);
-
             var tasks = new List<Task>();
 
-            foreach (var task in FilePatches(commit))
+            foreach (var task in FilePatches( _repository.Lookup<Commit>(sha)))
             {
                 tasks.Add(task.ContinueWith(task1 => task1.Result.WriteInto(modifications)));
             }
 
             await Task.WhenAll(tasks);
-
-            return modifications;
         }
         
         private IEnumerable<Task<FilePatch>> FilePatches(Commit commit)
@@ -46,6 +38,8 @@ namespace DevRating.LibGit2Sharp
             {
                 ContextLines = 0
             };
+            
+            var author = _repository.Mailmap.ResolveSignature(commit.Author).Email;
 
             foreach (var parent in commit.Parents)
             {
@@ -61,9 +55,9 @@ namespace DevRating.LibGit2Sharp
                     {
                         yield return Task.Run(() =>
                         {
-                            var collection = _repository.Blame(difference.OldPath, new BlameOptions {StartingAt = parent.Sha});
+                            var hunks = _repository.Blame(difference.OldPath, new BlameOptions {StartingAt = parent.Sha});
 
-                            return new FilePatch(difference.Patch, collection, _repository);
+                            return new FilePatch(difference.Patch, hunks, _repository, author);
                         });
                     }
                 }
