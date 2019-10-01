@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using DevRating.Game;
+using DevRating.Git;
+using DevRating.Rating;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using CloudStorageAccount = Microsoft.Azure.Storage.CloudStorageAccount;
 
 namespace DevRating.AzureTable
 {
@@ -15,66 +14,74 @@ namespace DevRating.AzureTable
         private readonly string _name;
         private readonly CloudBlockBlob _blob;
         private readonly CloudTable _table;
-        private readonly double _points;
 
         private string _lease;
         private ulong _key;
 
-        public Player(string name, string container, string connection, CloudTable table, double points)
-            : this(name, Blob(name, container, connection), table, points)
-        {
-        }
-
-        public Player(string name, CloudBlockBlob blob, CloudTable table, double points)
+        public Player(string name, CloudBlockBlob blob, CloudTable table)
         {
             _name = name;
             _blob = blob;
             _table = table;
-            _points = points;
             _lease = string.Empty;
         }
 
-        public async Task<double> Points()
+        public async Task<double> Points(double @default)
         {
             ThrowIfNotLocked();
 
             var operation = TableOperation.Retrieve<MatchTableEntity>(_name, LastMatchKey());
 
             var result = await _table.ExecuteAsync(operation);
-            
-            // TODO if result not found return _points;
+
+            // TODO if result not found return @default;
 
             var match = (MatchTableEntity) result.Result;
 
-            return match.Points;
+            return match.Rating;
         }
 
-        public Task AddMatch(string contender, string commit, double points, double reward, int rounds, byte type)
+        public Task AddWonMatch(string contender, Match match, Commit commit, Formula formula, byte type)
+        {
+            var entity = new MatchTableEntity(
+                LastMatchKey(),
+                _name,
+                contender,
+                type,
+                commit.Sha(),
+                commit.Repository(),
+                formula.WinnerNewRating(match),
+                formula.WinnerReward(match),
+                match.Times());
+
+            return AddMatchEntity(entity);
+        }
+
+        public Task AddLostMatch(string contender, Match match, Commit commit, Formula formula, byte type)
+        {
+            var entity = new MatchTableEntity(
+                LastMatchKey(),
+                _name,
+                contender,
+                type,
+                commit.Sha(),
+                commit.Repository(),
+                formula.LoserNewRating(match),
+                formula.LoserReward(match),
+                match.Times());
+
+            return AddMatchEntity(entity);
+        }
+
+        private Task AddMatchEntity(ITableEntity entity)
         {
             ThrowIfNotLocked();
 
             MoveLastMatchKey();
 
-            var match = new MatchTableEntity(LastMatchKey(), _name, contender, type, commit, points, reward, rounds);
-
-            var operation = TableOperation.InsertOrReplace(match);
+            var operation = TableOperation.InsertOrReplace(entity);
 
             return _table.ExecuteAsync(operation);
-        }
-
-        public Task<IEnumerable<Match>> Matches()
-        {
-            var query = new TableQuery<MatchTableEntity>()
-                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, _name));
-
-            var matches = new List<Match>();
-
-            foreach (var entity in _table.ExecuteQuery(query)) // TODO Consider using ExecuteQuerySegmentedAsync
-            {
-                matches.Add(new AzureMatch(entity));
-            }
-
-            return Task.FromResult((IEnumerable<Match>) matches);
         }
 
         public async Task Lock()
@@ -93,6 +100,7 @@ namespace DevRating.AzureTable
             ThrowIfNotLocked();
 
             await _blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(_lease));
+
             _lease = string.Empty;
         }
 
@@ -123,25 +131,6 @@ namespace DevRating.AzureTable
             ThrowIfNotLocked();
 
             --_key;
-        }
-
-        private static CloudBlockBlob Blob(string name, string container, string connection)
-        {
-            var storageAccount = CloudStorageAccount.Parse(connection);
-
-            var client = storageAccount.CreateCloudBlobClient();
-
-            var reference = client.GetContainerReference(container);
-
-            reference.CreateIfNotExists();
-
-            reference.SetPermissionsAsync(
-                new BlobContainerPermissions
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Blob // For what?
-                });
-
-            return reference.GetBlockBlobReference(name);
         }
     }
 }

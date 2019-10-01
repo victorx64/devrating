@@ -2,29 +2,61 @@ using System;
 
 namespace DevRating.Rating
 {
-    public sealed class EloFormula : Formula
+    public class EloFormula : Formula
     {
         private readonly double _k;
         private readonly double _n;
+        private readonly double _default;
+        private readonly double _threshold;
 
-        public EloFormula() : this(2d, 400d)
+        public EloFormula() : this(2d, 400d, 1200d, 2000d)
         {
         }
 
-        public EloFormula(double k, double n)
+        public EloFormula(double k, double n, double @default, double threshold)
         {
             _k = k;
             _n = n;
+            _default = @default;
+            _threshold = threshold;
         }
 
-        public double WinnerExtraPoints(double winner, double loser)
+        public double Threshold()
         {
-            var probability = WinProbability(winner, loser);
-
-            return _k * (1d - probability);
+            return _threshold;
         }
 
-        public double WinProbability(double winner, double loser)
+        public double NewPlayerRating()
+        {
+            return _default;
+        }
+
+        public double WinnerNewRating(Match match)
+        {
+            return match.Winner() + WinnerExtraPoints(match.Winner(), match.Loser()) * match.Times();
+        }
+
+        public double LoserNewRating(Match match)
+        {
+            return match.Loser() - WinnerExtraPoints(match.Winner(), match.Loser()) * match.Times();
+        }
+
+        public double WinnerReward(Match match)
+        {
+            return WinProbability(match.Winner(), match.Loser()) * match.Times();
+        }
+
+        public double LoserReward(Match match)
+        {
+            return 0d;
+        }
+
+        private double WinnerExtraPoints(double winner, double loser)
+        {
+            return _k * (1d - WinProbability(winner, loser));
+        }
+
+        private double WinProbability(double winner, double loser)
         {
             var qa = Math.Pow(10d, winner / _n);
 

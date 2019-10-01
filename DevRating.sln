@@ -5,21 +5,15 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git", "DevRating.Git\DevRating.Git.csproj", "{8783F08E-9606-4140-B2B7-D215D757799A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Rating.Test", "DevRating.Rating.Test\DevRating.Rating.Test.csproj", "{317886B4-5111-467C-9745-332D59FEE6E3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Rating", "DevRating.Rating\DevRating.Rating.csproj", "{17B823C9-E039-4D8D-AA7B-E54283CF019A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibGit2Sharp", "libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj", "{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Game", "DevRating.Game\DevRating.Game.csproj", "{3F6E3034-BD2B-44AD-AEAC-4B40CCDB0D22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.AzureTable", "DevRating.AzureTable\DevRating.AzureTable.csproj", "{49AB74B9-19D9-4B21-9584-06A63BFA011A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.LibGit2Sharp", "DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.GitHubApp", "DevRating.GitHubApp\DevRating.GitHubApp.csproj", "{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Game.Test", "DevRating.Game.Test\DevRating.Game.Test.csproj", "{25E4C3E1-4D63-4183-8EDB-2E920F276C4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.AzureFunction", "DevRating.AzureFunction\DevRating.AzureFunction.csproj", "{339AE433-FD4C-4A0F-8F73-5697C9F753E3}"
 EndProject
@@ -33,10 +27,6 @@ Global
 		{8783F08E-9606-4140-B2B7-D215D757799A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8783F08E-9606-4140-B2B7-D215D757799A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8783F08E-9606-4140-B2B7-D215D757799A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{317886B4-5111-467C-9745-332D59FEE6E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{317886B4-5111-467C-9745-332D59FEE6E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{317886B4-5111-467C-9745-332D59FEE6E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{317886B4-5111-467C-9745-332D59FEE6E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,10 +35,6 @@ Global
 		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F6E3034-BD2B-44AD-AEAC-4B40CCDB0D22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F6E3034-BD2B-44AD-AEAC-4B40CCDB0D22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F6E3034-BD2B-44AD-AEAC-4B40CCDB0D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F6E3034-BD2B-44AD-AEAC-4B40CCDB0D22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{49AB74B9-19D9-4B21-9584-06A63BFA011A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{49AB74B9-19D9-4B21-9584-06A63BFA011A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49AB74B9-19D9-4B21-9584-06A63BFA011A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,10 +47,6 @@ Global
 		{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25E4C3E1-4D63-4183-8EDB-2E920F276C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25E4C3E1-4D63-4183-8EDB-2E920F276C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25E4C3E1-4D63-4183-8EDB-2E920F276C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25E4C3E1-4D63-4183-8EDB-2E920F276C4C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{339AE433-FD4C-4A0F-8F73-5697C9F753E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{339AE433-FD4C-4A0F-8F73-5697C9F753E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339AE433-FD4C-4A0F-8F73-5697C9F753E3}.Release|Any CPU.ActiveCfg = Release|Any CPU

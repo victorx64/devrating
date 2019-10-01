@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DevRating.Game.Test\DevRating.Game.Test.csproj" />
+      <ProjectReference Include="..\DevRating.AzureTable\DevRating.AzureTable.csproj" />
       <ProjectReference Include="..\DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj" />
     </ItemGroup>
 
