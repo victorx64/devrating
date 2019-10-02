@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DevRating.Git;
 using DevRating.Rating;
@@ -16,6 +17,7 @@ namespace DevRating.AzureTable
         private readonly Formula _formula;
         private readonly IList<Addition> _additions;
         private readonly IList<Deletion> _deletions;
+        private readonly object _lock;
 
         public AzureModifications(string connection, string container, string table, Formula formula)
         {
@@ -25,19 +27,26 @@ namespace DevRating.AzureTable
             _container = container;
             _additions = new List<Addition>();
             _deletions = new List<Deletion>();
+            _lock = new object();
         }
 
         public void AddAddition(Addition addition)
         {
-            _additions.Add(addition);
+            lock (_lock)
+            {
+                _additions.Add(addition);
+            }
         }
 
         public void AddDeletion(Deletion deletion)
         {
-            _deletions.Add(deletion);
+            lock (_lock)
+            {
+                _deletions.Add(deletion);
+            }
         }
 
-        public async Task Sync()
+        public async Task Upload()
         {
             var authors = SortedAuthors();
 
@@ -54,11 +63,14 @@ namespace DevRating.AzureTable
 
                 foreach (var author in authors)
                 {
-                    await author.Value.Sync();
+                    await author.Value.Upload();
                 }
             }
             finally
             {
+                _additions.Clear();
+                _deletions.Clear();
+
                 foreach (var author in authors.Reverse())
                 {
                     await author.Value.Unlock();
@@ -66,39 +78,61 @@ namespace DevRating.AzureTable
             }
         }
 
-        private async Task PushAdditionsInto(IDictionary<string, Player> authors)
+        public string Report()
+        {
+            var builder = new StringBuilder();
+
+            foreach (var addition in _additions)
+            {
+                builder.Append($"Addition {addition.Author()} {addition.Count()} {addition.Commit()}");
+            }
+
+            foreach (var deletion in _deletions)
+            {
+                builder.Append(
+                    $"Deletion {deletion.Author()} {deletion.Victim()} {deletion.Count()} {deletion.Commit()}");
+            }
+
+            return builder.ToString();
+        }
+
+        private async Task PushAdditionsInto(IDictionary<string, Author> authors)
         {
             foreach (var addition in _additions)
             {
                 var author = addition.Author().Email();
 
-                var winner = await authors[author].Points(_formula.NewPlayerRating());
+                var winner = await authors[author].Rating();
 
-                var match = new DefaultMatch(winner, _formula.Threshold(), addition.Count());
+                var match = new DefaultMatch(winner, _formula.BossRating(), addition.Count());
 
-                await authors[author].AddWonMatch(string.Empty, match, addition.Commit(), _formula, 1);
+                await authors[author].AddWonMatch(string.Empty, match, addition.Commit(), 1);
             }
         }
 
-        private async Task PushDeletionsInto(IDictionary<string, Player> authors)
+        private async Task PushDeletionsInto(IDictionary<string, Author> authors)
         {
             foreach (var deletion in _deletions)
             {
                 var author = deletion.Author().Email();
-                var victim = deletion.Victim().Email(); // TODO Check author.Equals(victim)
+                var victim = deletion.Victim().Email();
 
-                var winner = await authors[author].Points(_formula.NewPlayerRating());
-                var loser = await authors[victim].Points(_formula.NewPlayerRating());
-                var count = deletion.Count();
+                if (author.Equals(victim))
+                {
+                    continue;
+                }
 
-                var match = new DefaultMatch(winner, loser, count);
+                var match = new DefaultMatch(
+                    await authors[author].Rating(),
+                    await authors[victim].Rating(),
+                    deletion.Count());
 
-                await authors[author].AddWonMatch(victim, match, deletion.Commit(), _formula, 1);
-                await authors[victim].AddLostMatch(author, match, deletion.Commit(), _formula, 1);
+                await authors[author].AddWonMatch(victim, match, deletion.Commit(), 1);
+                await authors[victim].AddLostMatch(author, match, deletion.Commit(), 1);
             }
         }
 
-        private IDictionary<string, Player> SortedAuthors()
+        private IDictionary<string, Author> SortedAuthors()
         {
             var players = _additions
                 .Select(a => a.Author().Email())
@@ -113,7 +147,7 @@ namespace DevRating.AzureTable
 
             return players
                 .Distinct()
-                .ToDictionary(p => p, p => new Player(p, Blob(_connection, _container, p), _table));
+                .ToDictionary(p => p, p => new Author(p, Blob(_connection, _container, p), _table, _formula));
         }
 
         private CloudBlockBlob Blob(string connection, string container, string blob)

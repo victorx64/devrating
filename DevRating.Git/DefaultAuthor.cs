@@ -13,5 +13,10 @@ namespace DevRating.Git
         {
             return _email;
         }
+
+        public override string ToString()
+        {
+            return Email();
+        }
     }
 }

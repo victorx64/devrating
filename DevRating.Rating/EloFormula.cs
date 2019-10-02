@@ -7,23 +7,23 @@ namespace DevRating.Rating
         private readonly double _k;
         private readonly double _n;
         private readonly double _default;
-        private readonly double _threshold;
+        private readonly double _boss;
 
         public EloFormula() : this(2d, 400d, 1200d, 2000d)
         {
         }
 
-        public EloFormula(double k, double n, double @default, double threshold)
+        public EloFormula(double k, double n, double @default, double boss)
         {
             _k = k;
             _n = n;
             _default = @default;
-            _threshold = threshold;
+            _boss = boss;
         }
 
-        public double Threshold()
+        public double BossRating()
         {
-            return _threshold;
+            return _boss;
         }
 
         public double NewPlayerRating()
@@ -33,17 +33,17 @@ namespace DevRating.Rating
 
         public double WinnerNewRating(Match match)
         {
-            return match.Winner() + WinnerExtraPoints(match.Winner(), match.Loser()) * match.Times();
+            return match.Winner() + WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
         }
 
         public double LoserNewRating(Match match)
         {
-            return match.Loser() - WinnerExtraPoints(match.Winner(), match.Loser()) * match.Times();
+            return match.Loser() - WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
         }
 
         public double WinnerReward(Match match)
         {
-            return WinProbability(match.Winner(), match.Loser()) * match.Times();
+            return WinProbability(match.Winner(), match.Loser()) * match.Count();
         }
 
         public double LoserReward(Match match)

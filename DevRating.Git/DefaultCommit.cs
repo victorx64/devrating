@@ -20,5 +20,10 @@ namespace DevRating.Git
         {
             return _repository;
         }
+
+        public override string ToString()
+        {
+            return Sha();
+        }
     }
 }

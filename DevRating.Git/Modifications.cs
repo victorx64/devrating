@@ -4,5 +4,6 @@ namespace DevRating.Git
     {
         void AddAddition(Addition addition);
         void AddDeletion(Deletion deletion);
+        string Report();
     }
 }

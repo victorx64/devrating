@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using DevRating.AzureTable;
 using DevRating.LibGit2Sharp;
@@ -54,6 +55,11 @@ namespace DevRating.GitHubApp
             var source = clone.Insert(clone.IndexOf("://", StringComparison.Ordinal) + "://".Length,
                 $"x-access-token:{response.Token}@");
 
+            if (Directory.Exists("repo.git"))
+            {
+                Directory.Delete("repo.git", true);
+            }
+
             var path = global::LibGit2Sharp.Repository.Clone(source, "repo.git", new CloneOptions
             {
                 IsBare = true,
@@ -62,7 +68,7 @@ namespace DevRating.GitHubApp
             });
 
             var repository = new LibGit2Repository(path, clone);
-            
+
             var formula = new EloFormula();
 
             foreach (var commit in payload.Commits)
@@ -71,10 +77,12 @@ namespace DevRating.GitHubApp
 
                 await repository.WriteInto(modifications, commit.Id);
 
-                await modifications.Sync();
+                await modifications.Upload();
 
-//                await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
-//                    new NewCommitComment(matches.Report(commit.Id)));
+                var report = modifications.Report();
+
+                await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
+                    new NewCommitComment(report));
             }
         }
     }

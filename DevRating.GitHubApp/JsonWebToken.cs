@@ -17,7 +17,7 @@ namespace DevRating.GitHubApp
         {
             return new GitHubJwtFactory(
                     new FilePrivateKeySource(_path),
-                    new GitHubJwtFactoryOptions {AppIntegrationId = _id, ExpirationSeconds = 600})
+                    new GitHubJwtFactoryOptions {AppIntegrationId = _id, ExpirationSeconds = 570})
                 .CreateEncodedJwtToken();
         }
     }

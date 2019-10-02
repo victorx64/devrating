@@ -4,13 +4,13 @@ namespace DevRating.Rating
     {
         private readonly double _winner;
         private readonly double _loser;
-        private readonly int _times;
+        private readonly int _count;
 
-        public DefaultMatch(double winner, double loser, int times)
+        public DefaultMatch(double winner, double loser, int count)
         {
             _winner = winner;
             _loser = loser;
-            _times = times;
+            _count = count;
         }
         
         public double Winner()
@@ -23,9 +23,9 @@ namespace DevRating.Rating
             return _loser;
         }
 
-        public int Times()
+        public int Count()
         {
-            return _times;
+            return _count;
         }
     }
 }

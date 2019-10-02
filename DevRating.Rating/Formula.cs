@@ -7,6 +7,6 @@ namespace DevRating.Rating
         double LoserNewRating(Match match);
         double WinnerReward(Match match);
         double LoserReward(Match match);
-        double Threshold();
+        double BossRating();
     }
 }

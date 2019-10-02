@@ -4,6 +4,6 @@ namespace DevRating.Rating
     {
         double Winner();
         double Loser();
-        int Times();
+        int Count();
     }
 }

@@ -18,7 +18,7 @@ namespace DevRating.GitHubApp
 
         public DateTimeOffset Timestamp { get; protected set; } = default;
 
-        public Uri Url { get; protected set; } = new Uri(string.Empty);
+        public Uri Url { get; protected set; } = new Uri("http://devrating.net/");
 
         public PushWebhookCommitter Author { get; protected set; } = new PushWebhookCommitter();
 
