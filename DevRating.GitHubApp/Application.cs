@@ -60,9 +60,10 @@ namespace DevRating.GitHubApp
 
             var formula = new EloFormula();
 
-            var connection = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
-
-            var modifications = new AzureModifications(connection, "devrating", formula);
+            var modifications = new AzureModifications(
+                Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING"),
+                "devrating",
+                formula);
 
             foreach (var commit in payload.Commits)
             {
@@ -83,7 +84,7 @@ namespace DevRating.GitHubApp
                     report = e.ToString();
                 }
 
-                await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
+                var comment = await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
                     new NewCommitComment(report));
             }
         }

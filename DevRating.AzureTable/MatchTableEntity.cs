@@ -8,22 +8,30 @@ namespace DevRating.AzureTable
         {
         }
 
-        public MatchTableEntity(string key, string player, string contender, MatchType type, string commit, string repository, double rating,
-            double reward, int rounds)
+        public MatchTableEntity(
+            string key,
+            string player,
+            string contender,
+            MatchType type,
+            string commit,
+            string repository,
+            double rating,
+            double reward,
+            int rounds)
         {
             Commit = commit;
             Repository = repository;
             Contender = contender;
-            Type = type;
+            Type = (byte) type;
             Rating = rating;
             Reward = reward;
             Rounds = rounds;
             PartitionKey = player;
             RowKey = key;
         }
-        
+
         public string Contender { get; set; } = string.Empty;
-        public MatchType Type { get; set; }
+        public byte Type { get; set; }
         public string Commit { get; set; } = string.Empty;
         public string Repository { get; set; } = string.Empty;
         public double Rating { get; set; }

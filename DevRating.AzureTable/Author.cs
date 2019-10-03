@@ -12,7 +12,7 @@ namespace DevRating.AzureTable
         private readonly string _name;
         private readonly CloudTable _table;
         private readonly Formula _formula;
-        private MatchTableEntity _entity;
+        private MatchTableEntity? _entity;
         private readonly TableBatchOperation _operations;
 
         public Author(string name, CloudTable table, Formula formula)

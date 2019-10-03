@@ -116,12 +116,12 @@ namespace DevRating.AzureTable
 
             foreach (var addition in _additions)
             {
-                builder.Append($"Addition {addition.Author()} {addition.Count()} {addition.Commit()}");
+                builder.AppendLine($"Addition {addition.Author()} {addition.Count()} {addition.Commit()}");
             }
 
             foreach (var deletion in _deletions)
             {
-                builder.Append(
+                builder.AppendLine(
                     $"Deletion {deletion.Author()} {deletion.Victim()} {deletion.Count()} {deletion.Commit()}");
             }
 
