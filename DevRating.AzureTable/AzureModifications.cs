@@ -5,95 +5,56 @@ using System.Threading.Tasks;
 using DevRating.Git;
 using DevRating.Rating;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Storage.Blob;
 
 namespace DevRating.AzureTable
 {
     public sealed class AzureModifications : Modifications
     {
-        private readonly string _container;
-        private readonly string _connection;
         private readonly CloudTable _table;
         private readonly Formula _formula;
         private readonly IList<Addition> _additions;
         private readonly IList<Deletion> _deletions;
-        private readonly object _lock;
 
-        public AzureModifications(string connection, string container, string table, Formula formula)
+        public AzureModifications(string connection, string table, Formula formula)
         {
-            _connection = connection;
             _table = Table(connection, table);
             _formula = formula;
-            _container = container;
             _additions = new List<Addition>();
             _deletions = new List<Deletion>();
-            _lock = new object();
         }
 
         public void AddAddition(Addition addition)
         {
-            lock (_lock)
-            {
-                _additions.Add(addition);
-            }
+            _additions.Add(addition);
         }
 
         public void AddDeletion(Deletion deletion)
         {
-            lock (_lock)
-            {
-                _deletions.Add(deletion);
-            }
+            _deletions.Add(deletion);
+        }
+
+        public void Clear()
+        {
+            _additions.Clear();
+            _deletions.Clear();
         }
 
         public async Task Upload()
         {
-            var authors = SortedAuthors();
+            var authors = Authors();
 
-            try
+            await PushDeletionsInto(authors);
+
+            await PushAdditionsInto(authors);
+
+            var operations = new TableBatchOperation();
+
+            foreach (var author in authors)
             {
-                foreach (var author in authors)
-                {
-                    await author.Value.Lock();
-                }
-
-                await PushDeletionsInto(authors);
-
-                await PushAdditionsInto(authors);
-
-                foreach (var author in authors)
-                {
-                    await author.Value.Upload();
-                }
-            }
-            finally
-            {
-                _additions.Clear();
-                _deletions.Clear();
-
-                foreach (var author in authors.Reverse())
-                {
-                    await author.Value.Unlock();
-                }
-            }
-        }
-
-        public string Report()
-        {
-            var builder = new StringBuilder();
-
-            foreach (var addition in _additions)
-            {
-                builder.Append($"Addition {addition.Author()} {addition.Count()} {addition.Commit()}");
+                author.Value.CopyOperationsTo(operations);
             }
 
-            foreach (var deletion in _deletions)
-            {
-                builder.Append(
-                    $"Deletion {deletion.Author()} {deletion.Victim()} {deletion.Count()} {deletion.Commit()}");
-            }
-
-            return builder.ToString();
+            await _table.ExecuteBatchAsync(operations);
         }
 
         private async Task PushAdditionsInto(IDictionary<string, Author> authors)
@@ -104,9 +65,9 @@ namespace DevRating.AzureTable
 
                 var winner = await authors[author].Rating();
 
-                var match = new DefaultMatch(winner, _formula.BossRating(), addition.Count());
+                var match = new DefaultMatch(winner, _formula.HighRating(), addition.Count());
 
-                await authors[author].AddWonMatch(string.Empty, match, addition.Commit(), 1);
+                await authors[author].AddWonMatch(string.Empty, match, addition.Commit(), MatchType.AddedNewLine);
             }
         }
 
@@ -127,46 +88,44 @@ namespace DevRating.AzureTable
                     await authors[victim].Rating(),
                     deletion.Count());
 
-                await authors[author].AddWonMatch(victim, match, deletion.Commit(), 1);
-                await authors[victim].AddLostMatch(author, match, deletion.Commit(), 1);
+                await authors[author].AddWonMatch(victim, match, deletion.Commit(), MatchType.DeletedAnotherAuthorLine);
+                await authors[victim].AddLostMatch(author, match, deletion.Commit(), MatchType.DeletedAnotherAuthorLine);
             }
         }
 
-        private IDictionary<string, Author> SortedAuthors()
+        private IDictionary<string, Author> Authors()
         {
-            var players = _additions
+            var authors = _additions
                 .Select(a => a.Author().Email())
                 .ToList();
 
-            players.AddRange(_deletions.SelectMany(d => new[]
+            authors.AddRange(_deletions.SelectMany(d => new[]
             {
-                d.Author().Email(), d.Victim().Email()
+                d.Author().Email(),
+                d.Victim().Email()
             }));
 
-            players.Sort();
-
-            return players
+            return authors
                 .Distinct()
-                .ToDictionary(p => p, p => new Author(p, Blob(_connection, _container, p), _table, _formula));
+                .ToDictionary(p => p, p => new Author(p, _table, _formula));
         }
 
-        private CloudBlockBlob Blob(string connection, string container, string blob)
+        public string Report()
         {
-            var storageAccount = Microsoft.Azure.Storage.CloudStorageAccount.Parse(connection);
+            var builder = new StringBuilder();
 
-            var client = storageAccount.CreateCloudBlobClient();
+            foreach (var addition in _additions)
+            {
+                builder.Append($"Addition {addition.Author()} {addition.Count()} {addition.Commit()}");
+            }
 
-            var reference = client.GetContainerReference(container);
+            foreach (var deletion in _deletions)
+            {
+                builder.Append(
+                    $"Deletion {deletion.Author()} {deletion.Victim()} {deletion.Count()} {deletion.Commit()}");
+            }
 
-            reference.CreateIfNotExists();
-
-            reference.SetPermissionsAsync(
-                new BlobContainerPermissions
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Blob // For what?
-                });
-
-            return reference.GetBlockBlobReference(blob);
+            return builder.ToString();
         }
 
         private CloudTable Table(string connection, string table)

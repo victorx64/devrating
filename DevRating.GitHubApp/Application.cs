@@ -22,17 +22,6 @@ namespace DevRating.GitHubApp
 
         public async Task HandlePushEvent(PushWebhookPayload payload)
         {
-            /*
-             * git clone bare repo
-             * foreach payload.commit
-             * try
-                * analyze each commit
-                * post report to comments 
-             * catch
-                * post error message
-                * invite to retry or create issue ticket
-             */
-
             if (!payload.Ref.Equals($"refs/heads/{payload.Repository.DefaultBranch}"))
             {
                 return;
@@ -71,15 +60,28 @@ namespace DevRating.GitHubApp
 
             var formula = new EloFormula();
 
+            var connection = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
+            var modifications = new AzureModifications(connection, "devrating", formula);
+
             foreach (var commit in payload.Commits)
             {
-                var modifications = new AzureModifications("", "DevRating", "DevRating", formula);
+                string report;
 
-                await repository.WriteInto(modifications, commit.Id);
+                try
+                {
+                    modifications.Clear();
 
-                await modifications.Upload();
+                    await repository.WriteInto(modifications, commit.Id);
 
-                var report = modifications.Report();
+                    await modifications.Upload();
+
+                    report = modifications.Report();
+                }
+                catch (Exception e)
+                {
+                    report = e.ToString();
+                }
 
                 await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
                     new NewCommitComment(report));

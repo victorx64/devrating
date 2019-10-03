@@ -21,7 +21,7 @@ namespace DevRating.Rating
             _boss = boss;
         }
 
-        public double BossRating()
+        public double HighRating()
         {
             return _boss;
         }

@@ -1,56 +1,45 @@
-using System;
 using System.Globalization;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using DevRating.Git;
 using DevRating.Rating;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 
 namespace DevRating.AzureTable
 {
     internal sealed class Author
     {
         private readonly string _name;
-        private readonly CloudBlockBlob _blob;
         private readonly CloudTable _table;
         private readonly Formula _formula;
+        private MatchTableEntity _entity;
+        private readonly TableBatchOperation _operations;
 
-        private string _lease;
-        private ulong _key;
-
-        public Author(string name, CloudBlockBlob blob, CloudTable table, Formula formula)
+        public Author(string name, CloudTable table, Formula formula)
         {
             _name = name;
-            _blob = blob;
             _table = table;
             _formula = formula;
-            _lease = string.Empty;
+            _operations = new TableBatchOperation();
+        }
+
+        public void CopyOperationsTo(TableBatchOperation destination)
+        {
+            foreach (var operation in _operations)
+            {
+                destination.Add(operation);
+            }
         }
 
         public async Task<double> Rating()
         {
-            ThrowIfNotLocked();
-
-            if (_key == ulong.MaxValue)
-            {
-                return _formula.NewPlayerRating();
-            }
-
-            var operation = TableOperation.Retrieve<MatchTableEntity>(_name, CurrentMatchKey());
-
-            var result = await _table.ExecuteAsync(operation);
-
-            var match = (MatchTableEntity) result.Result;
-
-            return match.Rating;
+            return (await LatestEntity()).Rating;
         }
 
-        public Task AddWonMatch(string contender, Match match, Commit commit, byte type)
+        public async Task AddWonMatch(string contender, Match match, Commit commit, MatchType type)
         {
-            var entity = new MatchTableEntity(
-                NextMatchKey(),
+            _entity = new MatchTableEntity(
+                await NextKey(),
                 _name,
                 contender,
                 type,
@@ -60,13 +49,13 @@ namespace DevRating.AzureTable
                 _formula.WinnerReward(match),
                 match.Count());
 
-            return AddMatchEntity(entity);
+            _operations.Add(TableOperation.Insert(_entity));
         }
 
-        public Task AddLostMatch(string contender, Match match, Commit commit, byte type)
+        public async Task AddLostMatch(string contender, Match match, Commit commit, MatchType type)
         {
-            var entity = new MatchTableEntity(
-                NextMatchKey(),
+            _entity = new MatchTableEntity(
+                await NextKey(),
                 _name,
                 contender,
                 type,
@@ -76,85 +65,43 @@ namespace DevRating.AzureTable
                 _formula.LoserReward(match),
                 match.Count());
 
-            return AddMatchEntity(entity);
+            _operations.Add(TableOperation.Insert(_entity));
         }
 
-        private async Task AddMatchEntity(ITableEntity entity)
+        private async Task<string> NextKey()
         {
-            ThrowIfNotLocked();
+            var key = ulong.Parse(await Key(), CultureInfo.InvariantCulture);
 
-            var operation = TableOperation.InsertOrReplace(entity);
-
-            await _table.ExecuteAsync(operation);
-
-            MoveCurrentMatchKey();
+            return (--key).ToString("D20", CultureInfo.InvariantCulture);
         }
 
-        public async Task Lock()
+        private async Task<string> Key()
         {
-            if (!_lease.Equals(string.Empty))
+            return (await LatestEntity()).RowKey;
+        }
+
+        private async Task<MatchTableEntity> LatestEntity()
+        {
+            if (_entity == null)
             {
-                throw new Exception("Author is already locked");
+                var query = new TableQuery<MatchTableEntity>()
+                    .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, _name))
+                    .Take(1);
+
+                var entities = await _table.ExecuteQuerySegmentedAsync(query, null);
+
+                _entity = entities.FirstOrDefault() ?? NewEntity();
             }
-            
-            if (!_blob.Exists())
-            {
-                await _blob.UploadTextAsync(ulong.MaxValue.ToString("D20", CultureInfo.InvariantCulture), Encoding.UTF8,
-                    null, null, null);
-            }
 
-            _lease = await _blob.AcquireLeaseAsync(null, Guid.NewGuid().ToString());
-
-            var text = await _blob.DownloadTextAsync(Encoding.UTF8,
-                null, null, null);
-
-            _key = ulong.Parse(text, CultureInfo.InvariantCulture);
+            return _entity;
         }
 
-        public async Task Unlock()
+        private MatchTableEntity NewEntity()
         {
-            ThrowIfNotLocked();
+            var key = ulong.MaxValue.ToString("D20", CultureInfo.InvariantCulture);
 
-            await _blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(_lease));
-
-            _lease = string.Empty;
-        }
-
-        public Task Upload()
-        {
-            ThrowIfNotLocked();
-
-            return _blob.UploadTextAsync(CurrentMatchKey(), Encoding.UTF8,
-                AccessCondition.GenerateLeaseCondition(_lease), null, null);
-        }
-
-        public void ThrowIfNotLocked()
-        {
-            if (_lease.Equals(string.Empty))
-            {
-                throw new Exception("Author is not locked");
-            }
-        }
-
-        private string CurrentMatchKey()
-        {
-            ThrowIfNotLocked();
-
-            return _key.ToString("D20", CultureInfo.InvariantCulture);
-        }
-
-        private void MoveCurrentMatchKey()
-        {
-            ThrowIfNotLocked();
-
-            --_key;
-        }
-
-        private string NextMatchKey()
-        {
-            ThrowIfNotLocked();
-            
-            return (_key - 1).ToString("D20", CultureInfo.InvariantCulture);
+            return new MatchTableEntity(key, _name, string.Empty, MatchType.Initialization, string.Empty, string.Empty,
+                _formula.NewPlayerRating(), 0d, 0);
         }
     }
 }
