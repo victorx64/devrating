@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using DevRating.GitHubApp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -11,7 +12,7 @@ namespace DevRating.AzureFunction
     public static class HandleEvent
     {
         [FunctionName("HandleEvent")]
-        public static IActionResult Run(
+        public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest request,
             ExecutionContext context)
@@ -28,8 +29,8 @@ namespace DevRating.AzureFunction
                 var token = new JsonWebToken(42098,
                     Path.Combine(context.FunctionAppDirectory, "(PrivateKey)", "devrating.2019-09-26.private-key.pem"));
 
-                new Application(token, "DevRating")
-                    .HandlePushEvent(payload).GetAwaiter().GetResult();
+                await new Application(token, "DevRating")
+                    .HandlePushEvent(payload, context.FunctionDirectory);
             }
 
             return new OkObjectResult(@event);

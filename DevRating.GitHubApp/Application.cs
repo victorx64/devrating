@@ -20,7 +20,7 @@ namespace DevRating.GitHubApp
             _name = name;
         }
 
-        public async Task HandlePushEvent(PushWebhookPayload payload)
+        public async Task HandlePushEvent(PushWebhookPayload payload, string directory)
         {
             if (!payload.Ref.Equals($"refs/heads/{payload.Repository.DefaultBranch}"))
             {
@@ -44,17 +44,20 @@ namespace DevRating.GitHubApp
             var source = clone.Insert(clone.IndexOf("://", StringComparison.Ordinal) + "://".Length,
                 $"x-access-token:{response.Token}@");
 
-            if (Directory.Exists("repo.git"))
+            var path = Path.Combine(directory, "repository");
+
+            if (Directory.Exists(path))
             {
-                Directory.Delete("repo.git", true);
+                DirectoryHelper.DeleteDirectory(path);
             }
 
-            var path = global::LibGit2Sharp.Repository.Clone(source, "repo.git", new CloneOptions
-            {
-                IsBare = true,
-                BranchName = payload.Repository.DefaultBranch,
-                RecurseSubmodules = false
-            });
+            global::LibGit2Sharp.Repository.Clone(source, path,
+                new CloneOptions
+                {
+                    IsBare = true,
+                    BranchName = payload.Repository.DefaultBranch,
+                    RecurseSubmodules = false
+                });
 
             var repository = new LibGit2Repository(path, clone);
 
@@ -84,9 +87,13 @@ namespace DevRating.GitHubApp
                     report = e.ToString();
                 }
 
-                var comment = await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
+                await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
                     new NewCommitComment(report));
             }
+
+            repository.Dispose();
+
+            DirectoryHelper.DeleteDirectory(path);
         }
     }
 }
