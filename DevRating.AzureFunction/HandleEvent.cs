@@ -38,7 +38,7 @@ namespace DevRating.AzureFunction
                             "devrating.2019-09-26.private-key.pem"));
 
                     await new Application(token, "DevRating")
-                        .HandlePushEvent(payload, context.FunctionDirectory);
+                        .HandlePushEvent(payload, Path.GetTempPath());
                 }
 
                 return new OkObjectResult(@event);
