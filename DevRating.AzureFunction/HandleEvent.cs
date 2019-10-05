@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using DevRating.GitHubApp;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Octokit.Internal;
 
 namespace DevRating.AzureFunction
@@ -15,25 +17,38 @@ namespace DevRating.AzureFunction
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest request,
-            ExecutionContext context)
+            ExecutionContext context,
+            ILogger logger)
         {
-            var @event = request.Headers["X-GitHub-Event"];
+            logger.LogInformation("Hello");
 
-            if (@event.Equals("push"))
+            try
             {
-                var serializer = new SimpleJsonSerializer();
+                var @event = request.Headers["X-GitHub-Event"];
 
-                var payload =
-                    serializer.Deserialize<PushWebhookPayload>((new StreamReader(request.Body).ReadToEnd()));
+                if (@event.Equals("push"))
+                {
+                    var serializer = new SimpleJsonSerializer();
 
-                var token = new JsonWebToken(42098,
-                    Path.Combine(context.FunctionAppDirectory, "(PrivateKey)", "devrating.2019-09-26.private-key.pem"));
+                    var payload =
+                        serializer.Deserialize<PushWebhookPayload>((new StreamReader(request.Body).ReadToEnd()));
 
-                await new Application(token, "DevRating")
-                    .HandlePushEvent(payload, context.FunctionDirectory);
+                    var token = new JsonWebToken(42098,
+                        Path.Combine(context.FunctionAppDirectory, "(PrivateKey)",
+                            "devrating.2019-09-26.private-key.pem"));
+
+                    await new Application(token, "DevRating")
+                        .HandlePushEvent(payload, context.FunctionDirectory);
+                }
+
+                return new OkObjectResult(@event);
             }
-
-            return new OkObjectResult(@event);
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                logger.LogError(e.StackTrace);
+                throw;
+            }
         }
     }
 }

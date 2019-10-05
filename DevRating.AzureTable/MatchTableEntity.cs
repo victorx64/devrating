@@ -22,7 +22,7 @@ namespace DevRating.AzureTable
             Commit = commit;
             Repository = repository;
             Contender = contender;
-            Type = (byte) type;
+            Type = (int) type;
             Rating = rating;
             Reward = reward;
             Rounds = rounds;
@@ -31,7 +31,7 @@ namespace DevRating.AzureTable
         }
 
         public string Contender { get; set; } = string.Empty;
-        public byte Type { get; set; }
+        public int Type { get; set; }
         public string Commit { get; set; } = string.Empty;
         public string Repository { get; set; } = string.Empty;
         public double Rating { get; set; }

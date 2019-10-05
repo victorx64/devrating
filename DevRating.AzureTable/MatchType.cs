@@ -1,6 +1,6 @@
 namespace DevRating.AzureTable
 {
-    internal enum MatchType : byte
+    internal enum MatchType : int
     {
         DeletedAnotherAuthorLine = 0,
         DeletedHisLine = 1,

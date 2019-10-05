@@ -64,7 +64,7 @@ namespace DevRating.GitHubApp
             var formula = new EloFormula();
 
             var modifications = new AzureModifications(
-                Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING"),
+                Environment.GetEnvironmentVariable("AzureWebJobsStorage")!,
                 "devrating",
                 formula);
 
