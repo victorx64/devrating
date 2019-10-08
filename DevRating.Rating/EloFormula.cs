@@ -2,31 +2,24 @@ using System;
 
 namespace DevRating.Rating
 {
-    public class EloFormula : Formula
+    public sealed class EloFormula : Formula
     {
         private readonly double _k;
         private readonly double _n;
         private readonly double _default;
-        private readonly double _boss;
 
-        public EloFormula() : this(2d, 400d, 1200d, 2000d)
+        public EloFormula() : this(2d, 400d, 1500d)
         {
         }
 
-        public EloFormula(double k, double n, double @default, double boss)
+        public EloFormula(double k, double n, double @default)
         {
             _k = k;
             _n = n;
             _default = @default;
-            _boss = boss;
         }
 
-        public double HighRating()
-        {
-            return _boss;
-        }
-
-        public double NewPlayerRating()
+        public double DefaultRating()
         {
             return _default;
         }
@@ -41,14 +34,9 @@ namespace DevRating.Rating
             return match.Loser() - WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
         }
 
-        public double WinnerReward(Match match)
+        public double Reward(double rating, int count)
         {
-            return WinProbability(match.Winner(), match.Loser()) * match.Count();
-        }
-
-        public double LoserReward(Match match)
-        {
-            return 0d;
+            return WinProbability(rating, DefaultRating()) * count;
         }
 
         private double WinnerExtraPoints(double winner, double loser)

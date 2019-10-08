@@ -2,11 +2,9 @@ namespace DevRating.Rating
 {
     public interface Formula
     {
-        double NewPlayerRating();
+        double DefaultRating();
         double WinnerNewRating(Match match);
         double LoserNewRating(Match match);
-        double WinnerReward(Match match);
-        double LoserReward(Match match);
-        double HighRating();
+        double Reward(double rating, int count);
     }
 }

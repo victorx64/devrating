@@ -36,33 +36,49 @@ namespace DevRating.AzureTable
             return (await LatestEntity()).Rating;
         }
 
-        public async Task AddWonMatch(string contender, Match match, Commit commit, MatchType type)
+        public async Task AddRewardRecord(double rating, int count, Commit commit)
+        {
+            _entity = new MatchTableEntity(
+                await NextKey(),
+                _name,
+                string.Empty,
+                MatchType.AddedNewLine,
+                commit.Sha(),
+                commit.Repository(),
+                rating,
+                _formula.Reward(rating, count),
+                count);
+
+            _operations.Add(TableOperation.Insert(_entity));
+        }
+
+        public async Task AddWonMatch(string contender, Match match, Commit commit)
         {
             _entity = new MatchTableEntity(
                 await NextKey(),
                 _name,
                 contender,
-                type,
+                MatchType.DeletedAnotherAuthorLine,
                 commit.Sha(),
                 commit.Repository(),
                 _formula.WinnerNewRating(match),
-                _formula.WinnerReward(match),
+                0d,
                 match.Count());
 
             _operations.Add(TableOperation.Insert(_entity));
         }
 
-        public async Task AddLostMatch(string contender, Match match, Commit commit, MatchType type)
+        public async Task AddLostMatch(string contender, Match match, Commit commit)
         {
             _entity = new MatchTableEntity(
                 await NextKey(),
                 _name,
                 contender,
-                type,
+                MatchType.DeletedAnotherAuthorLine,
                 commit.Sha(),
                 commit.Repository(),
                 _formula.LoserNewRating(match),
-                _formula.LoserReward(match),
+                0d,
                 match.Count());
 
             _operations.Add(TableOperation.Insert(_entity));
@@ -101,7 +117,7 @@ namespace DevRating.AzureTable
             var key = ulong.MaxValue.ToString("D20", CultureInfo.InvariantCulture);
 
             return new MatchTableEntity(key, _name, string.Empty, MatchType.Initialization, string.Empty, string.Empty,
-                _formula.NewPlayerRating(), 0d, 0);
+                _formula.DefaultRating(), 0d, 0);
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace DevRating.Rating
 {
-    public class DefaultMatch : Match
+    public sealed class DefaultMatch : Match
     {
         private readonly double _winner;
         private readonly double _loser;

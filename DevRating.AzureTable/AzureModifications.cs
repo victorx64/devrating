@@ -63,11 +63,9 @@ namespace DevRating.AzureTable
             {
                 var author = addition.Author().Email();
 
-                var winner = await authors[author].Rating();
+                var rating = await authors[author].Rating();
 
-                var match = new DefaultMatch(winner, _formula.HighRating(), addition.Count());
-
-                await authors[author].AddWonMatch(string.Empty, match, addition.Commit(), MatchType.AddedNewLine);
+                await authors[author].AddRewardRecord(rating, addition.Count(), addition.Commit());
             }
         }
 
@@ -88,8 +86,8 @@ namespace DevRating.AzureTable
                     await authors[victim].Rating(),
                     deletion.Count());
 
-                await authors[author].AddWonMatch(victim, match, deletion.Commit(), MatchType.DeletedAnotherAuthorLine);
-                await authors[victim].AddLostMatch(author, match, deletion.Commit(), MatchType.DeletedAnotherAuthorLine);
+                await authors[author].AddWonMatch(victim, match, deletion.Commit());
+                await authors[victim].AddLostMatch(author, match, deletion.Commit());
             }
         }
 
