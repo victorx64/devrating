@@ -70,6 +70,9 @@ namespace DevRating.GitHubApp
 
             foreach (var commit in payload.Commits)
             {
+                // TODO: Multiple commits in a row from an author must be squashed into one
+                // to avoid add-delete-add-line attack to farm free reward.
+
                 string report;
 
                 try

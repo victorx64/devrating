@@ -23,12 +23,9 @@ namespace DevRating.AzureTable
             _operations = new TableBatchOperation();
         }
 
-        public void CopyOperationsTo(TableBatchOperation destination)
+        public TableBatchOperation Operations()
         {
-            foreach (var operation in _operations)
-            {
-                destination.Add(operation);
-            }
+            return _operations;
         }
 
         public async Task<double> Rating()

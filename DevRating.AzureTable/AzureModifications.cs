@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,14 +48,22 @@ namespace DevRating.AzureTable
 
             await PushAdditionsInto(authors);
 
-            var operations = new TableBatchOperation();
-
             foreach (var author in authors)
             {
-                author.Value.CopyOperationsTo(operations);
+                try
+                {
+                    await _table.ExecuteBatchAsync(author.Value.Operations());
+                    // TODO: These executions are not in one transaction.
+                    // If the second execution fails, the first will be already pushed to the storage.
+                    // The data state will be corrupted.
+                }
+                catch (Exception exception)
+                {
+                    throw new Exception(
+                        $"The data state is corrupted. Exception thrown while inserting matches of '{author.Key}'.",
+                        exception);
+                }
             }
-
-            await _table.ExecuteBatchAsync(operations);
         }
 
         private async Task PushAdditionsInto(IDictionary<string, Author> authors)
