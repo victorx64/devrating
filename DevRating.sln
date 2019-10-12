@@ -3,19 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Git", "DevRating.Git\DevRating.Git.csproj", "{8783F08E-9606-4140-B2B7-D215D757799A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.Git", "DevRating.Git\DevRating.Git.csproj", "{8783F08E-9606-4140-B2B7-D215D757799A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Rating", "DevRating.Rating\DevRating.Rating.csproj", "{17B823C9-E039-4D8D-AA7B-E54283CF019A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.Rating", "DevRating.Rating\DevRating.Rating.csproj", "{17B823C9-E039-4D8D-AA7B-E54283CF019A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibGit2Sharp", "libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj", "{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibGit2Sharp", "libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj", "{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.AzureTable", "DevRating.AzureTable\DevRating.AzureTable.csproj", "{49AB74B9-19D9-4B21-9584-06A63BFA011A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.AzureTable", "DevRating.AzureTable\DevRating.AzureTable.csproj", "{49AB74B9-19D9-4B21-9584-06A63BFA011A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.LibGit2Sharp", "DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.LibGit2Sharp", "DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.GitHubApp", "DevRating.GitHubApp\DevRating.GitHubApp.csproj", "{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.GitHubApp", "DevRating.GitHubApp\DevRating.GitHubApp.csproj", "{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.AzureFunction", "DevRating.AzureFunction\DevRating.AzureFunction.csproj", "{339AE433-FD4C-4A0F-8F73-5697C9F753E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.AzureFunction", "DevRating.AzureFunction\DevRating.AzureFunction.csproj", "{339AE433-FD4C-4A0F-8F73-5697C9F753E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{AF66C431-B98F-445D-8643-490A83BFBCBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{E252DC9D-AEBF-4962-9A5F-8B8A48DE3D49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubApp", "GitHubApp", "{8AA051A9-DEAC-447E-A10E-B27898DEE2AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApp", "WebApp", "{D12D7B70-93D2-4283-ACC7-56BCD15065DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.WebApplication", "DevRating.WebApplication\DevRating.WebApplication.csproj", "{15148D2D-A9C8-4B46-A086-38E583BBBC7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,9 +61,24 @@ Global
 		{339AE433-FD4C-4A0F-8F73-5697C9F753E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339AE433-FD4C-4A0F-8F73-5697C9F753E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{339AE433-FD4C-4A0F-8F73-5697C9F753E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15148D2D-A9C8-4B46-A086-38E583BBBC7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15148D2D-A9C8-4B46-A086-38E583BBBC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15148D2D-A9C8-4B46-A086-38E583BBBC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15148D2D-A9C8-4B46-A086-38E583BBBC7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8783F08E-9606-4140-B2B7-D215D757799A} = {AF66C431-B98F-445D-8643-490A83BFBCBD}
+		{17B823C9-E039-4D8D-AA7B-E54283CF019A} = {AF66C431-B98F-445D-8643-490A83BFBCBD}
+		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE} = {8AA051A9-DEAC-447E-A10E-B27898DEE2AF}
+		{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C} = {8AA051A9-DEAC-447E-A10E-B27898DEE2AF}
+		{F5E3A4A9-4F4E-4DAC-8F0F-A627D1E397C1} = {8AA051A9-DEAC-447E-A10E-B27898DEE2AF}
+		{339AE433-FD4C-4A0F-8F73-5697C9F753E3} = {8AA051A9-DEAC-447E-A10E-B27898DEE2AF}
+		{8AA051A9-DEAC-447E-A10E-B27898DEE2AF} = {E252DC9D-AEBF-4962-9A5F-8B8A48DE3D49}
+		{D12D7B70-93D2-4283-ACC7-56BCD15065DD} = {E252DC9D-AEBF-4962-9A5F-8B8A48DE3D49}
+		{15148D2D-A9C8-4B46-A086-38E583BBBC7B} = {D12D7B70-93D2-4283-ACC7-56BCD15065DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA199B40-9738-4A64-B591-A6FABF43563D}
