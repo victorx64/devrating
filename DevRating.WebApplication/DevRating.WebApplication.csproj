@@ -1,11 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <UserSecretsId>aspnet-DevRating.WebApplication-5058048B-30F8-4403-9859-37FC135A5225</UserSecretsId>
+    </PropertyGroup>
 
 
-  <ItemGroup>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0"/>
+    </ItemGroup>
 
 </Project>
