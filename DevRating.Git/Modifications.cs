@@ -2,7 +2,8 @@ namespace DevRating.Git
 {
     public interface Modifications
     {
-        void AddDeletion(string victim);
-        void AddAdditions(int count);
+        void AddAddition(Addition addition);
+        void AddDeletion(Deletion deletion);
+        string Report();
     }
 }

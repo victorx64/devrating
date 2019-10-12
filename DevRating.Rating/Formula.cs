@@ -2,7 +2,9 @@ namespace DevRating.Rating
 {
     public interface Formula
     {
-        double WinProbability(double winner, double loser);
-        double WinnerExtraPoints(double winner, double loser);
+        double DefaultRating();
+        double WinnerNewRating(Match match);
+        double LoserNewRating(Match match);
+        double Reward(double rating, int count);
     }
 }

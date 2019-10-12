@@ -6,25 +6,45 @@ namespace DevRating.Rating
     {
         private readonly double _k;
         private readonly double _n;
+        private readonly double _default;
 
-        public EloFormula() : this(2d, 400d)
+        public EloFormula() : this(2d, 400d, 1500d)
         {
         }
 
-        public EloFormula(double k, double n)
+        public EloFormula(double k, double n, double @default)
         {
             _k = k;
             _n = n;
+            _default = @default;
         }
 
-        public double WinnerExtraPoints(double winner, double loser)
+        public double DefaultRating()
         {
-            var probability = WinProbability(winner, loser);
-
-            return _k * (1d - probability);
+            return _default;
         }
 
-        public double WinProbability(double winner, double loser)
+        public double WinnerNewRating(Match match)
+        {
+            return match.Winner() + WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
+        }
+
+        public double LoserNewRating(Match match)
+        {
+            return match.Loser() - WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
+        }
+
+        public double Reward(double rating, int count)
+        {
+            return WinProbability(rating, DefaultRating()) * count;
+        }
+
+        private double WinnerExtraPoints(double winner, double loser)
+        {
+            return _k * (1d - WinProbability(winner, loser));
+        }
+
+        private double WinProbability(double winner, double loser)
         {
             var qa = Math.Pow(10d, winner / _n);
 
