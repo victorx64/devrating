@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <LangVersion>8</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19269.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DevRating.Git\DevRating.Git.csproj" />
+        <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
+    </ItemGroup>
+
+</Project>
