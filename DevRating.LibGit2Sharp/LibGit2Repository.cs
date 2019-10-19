@@ -84,7 +84,7 @@ namespace DevRating.LibGit2Sharp
                 if (line.StartsWith("@@ "))
                 {
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
-                    // TODO Throw exception on contextual lines. Patch must be without contextual lines (git log -U0)
+                    // TODO Throw exception on a contextual line. Patch must be without contextual lines (git log -U0)
                     var parts = line.Split(' ');
 
                     var deletions = Deletions(parts[1], blame)
