@@ -31,13 +31,13 @@ namespace DevRating.AzureFunction
                     var serializer = new SimpleJsonSerializer();
 
                     var payload =
-                        serializer.Deserialize<PushWebhookPayload>((new StreamReader(request.Body).ReadToEnd()));
+                        serializer.Deserialize<PushWebhookPayload>(new StreamReader(request.Body).ReadToEnd());
 
                     var token = new JsonWebToken(42098,
                         Path.Combine(context.FunctionAppDirectory, "(PrivateKey)",
                             "devrating.2019-09-26.private-key.pem"));
 
-                    await new Application(token, "DevRating")
+                    await new Application(token, "DevRating", Environment.GetEnvironmentVariable("AzureWebJobsStorage")!)
                         .HandlePushEvent(payload, Path.GetTempPath());
                 }
 

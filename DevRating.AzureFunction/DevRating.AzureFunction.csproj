@@ -28,4 +28,14 @@
         </None>
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <!-- https://github.com/Azure/azure-functions-host/issues/3568 -->
+        <Exec Command="copy $(OutDir)$(ProjectName).deps.json $(OutDir)bin\function.deps.json"/>
+    </Target>
+
+    <Target Name="PostPublish" BeforeTargets="CreateZipFile">
+        <!-- https://github.com/Azure/azure-functions-host/issues/3568 -->
+        <Exec Command="copy $(PublishDir)$(ProjectName).deps.json $(PublishDir)bin\function.deps.json"/>
+    </Target>
+
 </Project>
