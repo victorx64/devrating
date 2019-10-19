@@ -24,14 +24,14 @@ namespace DevRating.Rating
             return _default;
         }
 
-        public double WinnerNewRating(Match match)
+        public double WinnerNewRating(double winner, double loser, int count)
         {
-            return match.Winner() + WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
+            return winner + WinnerExtraPoints(winner, loser) * count;
         }
 
-        public double LoserNewRating(Match match)
+        public double LoserNewRating(double winner, double loser, int count)
         {
-            return match.Loser() - WinnerExtraPoints(match.Winner(), match.Loser()) * match.Count();
+            return loser - WinnerExtraPoints(winner, loser) * count;
         }
 
         public double Reward(double rating, int count)
