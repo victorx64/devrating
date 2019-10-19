@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using DevRating.AzureTable;
 using DevRating.LibGit2Sharp;
 using DevRating.Rating;
+using DevRating.SqlClient;
 using LibGit2Sharp;
 using Octokit;
 
@@ -13,11 +13,13 @@ namespace DevRating.GitHubApp
     {
         private readonly JsonWebToken _token;
         private readonly string _name;
+        private readonly string _connection;
 
-        public Application(JsonWebToken token, string name)
+        public Application(JsonWebToken token, string name, string connection)
         {
             _token = token;
             _name = name;
+            _connection = connection;
         }
 
         public async Task HandlePushEvent(PushWebhookPayload payload, string directory)
@@ -61,12 +63,7 @@ namespace DevRating.GitHubApp
 
             var repository = new LibGit2Repository(path, clone);
 
-            var formula = new EloFormula();
-
-            var modifications = new AzureModifications(
-                Environment.GetEnvironmentVariable("AzureWebJobsStorage")!,
-                "devrating",
-                formula);
+            var modifications = new MatchesTransaction(_connection, new EloFormula());
 
             foreach (var commit in payload.Commits)
             {
@@ -77,17 +74,17 @@ namespace DevRating.GitHubApp
 
                 try
                 {
-                    modifications.Clear();
+                    modifications.Start();
 
                     await repository.WriteInto(modifications, commit.Id);
 
-                    await modifications.Upload();
+                    modifications.Commit();
 
-                    report = modifications.Report();
+                    report = modifications.ToString()!;
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    report = e.ToString();
+                    report = exception.ToString();
                 }
 
                 await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
