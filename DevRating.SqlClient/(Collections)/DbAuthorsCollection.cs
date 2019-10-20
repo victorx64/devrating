@@ -30,7 +30,15 @@ namespace DevRating.SqlClient
 
         public bool Exist(string email)
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
+
+            command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar) {Value = email});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
 
         public Author Author(string email)

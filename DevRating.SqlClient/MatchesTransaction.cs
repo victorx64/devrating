@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DevRating.Git;
 using DevRating.Rating;
 using Microsoft.Data.SqlClient;
@@ -39,8 +38,6 @@ namespace DevRating.SqlClient
 
         public void Commit()
         {
-            var emails = Emails();
-
             var connection = new SqlConnection(_connection);
 
             connection.Open();
@@ -85,40 +82,58 @@ namespace DevRating.SqlClient
                     continue;
                 }
 
-                var winner = authors.Author(author);
-                var loser = authors.Author(victim);
+                var winner = authors.Exist(author) ? authors.Author(author) : authors.NewAuthor(author);
+                var loser = authors.Exist(victim) ? authors.Author(victim) : authors.NewAuthor(victim);
 
-                var match = matches.NewMatch(
-                    winner.Id(),
-                    loser.Id(),
-                    deletion.Commit().Sha(),
-                    deletion.Commit().Repository(),
-                    deletion.Count());
-
-                var wRating = ratings.LastRatingOf(winner.Id());
-                var lRating = ratings.LastRatingOf(loser.Id());
-
-                var w = _formula.WinnerNewRating(wRating.Value(), lRating.Value(), deletion.Count());
-                var l = _formula.LoserNewRating(wRating.Value(), lRating.Value(), deletion.Count());
-
-                ratings.NewRating(winner.Id(), w, wRating.Id(), match.Id());
-                ratings.NewRating(loser.Id(), l, lRating.Id(), match.Id());
+                NewMethod(winner.Id(), loser.Id(), matches, ratings, deletion);
             }
         }
 
-        private IEnumerable<string> Emails()
+        private void NewMethod(int winner, int loser, MatchesCollection matches, RatingsCollection ratings,
+            Modification deletion)
         {
-            var emails = _additions
-                .Select(a => a.Author().Email())
-                .ToList();
+            var match = matches
+                .NewMatch(
+                    winner,
+                    loser,
+                    deletion.Commit().Sha(),
+                    deletion.Commit().Repository(),
+                    deletion.Count())
+                .Id();
 
-            emails.AddRange(_deletions.SelectMany(d => new[]
+            var winnerRating = ratings.HasRating(winner)
+                ? ratings.LastRatingOf(winner).Value()
+                : _formula.DefaultRating();
+
+            var loserRating = ratings.HasRating(loser)
+                ? ratings.LastRatingOf(loser).Value()
+                : _formula.DefaultRating();
+
+            var winnerNewRating = _formula.WinnerNewRating(winnerRating, loserRating, deletion.Count());
+
+            if (ratings.HasRating(winner))
             {
-                d.Author().Email(),
-                d.Victim().Email()
-            }));
+                var rating = ratings.LastRatingOf(winner).Id();
 
-            return emails.Distinct();
+                ratings.NewRating(winner, winnerNewRating, rating, match);
+            }
+            else
+            {
+                ratings.NewRating(winner, winnerNewRating, match);
+            }
+
+            var loserNewRating = _formula.LoserNewRating(winnerRating, loserRating, deletion.Count());
+
+            if (ratings.HasRating(loser))
+            {
+                var rating = ratings.LastRatingOf(loser).Id();
+
+                ratings.NewRating(loser, loserNewRating, rating, match);
+            }
+            else
+            {
+                ratings.NewRating(loser, loserNewRating, match);
+            }
         }
     }
 }

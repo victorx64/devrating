@@ -1,8 +1,7 @@
 namespace DevRating.SqlClient
 {
-    internal interface Author
+    internal interface Author : IdentifiableObject
     {
         string Email();
-        int Id();
     }
 }

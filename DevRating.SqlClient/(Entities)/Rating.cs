@@ -1,8 +1,7 @@
 namespace DevRating.SqlClient
 {
-    internal interface Rating
+    internal interface Rating : IdentifiableObject
     {
-        int Id();
         int AuthorId();
         int LastRatingId();
         bool HasLastRating();

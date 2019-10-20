@@ -1,6 +1,6 @@
 namespace DevRating.SqlClient
 {
-    internal interface Match
+    internal interface IdentifiableObject
     {
         int Id();
     }
