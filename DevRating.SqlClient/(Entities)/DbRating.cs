@@ -1,13 +1,16 @@
 using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
     public class DbRating : Rating
     {
+        private readonly IDbConnection _connection;
         private readonly int _id;
 
         public DbRating(IDbConnection connection, int id)
         {
+            _connection = connection;
             _id = id;
         }
 
@@ -18,27 +21,75 @@ namespace DevRating.SqlClient
 
         public int AuthorId()
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [AuthorId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return (int) reader["AuthorId"];
         }
 
         public int LastRatingId()
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [LastRatingId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return (int) reader["LastRatingId"];
         }
 
         public bool HasLastRating()
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [LastRatingId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
 
         public int MatchId()
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [MatchId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return (int) reader["MatchId"];
         }
 
         public double Value()
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [Rating] FROM [dbo].[Rating] WHERE [Id] = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return (float) reader["Rating"];
         }
     }
 }

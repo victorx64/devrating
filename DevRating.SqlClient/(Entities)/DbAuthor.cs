@@ -25,10 +25,7 @@ namespace DevRating.SqlClient
 
             command.CommandText = "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id";
 
-            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)
-            {
-                Value = _id
-            });
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
             using var reader = command.ExecuteReader();
 
