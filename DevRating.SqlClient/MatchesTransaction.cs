@@ -20,6 +20,12 @@ namespace DevRating.SqlClient
             _deletions = new List<Deletion>();
         }
 
+        public void Start()
+        {
+            _additions.Clear();
+            _deletions.Clear();
+        }
+
         public void AddAddition(Addition addition)
         {
             _additions.Add(addition);
@@ -30,12 +36,6 @@ namespace DevRating.SqlClient
             _deletions.Add(deletion);
         }
 
-        public void Start()
-        {
-            _additions.Clear();
-            _deletions.Clear();
-        }
-
         public void Commit()
         {
             var connection = new SqlConnection(_connection);
@@ -44,15 +44,14 @@ namespace DevRating.SqlClient
 
             var transaction = connection.BeginTransaction();
 
+            var authors = new DbAuthorsCollection(transaction);
+            var matches = new DbMatchesCollection(transaction);
+            var ratings = new DbRatingsCollection(transaction);
+            var rewards = new DbRewardsCollection(transaction);
+
             try
             {
-                var authors = new DbAuthorsCollection(transaction);
-                var matches = new DbMatchesCollection(transaction);
-                var ratings = new DbRatingsCollection(transaction);
-                var rewards = new DbRewardsCollection(transaction);
-
                 PushDeletionsInto(authors, matches, ratings);
-
                 PushAdditionsInto(authors, rewards, ratings);
 
                 transaction.Commit();
@@ -97,57 +96,41 @@ namespace DevRating.SqlClient
                     continue;
                 }
 
-                var winner = authors.Exist(author) ? authors.Author(author) : authors.NewAuthor(author);
-                var loser = authors.Exist(victim) ? authors.Author(victim) : authors.NewAuthor(victim);
+                var winner = (authors.Exist(author) ? authors.Author(author) : authors.NewAuthor(author)).Id();
+                var loser = (authors.Exist(victim) ? authors.Author(victim) : authors.NewAuthor(victim)).Id();
 
-                NewMethod(winner.Id(), loser.Id(), matches, ratings, deletion);
+                var match = matches
+                    .NewMatch(
+                        winner,
+                        loser,
+                        deletion.Commit().Sha(),
+                        deletion.Commit().Repository(),
+                        deletion.Count())
+                    .Id();
+
+                CreateNewRatingsPair(winner, loser, ratings, deletion.Count(), match);
             }
         }
 
-        private void NewMethod(int winner, int loser, MatchesCollection matches, RatingsCollection ratings,
-            Modification deletion)
+        private void CreateNewRatingsPair(int winner, int loser, RatingsCollection ratings, int count, int match)
         {
-            var match = matches
-                .NewMatch(
-                    winner,
-                    loser,
-                    deletion.Commit().Sha(),
-                    deletion.Commit().Repository(),
-                    deletion.Count())
-                .Id();
+            var pair = new RatingsPair(winner, loser, ratings, _formula);
 
-            var winnerRating = ratings.HasRating(winner)
-                ? ratings.LastRatingOf(winner).Value()
-                : _formula.DefaultRating();
+            CreateNewRating(winner, ratings, pair.WinnerNewRating(count), match);
+            CreateNewRating(loser, ratings, pair.LoserNewRating(count), match);
+        }
 
-            var loserRating = ratings.HasRating(loser)
-                ? ratings.LastRatingOf(loser).Value()
-                : _formula.DefaultRating();
-
-            var winnerNewRating = _formula.WinnerNewRating(winnerRating, loserRating, deletion.Count());
-
-            if (ratings.HasRating(winner))
+        private void CreateNewRating(int player, RatingsCollection ratings, double rating, int match)
+        {
+            if (ratings.HasRating(player))
             {
-                var rating = ratings.LastRatingOf(winner).Id();
+                var last = ratings.LastRatingOf(player).Id();
 
-                ratings.NewRating(winner, winnerNewRating, rating, match);
+                ratings.NewRating(player, rating, last, match);
             }
             else
             {
-                ratings.NewRating(winner, winnerNewRating, match);
-            }
-
-            var loserNewRating = _formula.LoserNewRating(winnerRating, loserRating, deletion.Count());
-
-            if (ratings.HasRating(loser))
-            {
-                var rating = ratings.LastRatingOf(loser).Id();
-
-                ratings.NewRating(loser, loserNewRating, rating, match);
-            }
-            else
-            {
-                ratings.NewRating(loser, loserNewRating, match);
+                ratings.NewRating(player, rating, match);
             }
         }
     }
