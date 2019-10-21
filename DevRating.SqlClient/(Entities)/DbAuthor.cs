@@ -5,12 +5,12 @@ namespace DevRating.SqlClient
 {
     internal sealed class DbAuthor : Author
     {
-        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
         private readonly int _id;
 
-        public DbAuthor(IDbConnection connection, int id)
+        public DbAuthor(IDbTransaction transaction, int id)
         {
-            _connection = connection;
+            _transaction = transaction;
             _id = id;
         }
 
@@ -21,7 +21,8 @@ namespace DevRating.SqlClient
 
         public string Email()
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id";
 

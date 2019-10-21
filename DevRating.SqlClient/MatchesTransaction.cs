@@ -42,15 +42,26 @@ namespace DevRating.SqlClient
 
             connection.Open();
 
+            var transaction = connection.BeginTransaction();
+
             try
             {
-                var authors = new DbAuthorsCollection(connection);
-                var matches = new DbMatchesCollection(connection);
-                var ratings = new DbRatingsCollection(connection);
+                var authors = new DbAuthorsCollection(transaction);
+                var matches = new DbMatchesCollection(transaction);
+                var ratings = new DbRatingsCollection(transaction);
+                var rewards = new DbRewardsCollection(transaction);
 
                 PushDeletionsInto(authors, matches, ratings);
 
-//                await PushAdditionsInto(authors);
+                PushAdditionsInto(authors, rewards, ratings);
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+
+                throw;
             }
             finally
             {
@@ -58,17 +69,21 @@ namespace DevRating.SqlClient
             }
         }
 
-//        private async Task PushAdditionsInto(IDictionary<string, Author> authors)
-//        {
-//            foreach (var addition in _additions)
-//            {
-//                var author = addition.Author().Email();
-//
-//                var rating = await authors[author].Rating();
-//
-//                await authors[author].AddRewardRecord(rating, addition.Count(), addition.Commit());
-//            }
-//        }
+        private void PushAdditionsInto(AuthorsCollection authors, RewardsCollection rewards,
+            RatingsCollection ratings)
+        {
+            foreach (var addition in _additions)
+            {
+                var email = addition.Author().Email();
+
+                var author = authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email);
+
+                var rating = ratings.LastRatingOf(author.Id());
+
+                rewards.NewReward(_formula.Reward(rating.Value(), addition.Count()), addition.Commit().Sha(),
+                    addition.Commit().Repository(), addition.Count(), rating.Id());
+            }
+        }
 
         private void PushDeletionsInto(AuthorsCollection authors, MatchesCollection matches, RatingsCollection ratings)
         {

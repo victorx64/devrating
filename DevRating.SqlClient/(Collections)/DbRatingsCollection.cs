@@ -5,16 +5,17 @@ namespace DevRating.SqlClient
 {
     internal sealed class DbRatingsCollection : RatingsCollection
     {
-        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
 
-        public DbRatingsCollection(IDbConnection connection)
+        public DbRatingsCollection(IDbTransaction transaction)
         {
-            _connection = connection;
+            _transaction = transaction;
         }
 
         public Rating NewRating(int author, double value, int match)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = @"
                 INSERT INTO [dbo].[Rating]
@@ -33,12 +34,13 @@ namespace DevRating.SqlClient
             command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new DbRating(_connection, (int) command.ExecuteScalar());
+            return new DbRating(_transaction, (int) command.ExecuteScalar());
         }
 
         public Rating NewRating(int author, double value, int last, int match)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = @"
                 INSERT INTO [dbo].[Rating]
@@ -58,12 +60,13 @@ namespace DevRating.SqlClient
             command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new DbRating(_connection, (int) command.ExecuteScalar());
+            return new DbRating(_transaction, (int) command.ExecuteScalar());
         }
 
         public bool HasRating(int author)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT TOP (1) [Id] FROM [dbo].[Rating] WHERE [AuthorId] = @AuthorId ORDER BY [Id] DESC";
 
@@ -76,7 +79,8 @@ namespace DevRating.SqlClient
 
         public Rating LastRatingOf(int author)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT TOP (1) [Id] FROM [dbo].[Rating] WHERE [AuthorId] = @AuthorId ORDER BY [Id] DESC";
 
@@ -86,7 +90,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
             
-            return new DbRating(_connection, (int) reader["Id"]);
+            return new DbRating(_transaction, (int) reader["Id"]);
         }
     }
 }

@@ -5,12 +5,12 @@ namespace DevRating.SqlClient
 {
     public class DbRating : Rating
     {
-        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
         private readonly int _id;
 
-        public DbRating(IDbConnection connection, int id)
+        public DbRating(IDbTransaction transaction, int id)
         {
-            _connection = connection;
+            _transaction = transaction;
             _id = id;
         }
 
@@ -21,7 +21,8 @@ namespace DevRating.SqlClient
 
         public int AuthorId()
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [AuthorId] FROM [dbo].[Rating] WHERE [Id] = @Id";
 
@@ -36,7 +37,8 @@ namespace DevRating.SqlClient
 
         public int LastRatingId()
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [LastRatingId] FROM [dbo].[Rating] WHERE [Id] = @Id";
 
@@ -51,7 +53,8 @@ namespace DevRating.SqlClient
 
         public bool HasLastRating()
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [LastRatingId] FROM [dbo].[Rating] WHERE [Id] = @Id";
 
@@ -64,7 +67,8 @@ namespace DevRating.SqlClient
 
         public int MatchId()
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [MatchId] FROM [dbo].[Rating] WHERE [Id] = @Id";
 
@@ -79,7 +83,8 @@ namespace DevRating.SqlClient
 
         public double Value()
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [Rating] FROM [dbo].[Rating] WHERE [Id] = @Id";
 

@@ -3,41 +3,42 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    internal sealed class DbMatchesCollection : MatchesCollection
+    internal class DbRewardsCollection : RewardsCollection
     {
         private readonly IDbTransaction _transaction;
 
-        public DbMatchesCollection(IDbTransaction transaction)
+        public DbRewardsCollection(IDbTransaction transaction)
         {
             _transaction = transaction;
         }
-
-        public Match NewMatch(int first, int second, string commit, string repository, int count)
+        
+        public Reward NewReward(double value, string commit, string repository, int count, int rating)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
+
             command.CommandText = @"
-                INSERT INTO [dbo].[Match]
-                       ([FirstAuthorId]
-                       ,[SecondAuthorId]
+                INSERT INTO [dbo].[Reward]
+                       ([Reward]
                        ,[Commit]
                        ,[Repository]
-                       ,[Count])
+                       ,[Count]
+                       ,[RatingId])
                 OUTPUT [Inserted].[Id]
                 VALUES
-                       (@FirstAuthorId
-                       ,@SecondAuthorId
+                       (@Reward
                        ,@Commit
                        ,@Repository
-                       ,@Count)";
+                       ,@Count
+                       ,@RatingId)";
 
-            command.Parameters.Add(new SqlParameter("@FirstAuthorId", SqlDbType.Int) {Value = first});
-            command.Parameters.Add(new SqlParameter("@SecondAuthorId", SqlDbType.Int) {Value = second});
+            command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = value});
             command.Parameters.Add(new SqlParameter("@Commit", SqlDbType.NVarChar, 50) {Value = commit});
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
+            command.Parameters.Add(new SqlParameter("@RatingId", SqlDbType.Int) {Value = rating});
 
-            return new DbMatch(_transaction, (int) command.ExecuteScalar());
+            return new DbReward(_transaction, (int) command.ExecuteScalar());
         }
     }
 }

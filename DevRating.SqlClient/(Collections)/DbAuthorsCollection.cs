@@ -5,16 +5,17 @@ namespace DevRating.SqlClient
 {
     internal sealed class DbAuthorsCollection : AuthorsCollection
     {
-        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
 
-        public DbAuthorsCollection(IDbConnection connection)
+        public DbAuthorsCollection(IDbTransaction transaction)
         {
-            _connection = connection;
+            _transaction = transaction;
         }
 
         public Author NewAuthor(string email)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = @"
                 INSERT INTO [dbo].[Author]
@@ -25,12 +26,13 @@ namespace DevRating.SqlClient
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
 
-            return new DbAuthor(_connection, (int) command.ExecuteScalar());
+            return new DbAuthor(_transaction, (int) command.ExecuteScalar());
         }
 
         public bool Exist(string email)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
 
@@ -43,7 +45,8 @@ namespace DevRating.SqlClient
 
         public Author Author(string email)
         {
-            using var command = _connection.CreateCommand();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
 
             command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
 
@@ -53,7 +56,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
             
-            return new DbAuthor(_connection, (int) reader["Id"]);
+            return new DbAuthor(_transaction, (int) reader["Id"]);
         }
     }
 }
