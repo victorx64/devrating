@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using DevRating.Git;
 using DevRating.Rating;
 using Microsoft.Data.SqlClient;
@@ -7,12 +8,16 @@ namespace DevRating.SqlClient
 {
     public sealed class MatchesTransaction : Modifications, Transaction
     {
-        private readonly string _connection;
+        private readonly IDbConnection _connection;
         private readonly Formula _formula;
         private readonly IList<Addition> _additions;
         private readonly IList<Deletion> _deletions;
 
-        public MatchesTransaction(string connection, Formula formula)
+        public MatchesTransaction(string connection, Formula formula) : this(new SqlConnection(connection), formula)
+        {
+        }
+
+        public MatchesTransaction(IDbConnection connection, Formula formula)
         {
             _connection = connection;
             _formula = formula;
@@ -38,11 +43,9 @@ namespace DevRating.SqlClient
 
         public void Commit()
         {
-            var connection = new SqlConnection(_connection);
+            _connection.Open();
 
-            connection.Open();
-
-            var transaction = connection.BeginTransaction();
+            var transaction = _connection.BeginTransaction();
 
             var authors = new DbAuthorsCollection(transaction);
             var matches = new DbMatchesCollection(transaction);
@@ -64,23 +67,34 @@ namespace DevRating.SqlClient
             }
             finally
             {
-                connection.Close();
+                _connection.Close();
             }
         }
 
-        private void PushAdditionsInto(AuthorsCollection authors, RewardsCollection rewards,
-            RatingsCollection ratings)
+        private void PushAdditionsInto(AuthorsCollection authors, RewardsCollection rewards, RatingsCollection ratings)
         {
             foreach (var addition in _additions)
             {
                 var email = addition.Author().Email();
 
-                var author = authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email);
+                var author = AuthorId(authors, email);
 
-                var rating = ratings.LastRatingOf(author.Id());
+                var commit = addition.Commit();
 
-                rewards.NewReward(_formula.Reward(rating.Value(), addition.Count()), addition.Commit().Sha(),
-                    addition.Commit().Repository(), addition.Count(), rating.Id());
+                if (ratings.HasRating(author))
+                {
+                    var rating = ratings.LastRatingOf(author);
+
+                    var reward = _formula.Reward(rating.Value(), addition.Count());
+
+                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), rating.Id());
+                }
+                else
+                {
+                    var reward = _formula.Reward(_formula.DefaultRating(), addition.Count());
+
+                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count());
+                }
             }
         }
 
@@ -96,8 +110,8 @@ namespace DevRating.SqlClient
                     continue;
                 }
 
-                var winner = (authors.Exist(author) ? authors.Author(author) : authors.NewAuthor(author)).Id();
-                var loser = (authors.Exist(victim) ? authors.Author(victim) : authors.NewAuthor(victim)).Id();
+                var winner = AuthorId(authors, author);
+                var loser = AuthorId(authors, victim);
 
                 var match = matches
                     .NewMatch(
@@ -110,6 +124,11 @@ namespace DevRating.SqlClient
 
                 CreateNewRatingsPair(winner, loser, ratings, deletion.Count(), match);
             }
+        }
+
+        private int AuthorId(AuthorsCollection authors, string email)
+        {
+            return (authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email)).Id();
         }
 
         private void CreateNewRatingsPair(int winner, int loser, RatingsCollection ratings, int count, int match)

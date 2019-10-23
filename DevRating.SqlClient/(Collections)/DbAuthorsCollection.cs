@@ -55,7 +55,7 @@ namespace DevRating.SqlClient
             using var reader = command.ExecuteReader();
 
             reader.Read();
-            
+
             return new DbAuthor(_transaction, (int) reader["Id"]);
         }
     }
