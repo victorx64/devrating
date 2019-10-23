@@ -5,6 +5,9 @@ using System.Globalization;
 
 namespace DevRating.GitHubApp
 {
+    /// <summary>
+    /// Delete this class when https://github.com/octokit/octokit.net/pull/1844 is merged
+    /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class PushWebhookCommit
     {
