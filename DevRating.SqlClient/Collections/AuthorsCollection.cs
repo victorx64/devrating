@@ -1,4 +1,6 @@
-namespace DevRating.SqlClient
+using DevRating.SqlClient.Entities;
+
+namespace DevRating.SqlClient.Collections
 {
     internal interface AuthorsCollection
     {

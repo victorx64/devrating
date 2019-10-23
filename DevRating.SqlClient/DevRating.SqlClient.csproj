@@ -15,4 +15,8 @@
         <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-namespace DevRating.SqlClient
+namespace DevRating.SqlClient.Entities
 {
     internal interface Rating : IdentifiableObject
     {

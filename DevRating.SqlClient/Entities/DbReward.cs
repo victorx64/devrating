@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace DevRating.SqlClient
+namespace DevRating.SqlClient.Entities
 {
     internal class DbReward : Reward
     {

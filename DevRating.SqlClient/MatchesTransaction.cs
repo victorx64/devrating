@@ -2,6 +2,7 @@
 using System.Data;
 using DevRating.Git;
 using DevRating.Rating;
+using DevRating.SqlClient.Collections;
 using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient

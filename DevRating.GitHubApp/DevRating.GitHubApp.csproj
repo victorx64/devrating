@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="GitHubJwt" Version="0.0.3"/>
-        <PackageReference Include="Octokit" Version="0.36.0"/>
+        <PackageReference Include="GitHubJwt" Version="0.0.3" />
+        <PackageReference Include="Octokit" Version="0.36.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DevRating.SqlClient\DevRating.SqlClient.csproj"/>
-        <ProjectReference Include="..\DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj"/>
+        <ProjectReference Include="..\DevRating.SqlClient\DevRating.SqlClient.csproj" />
+        <ProjectReference Include="..\DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj" />
     </ItemGroup>
 
 </Project>

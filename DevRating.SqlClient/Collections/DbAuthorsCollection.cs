@@ -1,7 +1,8 @@
 using System.Data;
+using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient
+namespace DevRating.SqlClient.Collections
 {
     internal sealed class DbAuthorsCollection : AuthorsCollection
     {

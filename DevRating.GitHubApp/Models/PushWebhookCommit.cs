@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace DevRating.GitHubApp
+namespace DevRating.GitHubApp.Models
 {
     /// <summary>
     /// Delete this class when https://github.com/octokit/octokit.net/pull/1844 is merged

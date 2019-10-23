@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using DevRating.GitHubApp.Models;
 using DevRating.LibGit2Sharp;
 using DevRating.Rating;
 using DevRating.SqlClient;

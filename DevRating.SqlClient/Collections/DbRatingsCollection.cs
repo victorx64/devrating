@@ -1,7 +1,8 @@
 using System.Data;
+using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient
+namespace DevRating.SqlClient.Collections
 {
     internal sealed class DbRatingsCollection : RatingsCollection
     {
@@ -12,7 +13,7 @@ namespace DevRating.SqlClient
             _transaction = transaction;
         }
 
-        public Rating NewRating(int author, double value, int match)
+        public Entities.Rating NewRating(int author, double value, int match)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -37,7 +38,7 @@ namespace DevRating.SqlClient
             return new DbRating(_transaction, (int) command.ExecuteScalar());
         }
 
-        public Rating NewRating(int author, double value, int last, int match)
+        public Entities.Rating NewRating(int author, double value, int last, int match)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -77,7 +78,7 @@ namespace DevRating.SqlClient
             return reader.Read();
         }
 
-        public Rating LastRatingOf(int author)
+        public Entities.Rating LastRatingOf(int author)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;

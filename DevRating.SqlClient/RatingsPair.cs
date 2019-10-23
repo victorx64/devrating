@@ -1,4 +1,5 @@
 using DevRating.Rating;
+using DevRating.SqlClient.Collections;
 
 namespace DevRating.SqlClient
 {
