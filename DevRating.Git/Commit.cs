@@ -4,5 +4,6 @@ namespace DevRating.Git
     {
         string Sha();
         string Repository();
+        Author Author();
     }
 }

@@ -55,8 +55,8 @@ namespace DevRating.SqlClient
 
             try
             {
-                PushDeletionsInto(authors, matches, ratings);
                 PushAdditionsInto(authors, rewards, ratings);
+                PushDeletionsInto(authors, matches, ratings);
 
                 transaction.Commit();
             }
@@ -76,7 +76,7 @@ namespace DevRating.SqlClient
         {
             foreach (var addition in _additions)
             {
-                var email = addition.Author().Email();
+                var email = addition.Commit().Author().Email();
 
                 var author = AuthorId(authors, email);
 
@@ -103,8 +103,8 @@ namespace DevRating.SqlClient
         {
             foreach (var deletion in _deletions)
             {
-                var author = deletion.Author().Email();
-                var victim = deletion.Victim().Email();
+                var author = deletion.Commit().Author().Email();
+                var victim = deletion.PreviousCommit().Author().Email();
 
                 if (author.Equals(victim))
                 {

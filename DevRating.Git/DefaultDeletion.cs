@@ -1,23 +1,16 @@
 namespace DevRating.Git
 {
-    public class DefaultDeletion : Deletion
+    public sealed class DefaultDeletion : Deletion
     {
-        private readonly Author _author;
         private readonly Commit _commit;
-        private readonly Author _victim;
+        private readonly Commit _previous;
         private readonly int _count;
 
-        public DefaultDeletion(Author author, Commit commit, Author victim, int count)
+        public DefaultDeletion(Commit commit, Commit previous, int count)
         {
-            _author = author;
             _commit = commit;
-            _victim = victim;
+            _previous = previous;
             _count = count;
-        }
-        
-        public Author Author()
-        {
-            return _author;
         }
 
         public Commit Commit()
@@ -25,9 +18,9 @@ namespace DevRating.Git
             return _commit;
         }
 
-        public Author Victim()
+        public Commit PreviousCommit()
         {
-            return _victim;
+            return _previous;
         }
 
         public int Count()

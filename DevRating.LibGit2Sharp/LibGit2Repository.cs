@@ -28,34 +28,30 @@ namespace DevRating.LibGit2Sharp
         {
             var commit = _repository.Lookup<global::LibGit2Sharp.Commit>(sha);
 
-            var options = new CompareOptions
-            {
-                ContextLines = 0
-            };
-
-            var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(commit.Author).Email);
-
-            await Task.WhenAll(CommitWriteTasks(modifications, commit, options, author));
+            await Task.WhenAll(WriteCommitTasks(modifications, commit));
         }
 
-        private IEnumerable<Task> CommitWriteTasks(Modifications modifications, global::LibGit2Sharp.Commit commit,
-            CompareOptions options, Author author)
+        private IEnumerable<Task> WriteCommitTasks(Modifications modifications, global::LibGit2Sharp.Commit commit)
         {
             foreach (var parent in commit.Parents)
             {
-                var differences = _repository.Diff.Compare<Patch>(parent.Tree, commit.Tree, options);
-
-                foreach (var task in DifferencesWriteTasks(modifications, differences, parent.Sha,
-                    new DefaultCommit(commit.Sha, _id), author))
+                foreach (var task in WriteDifferencesTasks(modifications, commit, parent))
                 {
                     yield return task;
                 }
             }
         }
 
-        private IEnumerable<Task> DifferencesWriteTasks(Modifications modifications, Patch differences, string parent,
-            Commit commit, Author author)
+        private IEnumerable<Task> WriteDifferencesTasks(
+            Modifications modifications,
+            global::LibGit2Sharp.Commit commit,
+            global::LibGit2Sharp.Commit parent)
         {
+            var differences = _repository.Diff.Compare<Patch>(
+                parent.Tree,
+                commit.Tree,
+                new CompareOptions {ContextLines = 0});
+
             var options = new BlameOptions {StartingAt = parent};
 
             foreach (var difference in differences)
@@ -68,17 +64,24 @@ namespace DevRating.LibGit2Sharp
                 {
                     yield return Task.Run(() =>
                     {
-                        var blame = _repository.Blame(difference.OldPath, options);
+                        var blames = _repository.Blame(difference.OldPath, options);
 
-                        WritePatchInto(modifications, difference.Patch, blame, commit, author);
+                        WritePatchInto(modifications, difference.Patch, blames, commit);
                     });
                 }
             }
         }
 
-        private void WritePatchInto(Modifications modifications, string patch, BlameHunkCollection blame, Commit commit,
-            Author author)
+        private void WritePatchInto(
+            Modifications modifications,
+            string patch,
+            BlameHunkCollection blames,
+            global::LibGit2Sharp.Commit commit)
         {
+            var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(commit.Author).Email);
+
+            var current = new DefaultCommit(commit.Sha, author, _id);
+
             foreach (var line in patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
@@ -87,29 +90,18 @@ namespace DevRating.LibGit2Sharp
                     // TODO Throw exception on a contextual line. Patch must be without contextual lines (git log -U0)
                     var parts = line.Split(' ');
 
-                    var deletions = Deletions(parts[1], blame)
-                        .GroupBy(s => s);
-
-                    foreach (var deletion in deletions)
-                    {
-                        modifications
-                            .AddDeletion(
-                                new DefaultDeletion(
-                                    author,
-                                    commit,
-                                    new DefaultAuthor(deletion.Key),
-                                    deletion.Count()));
-                    }
-
-                    modifications.AddAddition(new DefaultAddition(author, commit, Additions(parts[2])));
+                    WriteDeletionInto(modifications, current, parts[1], blames);
+                    WriteAdditionInto(modifications, current, parts[2]);
                 }
             }
         }
 
-        private IEnumerable<string> Deletions(string hunk, BlameHunkCollection blame)
+        private void WriteDeletionInto(
+            Modifications modifications,
+            Commit current,
+            string hunk,
+            BlameHunkCollection blames)
         {
-            var deletions = new List<string>();
-
             var parts = hunk
                 .Substring(1)
                 .Split(',');
@@ -118,15 +110,30 @@ namespace DevRating.LibGit2Sharp
 
             var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
 
-            for (var i = index; i < index + count; i++)
+            for (var i = index; i < index + count; ++i)
             {
-                deletions.Add(_repository.Mailmap.ResolveSignature(blame.HunkForLine(i).FinalSignature).Email);
-            }
+                var author =
+                    new DefaultAuthor(_repository.Mailmap.ResolveSignature(blames.HunkForLine(i).FinalSignature).Email);
 
-            return deletions;
+                var previous = new DefaultCommit(
+                    blames.HunkForLine(i).FinalCommit.Sha,
+                    author,
+                    _id);
+
+                modifications.AddDeletion(
+                    new DefaultDeletion(
+                        current,
+                        previous,
+                        1)); // TODO Group similar deletions
+            }
         }
 
-        private int Additions(string hunk)
+        private void WriteAdditionInto(Modifications modifications, Commit current, string hunk)
+        {
+            modifications.AddAddition(new DefaultAddition(current, AdditionsCount(hunk)));
+        }
+
+        private int AdditionsCount(string hunk)
         {
             var parts = hunk
                 .Substring(1)
