@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using DevRating.Git;
+using DevRating.Vcs;
 using DevRating.Rating;
 using DevRating.SqlClient.Collections;
 using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    public sealed class MatchesTransaction : Modifications, Transaction
+    public sealed class MatchesTransaction
     {
         private readonly IDbConnection _connection;
         private readonly Formula _formula;
-        private readonly IList<Addition> _additions;
-        private readonly IList<Deletion> _deletions;
 
-        public MatchesTransaction(string connection, Formula formula) : this(new SqlConnection(connection), formula)
+        public MatchesTransaction(string connection, Formula formula)
+            : this(new SqlConnection(connection), formula)
         {
         }
 
@@ -22,41 +21,23 @@ namespace DevRating.SqlClient
         {
             _connection = connection;
             _formula = formula;
-            _additions = new List<Addition>();
-            _deletions = new List<Deletion>();
         }
 
-        public void Start()
-        {
-            _additions.Clear();
-            _deletions.Clear();
-        }
-
-        public void AddAddition(Addition addition)
-        {
-            _additions.Add(addition);
-        }
-
-        public void AddDeletion(Deletion deletion)
-        {
-            _deletions.Add(deletion);
-        }
-
-        public void Commit()
+        public void Commit(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions)
         {
             _connection.Open();
 
             var transaction = _connection.BeginTransaction();
 
-            var authors = new DbAuthorsCollection(transaction);
-            var matches = new DbMatchesCollection(transaction);
-            var ratings = new DbRatingsCollection(transaction);
-            var rewards = new DbRewardsCollection(transaction);
-
             try
             {
-                PushAdditionsInto(authors, rewards, ratings);
-                PushDeletionsInto(authors, matches, ratings);
+                var authors = new DbAuthorsCollection(transaction);
+                var matches = new DbMatchesCollection(transaction);
+                var ratings = new DbRatingsCollection(transaction);
+                var rewards = new DbRewardsCollection(transaction);
+
+                InsertAdditions(additions, authors, rewards, ratings);
+                InsertDeletions(deletions, authors, matches, ratings);
 
                 transaction.Commit();
             }
@@ -72,13 +53,15 @@ namespace DevRating.SqlClient
             }
         }
 
-        private void PushAdditionsInto(AuthorsCollection authors, RewardsCollection rewards, RatingsCollection ratings)
+        private void InsertAdditions(
+            IEnumerable<Addition> additions,
+            AuthorsCollection authors,
+            RewardsCollection rewards,
+            RatingsCollection ratings)
         {
-            foreach (var addition in _additions)
+            foreach (var addition in additions)
             {
-                var email = addition.Commit().Author().Email();
-
-                var author = AuthorId(authors, email);
+                var author = AuthorId(authors, addition.Commit().Author());
 
                 var commit = addition.Commit();
 
@@ -99,20 +82,16 @@ namespace DevRating.SqlClient
             }
         }
 
-        private void PushDeletionsInto(AuthorsCollection authors, MatchesCollection matches, RatingsCollection ratings)
+        private void InsertDeletions(
+            IEnumerable<Deletion> deletions,
+            AuthorsCollection authors,
+            MatchesCollection matches,
+            RatingsCollection ratings)
         {
-            foreach (var deletion in _deletions)
+            foreach (var deletion in deletions)
             {
-                var author = deletion.Commit().Author().Email();
-                var victim = deletion.PreviousCommit().Author().Email();
-
-                if (author.Equals(victim))
-                {
-                    continue;
-                }
-
-                var winner = AuthorId(authors, author);
-                var loser = AuthorId(authors, victim);
+                var winner = AuthorId(authors, deletion.Commit().Author());
+                var loser = AuthorId(authors, deletion.PreviousCommit().Author());
 
                 var match = matches
                     .NewMatch(
@@ -123,24 +102,21 @@ namespace DevRating.SqlClient
                         deletion.Count())
                     .Id();
 
-                CreateNewRatingsPair(winner, loser, ratings, deletion.Count(), match);
+                var pair = new RatingsPair(winner, loser, ratings, _formula, deletion.Count());
+
+                InsertNewRating(ratings, winner, pair.WinnerNewRating(), match);
+                InsertNewRating(ratings, loser, pair.LoserNewRating(), match);
             }
         }
 
-        private int AuthorId(AuthorsCollection authors, string email)
+        private int AuthorId(AuthorsCollection authors, Author author)
         {
+            var email = author.Email();
+
             return (authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email)).Id();
         }
 
-        private void CreateNewRatingsPair(int winner, int loser, RatingsCollection ratings, int count, int match)
-        {
-            var pair = new RatingsPair(winner, loser, ratings, _formula);
-
-            CreateNewRating(winner, ratings, pair.WinnerNewRating(count), match);
-            CreateNewRating(loser, ratings, pair.LoserNewRating(count), match);
-        }
-
-        private void CreateNewRating(int player, RatingsCollection ratings, double rating, int match)
+        private void InsertNewRating(RatingsCollection ratings, int player, double rating, int match)
         {
             if (ratings.HasRating(player))
             {

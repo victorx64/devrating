@@ -9,29 +9,25 @@ namespace DevRating.SqlClient
         private readonly int _loser;
         private readonly RatingsCollection _ratings;
         private readonly Formula _formula;
+        private readonly int _count;
 
-        public RatingsPair(int winner, int loser, RatingsCollection ratings, Formula formula)
+        public RatingsPair(int winner, int loser, RatingsCollection ratings, Formula formula, int count)
         {
             _winner = winner;
             _loser = loser;
             _ratings = ratings;
             _formula = formula;
+            _count = count;
         }
 
-        public double WinnerNewRating(int count)
+        public double WinnerNewRating()
         {
-            var winner = Rating(_winner);
-            var loser = Rating(_loser);
-
-            return _formula.WinnerNewRating(winner, loser, count);
+            return _formula.WinnerNewRating(Rating(_winner), Rating(_loser), _count);
         }
 
-        public double LoserNewRating(int count)
+        public double LoserNewRating()
         {
-            var winner = Rating(_winner);
-            var loser = Rating(_loser);
-
-            return _formula.LoserNewRating(winner, loser, count);
+            return _formula.LoserNewRating(Rating(_winner), Rating(_loser), _count);
         }
 
         private double Rating(int author)

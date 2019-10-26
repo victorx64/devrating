@@ -1,4 +1,5 @@
 using System.Data;
+using DevRating.Vcs;
 using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 
@@ -13,7 +14,7 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
 
-        public Author NewAuthor(string email)
+        public IdentifiableAuthor NewAuthor(string email)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -44,7 +45,7 @@ namespace DevRating.SqlClient.Collections
             return reader.Read();
         }
 
-        public Author Author(string email)
+        public IdentifiableAuthor Author(string email)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;

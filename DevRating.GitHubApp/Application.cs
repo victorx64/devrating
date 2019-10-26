@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DevRating.GitHubApp.Models;
 using DevRating.LibGit2Sharp;
@@ -64,32 +65,30 @@ namespace DevRating.GitHubApp
 
             var repository = new LibGit2Repository(path, clone);
 
-            var modifications = new MatchesTransaction(_connection, new EloFormula());
+            var transaction = new MatchesTransaction(_connection, new EloFormula());
 
-            foreach (var commit in payload.Commits)
+            try
             {
-                // TODO: Multiple commits in a row from an author must be squashed into one
-                // to avoid add-delete-add-line attack to farm free reward.
+                var modifications = new InMemoryModifications();
 
-                string report;
-
-                try
+                foreach (var commit in payload.Commits)
                 {
-                    modifications.Start();
-
                     await repository.WriteInto(modifications, commit.Id);
-
-                    modifications.Commit();
-
-                    report = modifications.ToString()!;
-                }
-                catch (Exception exception)
-                {
-                    report = exception.ToString();
                 }
 
-                await installation.Repository.Comment.Create(payload.Repository.Id, commit.Id,
-                    new NewCommitComment(report));
+                transaction.Commit(modifications.Additions(), modifications.Deletions());
+
+                await installation.Repository.Comment.Create(
+                    payload.Repository.Id,
+                    payload.Commits.Last().Id,
+                    new NewCommitComment(transaction.ToString()));
+            }
+            catch (Exception exception)
+            {
+                await installation.Repository.Comment.Create(
+                    payload.Repository.Id,
+                    payload.Commits.Last().Id,
+                    new NewCommitComment(exception.Message));
             }
 
             repository.Dispose();

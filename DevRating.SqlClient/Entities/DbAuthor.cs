@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Entities
 {
-    internal sealed class DbAuthor : Author
+    internal sealed class DbAuthor : IdentifiableAuthor
     {
         private readonly IDbTransaction _transaction;
         private readonly int _id;

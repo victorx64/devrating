@@ -1,4 +1,4 @@
-namespace DevRating.Git
+namespace DevRating.Vcs
 {
     public interface Modification
     {

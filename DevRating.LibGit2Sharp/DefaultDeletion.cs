@@ -1,6 +1,8 @@
-namespace DevRating.Git
+using DevRating.Vcs;
+
+namespace DevRating.LibGit2Sharp
 {
-    public sealed class DefaultDeletion : Deletion
+    internal sealed class DefaultDeletion : Deletion
     {
         private readonly Commit _commit;
         private readonly Commit _previous;
@@ -26,6 +28,11 @@ namespace DevRating.Git
         public int Count()
         {
             return _count;
+        }
+
+        public Deletion UpdatedDeletion(int count)
+        {
+            return new DefaultDeletion(_commit, _previous, count);
         }
     }
 }

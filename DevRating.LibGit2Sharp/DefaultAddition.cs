@@ -1,6 +1,8 @@
-namespace DevRating.Git
+using DevRating.Vcs;
+
+namespace DevRating.LibGit2Sharp
 {
-    public sealed class DefaultAddition : Addition
+    internal sealed class DefaultAddition : Addition
     {
         private readonly Commit _commit;
         private readonly int _count;
@@ -19,6 +21,11 @@ namespace DevRating.Git
         public int Count()
         {
             return _count;
+        }
+
+        public Addition UpdatedAddition(int count)
+        {
+            return new DefaultAddition(_commit, count);
         }
     }
 }

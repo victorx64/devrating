@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DevRating.Git;
+using DevRating.Vcs;
 using LibGit2Sharp;
-using Commit = DevRating.Git.Commit;
-using Repository = DevRating.Git.Repository;
+using Commit = DevRating.Vcs.Commit;
+using Repository = DevRating.Vcs.Repository;
 
 namespace DevRating.LibGit2Sharp
 {
