@@ -1,18 +1,22 @@
-using System;
 using System.Collections.Generic;
-using DevRating.Vcs;
 
-namespace DevRating.SqlClient
+namespace DevRating.Vcs
 {
-    public sealed class InMemoryModifications : Modifications
+    public sealed class DefaultModificationsCollection : ModificationsCollection
     {
         private readonly IList<Addition> _additions;
         private readonly IList<Deletion> _deletions;
 
-        public InMemoryModifications()
+        public DefaultModificationsCollection()
         {
             _additions = new List<Addition>();
             _deletions = new List<Deletion>();
+        }
+
+        public void Clear()
+        {
+            _additions.Clear();
+            _deletions.Clear();
         }
 
         public void AddAddition(Addition addition)
@@ -25,19 +29,16 @@ namespace DevRating.SqlClient
             _deletions.Add(deletion);
         }
 
-        public IList<Addition> Additions()
+        public void PutTo(ModificationsStorage storage)
         {
-            return AdditionsMinusDeletions(_additions, _deletions);
+            var additions = AdditionsMinusDeletions(_additions, _deletions);
+            var deletions = NonSelfDeletions(DeletionsMinusAdditions(_deletions, _additions));
+
+            storage.Insert(additions, deletions);
         }
 
-        public IList<Deletion> Deletions()
-        {
-//            return NonSelfDeletions(DeletionsMinusAdditions(_deletions, _additions));
-            return DeletionsMinusAdditions(_deletions, _additions);
-        }
-
-        private IList<Addition> AdditionsMinusDeletions(
-            IList<Addition> additions,
+        private IEnumerable<Addition> AdditionsMinusDeletions(
+            IEnumerable<Addition> additions,
             IList<Deletion> deletions)
         {
             var result = new List<Addition>();
@@ -55,11 +56,7 @@ namespace DevRating.SqlClient
 
                         if (x - y > 0)
                         {
-                            result.Add(addition.UpdatedAddition(x - y));
-                        }
-                        else if (x - y < 0)
-                        {
-                            throw new Exception();
+                            result.Add(addition.NewAddition(x - y));
                         }
 
                         found = true;
@@ -76,8 +73,8 @@ namespace DevRating.SqlClient
             return result;
         }
 
-        private IList<Deletion> DeletionsMinusAdditions(
-            IList<Deletion> deletions,
+        private IEnumerable<Deletion> DeletionsMinusAdditions(
+            IEnumerable<Deletion> deletions,
             IList<Addition> additions)
         {
             var result = new List<Deletion>();
@@ -95,11 +92,7 @@ namespace DevRating.SqlClient
 
                         if (y - x > 0)
                         {
-                            result.Add(deletion.UpdatedDeletion(y - x));
-                        }
-                        else if (y - x < 0)
-                        {
-                            throw new Exception();
+                            result.Add(deletion.NewDeletion(y - x));
                         }
 
                         found = true;
@@ -120,8 +113,7 @@ namespace DevRating.SqlClient
         {
             foreach (var deletion in deletions)
             {
-                if (!deletion.Commit().Author()
-                    .Equals(deletion.PreviousCommit().Author()))
+                if (!deletion.Commit().Author().Equals(deletion.PreviousCommit().Author()))
                 {
                     yield return deletion;
                 }

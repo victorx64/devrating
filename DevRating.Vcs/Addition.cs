@@ -2,6 +2,6 @@ namespace DevRating.Vcs
 {
     public interface Addition : Modification
     {
-        Addition UpdatedAddition(int count);
+        Addition NewAddition(int count);
     }
 }

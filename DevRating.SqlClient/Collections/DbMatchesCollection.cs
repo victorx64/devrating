@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
@@ -15,6 +16,11 @@ namespace DevRating.SqlClient.Collections
 
         public Match NewMatch(int first, int second, string commit, string repository, int count)
         {
+            if (first.Equals(second))
+            {
+                throw new Exception("");
+            }
+
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
             command.CommandText = @"

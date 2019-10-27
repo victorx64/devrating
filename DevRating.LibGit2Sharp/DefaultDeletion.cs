@@ -30,7 +30,7 @@ namespace DevRating.LibGit2Sharp
             return _count;
         }
 
-        public Deletion UpdatedDeletion(int count)
+        public Deletion NewDeletion(int count)
         {
             return new DefaultDeletion(_commit, _previous, count);
         }

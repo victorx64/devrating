@@ -24,14 +24,14 @@ namespace DevRating.LibGit2Sharp
             _id = id;
         }
 
-        public async Task WriteInto(Modifications modifications, string sha)
+        public async Task WriteInto(ModificationsCollection modifications, string sha)
         {
             var commit = _repository.Lookup<global::LibGit2Sharp.Commit>(sha);
 
             await Task.WhenAll(WriteCommitTasks(modifications, commit));
         }
 
-        private IEnumerable<Task> WriteCommitTasks(Modifications modifications, global::LibGit2Sharp.Commit commit)
+        private IEnumerable<Task> WriteCommitTasks(ModificationsCollection modifications, global::LibGit2Sharp.Commit commit)
         {
             foreach (var parent in commit.Parents)
             {
@@ -43,7 +43,7 @@ namespace DevRating.LibGit2Sharp
         }
 
         private IEnumerable<Task> WriteDifferencesTasks(
-            Modifications modifications,
+            ModificationsCollection modifications,
             global::LibGit2Sharp.Commit commit,
             global::LibGit2Sharp.Commit parent)
         {
@@ -73,7 +73,7 @@ namespace DevRating.LibGit2Sharp
         }
 
         private void WritePatchInto(
-            Modifications modifications,
+            ModificationsCollection modifications,
             string patch,
             BlameHunkCollection blames,
             global::LibGit2Sharp.Commit commit)
@@ -97,7 +97,7 @@ namespace DevRating.LibGit2Sharp
         }
 
         private void WriteDeletionInto(
-            Modifications modifications,
+            ModificationsCollection modifications,
             Commit current,
             string hunk,
             BlameHunkCollection blames)
@@ -128,7 +128,7 @@ namespace DevRating.LibGit2Sharp
             }
         }
 
-        private void WriteAdditionInto(Modifications modifications, Commit current, string hunk)
+        private void WriteAdditionInto(ModificationsCollection modifications, Commit current, string hunk)
         {
             modifications.AddAddition(new DefaultAddition(current, AdditionsCount(hunk)));
         }

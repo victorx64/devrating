@@ -7,23 +7,23 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    public sealed class MatchesTransaction
+    public sealed class SqlModificationsStorage : ModificationsStorage
     {
         private readonly IDbConnection _connection;
         private readonly Formula _formula;
 
-        public MatchesTransaction(string connection, Formula formula)
+        public SqlModificationsStorage(string connection, Formula formula)
             : this(new SqlConnection(connection), formula)
         {
         }
 
-        public MatchesTransaction(IDbConnection connection, Formula formula)
+        public SqlModificationsStorage(IDbConnection connection, Formula formula)
         {
             _connection = connection;
             _formula = formula;
         }
 
-        public void Commit(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions)
+        public void Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions)
         {
             _connection.Open();
 

@@ -6,6 +6,7 @@ using DevRating.GitHubApp.Models;
 using DevRating.LibGit2Sharp;
 using DevRating.Rating;
 using DevRating.SqlClient;
+using DevRating.Vcs;
 using LibGit2Sharp;
 using Octokit;
 
@@ -65,23 +66,23 @@ namespace DevRating.GitHubApp
 
             var repository = new LibGit2Repository(path, clone);
 
-            var transaction = new MatchesTransaction(_connection, new EloFormula());
+            var storage = new SqlModificationsStorage(_connection, new EloFormula());
 
             try
             {
-                var modifications = new InMemoryModifications();
+                ModificationsCollection modifications = new DefaultModificationsCollection();
 
                 foreach (var commit in payload.Commits)
                 {
                     await repository.WriteInto(modifications, commit.Id);
                 }
 
-                transaction.Commit(modifications.Additions(), modifications.Deletions());
+                modifications.PutTo(storage);
 
                 await installation.Repository.Comment.Create(
                     payload.Repository.Id,
                     payload.Commits.Last().Id,
-                    new NewCommitComment(transaction.ToString()));
+                    new NewCommitComment(storage.ToString()));
             }
             catch (Exception exception)
             {

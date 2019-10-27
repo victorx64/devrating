@@ -23,7 +23,7 @@ namespace DevRating.LibGit2Sharp
             return _count;
         }
 
-        public Addition UpdatedAddition(int count)
+        public Addition NewAddition(int count)
         {
             return new DefaultAddition(_commit, count);
         }
