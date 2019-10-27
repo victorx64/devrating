@@ -31,7 +31,8 @@ namespace DevRating.LibGit2Sharp
             await Task.WhenAll(WriteCommitTasks(modifications, commit));
         }
 
-        private IEnumerable<Task> WriteCommitTasks(ModificationsCollection modifications, global::LibGit2Sharp.Commit commit)
+        private IEnumerable<Task> WriteCommitTasks(ModificationsCollection modifications,
+            global::LibGit2Sharp.Commit commit)
         {
             foreach (var parent in commit.Parents)
             {
@@ -110,21 +111,21 @@ namespace DevRating.LibGit2Sharp
 
             var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
 
-            for (var i = index; i < index + count; ++i)
+            int d;
+            
+            for (var i = index; i < index + count; i += d)
             {
-                var author =
-                    new DefaultAuthor(_repository.Mailmap.ResolveSignature(blames.HunkForLine(i).FinalSignature).Email);
+                var blame = blames.HunkForLine(i);
+                d = Math.Min(blame.FinalStartLineNumber + blame.LineCount, index + count) - i;
+
+                var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(blame.FinalSignature).Email);
 
                 var previous = new DefaultCommit(
-                    blames.HunkForLine(i).FinalCommit.Sha,
+                    blame.FinalCommit.Sha,
                     author,
                     _id);
 
-                modifications.AddDeletion(
-                    new DefaultDeletion(
-                        current,
-                        previous,
-                        1)); // TODO Group similar deletions
+                modifications.AddDeletion(new DefaultDeletion(current, previous, d));
             }
         }
 
