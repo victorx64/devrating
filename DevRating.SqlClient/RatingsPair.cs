@@ -20,6 +20,16 @@ namespace DevRating.SqlClient
             _count = count;
         }
 
+        public double WinnerRating()
+        {
+            return Rating(_winner);
+        }
+
+        public double LoserRating()
+        {
+            return Rating(_loser);
+        }
+
         public double WinnerNewRating()
         {
             return _formula.WinnerNewRating(Rating(_winner), Rating(_loser), _count);

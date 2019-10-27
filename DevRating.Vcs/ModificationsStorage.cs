@@ -4,6 +4,6 @@ namespace DevRating.Vcs
 {
     public interface ModificationsStorage
     {
-        void Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions);
+        string Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions);
     }
 }

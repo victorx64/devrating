@@ -21,8 +21,6 @@ namespace DevRating.AzureFunction
             ExecutionContext context,
             ILogger logger)
         {
-            logger.LogInformation("Hello");
-
             try
             {
                 var @event = request.Headers["X-GitHub-Event"];

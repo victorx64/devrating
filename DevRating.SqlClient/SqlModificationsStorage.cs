@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.Text;
 using DevRating.Vcs;
 using DevRating.Rating;
 using DevRating.SqlClient.Collections;
@@ -23,8 +26,10 @@ namespace DevRating.SqlClient
             _formula = formula;
         }
 
-        public void Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions)
+        public string Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions)
         {
+            var builder = new StringBuilder();
+
             _connection.Open();
 
             var transaction = _connection.BeginTransaction();
@@ -32,14 +37,16 @@ namespace DevRating.SqlClient
             try
             {
                 var authors = new DbAuthorsCollection(transaction);
+                var rewards = new DbRewardsCollection(transaction);
                 var matches = new DbMatchesCollection(transaction);
                 var ratings = new DbRatingsCollection(transaction);
-                var rewards = new DbRewardsCollection(transaction);
 
-                InsertAdditions(additions, authors, rewards, ratings);
-                InsertDeletions(deletions, authors, matches, ratings);
+                builder.AppendLine(InsertRewards(additions, authors, rewards, ratings));
+                builder.AppendLine(InsertRatings(deletions, authors, matches, ratings));
 
                 transaction.Commit();
+
+                return builder.ToString();
             }
             catch
             {
@@ -53,12 +60,13 @@ namespace DevRating.SqlClient
             }
         }
 
-        private void InsertAdditions(
-            IEnumerable<Addition> additions,
+        private string InsertRewards(IEnumerable<Addition> additions,
             AuthorsCollection authors,
             RewardsCollection rewards,
             RatingsCollection ratings)
         {
+            var builder = new StringBuilder("Rewards (additions)" + Environment.NewLine);
+
             foreach (var addition in additions)
             {
                 var author = AuthorId(authors, addition.Commit().Author());
@@ -71,23 +79,43 @@ namespace DevRating.SqlClient
 
                     var reward = _formula.Reward(rating.Value(), addition.Count());
 
+                    builder.AppendLine(string.Format(CultureInfo.InvariantCulture,
+                        "In {0} {1} added {2} lines. DR {3:F2}. Reward {4:F4}",
+                        addition.Commit().Sha(),
+                        addition.Commit().Author().Email(),
+                        addition.Count(),
+                        rating.Value(),
+                        reward));
+
                     rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), rating.Id());
                 }
                 else
                 {
                     var reward = _formula.Reward(_formula.DefaultRating(), addition.Count());
 
+                    builder.AppendLine(
+                        string.Format(CultureInfo.InvariantCulture,
+                            "In {0} {1} added {2} lines. DR {3:F2}. Reward {4:F2}",
+                            addition.Commit().Sha(),
+                            addition.Commit().Author().Email(),
+                            addition.Count(),
+                            _formula.DefaultRating(),
+                            reward));
+
                     rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count());
                 }
             }
+
+            return builder.ToString();
         }
 
-        private void InsertDeletions(
-            IEnumerable<Deletion> deletions,
+        private string InsertRatings(IEnumerable<Deletion> deletions,
             AuthorsCollection authors,
             MatchesCollection matches,
             RatingsCollection ratings)
         {
+            var builder = new StringBuilder("Ratings (deletions)" + Environment.NewLine);
+
             foreach (var deletion in deletions)
             {
                 var winner = AuthorId(authors, deletion.Commit().Author());
@@ -104,9 +132,34 @@ namespace DevRating.SqlClient
 
                 var pair = new RatingsPair(winner, loser, ratings, _formula, deletion.Count());
 
+                builder.AppendLine(
+                    string.Format(CultureInfo.InvariantCulture,
+                        "In {0} deleted {1} lines from {2}",
+                        deletion.Commit().Sha(),
+                        deletion.Count(),
+                        deletion.PreviousCommit().Sha()));
+
+                builder.AppendLine(
+                    string.Format(CultureInfo.InvariantCulture,
+                        "{0} Old DR {1:F2}. New DR {2:F2}",
+                        deletion.Commit().Author().Email(),
+                        pair.WinnerRating(),
+                        pair.WinnerNewRating()));
+
+                builder.AppendLine(
+                    string.Format(CultureInfo.InvariantCulture,
+                        "{0} Old DR {1:F2}. New DR {2:F2}",
+                        deletion.PreviousCommit().Author().Email(),
+                        pair.LoserRating(),
+                        pair.LoserNewRating()));
+
+                builder.AppendLine();
+
                 InsertNewRating(ratings, winner, pair.WinnerNewRating(), match);
                 InsertNewRating(ratings, loser, pair.LoserNewRating(), match);
             }
+
+            return builder.ToString();
         }
 
         private int AuthorId(AuthorsCollection authors, Author author)
@@ -116,17 +169,17 @@ namespace DevRating.SqlClient
             return (authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email)).Id();
         }
 
-        private void InsertNewRating(RatingsCollection ratings, int player, double rating, int match)
+        private void InsertNewRating(RatingsCollection ratings, int author, double rating, int match)
         {
-            if (ratings.HasRating(player))
+            if (ratings.HasRating(author))
             {
-                var last = ratings.LastRatingOf(player).Id();
+                var last = ratings.LastRatingOf(author).Id();
 
-                ratings.NewRating(player, rating, last, match);
+                ratings.NewRating(author, rating, last, match);
             }
             else
             {
-                ratings.NewRating(player, rating, match);
+                ratings.NewRating(author, rating, match);
             }
         }
     }

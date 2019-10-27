@@ -1,5 +1,4 @@
 using System.Data;
-using DevRating.Vcs;
 using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 

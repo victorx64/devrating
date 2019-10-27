@@ -29,9 +29,9 @@ namespace DevRating.Vcs
             _deletions.Add(deletion);
         }
 
-        public void PutTo(ModificationsStorage storage)
+        public string PutTo(ModificationsStorage storage)
         {
-            storage.Insert(NonDeletedAdditions(_additions, _deletions), NonSelfDeletions(_deletions));
+            return storage.Insert(NonDeletedAdditions(_additions, _deletions), NonSelfDeletions(_deletions));
         }
 
         private IEnumerable<Deletion> NonSelfDeletions(IList<Deletion> deletions)

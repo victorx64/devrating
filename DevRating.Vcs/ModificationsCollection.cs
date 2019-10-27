@@ -5,6 +5,6 @@ namespace DevRating.Vcs
         void Clear();
         void AddAddition(Addition addition);
         void AddDeletion(Deletion deletion);
-        void PutTo(ModificationsStorage storage);
+        string PutTo(ModificationsStorage storage);
     }
 }

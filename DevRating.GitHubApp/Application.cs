@@ -76,12 +76,10 @@ namespace DevRating.GitHubApp
                     await repository.WriteInto(modifications, commit.Id);
                 }
 
-                modifications.PutTo(storage);
-
                 await installation.Repository.Comment.Create(
                     payload.Repository.Id,
                     payload.Commits.Last().Id,
-                    new NewCommitComment(storage.ToString()));
+                    new NewCommitComment(modifications.PutTo(storage)));
 
                 repository.Dispose();
 

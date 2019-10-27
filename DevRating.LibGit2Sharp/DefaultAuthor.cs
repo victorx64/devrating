@@ -17,7 +17,7 @@ namespace DevRating.LibGit2Sharp
             return _email;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj) || obj is DefaultAuthor other && Equals(other);
         }
