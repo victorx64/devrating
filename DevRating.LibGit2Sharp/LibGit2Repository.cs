@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DevRating.Vcs;
 using LibGit2Sharp;
@@ -107,16 +106,16 @@ namespace DevRating.LibGit2Sharp
                 .Substring(1)
                 .Split(',');
 
-            var index = Convert.ToInt32(parts[0]) - 1;
+            var index = Convert.ToUInt32(parts[0]) - 1;
 
-            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+            var count = parts.Length == 1 ? 1 : Convert.ToUInt32(parts[1]);
 
-            int d;
-            
+            uint d;
+
             for (var i = index; i < index + count; i += d)
             {
-                var blame = blames.HunkForLine(i);
-                d = Math.Min(blame.FinalStartLineNumber + blame.LineCount, index + count) - i;
+                var blame = blames.HunkForLine((int) i);
+                d = Math.Min((uint) (blame.FinalStartLineNumber + blame.LineCount), index + count) - i;
 
                 var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(blame.FinalSignature).Email);
 
@@ -134,13 +133,13 @@ namespace DevRating.LibGit2Sharp
             modifications.AddAddition(new DefaultAddition(current, AdditionsCount(hunk)));
         }
 
-        private int AdditionsCount(string hunk)
+        private uint AdditionsCount(string hunk)
         {
             var parts = hunk
                 .Substring(1)
                 .Split(',');
 
-            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+            var count = parts.Length == 1 ? 1 : Convert.ToUInt32(parts[1]);
 
             return count;
         }

@@ -4,6 +4,6 @@ namespace DevRating.SqlClient.Collections
 {
     internal interface MatchesCollection
     {
-        Match NewMatch(int first, int second, string commit, string repository, int count);
+        Match NewMatch(int first, int second, string commit, string repository, uint count);
     }
 }

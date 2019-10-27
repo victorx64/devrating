@@ -1,4 +1,3 @@
-using System;
 using DevRating.Vcs;
 
 namespace DevRating.LibGit2Sharp
@@ -6,9 +5,9 @@ namespace DevRating.LibGit2Sharp
     internal sealed class DefaultAddition : Addition
     {
         private readonly Commit _commit;
-        private readonly int _count;
+        private readonly uint _count;
 
-        public DefaultAddition(Commit commit, int count)
+        public DefaultAddition(Commit commit, uint count)
         {
             _commit = commit;
             _count = count;
@@ -16,20 +15,15 @@ namespace DevRating.LibGit2Sharp
 
         public Commit Commit()
         {
-            if (_count < 0)
-            {
-                throw new Exception("");
-            }
-
             return _commit;
         }
 
-        public int Count()
+        public uint Count()
         {
             return _count;
         }
 
-        public Addition NewAddition(int count)
+        public Addition NewAddition(uint count)
         {
             if (count.Equals(_count))
             {

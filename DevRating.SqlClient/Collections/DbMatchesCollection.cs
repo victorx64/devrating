@@ -14,11 +14,11 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
 
-        public Match NewMatch(int first, int second, string commit, string repository, int count)
+        public Match NewMatch(int first, int second, string commit, string repository, uint count)
         {
             if (first.Equals(second))
             {
-                throw new Exception("");
+                throw new Exception($"Params {nameof(first)} and {nameof(second)} must not be the same.");
             }
 
             using var command = _transaction.Connection.CreateCommand();

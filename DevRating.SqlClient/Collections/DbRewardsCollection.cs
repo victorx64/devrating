@@ -13,7 +13,7 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
         
-        public Reward NewReward(double value, string commit, string repository, int count, int rating)
+        public Reward NewReward(double value, string commit, string repository, uint count, int rating)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -42,7 +42,7 @@ namespace DevRating.SqlClient.Collections
             return new DbReward(_transaction, (int) command.ExecuteScalar());
         }
 
-        public Reward NewReward(double value, string commit, string repository, int count)
+        public Reward NewReward(double value, string commit, string repository, uint count)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;

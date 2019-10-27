@@ -9,9 +9,9 @@ namespace DevRating.SqlClient
         private readonly int _loser;
         private readonly RatingsCollection _ratings;
         private readonly Formula _formula;
-        private readonly int _count;
+        private readonly uint _count;
 
-        public RatingsPair(int winner, int loser, RatingsCollection ratings, Formula formula, int count)
+        public RatingsPair(int winner, int loser, RatingsCollection ratings, Formula formula, uint count)
         {
             _winner = winner;
             _loser = loser;

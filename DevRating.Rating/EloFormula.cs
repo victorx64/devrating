@@ -24,17 +24,17 @@ namespace DevRating.Rating
             return _default;
         }
 
-        public double WinnerNewRating(double winner, double loser, int count)
+        public double WinnerNewRating(double winner, double loser, uint count)
         {
             return winner + WinnerExtraPoints(winner, loser) * count;
         }
 
-        public double LoserNewRating(double winner, double loser, int count)
+        public double LoserNewRating(double winner, double loser, uint count)
         {
             return loser - WinnerExtraPoints(winner, loser) * count;
         }
 
-        public double Reward(double rating, int count)
+        public double Reward(double rating, uint count)
         {
             return WinProbability(rating, DefaultRating()) * count;
         }

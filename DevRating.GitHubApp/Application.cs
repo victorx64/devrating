@@ -44,32 +44,31 @@ namespace DevRating.GitHubApp
                 Credentials = new Octokit.Credentials(response.Token, AuthenticationType.Oauth)
             };
 
-            var clone = payload.Repository.CloneUrl;
-
-            var source = clone.Insert(clone.IndexOf("://", StringComparison.Ordinal) + "://".Length,
-                $"x-access-token:{response.Token}@");
-
-            var path = Path.Combine(directory, "repository");
-
-            if (Directory.Exists(path))
+            try
             {
-                DirectoryHelper.DeleteDirectory(path);
-            }
+                var clone = payload.Repository.CloneUrl;
 
-            global::LibGit2Sharp.Repository.Clone(source, path,
-                new CloneOptions
+                var source = clone.Insert(clone.IndexOf("://", StringComparison.Ordinal) + "://".Length,
+                    $"x-access-token:{response.Token}@");
+
+                var path = Path.Combine(directory, "repository");
+
+                if (Directory.Exists(path))
+                {
+                    DirectoryHelper.DeleteDirectory(path);
+                }
+
+                global::LibGit2Sharp.Repository.Clone(source, path, new CloneOptions
                 {
                     IsBare = true,
                     BranchName = payload.Repository.DefaultBranch,
                     RecurseSubmodules = false
                 });
 
-            var repository = new LibGit2Repository(path, clone);
+                var repository = new LibGit2Repository(path, clone);
 
-            var storage = new SqlModificationsStorage(_connection, new EloFormula());
+                var storage = new SqlModificationsStorage(_connection, new EloFormula());
 
-            try
-            {
                 var modifications = new DefaultModificationsCollection();
 
                 foreach (var commit in payload.Commits)
@@ -83,6 +82,10 @@ namespace DevRating.GitHubApp
                     payload.Repository.Id,
                     payload.Commits.Last().Id,
                     new NewCommitComment(storage.ToString()));
+
+                repository.Dispose();
+
+                DirectoryHelper.DeleteDirectory(path);
             }
             catch (Exception exception)
             {
@@ -91,10 +94,6 @@ namespace DevRating.GitHubApp
                     payload.Commits.Last().Id,
                     new NewCommitComment(exception.Message));
             }
-
-            repository.Dispose();
-
-            DirectoryHelper.DeleteDirectory(path);
         }
     }
 }

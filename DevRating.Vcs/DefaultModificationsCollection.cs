@@ -55,7 +55,7 @@ namespace DevRating.Vcs
             }
         }
 
-        private int AddedThenDeletedLines(Commit commit, IList<Deletion> deletions)
+        private uint AddedThenDeletedLines(Commit commit, IList<Deletion> deletions)
         {
             foreach (var deletion in deletions)
             {
