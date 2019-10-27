@@ -31,85 +31,10 @@ namespace DevRating.Vcs
 
         public void PutTo(ModificationsStorage storage)
         {
-            var additions = AdditionsMinusDeletions(_additions, _deletions);
-            var deletions = NonSelfDeletions(DeletionsMinusAdditions(_deletions, _additions));
-
-            storage.Insert(additions, deletions);
+            storage.Insert(NonDeletedAdditions(_additions, _deletions), NonSelfDeletions(_deletions));
         }
 
-        private IEnumerable<Addition> AdditionsMinusDeletions(
-            IEnumerable<Addition> additions,
-            IList<Deletion> deletions)
-        {
-            var result = new List<Addition>();
-
-            foreach (var addition in additions)
-            {
-                var found = false;
-
-                foreach (var deletion in deletions)
-                {
-                    if (addition.Commit().Equals(deletion.PreviousCommit()))
-                    {
-                        var x = addition.Count();
-                        var y = deletion.Count();
-
-                        if (x - y > 0)
-                        {
-                            result.Add(addition.NewAddition(x - y));
-                        }
-
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    result.Add(addition);
-                }
-            }
-
-            return result;
-        }
-
-        private IEnumerable<Deletion> DeletionsMinusAdditions(
-            IEnumerable<Deletion> deletions,
-            IList<Addition> additions)
-        {
-            var result = new List<Deletion>();
-
-            foreach (var deletion in deletions)
-            {
-                var found = false;
-
-                foreach (var addition in additions)
-                {
-                    if (addition.Commit().Equals(deletion.PreviousCommit()))
-                    {
-                        var x = addition.Count();
-                        var y = deletion.Count();
-
-                        if (y - x > 0)
-                        {
-                            result.Add(deletion.NewDeletion(y - x));
-                        }
-
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    result.Add(deletion);
-                }
-            }
-
-            return result;
-        }
-
-        private IEnumerable<Deletion> NonSelfDeletions(IEnumerable<Deletion> deletions)
+        private IEnumerable<Deletion> NonSelfDeletions(IList<Deletion> deletions)
         {
             foreach (var deletion in deletions)
             {
@@ -118,6 +43,30 @@ namespace DevRating.Vcs
                     yield return deletion;
                 }
             }
+        }
+
+        private IEnumerable<Addition> NonDeletedAdditions(IList<Addition> additions, IList<Deletion> deletions)
+        {
+            foreach (var addition in additions)
+            {
+                yield return addition.NewAddition(
+                    addition.Count() -
+                    AddedThenDeletedLines(addition.Commit(), deletions));
+            }
+        }
+
+        private int AddedThenDeletedLines(Commit commit, IList<Deletion> deletions)
+        {
+            foreach (var deletion in deletions)
+            {
+                if (deletion.PreviousCommit().Equals(commit) &&
+                    deletion.PreviousCommit().Author().Equals(deletion.Commit().Author()))
+                {
+                    return deletion.Count();
+                }
+            }
+
+            return 0;
         }
     }
 }

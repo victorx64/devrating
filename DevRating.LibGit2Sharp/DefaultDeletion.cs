@@ -1,3 +1,4 @@
+using System;
 using DevRating.Vcs;
 
 namespace DevRating.LibGit2Sharp
@@ -17,11 +18,21 @@ namespace DevRating.LibGit2Sharp
 
         public Commit Commit()
         {
+            if (_count < 0)
+            {
+                throw new Exception("");
+            }
+
             return _commit;
         }
 
         public Commit PreviousCommit()
         {
+            if (_count < 0)
+            {
+                throw new Exception("");
+            }
+
             return _previous;
         }
 
@@ -32,6 +43,11 @@ namespace DevRating.LibGit2Sharp
 
         public Deletion NewDeletion(int count)
         {
+            if (count.Equals(_count))
+            {
+                return this;
+            }
+
             return new DefaultDeletion(_commit, _previous, count);
         }
     }

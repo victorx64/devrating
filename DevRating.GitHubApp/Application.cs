@@ -70,7 +70,7 @@ namespace DevRating.GitHubApp
 
             try
             {
-                ModificationsCollection modifications = new DefaultModificationsCollection();
+                var modifications = new DefaultModificationsCollection();
 
                 foreach (var commit in payload.Commits)
                 {

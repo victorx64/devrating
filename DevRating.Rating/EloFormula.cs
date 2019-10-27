@@ -26,31 +26,17 @@ namespace DevRating.Rating
 
         public double WinnerNewRating(double winner, double loser, int count)
         {
-            EnsureCountNotLessThanZero(count);
-
             return winner + WinnerExtraPoints(winner, loser) * count;
         }
 
         public double LoserNewRating(double winner, double loser, int count)
         {
-            EnsureCountNotLessThanZero(count);
-
             return loser - WinnerExtraPoints(winner, loser) * count;
         }
 
         public double Reward(double rating, int count)
         {
-            EnsureCountNotLessThanZero(count);
-
             return WinProbability(rating, DefaultRating()) * count;
-        }
-
-        private void EnsureCountNotLessThanZero(int count)
-        {
-            if (count < 0)
-            {
-                throw new Exception("");
-            }
         }
 
         private double WinnerExtraPoints(double winner, double loser)

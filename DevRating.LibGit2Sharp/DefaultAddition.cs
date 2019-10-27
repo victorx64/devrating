@@ -1,3 +1,4 @@
+using System;
 using DevRating.Vcs;
 
 namespace DevRating.LibGit2Sharp
@@ -15,6 +16,11 @@ namespace DevRating.LibGit2Sharp
 
         public Commit Commit()
         {
+            if (_count < 0)
+            {
+                throw new Exception("");
+            }
+
             return _commit;
         }
 
@@ -25,6 +31,11 @@ namespace DevRating.LibGit2Sharp
 
         public Addition NewAddition(int count)
         {
+            if (count.Equals(_count))
+            {
+                return this;
+            }
+
             return new DefaultAddition(_commit, count);
         }
     }
