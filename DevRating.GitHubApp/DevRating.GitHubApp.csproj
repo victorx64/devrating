@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DevRating.SqlClient\DevRating.SqlClient.csproj" />
         <ProjectReference Include="..\DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj" />
     </ItemGroup>
 

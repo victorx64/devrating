@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using DevRating.GitHubApp;
 using DevRating.GitHubApp.Models;
+using DevRating.Rating;
+using DevRating.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -36,7 +38,11 @@ namespace DevRating.AzureFunction
                         Path.Combine(context.FunctionAppDirectory, "PrivateKey",
                             "devrating.2019-09-26.private-key.pem"));
 
-                    await new Application(token, "DevRating", Environment.GetEnvironmentVariable("AzureWebJobsStorage")!)
+                    var storage =
+                        new SqlModificationsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage")!,
+                            new EloFormula());
+
+                    await new Application(token, "DevRating", storage)
                         .HandlePushEvent(payload, Path.GetTempPath());
                 }
 

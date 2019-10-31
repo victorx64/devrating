@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\DevRating.SqlClient\DevRating.SqlClient.csproj"/>
         <ProjectReference Include="..\DevRating.GitHubApp\DevRating.GitHubApp.csproj"/>
     </ItemGroup>
 

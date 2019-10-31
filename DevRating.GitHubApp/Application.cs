@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DevRating.GitHubApp.Models;
 using DevRating.LibGit2Sharp;
-using DevRating.Rating;
-using DevRating.SqlClient;
 using DevRating.Vcs;
 using LibGit2Sharp;
 using Octokit;
@@ -16,13 +14,13 @@ namespace DevRating.GitHubApp
     {
         private readonly JsonWebToken _token;
         private readonly string _name;
-        private readonly string _connection;
+        private readonly ModificationsStorage _storage;
 
-        public Application(JsonWebToken token, string name, string connection)
+        public Application(JsonWebToken token, string name, ModificationsStorage storage)
         {
             _token = token;
             _name = name;
-            _connection = connection;
+            _storage = storage;
         }
 
         public async Task HandlePushEvent(PushWebhookPayload payload, string directory)
@@ -67,8 +65,6 @@ namespace DevRating.GitHubApp
 
                 var repository = new LibGit2Repository(path, clone);
 
-                var storage = new SqlModificationsStorage(_connection, new EloFormula());
-
                 var modifications = new DefaultModificationsCollection();
 
                 foreach (var commit in payload.Commits)
@@ -79,7 +75,7 @@ namespace DevRating.GitHubApp
                 await installation.Repository.Comment.Create(
                     payload.Repository.Id,
                     payload.Commits.Last().Id,
-                    new NewCommitComment(modifications.PutTo(storage)));
+                    new NewCommitComment(modifications.PutTo(_storage)));
 
                 repository.Dispose();
 
