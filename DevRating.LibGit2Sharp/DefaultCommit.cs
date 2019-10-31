@@ -6,10 +6,10 @@ namespace DevRating.LibGit2Sharp
     internal sealed class DefaultCommit : Commit
     {
         private readonly string _sha;
-        private readonly Author _author;
+        private readonly string _author;
         private readonly string _repository;
 
-        public DefaultCommit(string sha, Author author, string repository)
+        public DefaultCommit(string sha, string author, string repository)
         {
             _sha = sha;
             _author = author;
@@ -26,7 +26,7 @@ namespace DevRating.LibGit2Sharp
             return _repository;
         }
 
-        public Author Author()
+        public string Author()
         {
             return _author;
         }
@@ -36,7 +36,7 @@ namespace DevRating.LibGit2Sharp
             return Sha();
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return ReferenceEquals(this, obj) || obj is DefaultCommit other && Equals(other);
         }
@@ -44,7 +44,7 @@ namespace DevRating.LibGit2Sharp
         private bool Equals(DefaultCommit other)
         {
             return string.Equals(_sha, other._sha, StringComparison.OrdinalIgnoreCase) &&
-                   _author.Equals(other._author) &&
+                   string.Equals(_author, other._author, StringComparison.OrdinalIgnoreCase) &&
                    string.Equals(_repository, other._repository, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -53,7 +53,7 @@ namespace DevRating.LibGit2Sharp
             unchecked
             {
                 var hashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(_sha);
-                hashCode = (hashCode * 397) ^ _author.GetHashCode();
+                hashCode = (hashCode * 397) ^ StringComparer.OrdinalIgnoreCase.GetHashCode(_author);
                 hashCode = (hashCode * 397) ^ StringComparer.OrdinalIgnoreCase.GetHashCode(_repository);
                 return hashCode;
             }

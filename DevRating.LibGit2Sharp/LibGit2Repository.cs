@@ -78,7 +78,7 @@ namespace DevRating.LibGit2Sharp
             BlameHunkCollection blames,
             global::LibGit2Sharp.Commit commit)
         {
-            var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(commit.Author).Email);
+            var author = _repository.Mailmap.ResolveSignature(commit.Author).Email;
 
             var current = new DefaultCommit(commit.Sha, author, _id);
 
@@ -117,7 +117,7 @@ namespace DevRating.LibGit2Sharp
                 var blame = blames.HunkForLine((int) i);
                 d = Math.Min((uint) (blame.FinalStartLineNumber + blame.LineCount), index + count) - i;
 
-                var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(blame.FinalSignature).Email);
+                var author = _repository.Mailmap.ResolveSignature(blame.FinalSignature).Email;
 
                 var previous = new DefaultCommit(
                     blame.FinalCommit.Sha,

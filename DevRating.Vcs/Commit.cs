@@ -4,6 +4,6 @@ namespace DevRating.Vcs
     {
         string Sha();
         string Repository();
-        Author Author();
+        string Author();
     }
 }
