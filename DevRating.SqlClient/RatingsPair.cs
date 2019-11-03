@@ -3,7 +3,7 @@ using DevRating.SqlClient.Collections;
 
 namespace DevRating.SqlClient
 {
-    internal class RatingsPair
+    internal sealed class RatingsPair
     {
         private readonly int _winner;
         private readonly int _loser;

@@ -5,11 +5,11 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Collections
 {
-    internal sealed class DbAuthorsCollection : AuthorsCollection
+    internal sealed class SqlAuthorsCollection : AuthorsCollection
     {
         private readonly IDbTransaction _transaction;
 
-        public DbAuthorsCollection(IDbTransaction transaction)
+        public SqlAuthorsCollection(IDbTransaction transaction)
         {
             _transaction = transaction;
         }

@@ -5,11 +5,11 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Collections
 {
-    internal sealed class DbMatchesCollection : MatchesCollection
+    internal sealed class SqlMatchesCollection : MatchesCollection
     {
         private readonly IDbTransaction _transaction;
 
-        public DbMatchesCollection(IDbTransaction transaction)
+        public SqlMatchesCollection(IDbTransaction transaction)
         {
             _transaction = transaction;
         }

@@ -3,7 +3,7 @@ using DevRating.Domain;
 
 namespace DevRating.SqlClient.Entities
 {
-    internal class SqlReward : Reward, IdentifiableObject
+    internal sealed class SqlReward : Reward, IdentifiableObject
     {
         private readonly int _id;
 

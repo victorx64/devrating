@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -36,10 +36,10 @@ namespace DevRating.SqlClient
 
             try
             {
-                var authors = new DbAuthorsCollection(transaction);
-                var rewards = new DbRewardsCollection(transaction);
-                var matches = new DbMatchesCollection(transaction);
-                var ratings = new DbRatingsCollection(transaction);
+                var authors = new SqlAuthorsCollection(transaction);
+                var rewards = new SqlRewardsCollection(transaction);
+                var matches = new SqlMatchesCollection(transaction);
+                var ratings = new SqlRatingsCollection(transaction);
 
                 builder.AppendLine(InsertRewards(additions, authors, rewards, ratings));
                 builder.AppendLine(InsertRatings(deletions, authors, matches, ratings));

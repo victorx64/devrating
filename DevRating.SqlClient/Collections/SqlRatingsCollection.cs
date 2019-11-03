@@ -4,11 +4,11 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Collections
 {
-    internal sealed class DbRatingsCollection : RatingsCollection
+    internal sealed class SqlRatingsCollection : RatingsCollection
     {
         private readonly IDbTransaction _transaction;
 
-        public DbRatingsCollection(IDbTransaction transaction)
+        public SqlRatingsCollection(IDbTransaction transaction)
         {
             _transaction = transaction;
         }

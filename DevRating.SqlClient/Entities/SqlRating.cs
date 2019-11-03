@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Entities
 {
-    internal class SqlRating : Domain.Rating, IdentifiableObject
+    internal sealed class SqlRating : Domain.Rating, IdentifiableObject
     {
         private readonly IDbTransaction _transaction;
         private readonly int _id;
