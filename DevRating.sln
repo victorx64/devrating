@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.Rating", "DevRating.Rating\DevRating.Rating.csproj", "{17B823C9-E039-4D8D-AA7B-E54283CF019A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibGit2Sharp", "libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj", "{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.LibGit2Sharp", "DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
@@ -25,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17B823C9-E039-4D8D-AA7B-E54283CF019A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18558983-A6A0-4CD4-B9E4-0EA589F8AFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU

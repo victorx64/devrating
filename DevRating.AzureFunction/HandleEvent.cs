@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using DevRating.Domain.RatingSystem;
 using DevRating.GitHubApp;
 using DevRating.GitHubApp.Models;
-using DevRating.Rating;
 using DevRating.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;

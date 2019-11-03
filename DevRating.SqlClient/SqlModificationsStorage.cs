@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
 using DevRating.Domain.Git;
-using DevRating.Rating;
+using DevRating.Domain.RatingSystem;
 using DevRating.SqlClient.Collections;
 using Microsoft.Data.SqlClient;
 

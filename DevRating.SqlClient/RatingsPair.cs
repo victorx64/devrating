@@ -1,4 +1,4 @@
-using DevRating.Rating;
+using DevRating.Domain.RatingSystem;
 using DevRating.SqlClient.Collections;
 
 namespace DevRating.SqlClient
