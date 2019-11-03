@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DevRating.Domain.Git;
 using DevRating.GitHubApp.Models;
 using DevRating.LibGit2Sharp;
-using DevRating.Vcs;
 using LibGit2Sharp;
 using Octokit;
 

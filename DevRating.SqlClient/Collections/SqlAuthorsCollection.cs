@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 
@@ -13,7 +14,7 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
 
-        public IdentifiableAuthor NewAuthor(string email)
+        public SqlAuthor NewAuthor(string email)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -27,7 +28,7 @@ namespace DevRating.SqlClient.Collections
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
 
-            return new DbAuthor(_transaction, (int) command.ExecuteScalar());
+            return new SqlAuthor(_transaction, (int) command.ExecuteScalar());
         }
 
         public bool Exist(string email)
@@ -44,7 +45,7 @@ namespace DevRating.SqlClient.Collections
             return reader.Read();
         }
 
-        public IdentifiableAuthor Author(string email)
+        public SqlAuthor Author(string email)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -57,7 +58,12 @@ namespace DevRating.SqlClient.Collections
 
             reader.Read();
 
-            return new DbAuthor(_transaction, (int) reader["Id"]);
+            return new SqlAuthor(_transaction, (int) reader["Id"]);
+        }
+
+        public IOrderedEnumerable<SqlAuthor> TopAuthors()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

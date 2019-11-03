@@ -1,4 +1,4 @@
-using DevRating.Vcs;
+using DevRating.Domain.Git;
 
 namespace DevRating.LibGit2Sharp
 {

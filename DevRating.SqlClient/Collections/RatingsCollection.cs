@@ -2,9 +2,9 @@ namespace DevRating.SqlClient.Collections
 {
     internal interface RatingsCollection
     {
-        Entities.Rating NewRating(int author, double value, int match);
-        Entities.Rating NewRating(int author, double value, int last, int match);
-        Entities.Rating LastRatingOf(int author);
+        Entities.SqlRating NewRating(int author, double value, int match);
+        Entities.SqlRating NewRating(int author, double value, int last, int match);
+        Entities.SqlRating LastRatingOf(int author);
         bool HasRating(int author);
     }
 }

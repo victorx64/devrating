@@ -1,4 +1,4 @@
-namespace DevRating.Vcs
+namespace DevRating.Domain.Git
 {
     public interface Deletion : Modification
     {

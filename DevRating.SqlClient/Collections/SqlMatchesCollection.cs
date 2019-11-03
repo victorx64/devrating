@@ -14,7 +14,7 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
 
-        public Match NewMatch(int first, int second, string commit, string repository, uint count)
+        public SqlMatch NewMatch(int first, int second, string commit, string repository, uint count)
         {
             if (first.Equals(second))
             {
@@ -44,7 +44,7 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
 
-            return new DbMatch(_transaction, (int) command.ExecuteScalar());
+            return new SqlMatch(_transaction, (int) command.ExecuteScalar());
         }
     }
 }

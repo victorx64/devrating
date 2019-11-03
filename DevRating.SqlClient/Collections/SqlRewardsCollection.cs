@@ -13,7 +13,7 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
         
-        public Reward NewReward(double value, string commit, string repository, uint count, int rating)
+        public SqlReward NewReward(double value, string commit, string repository, uint count, int rating)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -39,10 +39,10 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
             command.Parameters.Add(new SqlParameter("@RatingId", SqlDbType.Int) {Value = rating});
 
-            return new DbReward(_transaction, (int) command.ExecuteScalar());
+            return new SqlReward(_transaction, (int) command.ExecuteScalar());
         }
 
-        public Reward NewReward(double value, string commit, string repository, uint count)
+        public SqlReward NewReward(double value, string commit, string repository, uint count)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -67,7 +67,7 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
 
-            return new DbReward(_transaction, (int) command.ExecuteScalar());
+            return new SqlReward(_transaction, (int) command.ExecuteScalar());
         }
     }
 }

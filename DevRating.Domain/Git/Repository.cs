@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace DevRating.Vcs
+namespace DevRating.Domain.Git
 {
     public interface Repository
     {

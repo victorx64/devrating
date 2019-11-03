@@ -13,7 +13,7 @@ namespace DevRating.SqlClient.Collections
             _transaction = transaction;
         }
 
-        public Entities.Rating NewRating(int author, double value, int match)
+        public SqlRating NewRating(int author, double value, int match)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -35,10 +35,10 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new DbRating(_transaction, (int) command.ExecuteScalar());
+            return new SqlRating(_transaction, (int) command.ExecuteScalar());
         }
 
-        public Entities.Rating NewRating(int author, double value, int last, int match)
+        public SqlRating NewRating(int author, double value, int last, int match)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -61,7 +61,7 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new DbRating(_transaction, (int) command.ExecuteScalar());
+            return new SqlRating(_transaction, (int) command.ExecuteScalar());
         }
 
         public bool HasRating(int author)
@@ -78,7 +78,7 @@ namespace DevRating.SqlClient.Collections
             return reader.Read();
         }
 
-        public Entities.Rating LastRatingOf(int author)
+        public SqlRating LastRatingOf(int author)
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
@@ -91,7 +91,7 @@ namespace DevRating.SqlClient.Collections
 
             reader.Read();
             
-            return new DbRating(_transaction, (int) reader["Id"]);
+            return new SqlRating(_transaction, (int) reader["Id"]);
         }
     }
 }

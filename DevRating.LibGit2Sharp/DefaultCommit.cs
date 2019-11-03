@@ -1,5 +1,5 @@
 using System;
-using DevRating.Vcs;
+using DevRating.Domain.Git;
 
 namespace DevRating.LibGit2Sharp
 {
@@ -36,7 +36,7 @@ namespace DevRating.LibGit2Sharp
             return Sha();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj) || obj is DefaultCommit other && Equals(other);
         }

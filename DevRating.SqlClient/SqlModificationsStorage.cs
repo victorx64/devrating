@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
-using DevRating.Vcs;
+using DevRating.Domain.Git;
 using DevRating.Rating;
 using DevRating.SqlClient.Collections;
 using Microsoft.Data.SqlClient;
@@ -82,7 +82,7 @@ namespace DevRating.SqlClient
                     builder.AppendLine(string.Format(CultureInfo.InvariantCulture,
                         "In {0} {1} added {2} lines. DR {3:F2}. Reward {4:F4}",
                         addition.Commit().Sha(),
-                        addition.Commit().Author().Email(),
+                        addition.Commit().Author(),
                         addition.Count(),
                         rating.Value(),
                         reward));
@@ -97,7 +97,7 @@ namespace DevRating.SqlClient
                         string.Format(CultureInfo.InvariantCulture,
                             "In {0} {1} added {2} lines. DR {3:F2}. Reward {4:F2}",
                             addition.Commit().Sha(),
-                            addition.Commit().Author().Email(),
+                            addition.Commit().Author(),
                             addition.Count(),
                             _formula.DefaultRating(),
                             reward));
@@ -142,14 +142,14 @@ namespace DevRating.SqlClient
                 builder.AppendLine(
                     string.Format(CultureInfo.InvariantCulture,
                         "{0} Old DR {1:F2}. New DR {2:F2}",
-                        deletion.Commit().Author().Email(),
+                        deletion.Commit().Author(),
                         pair.WinnerRating(),
                         pair.WinnerNewRating()));
 
                 builder.AppendLine(
                     string.Format(CultureInfo.InvariantCulture,
                         "{0} Old DR {1:F2}. New DR {2:F2}",
-                        deletion.PreviousCommit().Author().Email(),
+                        deletion.PreviousCommit().Author(),
                         pair.LoserRating(),
                         pair.LoserNewRating()));
 
@@ -162,10 +162,8 @@ namespace DevRating.SqlClient
             return builder.ToString();
         }
 
-        private int AuthorId(AuthorsCollection authors, Author author)
+        private int AuthorId(AuthorsCollection authors, string email)
         {
-            var email = author.Email();
-
             return (authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email)).Id();
         }
 

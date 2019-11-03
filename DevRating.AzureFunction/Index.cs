@@ -17,6 +17,8 @@ namespace DevRating.AzureFunction
         {
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
+            await Task.Delay(100);
+
             return new OkObjectResult($"Hello");
         }
     }

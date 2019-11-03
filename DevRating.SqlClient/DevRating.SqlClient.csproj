@@ -11,8 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\DevRating.Domain\DevRating.Domain.csproj" />
         <ProjectReference Include="..\DevRating.Rating\DevRating.Rating.csproj" />
-        <ProjectReference Include="..\DevRating.Vcs\DevRating.Vcs.csproj" />
     </ItemGroup>
 
     <ItemGroup>
