@@ -1,14 +1,20 @@
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using DevRating.Domain;
 
 namespace DevRating.WebApp
 {
-    public class Application
+    public sealed class Application
     {
-        public IOrderedEnumerable<Author> TopAuthors()
+        private readonly AuthorsRepository _authors;
+
+        public Application(AuthorsRepository authors)
         {
-            throw new NotImplementedException();
+            _authors = authors;
+        }
+        
+        public IEnumerable<Author> TopAuthors()
+        {
+            return _authors.TopAuthors();
         }
     }
 }

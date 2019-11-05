@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 
@@ -61,9 +61,28 @@ namespace DevRating.SqlClient.Collections
             return new SqlAuthor(_transaction, (int) reader["Id"]);
         }
 
-        public IOrderedEnumerable<SqlAuthor> TopAuthors()
+        public IEnumerable<SqlAuthor> TopAuthors()
         {
-            throw new System.NotImplementedException();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
+
+            command.CommandText = @"
+                SELECT TOP (100) [dbo].[Author].[Id]
+                FROM [dbo].[Author]
+                INNER JOIN [dbo].[Reward] ON [dbo].[Reward].[Id] = [dbo].[Author].[LastRewardId]
+                INNER JOIN [dbo].[Rating] ON [dbo].[Rating].[Id] = [dbo].[Reward].[RatingId]
+                ORDER BY [dbo].[Rating].[Rating] DESC";
+
+            using var reader = command.ExecuteReader();
+
+            var authors = new List<SqlAuthor>();
+
+            while (reader.Read())
+            {
+                authors.Add(new SqlAuthor(_transaction, (int) reader["Id"]));
+            }
+
+            return authors;
         }
     }
 }

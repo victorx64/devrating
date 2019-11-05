@@ -36,13 +36,13 @@ namespace DevRating.SqlClient.Entities
             return (string) reader["Email"];
         }
 
-        public Domain.Rating LastRating()
+        public Rating LastRating()
         {
             using var command = _transaction.Connection.CreateCommand();
             command.Transaction = _transaction;
 
             command.CommandText =
-                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastPaidRatingId] IS NOT NULL";
+                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -50,7 +50,7 @@ namespace DevRating.SqlClient.Entities
 
             reader.Read();
 
-            return new SqlRating(_transaction, (int) reader["LastPaidRatingId"]);
+            return new SqlRating(_transaction, (int) reader["LastRatingId"]);
         }
 
         public bool HasRating()
@@ -59,7 +59,7 @@ namespace DevRating.SqlClient.Entities
             command.Transaction = _transaction;
 
             command.CommandText =
-                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastPaidRatingId] IS NOT NULL";
+                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -70,12 +70,34 @@ namespace DevRating.SqlClient.Entities
 
         public Reward LastReward()
         {
-            throw new System.NotImplementedException();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
+
+            command.CommandText =
+                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return new SqlReward(_transaction, (int) reader["LastRewardId"]);
         }
 
         public bool HasReward()
         {
-            throw new System.NotImplementedException();
+            using var command = _transaction.Connection.CreateCommand();
+            command.Transaction = _transaction;
+
+            command.CommandText =
+                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
     }
 }

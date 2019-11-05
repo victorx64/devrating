@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using DevRating.SqlClient.Entities;
 
 namespace DevRating.SqlClient.Collections
@@ -8,6 +8,6 @@ namespace DevRating.SqlClient.Collections
         SqlAuthor NewAuthor(string email);
         bool Exist(string email);
         SqlAuthor Author(string email);
-        IOrderedEnumerable<SqlAuthor> TopAuthors();
+        IEnumerable<SqlAuthor> TopAuthors();
     }
 }

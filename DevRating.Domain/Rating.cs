@@ -4,5 +4,7 @@ namespace DevRating.Domain
     {
         Author Author();
         double Value();
+        Rating LastRating();
+        bool HasLastRating();
     }
 }
