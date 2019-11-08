@@ -41,7 +41,11 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@RatingId", SqlDbType.Int) {Value = rating});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new SqlReward(_connection, (int) command.ExecuteScalar());
+            var id = (int) command.ExecuteScalar();
+
+            UpdateAuthorLastRewardId(author, id);
+
+            return new SqlReward(_connection, id);
         }
 
         public SqlReward NewReward(double value, string commit, string repository, uint count, int author)
