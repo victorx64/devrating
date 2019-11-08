@@ -6,12 +6,12 @@ namespace DevRating.SqlClient.Entities
 {
     internal sealed class SqlAuthor : Author, IdentifiableObject
     {
-        private readonly IDbTransaction _transaction;
+        private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlAuthor(IDbTransaction transaction, int id)
+        public SqlAuthor(IDbConnection connection, int id)
         {
-            _transaction = transaction;
+            _connection = connection;
             _id = id;
         }
 
@@ -22,8 +22,7 @@ namespace DevRating.SqlClient.Entities
 
         public string Email()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id";
 
@@ -38,8 +37,7 @@ namespace DevRating.SqlClient.Entities
 
         public Rating LastRating()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText =
                 "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
@@ -50,13 +48,12 @@ namespace DevRating.SqlClient.Entities
 
             reader.Read();
 
-            return new SqlRating(_transaction, (int) reader["LastRatingId"]);
+            return new SqlRating(_connection, (int) reader["LastRatingId"]);
         }
 
         public bool HasRating()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText =
                 "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
@@ -70,8 +67,7 @@ namespace DevRating.SqlClient.Entities
 
         public Reward LastReward()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText =
                 "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
@@ -82,13 +78,12 @@ namespace DevRating.SqlClient.Entities
 
             reader.Read();
 
-            return new SqlReward(_transaction, (int) reader["LastRewardId"]);
+            return new SqlReward(_connection, (int) reader["LastRewardId"]);
         }
 
         public bool HasReward()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText =
                 "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";

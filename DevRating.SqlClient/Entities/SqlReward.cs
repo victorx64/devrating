@@ -6,12 +6,12 @@ namespace DevRating.SqlClient.Entities
 {
     internal sealed class SqlReward : Reward, IdentifiableObject
     {
-        private readonly IDbTransaction _transaction;
+        private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlReward(IDbTransaction transaction, int id)
+        public SqlReward(IDbConnection connection, int id)
         {
-            _transaction = transaction;
+            _connection = connection;
             _id = id;
         }
 
@@ -22,8 +22,7 @@ namespace DevRating.SqlClient.Entities
 
         public Rating Rating()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT [RatingId] FROM [dbo].[Reward] WHERE [Id] = @Id";
 
@@ -33,13 +32,12 @@ namespace DevRating.SqlClient.Entities
 
             reader.Read();
 
-            return new SqlRating(_transaction, (int) reader["RatingId"]);
+            return new SqlRating(_connection, (int) reader["RatingId"]);
         }
 
         public Author Author()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT [AuthorId] FROM [dbo].[Reward] WHERE [Id] = @Id";
 
@@ -49,13 +47,12 @@ namespace DevRating.SqlClient.Entities
 
             reader.Read();
 
-            return new SqlAuthor(_transaction, (int) reader["AuthorId"]);
+            return new SqlAuthor(_connection, (int) reader["AuthorId"]);
         }
 
         public double Value()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT [Reward] FROM [dbo].[Reward] WHERE [Id] = @Id";
 

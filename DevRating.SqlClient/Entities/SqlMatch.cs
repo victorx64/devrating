@@ -4,12 +4,12 @@ namespace DevRating.SqlClient.Entities
 {
     internal sealed class SqlMatch : IdentifiableObject
     {
-        private readonly IDbTransaction _transaction;
+        private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlMatch(IDbTransaction transaction, int id)
+        public SqlMatch(IDbConnection connection, int id)
         {
-            _transaction = transaction;
+            _connection = connection;
             _id = id;
         }
 

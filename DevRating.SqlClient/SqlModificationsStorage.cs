@@ -21,6 +21,11 @@ namespace DevRating.SqlClient
         }
 
         public SqlModificationsStorage(IDbConnection connection, Formula formula)
+            : this(new TransactedDbConnection(connection), formula)
+        {
+        }
+
+        internal SqlModificationsStorage(TransactedDbConnection connection, Formula formula)
         {
             _connection = connection;
             _formula = formula;
@@ -36,10 +41,10 @@ namespace DevRating.SqlClient
 
             try
             {
-                var authors = new SqlAuthorsCollection(transaction);
-                var rewards = new SqlRewardsCollection(transaction);
-                var matches = new SqlMatchesCollection(transaction);
-                var ratings = new SqlRatingsCollection(transaction);
+                var authors = new SqlAuthorsCollection(_connection);
+                var rewards = new SqlRewardsCollection(_connection);
+                var matches = new SqlMatchesCollection(_connection);
+                var ratings = new SqlRatingsCollection(_connection);
 
                 builder.AppendLine(InsertRewards(additions, authors, rewards, ratings));
                 builder.AppendLine(InsertRatings(deletions, authors, matches, ratings));
@@ -87,7 +92,7 @@ namespace DevRating.SqlClient
                         rating.Value(),
                         reward));
 
-                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), rating.Id());
+                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), rating.Id(), author);
                 }
                 else
                 {
@@ -102,7 +107,7 @@ namespace DevRating.SqlClient
                             _formula.DefaultRating(),
                             reward));
 
-                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count());
+                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), author);
                 }
             }
 

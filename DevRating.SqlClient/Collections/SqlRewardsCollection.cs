@@ -6,17 +6,16 @@ namespace DevRating.SqlClient.Collections
 {
     internal sealed class SqlRewardsCollection : RewardsCollection
     {
-        private readonly IDbTransaction _transaction;
+        private readonly IDbConnection _connection;
 
-        public SqlRewardsCollection(IDbTransaction transaction)
+        public SqlRewardsCollection(IDbConnection connection)
         {
-            _transaction = transaction;
+            _connection = connection;
         }
-        
-        public SqlReward NewReward(double value, string commit, string repository, uint count, int rating)
+
+        public SqlReward NewReward(double value, string commit, string repository, uint count, int rating, int author)
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = @"
                 INSERT INTO [dbo].[Reward]
@@ -24,28 +23,30 @@ namespace DevRating.SqlClient.Collections
                        ,[Commit]
                        ,[Repository]
                        ,[Count]
-                       ,[RatingId])
+                       ,[RatingId]
+                       ,[AuthorId])
                 OUTPUT [Inserted].[Id]
                 VALUES
                        (@Reward
                        ,@Commit
                        ,@Repository
                        ,@Count
-                       ,@RatingId)";
+                       ,@RatingId
+                       ,@AuthorId)";
 
             command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = value});
             command.Parameters.Add(new SqlParameter("@Commit", SqlDbType.NVarChar, 50) {Value = commit});
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
             command.Parameters.Add(new SqlParameter("@RatingId", SqlDbType.Int) {Value = rating});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new SqlReward(_transaction, (int) command.ExecuteScalar());
+            return new SqlReward(_connection, (int) command.ExecuteScalar());
         }
 
-        public SqlReward NewReward(double value, string commit, string repository, uint count)
+        public SqlReward NewReward(double value, string commit, string repository, uint count, int author)
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = @"
                 INSERT INTO [dbo].[Reward]
@@ -53,21 +54,43 @@ namespace DevRating.SqlClient.Collections
                        ,[Commit]
                        ,[Repository]
                        ,[Count]
-                       ,[RatingId])
+                       ,[RatingId]
+                       ,[AuthorId])
                 OUTPUT [Inserted].[Id]
                 VALUES
                        (@Reward
                        ,@Commit
                        ,@Repository
                        ,@Count
-                       ,NULL)";
+                       ,NULL
+                       ,@AuthorId)";
 
             command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = value});
             command.Parameters.Add(new SqlParameter("@Commit", SqlDbType.NVarChar, 50) {Value = commit});
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
 
-            return new SqlReward(_transaction, (int) command.ExecuteScalar());
+            var id = (int) command.ExecuteScalar();
+
+            UpdateAuthorLastRewardId(author, id);
+
+            return new SqlReward(_connection, id);
+        }
+
+        private void UpdateAuthorLastRewardId(int author, int reward)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                UPDATE [dbo].[Author]
+                SET [LastRewardId] = @RewardId
+                WHERE [dbo].[Author].[Id] = @AuthorId";
+
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
+            command.Parameters.Add(new SqlParameter("@RewardId", SqlDbType.Int) {Value = reward});
+
+            command.ExecuteNonQuery();
         }
     }
 }

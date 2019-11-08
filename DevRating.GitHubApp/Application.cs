@@ -63,21 +63,20 @@ namespace DevRating.GitHubApp
                     RecurseSubmodules = false
                 });
 
-                var repository = new LibGit2Repository(path, clone);
-
-                var modifications = new DefaultModificationsCollection();
-
-                foreach (var commit in payload.Commits)
+                using (var repository = new LibGit2Repository(path, clone))
                 {
-                    await repository.WriteInto(modifications, commit.Id);
+                    var modifications = new DefaultModificationsCollection();
+
+                    foreach (var commit in payload.Commits)
+                    {
+                        await repository.WriteInto(modifications, commit.Id);
+                    }
+
+                    await installation.Repository.Comment.Create(
+                        payload.Repository.Id,
+                        payload.Commits.Last().Id,
+                        new NewCommitComment(modifications.PutTo(_storage)));
                 }
-
-                await installation.Repository.Comment.Create(
-                    payload.Repository.Id,
-                    payload.Commits.Last().Id,
-                    new NewCommitComment(modifications.PutTo(_storage)));
-
-                repository.Dispose();
 
                 DirectoryHelper.DeleteDirectory(path);
             }

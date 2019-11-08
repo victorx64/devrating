@@ -19,26 +19,14 @@ namespace DevRating.SqlClient
         {
             _connection = connection;
         }
-        
+
         public IEnumerable<Author> TopAuthors()
         {
             _connection.Open();
 
-            var transaction = _connection.BeginTransaction();
-
             try
             {
-                var authors = new SqlAuthorsCollection(transaction);
-
-                transaction.Commit();
-
-                return authors.TopAuthors();
-            }
-            catch
-            {
-                transaction.Rollback();
-
-                throw;
+                return new SqlAuthorsCollection(_connection).TopAuthors();
             }
             finally
             {

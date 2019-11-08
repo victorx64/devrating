@@ -7,17 +7,16 @@ namespace DevRating.SqlClient.Collections
 {
     internal sealed class SqlAuthorsCollection : AuthorsCollection
     {
-        private readonly IDbTransaction _transaction;
+        private readonly IDbConnection _connection;
 
-        public SqlAuthorsCollection(IDbTransaction transaction)
+        public SqlAuthorsCollection(IDbConnection connection)
         {
-            _transaction = transaction;
+            _connection = connection;
         }
 
         public SqlAuthor NewAuthor(string email)
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = @"
                 INSERT INTO [dbo].[Author]
@@ -28,13 +27,12 @@ namespace DevRating.SqlClient.Collections
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
 
-            return new SqlAuthor(_transaction, (int) command.ExecuteScalar());
+            return new SqlAuthor(_connection, (int) command.ExecuteScalar());
         }
 
         public bool Exist(string email)
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
 
@@ -47,8 +45,7 @@ namespace DevRating.SqlClient.Collections
 
         public SqlAuthor Author(string email)
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
 
@@ -58,13 +55,12 @@ namespace DevRating.SqlClient.Collections
 
             reader.Read();
 
-            return new SqlAuthor(_transaction, (int) reader["Id"]);
+            return new SqlAuthor(_connection, (int) reader["Id"]);
         }
 
         public IEnumerable<SqlAuthor> TopAuthors()
         {
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
 
             command.CommandText = @"
                 SELECT TOP (100) [dbo].[Author].[Id]
@@ -79,7 +75,7 @@ namespace DevRating.SqlClient.Collections
 
             while (reader.Read())
             {
-                authors.Add(new SqlAuthor(_transaction, (int) reader["Id"]));
+                authors.Add(new SqlAuthor(_connection, (int) reader["Id"]));
             }
 
             return authors;

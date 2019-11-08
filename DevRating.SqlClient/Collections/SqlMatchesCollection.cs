@@ -7,11 +7,11 @@ namespace DevRating.SqlClient.Collections
 {
     internal sealed class SqlMatchesCollection : MatchesCollection
     {
-        private readonly IDbTransaction _transaction;
+        private readonly IDbConnection _connection;
 
-        public SqlMatchesCollection(IDbTransaction transaction)
+        public SqlMatchesCollection(IDbConnection connection)
         {
-            _transaction = transaction;
+            _connection = connection;
         }
 
         public SqlMatch NewMatch(int first, int second, string commit, string repository, uint count)
@@ -21,8 +21,7 @@ namespace DevRating.SqlClient.Collections
                 throw new Exception($"Params {nameof(first)} and {nameof(second)} must not be the same.");
             }
 
-            using var command = _transaction.Connection.CreateCommand();
-            command.Transaction = _transaction;
+            using var command = _connection.CreateCommand();
             command.CommandText = @"
                 INSERT INTO [dbo].[Match]
                        ([FirstAuthorId]
@@ -44,7 +43,7 @@ namespace DevRating.SqlClient.Collections
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
 
-            return new SqlMatch(_transaction, (int) command.ExecuteScalar());
+            return new SqlMatch(_connection, (int) command.ExecuteScalar());
         }
     }
 }
