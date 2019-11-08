@@ -6,7 +6,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    public class SqlAuthorsRepository : AuthorsRepository
+    public sealed class SqlAuthorsRepository : AuthorsRepository
     {
         private readonly IDbConnection _connection;
 

@@ -63,7 +63,12 @@ namespace DevRating.SqlClient.Collections
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                SELECT TOP (100) [dbo].[Author].[Id]
+                SELECT TOP (100) 
+                    [dbo].[Author].[Id],
+                    [dbo].[Author].[Email],
+                    [dbo].[Author].[LastRewardId],
+                    [dbo].[Reward].[RatingId],
+                    [dbo].[Rating].[Rating]
                 FROM [dbo].[Author]
                 INNER JOIN [dbo].[Reward] ON [dbo].[Reward].[Id] = [dbo].[Author].[LastRewardId]
                 INNER JOIN [dbo].[Rating] ON [dbo].[Rating].[Id] = [dbo].[Reward].[RatingId]
@@ -75,7 +80,22 @@ namespace DevRating.SqlClient.Collections
 
             while (reader.Read())
             {
-                authors.Add(new SqlAuthor(_connection, (int) reader["Id"]));
+                authors.Add(
+                    new SqlAuthor(
+                        new FakeConnection(
+                            new FakeCommand(
+                                new FakeDataReader(
+                                    new Dictionary<string, object>
+                                    {
+                                        {"Email", reader["Email"]},
+                                        {"LastRewardId", reader["LastRewardId"]},
+                                        {"RatingId", reader["RatingId"]},
+                                        {"Rating", reader["Rating"]}
+                                    }
+                                )
+                            )
+                        ),
+                        (int) reader["Id"]));
             }
 
             return authors;
