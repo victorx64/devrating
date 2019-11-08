@@ -40,7 +40,7 @@ namespace DevRating.SqlClient.Entities
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
+                "SELECT [LastRatingId] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -56,7 +56,7 @@ namespace DevRating.SqlClient.Entities
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
+                "SELECT [LastRatingId] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRatingId] IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -70,7 +70,7 @@ namespace DevRating.SqlClient.Entities
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
+                "SELECT [LastRewardId] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -86,7 +86,7 @@ namespace DevRating.SqlClient.Entities
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
+                "SELECT [LastRewardId] FROM [dbo].[Author] WHERE [Id] = @Id AND [LastRewardId] IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
