@@ -2,7 +2,7 @@ using GitHubJwt;
 
 namespace DevRating.GitHubApp
 {
-    public class JsonWebToken
+    public sealed class JsonWebToken
     {
         private readonly int _id;
         private readonly string _path;

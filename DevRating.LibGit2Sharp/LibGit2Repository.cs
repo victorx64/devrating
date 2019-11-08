@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using DevRating.Git;
+using DevRating.Domain.Git;
 using LibGit2Sharp;
-using Commit = DevRating.Git.Commit;
-using Repository = DevRating.Git.Repository;
+using Commit = DevRating.Domain.Git.Commit;
+using Repository = DevRating.Domain.Git.Repository;
 
 namespace DevRating.LibGit2Sharp
 {
@@ -24,38 +23,35 @@ namespace DevRating.LibGit2Sharp
             _id = id;
         }
 
-        public async Task WriteInto(Modifications modifications, string sha)
+        public async Task WriteInto(ModificationsCollection modifications, string sha)
         {
             var commit = _repository.Lookup<global::LibGit2Sharp.Commit>(sha);
 
-            var options = new CompareOptions
-            {
-                ContextLines = 0
-            };
-
-            var author = new DefaultAuthor(_repository.Mailmap.ResolveSignature(commit.Author).Email);
-
-            await Task.WhenAll(CommitWriteTasks(modifications, commit, options, author));
+            await Task.WhenAll(WriteCommitTasks(modifications, commit));
         }
 
-        private IEnumerable<Task> CommitWriteTasks(Modifications modifications, global::LibGit2Sharp.Commit commit,
-            CompareOptions options, Author author)
+        private IEnumerable<Task> WriteCommitTasks(ModificationsCollection modifications,
+            global::LibGit2Sharp.Commit commit)
         {
             foreach (var parent in commit.Parents)
             {
-                var differences = _repository.Diff.Compare<Patch>(parent.Tree, commit.Tree, options);
-
-                foreach (var task in DifferencesWriteTasks(modifications, differences, parent.Sha,
-                    new DefaultCommit(commit.Sha, _id), author))
+                foreach (var task in WriteDifferencesTasks(modifications, commit, parent))
                 {
                     yield return task;
                 }
             }
         }
 
-        private IEnumerable<Task> DifferencesWriteTasks(Modifications modifications, Patch differences, string parent,
-            Commit commit, Author author)
+        private IEnumerable<Task> WriteDifferencesTasks(
+            ModificationsCollection modifications,
+            global::LibGit2Sharp.Commit commit,
+            global::LibGit2Sharp.Commit parent)
         {
+            var differences = _repository.Diff.Compare<Patch>(
+                parent.Tree,
+                commit.Tree,
+                new CompareOptions {ContextLines = 0});
+
             var options = new BlameOptions {StartingAt = parent};
 
             foreach (var difference in differences)
@@ -68,71 +64,82 @@ namespace DevRating.LibGit2Sharp
                 {
                     yield return Task.Run(() =>
                     {
-                        var blame = _repository.Blame(difference.OldPath, options);
+                        var blames = _repository.Blame(difference.OldPath, options);
 
-                        WritePatchInto(modifications, difference.Patch, blame, commit, author);
+                        WritePatchInto(modifications, difference.Patch, blames, commit);
                     });
                 }
             }
         }
 
-        private void WritePatchInto(Modifications modifications, string patch, BlameHunkCollection blame, Commit commit,
-            Author author)
+        private void WritePatchInto(
+            ModificationsCollection modifications,
+            string patch,
+            BlameHunkCollection blames,
+            global::LibGit2Sharp.Commit commit)
         {
+            var author = _repository.Mailmap.ResolveSignature(commit.Author).Email;
+
+            var current = new DefaultCommit(commit.Sha, author, _id);
+
             foreach (var line in patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
                 {
                     // line must be like "@@ -3,9 +3,9 @@ blah..."
-                    // TODO Throw exception on contextual lines. Patch must be without contextual lines (git log -U0)
+                    // TODO Throw exception on a contextual line. Patch must be without contextual lines (git log -U0)
                     var parts = line.Split(' ');
 
-                    var deletions = Deletions(parts[1], blame)
-                        .GroupBy(s => s);
-
-                    foreach (var deletion in deletions)
-                    {
-                        modifications
-                            .AddDeletion(
-                                new DefaultDeletion(
-                                    author,
-                                    commit,
-                                    new DefaultAuthor(deletion.Key),
-                                    deletion.Count()));
-                    }
-
-                    modifications.AddAddition(new DefaultAddition(author, commit, Additions(parts[2])));
+                    WriteDeletionInto(modifications, current, parts[1], blames);
+                    WriteAdditionInto(modifications, current, parts[2]);
                 }
             }
         }
 
-        private IEnumerable<string> Deletions(string hunk, BlameHunkCollection blame)
+        private void WriteDeletionInto(
+            ModificationsCollection modifications,
+            Commit current,
+            string hunk,
+            BlameHunkCollection blames)
         {
-            var deletions = new List<string>();
-
             var parts = hunk
                 .Substring(1)
                 .Split(',');
 
-            var index = Convert.ToInt32(parts[0]) - 1;
+            var index = Convert.ToUInt32(parts[0]) - 1;
 
-            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+            var count = parts.Length == 1 ? 1 : Convert.ToUInt32(parts[1]);
 
-            for (var i = index; i < index + count; i++)
+            uint d;
+
+            for (var i = index; i < index + count; i += d)
             {
-                deletions.Add(_repository.Mailmap.ResolveSignature(blame.HunkForLine(i).FinalSignature).Email);
-            }
+                var blame = blames.HunkForLine((int) i);
+                d = Math.Min((uint) (blame.FinalStartLineNumber + blame.LineCount), index + count) - i;
 
-            return deletions;
+                var author = _repository.Mailmap.ResolveSignature(blame.FinalSignature).Email;
+
+                var previous = new DefaultCommit(
+                    blame.FinalCommit.Sha,
+                    author,
+                    _id);
+
+                modifications.AddDeletion(new DefaultDeletion(current, previous, d));
+            }
         }
 
-        private int Additions(string hunk)
+        private void WriteAdditionInto(ModificationsCollection modifications, Commit current, string hunk)
+        {
+            modifications.AddAddition(new DefaultAddition(current, AdditionsCount(hunk)));
+        }
+
+        private uint AdditionsCount(string hunk)
         {
             var parts = hunk
                 .Substring(1)
                 .Split(',');
 
-            var count = parts.Length == 1 ? 1 : Convert.ToInt32(parts[1]);
+            var count = parts.Length == 1 ? 1 : Convert.ToUInt32(parts[1]);
 
             return count;
         }

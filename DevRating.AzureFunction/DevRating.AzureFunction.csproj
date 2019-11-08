@@ -12,11 +12,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\DevRating.SqlClient\DevRating.SqlClient.csproj"/>
         <ProjectReference Include="..\DevRating.GitHubApp\DevRating.GitHubApp.csproj"/>
+        <ProjectReference Include="..\DevRating.WebApp\DevRating.WebApp.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="(PrivateKey)\devrating.2019-09-26.private-key.pem">
+        <None Update="PrivateKey\devrating.2019-09-26.private-key.pem">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="host.json">
@@ -27,5 +29,15 @@
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </None>
     </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <!-- https://github.com/Azure/azure-functions-host/issues/3568 -->
+        <Exec Command="copy $(OutDir)$(ProjectName).deps.json $(OutDir)bin\function.deps.json"/>
+    </Target>
+
+    <Target Name="PostPublish" BeforeTargets="CreateZipFile">
+        <!-- https://github.com/Azure/azure-functions-host/issues/3568 -->
+        <Exec Command="copy $(PublishDir)$(ProjectName).deps.json $(PublishDir)bin\function.deps.json"/>
+    </Target>
 
 </Project>

@@ -7,12 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="GitHubJwt" Version="0.0.3" />
-        <PackageReference Include="Octokit" Version="0.36.0" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19269.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DevRating.LibGit2Sharp\DevRating.LibGit2Sharp.csproj" />
+        <ProjectReference Include="..\DevRating.Domain\DevRating.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using DevRating.Domain.RatingSystem;
 using DevRating.GitHubApp;
+using DevRating.GitHubApp.Models;
+using DevRating.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -20,8 +23,6 @@ namespace DevRating.AzureFunction
             ExecutionContext context,
             ILogger logger)
         {
-            logger.LogInformation("Hello");
-
             try
             {
                 var @event = request.Headers["X-GitHub-Event"];
@@ -31,13 +32,17 @@ namespace DevRating.AzureFunction
                     var serializer = new SimpleJsonSerializer();
 
                     var payload =
-                        serializer.Deserialize<PushWebhookPayload>((new StreamReader(request.Body).ReadToEnd()));
+                        serializer.Deserialize<PushWebhookPayload>(new StreamReader(request.Body).ReadToEnd());
 
                     var token = new JsonWebToken(42098,
-                        Path.Combine(context.FunctionAppDirectory, "(PrivateKey)",
+                        Path.Combine(context.FunctionAppDirectory, "PrivateKey",
                             "devrating.2019-09-26.private-key.pem"));
 
-                    await new Application(token, "DevRating")
+                    var storage =
+                        new SqlModificationsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage")!,
+                            new EloFormula());
+
+                    await new Application(token, "DevRating", storage)
                         .HandlePushEvent(payload, Path.GetTempPath());
                 }
 
