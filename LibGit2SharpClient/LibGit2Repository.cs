@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DevRating.Domain.Git;
 using LibGit2Sharp;
 using Commit = DevRating.Domain.Git.Commit;
 using Repository = DevRating.Domain.Git.Repository;
@@ -32,8 +29,7 @@ namespace DevRating.LibGit2SharpClient
                     IncludeReachableFrom = until
                 }))
             {
-                yield return new DefaultCommit(c.Sha, _repository.Mailmap.ResolveSignature(c.Author).Email,
-                    _repository);
+                yield return new DefaultCommit(c, _repository);
             }
         }
 
