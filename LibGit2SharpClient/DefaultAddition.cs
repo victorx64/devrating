@@ -1,6 +1,6 @@
 using DevRating.Domain.Git;
 
-namespace DevRating.LibGit2Sharp
+namespace DevRating.LibGit2SharpClient
 {
     internal sealed class DefaultAddition : Addition
     {

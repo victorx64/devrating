@@ -1,17 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using DevRating.Domain.Git;
 using LibGit2Sharp;
 using Commit = DevRating.Domain.Git.Commit;
 using Repository = DevRating.Domain.Git.Repository;
 
-namespace DevRating.LibGit2Sharp
+namespace DevRating.LibGit2SharpClient
 {
     public sealed class LibGit2Repository : Repository, IDisposable
     {
         private readonly IRepository _repository;
         private readonly string _id;
+
+        public LibGit2Repository(string path) : this (path, Path.GetDirectoryName(path))
+        {
+        }
 
         public LibGit2Repository(string path, string id) : this(new global::LibGit2Sharp.Repository(path), id)
         {

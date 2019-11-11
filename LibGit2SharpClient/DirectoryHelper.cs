@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-namespace DevRating.LibGit2Sharp
+namespace DevRating.LibGit2SharpClient
 {
     /// <summary>
     /// Copied from https://github.com/libgit2/libgit2sharp/blob/master/LibGit2Sharp.Tests/TestHelpers/DirectoryHelper.cs
