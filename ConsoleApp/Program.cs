@@ -17,7 +17,7 @@ namespace DevRating.ConsoleApp
 
             foreach (var commit in repository.Commits(args[1], args[2]))
             {
-                await repository.WriteInto(modifications, commit);
+                await commit.WriteInto(modifications);
             }
 
             var text = modifications.PutTo(new SqlModificationsStorage(args[3], new EloFormula()));

@@ -92,7 +92,7 @@ namespace DevRating.SqlClient
                         rating.Value(),
                         reward));
 
-                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), rating.Id(), author);
+                    rewards.NewReward(reward, commit.Sha(), commit.RepositoryFirstUrl(), addition.Count(), rating.Id(), author);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace DevRating.SqlClient
                             _formula.DefaultRating(),
                             reward));
 
-                    rewards.NewReward(reward, commit.Sha(), commit.Repository(), addition.Count(), author);
+                    rewards.NewReward(reward, commit.Sha(), commit.RepositoryFirstUrl(), addition.Count(), author);
                 }
             }
 
@@ -131,7 +131,7 @@ namespace DevRating.SqlClient
                         winner,
                         loser,
                         deletion.Commit().Sha(),
-                        deletion.Commit().Repository(),
+                        deletion.Commit().RepositoryFirstUrl(),
                         deletion.Count())
                     .Id();
 
