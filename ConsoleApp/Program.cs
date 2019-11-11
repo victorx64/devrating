@@ -7,11 +7,22 @@ using DevRating.SqlClient;
 
 namespace DevRating.ConsoleApp
 {
-    class Program
+    internal static class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
+            var modifications = new DefaultModificationsCollection();
 
+            var repository = new LibGit2Repository(args[0]);
+
+            foreach (var commit in repository.Commits(args[1], args[2]))
+            {
+                await repository.WriteInto(modifications, commit);
+            }
+
+            var text = modifications.PutTo(new SqlModificationsStorage(args[3], new EloFormula()));
+
+            Console.WriteLine(text);
         }
     }
 }

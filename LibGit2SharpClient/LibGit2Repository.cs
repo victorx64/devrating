@@ -14,7 +14,7 @@ namespace DevRating.LibGit2SharpClient
         private readonly IRepository _repository;
         private readonly string _id;
 
-        public LibGit2Repository(string path) : this (path, Path.GetDirectoryName(path))
+        public LibGit2Repository(string path) : this(path, Path.GetDirectoryName(path)!)
         {
         }
 
@@ -28,11 +28,24 @@ namespace DevRating.LibGit2SharpClient
             _id = id;
         }
 
-        public async Task WriteInto(ModificationsCollection modifications, string sha)
+        public async Task WriteInto(ModificationsCollection modifications, string commit)
         {
-            var commit = _repository.Lookup<global::LibGit2Sharp.Commit>(sha);
+            await Task.WhenAll(WriteCommitTasks(modifications,
+                _repository.Lookup<global::LibGit2Sharp.Commit>(commit)));
+        }
 
-            await Task.WhenAll(WriteCommitTasks(modifications, commit));
+        public IEnumerable<string> Commits(string since, string until)
+        {
+            foreach (var c in _repository.Commits.QueryBy(
+                new CommitFilter
+                {
+                    SortBy = CommitSortStrategies.Topological,
+                    ExcludeReachableFrom = since,
+                    IncludeReachableFrom = until
+                }))
+            {
+                yield return c.Sha;
+            }
         }
 
         private IEnumerable<Task> WriteCommitTasks(ModificationsCollection modifications,
