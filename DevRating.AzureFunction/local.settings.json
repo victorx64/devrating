@@ -1,7 +1,0 @@
-{
-    "IsEncrypted": false,
-    "Values": {
-        "AzureWebJobsStorage": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DevRating;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False",
-        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
-    }
-}
