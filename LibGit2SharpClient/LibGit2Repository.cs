@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DevRating.Domain.Git;
 using LibGit2Sharp;
@@ -12,20 +12,14 @@ namespace DevRating.LibGit2SharpClient
     public sealed class LibGit2Repository : Repository, IDisposable
     {
         private readonly IRepository _repository;
-        private readonly string _id;
 
-        public LibGit2Repository(string path) : this(path, Path.GetDirectoryName(path)!)
+        public LibGit2Repository(string path) : this(new global::LibGit2Sharp.Repository(path))
         {
         }
 
-        public LibGit2Repository(string path, string id) : this(new global::LibGit2Sharp.Repository(path), id)
-        {
-        }
-
-        public LibGit2Repository(IRepository repository, string id)
+        public LibGit2Repository(IRepository repository)
         {
             _repository = repository;
-            _id = id;
         }
 
         public async Task WriteInto(ModificationsCollection modifications, string commit)
@@ -98,7 +92,9 @@ namespace DevRating.LibGit2SharpClient
         {
             var author = _repository.Mailmap.ResolveSignature(commit.Author).Email;
 
-            var current = new DefaultCommit(commit.Sha, author, _id);
+            var url = _repository.Network.Remotes.First().Url;
+
+            var current = new DefaultCommit(commit.Sha, author, url);
 
             foreach (var line in patch.Split('\n'))
             {
@@ -128,6 +124,8 @@ namespace DevRating.LibGit2SharpClient
 
             var count = parts.Length == 1 ? 1 : Convert.ToUInt32(parts[1]);
 
+            var url = _repository.Network.Remotes.First().Url;
+
             uint d;
 
             for (var i = index; i < index + count; i += d)
@@ -140,7 +138,7 @@ namespace DevRating.LibGit2SharpClient
                 var previous = new DefaultCommit(
                     blame.FinalCommit.Sha,
                     author,
-                    _id);
+                    url);
 
                 modifications.AddDeletion(new DefaultDeletion(current, previous, d));
             }
