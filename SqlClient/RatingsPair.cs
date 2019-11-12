@@ -1,17 +1,19 @@
 using DevRating.Domain.RatingSystem;
 using DevRating.SqlClient.Collections;
+using DevRating.SqlClient.Entities;
 
 namespace DevRating.SqlClient
 {
     internal sealed class RatingsPair
     {
-        private readonly int _winner;
-        private readonly int _loser;
+        private readonly IdentifiableAuthor _winner;
+        private readonly IdentifiableAuthor _loser;
         private readonly RatingsCollection _ratings;
         private readonly Formula _formula;
         private readonly uint _count;
 
-        public RatingsPair(int winner, int loser, RatingsCollection ratings, Formula formula, uint count)
+        public RatingsPair(IdentifiableAuthor winner, IdentifiableAuthor loser, RatingsCollection ratings,
+            Formula formula, uint count)
         {
             _winner = winner;
             _loser = loser;
@@ -40,9 +42,9 @@ namespace DevRating.SqlClient
             return _formula.LoserNewRating(Rating(_winner), Rating(_loser), _count);
         }
 
-        private double Rating(int author)
+        private double Rating(IdentifiableAuthor author)
         {
-            return _ratings.HasRating(author)
+            return _ratings.HasRatingOf(author)
                 ? _ratings.LastRatingOf(author).Value()
                 : _formula.DefaultRating();
         }

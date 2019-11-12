@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Entities
 {
-    internal sealed class SqlRating : Rating, IdentifiableObject
+    internal sealed class SqlRating : IdentifiableRating
     {
         private readonly IDbConnection _connection;
         private readonly int _id;

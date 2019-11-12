@@ -4,6 +4,9 @@ namespace DevRating.Domain.Git
 {
     public interface ModificationsStorage
     {
-        string Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions); // TODO Return entities instead
+        void InsertAdditions(IEnumerable<Addition> additions);
+        void InsertDeletions(IEnumerable<Deletion> deletions);
+        IEnumerable<Reward> RewardsOf(Commit commit);
+        IEnumerable<Rating> RatingsOf(Commit commit);
     }
 }

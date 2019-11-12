@@ -14,7 +14,7 @@ namespace DevRating.SqlClient.Collections
             _connection = connection;
         }
 
-        public SqlAuthor NewAuthor(string email)
+        public IdentifiableAuthor Insert(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -43,7 +43,7 @@ namespace DevRating.SqlClient.Collections
             return reader.Read();
         }
 
-        public SqlAuthor Author(string email)
+        public IdentifiableAuthor Author(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -58,7 +58,7 @@ namespace DevRating.SqlClient.Collections
             return new SqlAuthor(_connection, (int) reader["Id"]);
         }
 
-        public IEnumerable<SqlAuthor> TopAuthors()
+        public IEnumerable<IdentifiableAuthor> TopAuthors()
         {
             using var command = _connection.CreateCommand();
 
@@ -71,12 +71,12 @@ namespace DevRating.SqlClient.Collections
                     [dbo].[Rating].[Rating]
                 FROM [dbo].[Author]
                 INNER JOIN [dbo].[Reward] ON [dbo].[Reward].[Id] = [dbo].[Author].[LastRewardId]
-                INNER JOIN [dbo].[Rating] ON [dbo].[Rating].[Id] = [dbo].[Reward].[RatingId]
+                LEFT JOIN [dbo].[Rating] ON [dbo].[Rating].[Id] = [dbo].[Reward].[RatingId]
                 ORDER BY [dbo].[Rating].[Rating] DESC";
 
             using var reader = command.ExecuteReader();
 
-            var authors = new List<SqlAuthor>();
+            var authors = new List<IdentifiableAuthor>();
 
             while (reader.Read())
             {
@@ -84,15 +84,13 @@ namespace DevRating.SqlClient.Collections
                     new SqlAuthor(
                         new FakeConnection(
                             new FakeCommand(
-                                new FakeDataReader(
-                                    new Dictionary<string, object>
-                                    {
-                                        {"Email", reader["Email"]},
-                                        {"LastRewardId", reader["LastRewardId"]},
-                                        {"RatingId", reader["RatingId"]},
-                                        {"Rating", reader["Rating"]}
-                                    }
-                                )
+                                new Dictionary<string, object>
+                                {
+                                    {"Email", reader["Email"]},
+                                    {"LastRewardId", reader["LastRewardId"]},
+                                    {"RatingId", reader["RatingId"]},
+                                    {"Rating", reader["Rating"]}
+                                }
                             )
                         ),
                         (int) reader["Id"]));

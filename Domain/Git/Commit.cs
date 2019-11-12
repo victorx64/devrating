@@ -6,7 +6,7 @@ namespace DevRating.Domain.Git
     {
         string Sha();
         string RepositoryFirstUrl();
-        string Author();
+        string AuthorEmail();
         Task WriteInto(ModificationsCollection modifications);
     }
 }

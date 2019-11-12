@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
@@ -13,7 +14,7 @@ namespace DevRating.SqlClient.Collections
             _connection = connection;
         }
 
-        public SqlRating NewRating(int author, double value, int match)
+        public IdentifiableRating Insert(IdentifiableAuthor author, double value, IdentifiableObject match)
         {
             using var command = _connection.CreateCommand();
 
@@ -31,8 +32,8 @@ namespace DevRating.SqlClient.Collections
                        ,@AuthorId)";
 
             command.Parameters.Add(new SqlParameter("@Rating", SqlDbType.Real) {Value = value});
-            command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match});
-            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
+            command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match.Id()});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
             var id = (int) command.ExecuteScalar();
 
@@ -41,7 +42,8 @@ namespace DevRating.SqlClient.Collections
             return new SqlRating(_connection, id);
         }
 
-        public SqlRating NewRating(int author, double value, int last, int match)
+        public IdentifiableRating Insert(IdentifiableAuthor author, double value, IdentifiableRating last,
+            IdentifiableObject match)
         {
             using var command = _connection.CreateCommand();
 
@@ -59,9 +61,9 @@ namespace DevRating.SqlClient.Collections
                        ,@AuthorId)";
 
             command.Parameters.Add(new SqlParameter("@Rating", SqlDbType.Real) {Value = value});
-            command.Parameters.Add(new SqlParameter("@LastRatingId", SqlDbType.Int) {Value = last});
-            command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match});
-            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
+            command.Parameters.Add(new SqlParameter("@LastRatingId", SqlDbType.Int) {Value = last.Id()});
+            command.Parameters.Add(new SqlParameter("@MatchId", SqlDbType.Int) {Value = match.Id()});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
             var id = (int) command.ExecuteScalar();
 
@@ -70,7 +72,7 @@ namespace DevRating.SqlClient.Collections
             return new SqlRating(_connection, id);
         }
 
-        private void UpdateAuthorLastRatingId(int author, int rating)
+        private void UpdateAuthorLastRatingId(IdentifiableAuthor author, int rating)
         {
             using var command = _connection.CreateCommand();
 
@@ -79,34 +81,76 @@ namespace DevRating.SqlClient.Collections
                 SET [LastRatingId] = @RatingId
                 WHERE [dbo].[Author].[Id] = @AuthorId";
 
-            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
             command.Parameters.Add(new SqlParameter("@RatingId", SqlDbType.Int) {Value = rating});
 
             command.ExecuteNonQuery();
         }
 
-        public bool HasRating(int author)
+        public bool HasRatingOf(IdentifiableAuthor author)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText =
                 "SELECT TOP (1) [Id] FROM [dbo].[Rating] WHERE [AuthorId] = @AuthorId ORDER BY [Id] DESC";
 
-            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
             using var reader = command.ExecuteReader();
 
             return reader.Read();
         }
 
-        public SqlRating LastRatingOf(int author)
+        public IEnumerable<IdentifiableRating> RatingsOf(string commit, string repository)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT [dbo].[Rating].[Id],
+                    [dbo].[Rating].[Rating],
+                    [dbo].[Rating].[AuthorId],
+                    [dbo].[Author].[Email]
+                FROM [dbo].[Rating]
+                INNER JOIN [dbo].[Author] ON [dbo].[Author].[Id] = [dbo].[Rating].[AuthorId]
+                INNER JOIN [dbo].[Match] ON [dbo].[Match].[Id] = [dbo].[Rating].[MatchId]
+                WHERE [dbo].[Match].[Commit] = @Commit 
+                AND [dbo].[Match].[Repository] = @Repository";
+
+            command.Parameters.Add(new SqlParameter("@Commit", SqlDbType.NVarChar, 50) {Value = commit});
+            command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
+
+            using var reader = command.ExecuteReader();
+
+            var ratings = new List<IdentifiableRating>();
+
+            while (reader.Read())
+            {
+                ratings.Add(
+                    new SqlRating(
+                        new FakeConnection(
+                            new FakeCommand(
+                                new Dictionary<string, object>
+                                {
+                                    {"Rating", reader["Rating"]},
+                                    {"AuthorId", reader["AuthorId"]},
+                                    {"Email", reader["Email"]},
+                                }
+                            )
+                        ),
+                        (int) reader["Id"]));
+            }
+
+            return ratings;
+        }
+
+        public IdentifiableRating LastRatingOf(IdentifiableAuthor author)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText =
                 "SELECT TOP (1) [Id] FROM [dbo].[Rating] WHERE [AuthorId] = @AuthorId ORDER BY [Id] DESC";
 
-            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
             using var reader = command.ExecuteReader();
 

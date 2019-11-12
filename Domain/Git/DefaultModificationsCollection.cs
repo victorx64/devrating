@@ -29,16 +29,21 @@ namespace DevRating.Domain.Git
             _deletions.Add(deletion);
         }
 
-        public string PutTo(ModificationsStorage storage)
+        public void InsertAdditionsTo(ModificationsStorage storage)
         {
-            return storage.Insert(NonDeletedAdditions(_additions, _deletions), NonSelfDeletions(_deletions));
+            storage.InsertAdditions(NonDeletedAdditions(_additions, _deletions));
+        }
+
+        public void InsertDeletionsTo(ModificationsStorage storage)
+        {
+            storage.InsertDeletions(NonSelfDeletions(_deletions));
         }
 
         private IEnumerable<Deletion> NonSelfDeletions(IList<Deletion> deletions)
         {
             foreach (var deletion in deletions)
             {
-                if (!deletion.Commit().Author().Equals(deletion.PreviousCommit().Author()))
+                if (!deletion.Commit().AuthorEmail().Equals(deletion.PreviousCommit().AuthorEmail()))
                 {
                     yield return deletion;
                 }
@@ -60,7 +65,7 @@ namespace DevRating.Domain.Git
             foreach (var deletion in deletions)
             {
                 if (deletion.PreviousCommit().Equals(commit) &&
-                    deletion.PreviousCommit().Author().Equals(deletion.Commit().Author()))
+                    deletion.PreviousCommit().AuthorEmail().Equals(deletion.Commit().AuthorEmail()))
                 {
                     return deletion.Count();
                 }

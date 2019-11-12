@@ -2,7 +2,7 @@ using System.Data;
 
 namespace DevRating.SqlClient
 {
-    internal sealed class TransactedDbConnection : IDbConnection
+    public sealed class TransactedDbConnection : IDbConnection
     {
         private readonly IDbConnection _origin;
         private IDbTransaction? _transaction;

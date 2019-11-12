@@ -1,10 +1,21 @@
+using System.Collections.Generic;
+using DevRating.SqlClient.Entities;
+
 namespace DevRating.SqlClient.Collections
 {
     internal interface RatingsCollection
     {
-        Entities.SqlRating NewRating(int author, double value, int match);
-        Entities.SqlRating NewRating(int author, double value, int last, int match);
-        Entities.SqlRating LastRatingOf(int author);
-        bool HasRating(int author);
+        IdentifiableRating Insert(IdentifiableAuthor author,
+            double value,
+            IdentifiableObject match);
+
+        IdentifiableRating Insert(IdentifiableAuthor author,
+            double value,
+            IdentifiableRating last,
+            IdentifiableObject match);
+
+        IdentifiableRating LastRatingOf(IdentifiableAuthor author);
+        bool HasRatingOf(IdentifiableAuthor author);
+        IEnumerable<IdentifiableRating> RatingsOf(string commit, string repository);
     }
 }

@@ -5,6 +5,7 @@ namespace DevRating.Domain.Git
         void Clear();
         void AddAddition(Addition addition);
         void AddDeletion(Deletion deletion);
-        string PutTo(ModificationsStorage storage);
+        void InsertAdditionsTo(ModificationsStorage storage);
+        void InsertDeletionsTo(ModificationsStorage storage);
     }
 }

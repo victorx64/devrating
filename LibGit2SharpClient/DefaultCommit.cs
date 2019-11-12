@@ -29,17 +29,17 @@ namespace DevRating.LibGit2SharpClient
             return _repository.Network.Remotes.First().Url;
         }
 
-        public string Author()
+        public string AuthorEmail()
         {
             return _repository.Mailmap.ResolveSignature(_commit.Author).Email;
         }
 
         public async Task WriteInto(ModificationsCollection modifications)
         {
-            await Task.WhenAll(WriteCommitTasks(modifications));
+            await Task.WhenAll(WritingTasks(modifications));
         }
 
-        private IEnumerable<Task> WriteCommitTasks(ModificationsCollection modifications)
+        private IEnumerable<Task> WritingTasks(ModificationsCollection modifications)
         {
             foreach (var parent in _commit.Parents)
             {
@@ -89,7 +89,7 @@ namespace DevRating.LibGit2SharpClient
                     var parts = line.Split(' ');
 
                     WriteDeletionInto(modifications, parts[1], blames);
-                    WriteAdditionInto(modifications, parts[2]);
+                    modifications.AddAddition(new DefaultAddition(this, AdditionsCount(parts[2])));
                 }
             }
         }
@@ -117,11 +117,6 @@ namespace DevRating.LibGit2SharpClient
             }
         }
 
-        private void WriteAdditionInto(ModificationsCollection modifications, string hunk)
-        {
-            modifications.AddAddition(new DefaultAddition(this, AdditionsCount(hunk)));
-        }
-
         private uint AdditionsCount(string hunk)
         {
             var parts = hunk
@@ -143,7 +138,7 @@ namespace DevRating.LibGit2SharpClient
             return ReferenceEquals(this, obj) || obj is DefaultCommit other && Equals(other);
         }
 
-        private bool Equals(DefaultCommit other)
+        private bool Equals(Commit other)
         {
             return string.Equals(Sha(), other.Sha(), StringComparison.OrdinalIgnoreCase) &&
                    string.Equals(RepositoryFirstUrl(), other.RepositoryFirstUrl(), StringComparison.OrdinalIgnoreCase);

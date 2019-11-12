@@ -7,12 +7,47 @@ namespace DevRating.SqlClient
     internal sealed class FakeDataReader : IDataReader
     {
         private readonly IDictionary<string, object> _columns;
+        private readonly string _command;
 
-        public FakeDataReader(IDictionary<string, object> columns)
+        public FakeDataReader(IDictionary<string, object> columns, string command)
         {
             _columns = columns;
+            _command = command;
         }
-        
+
+        public object this[string name]
+        {
+            get { return _columns[name]; }
+        }
+
+        public bool Read()
+        {
+            var select = "SELECT";
+            var from = "FROM";
+
+            var start = _command.IndexOf(select, StringComparison.OrdinalIgnoreCase) + select.Length;
+            var end = _command.IndexOf(from, StringComparison.OrdinalIgnoreCase);
+
+            var columns = _command.Substring(start, end - start);
+
+            foreach (var key in _columns.Keys)
+            {
+                if (columns.Contains(key, StringComparison.OrdinalIgnoreCase))
+                {
+                    return !(_columns[key] is DBNull);
+                }
+            }
+
+            return false;
+        }
+
+        #region Not implemented members
+
+        public int Depth { get; }
+        public int FieldCount { get; }
+        public bool IsClosed { get; }
+        public int RecordsAffected { get; }
+
         public bool GetBoolean(int i)
         {
             throw new NotImplementedException();
@@ -123,14 +158,7 @@ namespace DevRating.SqlClient
             throw new NotImplementedException();
         }
 
-        public int FieldCount { get; }
-
         public object this[int i] => throw new NotImplementedException();
-
-        public object this[string name]
-        {
-            get { return _columns[name]; }
-        }
 
         public void Dispose()
         {
@@ -150,13 +178,6 @@ namespace DevRating.SqlClient
             throw new NotImplementedException();
         }
 
-        public bool Read()
-        {
-            return true;
-        }
-
-        public int Depth { get; }
-        public bool IsClosed { get; }
-        public int RecordsAffected { get; }
+        #endregion
     }
 }

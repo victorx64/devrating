@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient.Entities
 {
-    internal sealed class SqlReward : Reward, IdentifiableObject
+    internal sealed class SqlReward : IdentifiableReward
     {
         private readonly IDbConnection _connection;
         private readonly int _id;
@@ -18,6 +18,19 @@ namespace DevRating.SqlClient.Entities
         public int Id()
         {
             return _id;
+        }
+
+        public bool HasRating()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT [RatingId] FROM [dbo].[Reward] WHERE [Id] = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
 
         public Rating Rating()
@@ -62,7 +75,7 @@ namespace DevRating.SqlClient.Entities
 
             reader.Read();
 
-            return (double) reader["Reward"];
+            return (float) reader["Reward"];
         }
     }
 }

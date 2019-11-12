@@ -1,188 +1,131 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
-using System.Text;
+using DevRating.Domain;
 using DevRating.Domain.Git;
 using DevRating.Domain.RatingSystem;
 using DevRating.SqlClient.Collections;
-using Microsoft.Data.SqlClient;
+using DevRating.SqlClient.Entities;
 
 namespace DevRating.SqlClient
 {
     public sealed class SqlModificationsStorage : ModificationsStorage
     {
-        private readonly IDbConnection _connection;
         private readonly Formula _formula;
-
-        public SqlModificationsStorage(string connection, Formula formula)
-            : this(new SqlConnection(connection), formula)
-        {
-        }
+        private readonly AuthorsCollection _authors;
+        private readonly RewardsCollection _rewards;
+        private readonly MatchesCollection _matches;
+        private readonly RatingsCollection _ratings;
 
         public SqlModificationsStorage(IDbConnection connection, Formula formula)
-            : this(new TransactedDbConnection(connection), formula)
+            : this(
+                new SqlAuthorsCollection(connection),
+                new SqlRewardsCollection(connection),
+                new SqlMatchesCollection(connection),
+                new SqlRatingsCollection(connection),
+                formula)
         {
         }
 
-        internal SqlModificationsStorage(TransactedDbConnection connection, Formula formula)
-        {
-            _connection = connection;
-            _formula = formula;
-        }
-
-        public string Insert(IEnumerable<Addition> additions, IEnumerable<Deletion> deletions)
-        {
-            var builder = new StringBuilder();
-
-            _connection.Open();
-
-            var transaction = _connection.BeginTransaction();
-
-            try
-            {
-                var authors = new SqlAuthorsCollection(_connection);
-                var rewards = new SqlRewardsCollection(_connection);
-                var matches = new SqlMatchesCollection(_connection);
-                var ratings = new SqlRatingsCollection(_connection);
-
-                builder.AppendLine(InsertRewards(additions, authors, rewards, ratings));
-                builder.AppendLine(InsertRatings(deletions, authors, matches, ratings));
-
-                transaction.Commit();
-
-                return builder.ToString();
-            }
-            catch
-            {
-                transaction.Rollback();
-
-                throw;
-            }
-            finally
-            {
-                _connection.Close();
-            }
-        }
-
-        private string InsertRewards(IEnumerable<Addition> additions,
+        internal SqlModificationsStorage(
             AuthorsCollection authors,
             RewardsCollection rewards,
-            RatingsCollection ratings)
+            MatchesCollection matches,
+            RatingsCollection ratings,
+            Formula formula)
         {
-            var builder = new StringBuilder("Rewards (additions)" + Environment.NewLine);
+            _formula = formula;
+            _authors = authors;
+            _rewards = rewards;
+            _matches = matches;
+            _ratings = ratings;
+        }
 
+        public void InsertAdditions(IEnumerable<Addition> additions)
+        {
             foreach (var addition in additions)
             {
-                var author = AuthorId(authors, addition.Commit().Author());
+                var author = Author(addition.Commit().AuthorEmail());
 
                 var commit = addition.Commit();
 
-                if (ratings.HasRating(author))
+                if (_ratings.HasRatingOf(author))
                 {
-                    var rating = ratings.LastRatingOf(author);
+                    var rating = _ratings.LastRatingOf(author);
 
-                    var reward = _formula.Reward(rating.Value(), addition.Count());
-
-                    builder.AppendLine(string.Format(CultureInfo.InvariantCulture,
-                        "In {0} {1} added {2} lines. DR {3:F2}. Reward {4:F4}",
-                        addition.Commit().Sha(),
-                        addition.Commit().Author(),
+                    _rewards.Insert(
+                        _formula.Reward(
+                            rating.Value(),
+                            addition.Count()),
+                        commit.Sha(),
+                        commit.RepositoryFirstUrl(),
                         addition.Count(),
-                        rating.Value(),
-                        reward));
-
-                    rewards.NewReward(reward, commit.Sha(), commit.RepositoryFirstUrl(), addition.Count(), rating.Id(), author);
+                        rating,
+                        author);
                 }
                 else
                 {
-                    var reward = _formula.Reward(_formula.DefaultRating(), addition.Count());
-
-                    builder.AppendLine(
-                        string.Format(CultureInfo.InvariantCulture,
-                            "In {0} {1} added {2} lines. DR {3:F2}. Reward {4:F2}",
-                            addition.Commit().Sha(),
-                            addition.Commit().Author(),
-                            addition.Count(),
+                    _rewards.Insert(
+                        _formula.Reward(
                             _formula.DefaultRating(),
-                            reward));
-
-                    rewards.NewReward(reward, commit.Sha(), commit.RepositoryFirstUrl(), addition.Count(), author);
+                            addition.Count()),
+                        commit.Sha(),
+                        commit.RepositoryFirstUrl(),
+                        addition.Count(),
+                        author);
                 }
             }
-
-            return builder.ToString();
         }
 
-        private string InsertRatings(IEnumerable<Deletion> deletions,
-            AuthorsCollection authors,
-            MatchesCollection matches,
-            RatingsCollection ratings)
+        public void InsertDeletions(IEnumerable<Deletion> deletions)
         {
-            var builder = new StringBuilder("Ratings (deletions)" + Environment.NewLine);
-
             foreach (var deletion in deletions)
             {
-                var winner = AuthorId(authors, deletion.Commit().Author());
-                var loser = AuthorId(authors, deletion.PreviousCommit().Author());
+                var winner = Author(deletion.Commit().AuthorEmail());
+                var loser = Author(deletion.PreviousCommit().AuthorEmail());
 
-                var match = matches
-                    .NewMatch(
+                var match = _matches
+                    .Insert(
                         winner,
                         loser,
                         deletion.Commit().Sha(),
                         deletion.Commit().RepositoryFirstUrl(),
-                        deletion.Count())
-                    .Id();
+                        deletion.Count());
 
-                var pair = new RatingsPair(winner, loser, ratings, _formula, deletion.Count());
+                var pair = new RatingsPair(winner, loser, _ratings, _formula, deletion.Count());
 
-                builder.AppendLine(
-                    string.Format(CultureInfo.InvariantCulture,
-                        "In {0} deleted {1} lines from {2}",
-                        deletion.Commit().Sha(),
-                        deletion.Count(),
-                        deletion.PreviousCommit().Sha()));
-
-                builder.AppendLine(
-                    string.Format(CultureInfo.InvariantCulture,
-                        "{0} Old DR {1:F2}. New DR {2:F2}",
-                        deletion.Commit().Author(),
-                        pair.WinnerRating(),
-                        pair.WinnerNewRating()));
-
-                builder.AppendLine(
-                    string.Format(CultureInfo.InvariantCulture,
-                        "{0} Old DR {1:F2}. New DR {2:F2}",
-                        deletion.PreviousCommit().Author(),
-                        pair.LoserRating(),
-                        pair.LoserNewRating()));
-
-                builder.AppendLine();
-
-                InsertNewRating(ratings, winner, pair.WinnerNewRating(), match);
-                InsertNewRating(ratings, loser, pair.LoserNewRating(), match);
+                InsertRating(winner, pair.WinnerNewRating(), match);
+                InsertRating(loser, pair.LoserNewRating(), match);
             }
-
-            return builder.ToString();
         }
 
-        private int AuthorId(AuthorsCollection authors, string email)
+        public IEnumerable<Reward> RewardsOf(Commit commit)
         {
-            return (authors.Exist(email) ? authors.Author(email) : authors.NewAuthor(email)).Id();
+            return _rewards.RewardsOf(commit.Sha(), commit.RepositoryFirstUrl());
         }
 
-        private void InsertNewRating(RatingsCollection ratings, int author, double rating, int match)
+        public IEnumerable<Rating> RatingsOf(Commit commit)
         {
-            if (ratings.HasRating(author))
+            return _ratings.RatingsOf(commit.Sha(), commit.RepositoryFirstUrl());
+        }
+
+        private IdentifiableAuthor Author(string email)
+        {
+            return _authors.Exist(email)
+                ? _authors.Author(email)
+                : _authors.Insert(email);
+        }
+
+        private void InsertRating(IdentifiableAuthor author, double rating, IdentifiableObject match)
+        {
+            if (_ratings.HasRatingOf(author))
             {
-                var last = ratings.LastRatingOf(author).Id();
+                var last = _ratings.LastRatingOf(author);
 
-                ratings.NewRating(author, rating, last, match);
+                _ratings.Insert(author, rating, last, match);
             }
             else
             {
-                ratings.NewRating(author, rating, match);
+                _ratings.Insert(author, rating, match);
             }
         }
     }

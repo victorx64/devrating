@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
 
@@ -5,13 +6,13 @@ namespace DevRating.SqlClient
 {
     internal sealed class FakeCommand : IDbCommand
     {
-        private readonly FakeDataReader _reader;
+        private readonly IDictionary<string, object> _columns;
 
-        public FakeCommand(FakeDataReader reader)
+        public FakeCommand(IDictionary<string, object> columns)
         {
-            _reader = reader;
+            _columns = columns;
         }
-        
+
         public void Dispose()
         {
         }
@@ -32,7 +33,7 @@ namespace DevRating.SqlClient
 
         public IDataReader ExecuteReader()
         {
-            return _reader;
+            return new FakeDataReader(_columns, CommandText);
         }
 
         public IDataReader ExecuteReader(CommandBehavior behavior)

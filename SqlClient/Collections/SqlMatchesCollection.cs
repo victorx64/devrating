@@ -14,9 +14,10 @@ namespace DevRating.SqlClient.Collections
             _connection = connection;
         }
 
-        public SqlMatch NewMatch(int first, int second, string commit, string repository, uint count)
+        public IdentifiableObject Insert(IdentifiableAuthor first, IdentifiableAuthor second, string commit,
+            string repository, uint count)
         {
-            if (first.Equals(second))
+            if (first.Id().Equals(second.Id()))
             {
                 throw new Exception($"Params {nameof(first)} and {nameof(second)} must not be the same.");
             }
@@ -37,13 +38,13 @@ namespace DevRating.SqlClient.Collections
                        ,@Repository
                        ,@Count)";
 
-            command.Parameters.Add(new SqlParameter("@FirstAuthorId", SqlDbType.Int) {Value = first});
-            command.Parameters.Add(new SqlParameter("@SecondAuthorId", SqlDbType.Int) {Value = second});
+            command.Parameters.Add(new SqlParameter("@FirstAuthorId", SqlDbType.Int) {Value = first.Id()});
+            command.Parameters.Add(new SqlParameter("@SecondAuthorId", SqlDbType.Int) {Value = second.Id()});
             command.Parameters.Add(new SqlParameter("@Commit", SqlDbType.NVarChar, 50) {Value = commit});
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@Count", SqlDbType.Int) {Value = count});
 
-            return new SqlMatch(_connection, (int) command.ExecuteScalar());
+            return new SqlMatch((int) command.ExecuteScalar());
         }
     }
 }
