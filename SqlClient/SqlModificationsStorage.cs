@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
-using DevRating.Domain.Git;
-using DevRating.Domain.RatingSystem;
 using DevRating.SqlClient.Collections;
 using DevRating.SqlClient.Entities;
 
@@ -38,6 +36,16 @@ namespace DevRating.SqlClient
             _rewards = rewards;
             _matches = matches;
             _ratings = ratings;
+        }
+
+        public IEnumerable<Reward> RewardsOf(Commit commit)
+        {
+            return _rewards.RewardsOf(commit.Sha(), commit.RepositoryFirstUrl());
+        }
+
+        public IEnumerable<Rating> RatingsOf(Commit commit)
+        {
+            return _ratings.RatingsOf(commit.Sha(), commit.RepositoryFirstUrl());
         }
 
         public void InsertAdditions(IEnumerable<Addition> additions)
@@ -84,28 +92,31 @@ namespace DevRating.SqlClient
                 var loser = Author(deletion.PreviousCommit().AuthorEmail());
 
                 var match = _matches
-                    .Insert(
-                        winner,
+                    .Insert(winner,
                         loser,
                         deletion.Commit().Sha(),
                         deletion.Commit().RepositoryFirstUrl(),
                         deletion.Count());
 
-                var pair = new RatingsPair(winner, loser, _ratings, _formula, deletion.Count());
+                InsertRating(winner,
+                    _formula.WinnerNewRating(RatingOf(winner),
+                        RatingOf(loser),
+                        deletion.Count()),
+                    match);
 
-                InsertRating(winner, pair.WinnerNewRating(), match);
-                InsertRating(loser, pair.LoserNewRating(), match);
+                InsertRating(loser,
+                    _formula.LoserNewRating(RatingOf(winner),
+                        RatingOf(loser),
+                        deletion.Count()),
+                    match);
             }
         }
 
-        public IEnumerable<Reward> RewardsOf(Commit commit)
+        private double RatingOf(IdentifiableAuthor author)
         {
-            return _rewards.RewardsOf(commit.Sha(), commit.RepositoryFirstUrl());
-        }
-
-        public IEnumerable<Rating> RatingsOf(Commit commit)
-        {
-            return _ratings.RatingsOf(commit.Sha(), commit.RepositoryFirstUrl());
+            return _ratings.HasRatingOf(author)
+                ? _ratings.LastRatingOf(author).Value()
+                : _formula.DefaultRating();
         }
 
         private IdentifiableAuthor Author(string email)
@@ -119,9 +130,7 @@ namespace DevRating.SqlClient
         {
             if (_ratings.HasRatingOf(author))
             {
-                var last = _ratings.LastRatingOf(author);
-
-                _ratings.Insert(author, rating, last, match);
+                _ratings.Insert(author, rating, _ratings.LastRatingOf(author), match);
             }
             else
             {

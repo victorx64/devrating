@@ -1,12 +1,13 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DevRating.Domain.Git
+namespace DevRating.Domain
 {
     public interface Commit
     {
         string Sha();
         string RepositoryFirstUrl();
         string AuthorEmail();
-        Task WriteInto(ModificationsCollection modifications);
+        Task WriteInto(IList<Addition> additions, IList<Deletion> deletions);
     }
 }

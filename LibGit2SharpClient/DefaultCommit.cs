@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DevRating.Domain.Git;
+using DevRating.Domain;
 using LibGit2Sharp;
-using Commit = DevRating.Domain.Git.Commit;
+using Commit = DevRating.Domain.Commit;
 
 namespace DevRating.LibGit2SharpClient
 {
@@ -34,23 +34,23 @@ namespace DevRating.LibGit2SharpClient
             return _repository.Mailmap.ResolveSignature(_commit.Author).Email;
         }
 
-        public async Task WriteInto(ModificationsCollection modifications)
+        public async Task WriteInto(IList<Addition> additions, IList<Deletion> deletions)
         {
-            await Task.WhenAll(WritingTasks(modifications));
+            await Task.WhenAll(WritingTasks(additions, deletions));
         }
 
-        private IEnumerable<Task> WritingTasks(ModificationsCollection modifications)
+        private IEnumerable<Task> WritingTasks(IList<Addition> additions, IList<Deletion> deletions)
         {
             foreach (var parent in _commit.Parents)
             {
-                foreach (var task in WriteDifferencesTasks(modifications, parent))
+                foreach (var task in WriteDifferencesTasks(additions, deletions, parent))
                 {
                     yield return task;
                 }
             }
         }
 
-        private IEnumerable<Task> WriteDifferencesTasks(ModificationsCollection modifications,
+        private IEnumerable<Task> WriteDifferencesTasks(IList<Addition> additions, IList<Deletion> deletions,
             global::LibGit2Sharp.Commit parent)
         {
             var differences = _repository.Diff.Compare<Patch>(
@@ -72,13 +72,14 @@ namespace DevRating.LibGit2SharpClient
                     {
                         var blames = _repository.Blame(difference.OldPath, options);
 
-                        WritePatchInto(modifications, difference.Patch, blames);
+                        WritePatchInto(additions, deletions, difference.Patch, blames);
                     });
                 }
             }
         }
 
-        private void WritePatchInto(ModificationsCollection modifications, string patch, BlameHunkCollection blames)
+        private void WritePatchInto(IList<Addition> additions, IList<Deletion> deletions, string patch,
+            BlameHunkCollection blames)
         {
             foreach (var line in patch.Split('\n'))
             {
@@ -88,13 +89,13 @@ namespace DevRating.LibGit2SharpClient
                     // TODO Throw exception on a contextual line. Patch must be without contextual lines (git log -U0)
                     var parts = line.Split(' ');
 
-                    WriteDeletionInto(modifications, parts[1], blames);
-                    modifications.AddAddition(new DefaultAddition(this, AdditionsCount(parts[2])));
+                    WriteDeletionInto(deletions, parts[1], blames);
+                    additions.Add(new DefaultAddition(this, AdditionsCount(parts[2])));
                 }
             }
         }
 
-        private void WriteDeletionInto(ModificationsCollection modifications, string hunk, BlameHunkCollection blames)
+        private void WriteDeletionInto(IList<Deletion> deletions, string hunk, BlameHunkCollection blames)
         {
             var parts = hunk
                 .Substring(1)
@@ -113,7 +114,7 @@ namespace DevRating.LibGit2SharpClient
 
                 var previous = new DefaultCommit(blame.FinalCommit, _repository);
 
-                modifications.AddDeletion(new DefaultDeletion(this, previous, d));
+                deletions.Add(new DefaultDeletion(this, previous, d));
             }
         }
 

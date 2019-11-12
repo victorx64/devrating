@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
-using Commit = DevRating.Domain.Git.Commit;
-using Repository = DevRating.Domain.Git.Repository;
+using Commit = DevRating.Domain.Commit;
+using Repository = DevRating.Domain.Repository;
 
 namespace DevRating.LibGit2SharpClient
 {

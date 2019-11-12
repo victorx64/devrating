@@ -1,6 +1,6 @@
 using System;
 
-namespace DevRating.Domain.RatingSystem
+namespace DevRating.Domain
 {
     public sealed class EloFormula : Formula
     {

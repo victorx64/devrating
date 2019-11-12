@@ -1,4 +1,4 @@
-namespace DevRating.Domain.Git
+namespace DevRating.Domain
 {
     public interface Addition : Modification
     {

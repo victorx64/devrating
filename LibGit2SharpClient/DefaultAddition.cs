@@ -1,4 +1,4 @@
-using DevRating.Domain.Git;
+using DevRating.Domain;
 
 namespace DevRating.LibGit2SharpClient
 {

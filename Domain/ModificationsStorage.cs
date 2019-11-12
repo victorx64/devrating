@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DevRating.Domain.Git
+namespace DevRating.Domain
 {
     public interface ModificationsStorage
     {

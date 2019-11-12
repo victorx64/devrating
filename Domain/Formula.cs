@@ -1,4 +1,4 @@
-namespace DevRating.Domain.RatingSystem
+namespace DevRating.Domain
 {
     public interface Formula
     {
