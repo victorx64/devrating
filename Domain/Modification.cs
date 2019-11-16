@@ -2,7 +2,7 @@ namespace DevRating.Domain
 {
     public interface Modification
     {
-        Commit Commit();
+        string Author();
         uint Count();
     }
 }

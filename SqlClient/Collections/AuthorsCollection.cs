@@ -4,8 +4,8 @@ namespace DevRating.SqlClient.Collections
 {
     internal interface AuthorsCollection
     {
-        IdentifiableAuthor Insert(string email);
+        Author Insert(string email);
         bool Exist(string email);
-        IdentifiableAuthor Author(string email);
+        Author Author(string email);
     }
 }

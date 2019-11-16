@@ -14,7 +14,7 @@ namespace DevRating.SqlClient.Collections
             _connection = connection;
         }
 
-        public IdentifiableAuthor Insert(string email)
+        public Author Insert(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -43,7 +43,7 @@ namespace DevRating.SqlClient.Collections
             return reader.Read();
         }
 
-        public IdentifiableAuthor Author(string email)
+        public Author Author(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -58,7 +58,7 @@ namespace DevRating.SqlClient.Collections
             return new SqlAuthor(_connection, (int) reader["Id"]);
         }
 
-        public IEnumerable<IdentifiableAuthor> TopAuthors()
+        public IEnumerable<Author> TopAuthors()
         {
             using var command = _connection.CreateCommand();
 
@@ -76,7 +76,7 @@ namespace DevRating.SqlClient.Collections
 
             using var reader = command.ExecuteReader();
 
-            var authors = new List<IdentifiableAuthor>();
+            var authors = new List<Author>();
 
             while (reader.Read())
             {

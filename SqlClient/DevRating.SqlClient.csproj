@@ -14,8 +14,4 @@
         <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
-
 </Project>
