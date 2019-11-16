@@ -1,8 +1,6 @@
-using DevRating.SqlClient.Entities;
-
-namespace DevRating.SqlClient.Collections
+namespace DevRating.SqlClient
 {
-    internal interface RatingsCollection
+    internal interface Ratings
     {
         Rating Insert(IdentifiableObject author,
             double value,

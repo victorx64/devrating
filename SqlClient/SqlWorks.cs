@@ -1,42 +1,127 @@
-using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
-using DevRating.SqlClient.Collections;
-using DevRating.SqlClient.Entities;
+using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    public class SqlWorks : Works
+    internal sealed class SqlWorks : Works
     {
-        private readonly WorksCollection _works;
-        private readonly AuthorsCollection _authors;
+        private readonly IDbConnection _connection;
 
         public SqlWorks(IDbConnection connection)
         {
-            _works = new SqlWorksCollection(connection);
-            _authors = new SqlAuthorsCollection(connection);
+            _connection = connection;
         }
 
-        public void Add(WorkKey key, Modification addition, IEnumerable<Modification> deletions)
+        public IdentifiableWork Work(WorkKey key)
         {
-            _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), Author(addition.Author()), 1d);
-        }
+            using var command = _connection.CreateCommand();
 
-        private Author Author(string email)
-        {
-            return _authors.Exist(email)
-                ? _authors.Author(email)
-                : _authors.Insert(email);
-        }
+            command.CommandText = @"
+                SELECT Id 
+                FROM Work 
+                WHERE Repository = @Repository 
+                AND StartCommit = @StartCommit
+                AND EndCommit = @EndCommit";
 
-        public Work Work(WorkKey key)
-        {
-            throw new System.NotImplementedException();
+            command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = key.Repository()});
+            command.Parameters.Add(new SqlParameter("@StartCommit", SqlDbType.NVarChar, 50)
+                {Value = key.StartCommit()});
+            command.Parameters.Add(new SqlParameter("@EndCommit", SqlDbType.NVarChar, 50) {Value = key.EndCommit()});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return new SqlWork(_connection, (int) reader["Id"]);
         }
 
         public bool Exist(WorkKey key)
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT Id 
+                FROM Work 
+                WHERE Repository = @Repository 
+                AND StartCommit = @StartCommit
+                AND EndCommit = @EndCommit";
+
+            command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = key.Repository()});
+            command.Parameters.Add(new SqlParameter("@StartCommit", SqlDbType.NVarChar, 50)
+                {Value = key.StartCommit()});
+            command.Parameters.Add(new SqlParameter("@EndCommit", SqlDbType.NVarChar, 50) {Value = key.EndCommit()});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
+        }
+
+        public IdentifiableWork Insert(string repository, string start, string end, IdentifiableObject author,
+            double reward, IdentifiableObject rating)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                INSERT INTO [dbo].[Work]
+                       ([Repository]
+                       ,[StartCommit]
+                       ,[EndCommit]
+                       ,[AuthorId]
+                       ,[Reward]
+                       ,[UsedRatingId])
+                OUTPUT [Inserted].[Id]
+                VALUES
+                       (@Repository
+                       ,@StartCommit
+                       ,@EndCommit
+                       ,@AuthorId
+                       ,@Reward
+                       ,@UsedRatingId)";
+
+            command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
+            command.Parameters.Add(new SqlParameter("@StartCommit", SqlDbType.NVarChar, 50) {Value = start});
+            command.Parameters.Add(new SqlParameter("@EndCommit", SqlDbType.NVarChar, 50) {Value = end});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
+            command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = reward});
+            command.Parameters.Add(new SqlParameter("@UsedRatingId", SqlDbType.Int) {Value = rating.Id()});
+
+            var id = (int) command.ExecuteScalar();
+
+            return new SqlWork(_connection, id);
+        }
+
+        public IdentifiableWork Insert(string repository, string start, string end, IdentifiableObject author,
+            double reward)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                INSERT INTO [dbo].[Work]
+                       ([Repository]
+                       ,[StartCommit]
+                       ,[EndCommit]
+                       ,[AuthorId]
+                       ,[Reward]
+                       ,[UsedRatingId])
+                OUTPUT [Inserted].[Id]
+                VALUES
+                       (@Repository
+                       ,@StartCommit
+                       ,@EndCommit
+                       ,@AuthorId
+                       ,@Reward
+                       ,NULL)";
+
+            command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
+            command.Parameters.Add(new SqlParameter("@StartCommit", SqlDbType.NVarChar, 50) {Value = start});
+            command.Parameters.Add(new SqlParameter("@EndCommit", SqlDbType.NVarChar, 50) {Value = end});
+            command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
+            command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = reward});
+
+            var id = (int) command.ExecuteScalar();
+
+            return new SqlWork(_connection, id);
         }
     }
 }

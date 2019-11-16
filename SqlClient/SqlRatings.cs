@@ -1,14 +1,13 @@
 using System.Data;
-using DevRating.SqlClient.Entities;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient.Collections
+namespace DevRating.SqlClient
 {
-    internal sealed class SqlRatingsCollection : RatingsCollection
+    internal sealed class SqlRatings : Ratings
     {
         private readonly IDbConnection _connection;
 
-        public SqlRatingsCollection(IDbConnection connection)
+        public SqlRatings(IDbConnection connection)
         {
             _connection = connection;
         }

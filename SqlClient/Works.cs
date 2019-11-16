@@ -1,8 +1,8 @@
-using DevRating.SqlClient.Entities;
+using DevRating.Domain;
 
-namespace DevRating.SqlClient.Collections
+namespace DevRating.SqlClient
 {
-    internal interface WorksCollection
+    internal interface Works
     {
         IdentifiableWork Insert(
             string repository,
@@ -18,5 +18,8 @@ namespace DevRating.SqlClient.Collections
             string end,
             IdentifiableObject author,
             double reward);
+
+        IdentifiableWork Work(WorkKey key);
+        bool Exist(WorkKey key);
     }
 }

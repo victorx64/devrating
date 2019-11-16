@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient.Entities
+namespace DevRating.SqlClient
 {
     internal sealed class SqlAuthor : Author
     {

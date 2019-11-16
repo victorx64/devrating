@@ -1,8 +1,6 @@
-using DevRating.SqlClient.Entities;
-
-namespace DevRating.SqlClient.Collections
+namespace DevRating.SqlClient
 {
-    internal interface AuthorsCollection
+    internal interface Authors
     {
         Author Insert(string email);
         bool Exist(string email);

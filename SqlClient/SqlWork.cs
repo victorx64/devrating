@@ -3,7 +3,7 @@ using System.Data;
 using DevRating.Domain;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient.Entities
+namespace DevRating.SqlClient
 {
     internal sealed class SqlWork : IdentifiableWork
     {
@@ -41,10 +41,10 @@ namespace DevRating.SqlClient.Entities
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-            SELECT Email
-            FROM Work
-            INNER JOIN Author ON Work.AuthorId = Author.Id 
-            WHERE Work.Id = @Id";
+                SELECT Email
+                FROM Work
+                INNER JOIN Author ON Work.AuthorId = Author.Id 
+                WHERE Work.Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 

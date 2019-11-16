@@ -32,7 +32,7 @@ namespace DevRating.LibGit2SharpClient
             return new LibGit2WorkKey(_start, _end, _repository);
         }
 
-        public void AddTo(Works works)
+        public void AddTo(WorksRepository works)
         {
             var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
 

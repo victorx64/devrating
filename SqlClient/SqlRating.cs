@@ -1,8 +1,7 @@
 using System.Data;
-using DevRating.Domain;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient.Entities
+namespace DevRating.SqlClient
 {
     internal sealed class SqlRating : Rating
     {
