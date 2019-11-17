@@ -61,7 +61,7 @@ namespace DevRating.SqlClient
             return new SqlRating(_connection, (int) command.ExecuteScalar());
         }
 
-        public Rating LastRatingOf(IdentifiableObject author)
+        public Rating RatingOf(IdentifiableObject author)
         {
             using var command = _connection.CreateCommand();
 

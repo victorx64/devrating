@@ -11,7 +11,7 @@ namespace DevRating.SqlClient
             IdentifiableObject previous,
             IdentifiableObject work);
 
-        Rating LastRatingOf(IdentifiableObject author);
+        Rating RatingOf(IdentifiableObject author);
 
         bool HasRatingOf(IdentifiableObject author);
     }

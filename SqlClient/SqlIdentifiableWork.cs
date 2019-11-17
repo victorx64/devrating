@@ -5,12 +5,12 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    internal sealed class SqlWork : IdentifiableWork
+    internal sealed class SqlIdentifiableWork : IdentifiableWork
     {
         private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlWork(IDbConnection connection, int id)
+        public SqlIdentifiableWork(IDbConnection connection, int id)
         {
             _connection = connection;
             _id = id;

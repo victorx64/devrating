@@ -19,15 +19,17 @@
             {
                 application.PrintToConsole();
             }
-
-            if (command.Equals("show-saved"))
+            else if (command.Equals("show-saved"))
             {
                 application.PrintSavedToConsole();
             }
-
-            if (command.Equals("save"))
+            else if (command.Equals("save"))
             {
                 application.Save();
+            }
+            else
+            {
+                throw new System.Exception("Command is not recognized");
             }
         }
     }

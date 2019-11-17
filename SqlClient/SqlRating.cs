@@ -59,7 +59,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlWork(_connection, (int) reader["WorkId"]);
+            return new SqlIdentifiableWork(_connection, (int) reader["WorkId"]);
         }
 
         public Author Author()

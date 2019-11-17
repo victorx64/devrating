@@ -33,7 +33,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlWork(_connection, (int) reader["Id"]);
+            return new SqlIdentifiableWork(_connection, (int) reader["Id"]);
         }
 
         public bool Exist(WorkKey key)
@@ -88,7 +88,7 @@ namespace DevRating.SqlClient
 
             var id = (int) command.ExecuteScalar();
 
-            return new SqlWork(_connection, id);
+            return new SqlIdentifiableWork(_connection, id);
         }
 
         public IdentifiableWork Insert(string repository, string start, string end, IdentifiableObject author,
@@ -121,7 +121,7 @@ namespace DevRating.SqlClient
 
             var id = (int) command.ExecuteScalar();
 
-            return new SqlWork(_connection, id);
+            return new SqlIdentifiableWork(_connection, id);
         }
     }
 }

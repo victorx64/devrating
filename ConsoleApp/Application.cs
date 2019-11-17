@@ -19,7 +19,7 @@ namespace DevRating.ConsoleApp
         }
 
         public Application(Diff diff, IDbConnection connection)
-            : this(diff, connection, new SqlWorksRepository(connection))
+            : this(diff, connection, new SqlWorksRepository(connection, new EloFormula()))
         {
         }
 
@@ -58,7 +58,7 @@ namespace DevRating.ConsoleApp
 
             foreach (var rating in work.RatingUpdates())
             {
-                Console.WriteLine($"{rating.Author()} {rating.NewRating():F2}");
+                Console.WriteLine($"{rating.Author()} {rating.OldRating():F2} -> {rating.NewRating():F2}");
             }
         }
 

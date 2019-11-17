@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DevRating.Domain;
 using LibGit2Sharp;
@@ -36,36 +37,61 @@ namespace DevRating.LibGit2SharpClient
         {
             var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
 
-            works.Add(Key(), new LibGit2Modification(Author(), Additions(hunks)), Deletions(hunks));
+            works.Add(Key(), Email(), Additions(hunks), Deletions(hunks));
         }
 
-        private Signature Author()
+        private string Email()
         {
-            return _repository.Mailmap.ResolveSignature(_end.Author);
+            return _repository.Mailmap.ResolveSignature(_end.Author).Email;
         }
 
         private uint Additions(IEnumerable<Hunk> hunks)
         {
-            var additions = 0u;
-
-            foreach (var h in hunks)
-            {
-                additions += h.Additions().Count();
-            }
-
-            return additions;
+            return (uint) hunks.Sum(HunkAdditions);
         }
 
-        private IEnumerable<Modification> Deletions(IEnumerable<Hunk> hunks)
+        private long HunkAdditions(Hunk hunk)
         {
-            foreach (var hunk in hunks)
-            {
-                foreach (var deletions in hunk.Deletions().Items())
-                {
-                    yield return deletions;
-                }
-            }
+            return hunk.Additions().Count();
         }
+
+        // TODO Extract the region
+        #region Converts hunks into a deletions dictionary
+        
+        private IDictionary<string, uint> Deletions(IEnumerable<Hunk> hunks)
+        {
+            return hunks
+                .SelectMany(HunkDeletions)
+                .GroupBy(ModificationAuthor)
+                .ToDictionary(ModificationsAuthor, ModificationCountsSum);
+        }
+
+        private IEnumerable<Modification> HunkDeletions(Hunk hunk)
+        {
+            return hunk.Deletions().Items();
+        }
+
+        private string ModificationAuthor(Modification modification)
+        {
+            return modification.Author();
+        }
+
+        private string ModificationsAuthor(IGrouping<string, Modification> grouping)
+        {
+            return grouping.Key;
+        }
+
+        private uint ModificationCountsSum(IGrouping<string, Modification> grouping)
+        {
+            return (uint) grouping.Sum(ModificationCount);
+        }
+
+        private long ModificationCount(Modification modification)
+        {
+            return modification.Count();
+        }
+
+        #endregion
 
         private IEnumerable<Task<LibGit2Hunk>> HunkTasks()
         {
