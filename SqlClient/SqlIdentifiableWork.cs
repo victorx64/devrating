@@ -48,7 +48,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlIdentifiableAuthor(_connection, (int) reader["Id"]);
+            return new SqlIdentifiableAuthor(_connection, (int) reader["AuthorId"]);
         }
 
         public IEnumerable<Rating> Ratings()
@@ -61,9 +61,14 @@ namespace DevRating.SqlClient
 
             using var reader = command.ExecuteReader();
 
-            reader.Read();
+            var ratings = new List<Rating>();
 
-            yield return new SqlIdentifiableRating(_connection, (int) reader["Id"]);
+            while (reader.Read())
+            {
+                ratings.Add(new SqlIdentifiableRating(_connection, (int) reader["Id"]));
+            }
+
+            return ratings;
         }
     }
 }

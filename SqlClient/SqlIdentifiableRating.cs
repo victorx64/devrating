@@ -39,7 +39,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id";
+            command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id AND PreviousRatingId IS NOT NULL";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
