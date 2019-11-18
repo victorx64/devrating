@@ -4,7 +4,7 @@ using DevRating.Domain;
 
 namespace DevRating.SqlClient
 {
-    public class SqlWorksRepository : WorksRepository
+    public sealed class SqlWorksRepository : WorksRepository
     {
         private readonly Works _works;
         private readonly Authors _authors;
@@ -65,9 +65,11 @@ namespace DevRating.SqlClient
                     _ratings.Insert(victim, rating, work);
                 }
             }
+
+            // TODO Add new rating of the author
         }
 
-        private Author Author(string email)
+        private IdentifiableAuthor Author(string email)
         {
             return _authors.Exist(email)
                 ? _authors.Author(email)

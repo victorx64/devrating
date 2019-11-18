@@ -36,15 +36,11 @@ namespace DevRating.SqlClient
             return (float) reader["Reward"];
         }
 
-        public string Author()
+        public Author Author()
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = @"
-                SELECT Email
-                FROM Work
-                INNER JOIN Author ON Work.AuthorId = Author.Id 
-                WHERE Work.Id = @Id";
+            command.CommandText = "SELECT AuthorId FROM Work WHERE Work.Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -52,10 +48,10 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return (string) reader["Email"];
+            return new SqlIdentifiableAuthor(_connection, (int) reader["Id"]);
         }
 
-        public IEnumerable<RatingUpdate> RatingUpdates()
+        public IEnumerable<Rating> Ratings()
         {
             throw new System.NotImplementedException();
         }

@@ -12,7 +12,7 @@ namespace DevRating.SqlClient
             _connection = connection;
         }
 
-        public Author Insert(string email)
+        public IdentifiableAuthor Insert(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -25,7 +25,7 @@ namespace DevRating.SqlClient
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
 
-            return new SqlAuthor(_connection, (int) command.ExecuteScalar());
+            return new SqlIdentifiableAuthor(_connection, (int) command.ExecuteScalar());
         }
 
         public bool Exist(string email)
@@ -41,7 +41,7 @@ namespace DevRating.SqlClient
             return reader.Read();
         }
 
-        public Author Author(string email)
+        public IdentifiableAuthor Author(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -53,7 +53,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlAuthor(_connection, (int) reader["Id"]);
+            return new SqlIdentifiableAuthor(_connection, (int) reader["Id"]);
         }
     }
 }

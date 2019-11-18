@@ -5,7 +5,7 @@ namespace DevRating.Domain
     public interface Work
     {
         double Reward();
-        string Author();
-        IEnumerable<RatingUpdate> RatingUpdates();
+        Author Author();
+        IEnumerable<Rating> Ratings();
     }
 }

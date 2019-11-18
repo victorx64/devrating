@@ -56,9 +56,11 @@ namespace DevRating.ConsoleApp
             Console.WriteLine($"{work.Author()} {work.Reward():F2}");
             Console.WriteLine("Rating updates:");
 
-            foreach (var rating in work.RatingUpdates())
+            foreach (var rating in work.Ratings())
             {
-                Console.WriteLine($"{rating.Author()} {rating.OldRating():F2} -> {rating.NewRating():F2}");
+                Console.WriteLine(rating.HasPreviousRating()
+                    ? $"{rating.Author().Email()} {rating.PreviousRating().Value():F2} -> {rating.Value():F2}"
+                    : $"{rating.Author().Email()} {rating.Value():F2}");
             }
         }
 

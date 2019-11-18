@@ -12,7 +12,7 @@ namespace DevRating.SqlClient
             _connection = connection;
         }
 
-        public Rating Insert(IdentifiableObject author, double value, IdentifiableObject work)
+        public IdentifiableRating Insert(IdentifiableObject author, double value, IdentifiableObject work)
         {
             using var command = _connection.CreateCommand();
 
@@ -33,10 +33,10 @@ namespace DevRating.SqlClient
             command.Parameters.Add(new SqlParameter("@WorkId", SqlDbType.Int) {Value = work.Id()});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
-            return new SqlRating(_connection, (int) command.ExecuteScalar());
+            return new SqlIdentifiableRating(_connection, (int) command.ExecuteScalar());
         }
 
-        public Rating Insert(IdentifiableObject author, double value, IdentifiableObject previous, IdentifiableObject work)
+        public IdentifiableRating Insert(IdentifiableObject author, double value, IdentifiableObject previous, IdentifiableObject work)
         {
             using var command = _connection.CreateCommand();
 
@@ -58,10 +58,10 @@ namespace DevRating.SqlClient
             command.Parameters.Add(new SqlParameter("@WorkId", SqlDbType.Int) {Value = work.Id()});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
-            return new SqlRating(_connection, (int) command.ExecuteScalar());
+            return new SqlIdentifiableRating(_connection, (int) command.ExecuteScalar());
         }
 
-        public Rating RatingOf(IdentifiableObject author)
+        public IdentifiableRating RatingOf(IdentifiableObject author)
         {
             using var command = _connection.CreateCommand();
 
@@ -74,7 +74,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlRating(_connection, (int) reader["Id"]);
+            return new SqlIdentifiableRating(_connection, (int) reader["Id"]);
         }
 
         public bool HasRatingOf(IdentifiableObject author)

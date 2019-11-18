@@ -3,12 +3,12 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    internal sealed class SqlAuthor : Author
+    internal sealed class SqlIdentifiableAuthor : IdentifiableAuthor
     {
         private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlAuthor(IDbConnection connection, int id)
+        public SqlIdentifiableAuthor(IDbConnection connection, int id)
         {
             _connection = connection;
             _id = id;

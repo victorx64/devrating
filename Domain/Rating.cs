@@ -1,11 +1,11 @@
-namespace DevRating.SqlClient
+namespace DevRating.Domain
 {
-    internal interface Rating : IdentifiableObject
+    public interface Rating
     {
         double Value();
         bool HasPreviousRating();
         Rating PreviousRating();
-        IdentifiableWork Work();
+        Work Work();
         Author Author();
     }
 }

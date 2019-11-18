@@ -1,14 +1,15 @@
 using System.Data;
+using DevRating.Domain;
 using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlClient
 {
-    internal sealed class SqlRating : Rating
+    internal sealed class SqlIdentifiableRating : IdentifiableRating
     {
         private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlRating(IDbConnection connection, int id)
+        public SqlIdentifiableRating(IDbConnection connection, int id)
         {
             _connection = connection;
             _id = id;
@@ -31,7 +32,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlRating(_connection, (int) reader["PreviousRatingId"]);
+            return new SqlIdentifiableRating(_connection, (int) reader["PreviousRatingId"]);
         }
 
         public bool HasPreviousRating()
@@ -47,7 +48,7 @@ namespace DevRating.SqlClient
             return reader.Read();
         }
 
-        public IdentifiableWork Work()
+        public Work Work()
         {
             using var command = _connection.CreateCommand();
 
@@ -74,7 +75,7 @@ namespace DevRating.SqlClient
 
             reader.Read();
 
-            return new SqlAuthor(_connection, (int) reader["AuthorId"]);
+            return new SqlIdentifiableAuthor(_connection, (int) reader["AuthorId"]);
         }
 
         public double Value()
