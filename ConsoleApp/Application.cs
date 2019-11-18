@@ -54,7 +54,7 @@ namespace DevRating.ConsoleApp
             var work = _works.Work(_diff.Key());
 
             Console.WriteLine("Reward:");
-            Console.WriteLine($"{work.Author()} {work.Reward():F2}");
+            Console.WriteLine($"{work.Author().Email()} {work.Reward():F2}");
             Console.WriteLine("Rating updates:");
 
             foreach (var rating in work.Ratings())
