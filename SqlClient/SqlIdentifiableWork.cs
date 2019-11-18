@@ -40,7 +40,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT AuthorId FROM Work WHERE Work.Id = @Id";
+            command.CommandText = "SELECT AuthorId FROM Work WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -53,7 +53,17 @@ namespace DevRating.SqlClient
 
         public IEnumerable<Rating> Ratings()
         {
-            throw new System.NotImplementedException();
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Rating WHERE WorkId = @Id";
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            yield return new SqlIdentifiableRating(_connection, (int) reader["Id"]);
         }
     }
 }

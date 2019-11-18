@@ -31,25 +31,20 @@ namespace DevRating.SqlClient
         {
             var author = Author(email);
 
-            IdentifiableWork work;
+            var work = InsertedWork(key, additions, author);
 
-            if (_ratings.HasRatingOf(author))
-            {
-                var rating = _ratings.RatingOf(author);
+            InsertVictimsNewRatings(deletions, work);
 
-                var reward = _formula.Reward(rating.Value(), additions);
+            InsertAuthorNewRating(author);
+        }
 
-                work = _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), author, reward, rating);
-            }
-            else
-            {
-                var rating = _formula.DefaultRating();
+        private void InsertAuthorNewRating(IdentifiableObject author)
+        {
+            throw new System.NotImplementedException();
+        }
 
-                var reward = _formula.Reward(rating, additions);
-
-                work = _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), author, reward);
-            }
-
+        private void InsertVictimsNewRatings(IDictionary<string, uint> deletions, IdentifiableObject work)
+        {
             foreach (var deletion in deletions)
             {
                 var victim = Author(deletion.Key);
@@ -65,8 +60,22 @@ namespace DevRating.SqlClient
                     _ratings.Insert(victim, rating, work);
                 }
             }
+        }
 
-            // TODO Add new rating of the author
+        private IdentifiableWork InsertedWork(WorkKey key, uint additions, IdentifiableObject author)
+        {
+            if (_ratings.HasRatingOf(author))
+            {
+                var rating = _ratings.RatingOf(author);
+
+                return _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), author,
+                    _formula.Reward(rating.Value(), additions), rating);
+            }
+            else
+            {
+                return _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), author,
+                    _formula.Reward(_formula.DefaultRating(), additions));
+            }
         }
 
         private IdentifiableAuthor Author(string email)

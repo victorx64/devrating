@@ -63,21 +63,21 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                INSERT INTO [dbo].[Work]
-                       ([Repository]
-                       ,[StartCommit]
-                       ,[EndCommit]
-                       ,[AuthorId]
-                       ,[Reward]
-                       ,[UsedRatingId])
-                OUTPUT [Inserted].[Id]
+                INSERT INTO Work
+                    (Repository
+                    ,StartCommit
+                    ,EndCommit
+                    ,AuthorId
+                    ,Reward
+                    ,UsedRatingId)
+                OUTPUT Inserted.Id
                 VALUES
-                       (@Repository
-                       ,@StartCommit
-                       ,@EndCommit
-                       ,@AuthorId
-                       ,@Reward
-                       ,@UsedRatingId)";
+                    (@Repository
+                    ,@StartCommit
+                    ,@EndCommit
+                    ,@AuthorId
+                    ,@Reward
+                    ,@UsedRatingId)";
 
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@StartCommit", SqlDbType.NVarChar, 50) {Value = start});
@@ -97,21 +97,21 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                INSERT INTO [dbo].[Work]
-                       ([Repository]
-                       ,[StartCommit]
-                       ,[EndCommit]
-                       ,[AuthorId]
-                       ,[Reward]
-                       ,[UsedRatingId])
-                OUTPUT [Inserted].[Id]
+                INSERT INTO Work
+                    (Repository
+                    ,StartCommit
+                    ,EndCommit
+                    ,AuthorId
+                    ,Reward
+                    ,UsedRatingId)
+                OUTPUT Inserted.Id
                 VALUES
-                       (@Repository
-                       ,@StartCommit
-                       ,@EndCommit
-                       ,@AuthorId
-                       ,@Reward
-                       ,NULL)";
+                    (@Repository
+                    ,@StartCommit
+                    ,@EndCommit
+                    ,@AuthorId
+                    ,@Reward
+                    ,NULL)";
 
             command.Parameters.Add(new SqlParameter("@Repository", SqlDbType.NVarChar) {Value = repository});
             command.Parameters.Add(new SqlParameter("@StartCommit", SqlDbType.NVarChar, 50) {Value = start});

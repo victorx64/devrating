@@ -23,7 +23,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [Email] FROM [dbo].[Author] WHERE [Id] = @Id";
+            command.CommandText = "SELECT Email FROM Author WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 

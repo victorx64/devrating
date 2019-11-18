@@ -24,7 +24,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [PreviousRatingId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+            command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -39,7 +39,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [PreviousRatingId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+            command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -52,7 +52,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [WorkId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+            command.CommandText = "SELECT WorkId FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -67,7 +67,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [AuthorId] FROM [dbo].[Rating] WHERE [Id] = @Id";
+            command.CommandText = "SELECT AuthorId FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 
@@ -82,7 +82,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [Rating] FROM [dbo].[Rating] WHERE [Id] = @Id";
+            command.CommandText = "SELECT Rating FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) {Value = _id});
 

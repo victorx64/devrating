@@ -17,12 +17,12 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                INSERT INTO [dbo].[Rating]
-                       ([Rating]
-                       ,[PreviousRatingId]
-                       ,[WorkId]
-                       ,[AuthorId])
-                OUTPUT [Inserted].[Id]
+                INSERT INTO Rating
+                    (Rating
+                    ,PreviousRatingId
+                    ,WorkId
+                    ,AuthorId)
+                OUTPUT Inserted.Id
                 VALUES
                        (@Rating
                        ,NULL
@@ -41,12 +41,12 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                INSERT INTO [dbo].[Rating]
-                       ([Rating]
-                       ,[PreviousRatingId]
-                       ,[WorkId]
-                       ,[AuthorId])
-                OUTPUT [Inserted].[Id]
+                INSERT INTO Rating
+                    (Rating
+                    ,PreviousRatingId
+                    ,WorkId
+                    ,AuthorId)
+                OUTPUT Inserted.Id
                 VALUES
                        (@Rating
                        ,@PreviousRatingId
@@ -66,7 +66,7 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT TOP (1) [Id] FROM [dbo].[Rating] WHERE [AuthorId] = @AuthorId ORDER BY [Id] DESC";
+                "SELECT TOP (1) Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC";
 
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
@@ -82,7 +82,7 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT TOP (1) [Id] FROM [dbo].[Rating] WHERE [AuthorId] = @AuthorId ORDER BY [Id] DESC";
+                "SELECT TOP (1) Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC";
 
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 

@@ -17,11 +17,11 @@ namespace DevRating.SqlClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                INSERT INTO [dbo].[Author]
-                       ([Email])
-                OUTPUT [Inserted].[Id]
+                INSERT INTO Author
+                    (Email)
+                OUTPUT Inserted.Id
                 VALUES
-                       (@Email)";
+                    (@Email)";
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
 
@@ -32,7 +32,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
+            command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar) {Value = email});
 
@@ -45,7 +45,7 @@ namespace DevRating.SqlClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT [Id] FROM [dbo].[Author] WHERE [Email] = @Email";
+            command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar) {Value = email});
 
