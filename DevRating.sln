@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Domain", "Domain\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.ConsoleApp", "ConsoleApp\DevRating.ConsoleApp.csproj", "{C7DE6FA0-356A-4DC2-8E1E-3C9A1FE7BABF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.EloRating", "EloRating\DevRating.EloRating.csproj", "{38C2DE10-4D60-4831-947B-4E24EC5E5498}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C7DE6FA0-356A-4DC2-8E1E-3C9A1FE7BABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7DE6FA0-356A-4DC2-8E1E-3C9A1FE7BABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7DE6FA0-356A-4DC2-8E1E-3C9A1FE7BABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38C2DE10-4D60-4831-947B-4E24EC5E5498}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38C2DE10-4D60-4831-947B-4E24EC5E5498}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38C2DE10-4D60-4831-947B-4E24EC5E5498}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38C2DE10-4D60-4831-947B-4E24EC5E5498}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

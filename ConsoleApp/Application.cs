@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using DevRating.Domain;
+using DevRating.EloRating;
 using DevRating.LibGit2SharpClient;
 using DevRating.SqlClient;
 using Microsoft.Data.SqlClient;

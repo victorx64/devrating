@@ -31,35 +31,14 @@ namespace DevRating.SqlClient
         {
             var author = Author(email);
 
-            var work = InsertedWork(key, additions, author);
-
-            InsertVictimsNewRatings(deletions, work);
-
-            InsertAuthorNewRating(author);
+            InsertAuthorNewRating(author, deletions, InsertedWork(key, additions, author));
         }
 
-        private void InsertAuthorNewRating(IdentifiableObject author)
+        private IdentifiableAuthor Author(string email)
         {
-            throw new System.NotImplementedException();
-        }
-
-        private void InsertVictimsNewRatings(IDictionary<string, uint> deletions, IdentifiableObject work)
-        {
-            foreach (var deletion in deletions)
-            {
-                var victim = Author(deletion.Key);
-
-                var rating = 0d * deletion.Value; // TODO 
-
-                if (_ratings.HasRatingOf(victim))
-                {
-                    _ratings.Insert(victim, rating, _ratings.RatingOf(victim), work);
-                }
-                else
-                {
-                    _ratings.Insert(victim, rating, work);
-                }
-            }
+            return _authors.Exist(email)
+                ? _authors.Author(email)
+                : _authors.Insert(email);
         }
 
         private IdentifiableWork InsertedWork(WorkKey key, uint additions, IdentifiableObject author)
@@ -78,11 +57,56 @@ namespace DevRating.SqlClient
             }
         }
 
-        private IdentifiableAuthor Author(string email)
+        private double RatingOf(IdentifiableObject author)
         {
-            return _authors.Exist(email)
-                ? _authors.Author(email)
-                : _authors.Insert(email);
+            return _ratings.HasRatingOf(author)
+                ? _ratings.RatingOf(author).Value()
+                : _formula.DefaultRating();
+        }
+
+        private void InsertAuthorNewRating(IdentifiableObject author, IDictionary<string, uint> deletions,
+            IdentifiableObject work)
+        {
+            var current = RatingOf(author);
+
+            var @new = _formula.WinnerNewRating(current, InsertVictimsNewRatings(deletions, work, current));
+
+            if (_ratings.HasRatingOf(author))
+            {
+                _ratings.Insert(author, @new, _ratings.RatingOf(author), work);
+            }
+            else
+            {
+                _ratings.Insert(author, @new, work);
+            }
+        }
+
+        private IEnumerable<Match> InsertVictimsNewRatings(IDictionary<string, uint> deletions, IdentifiableObject work,
+            double rating)
+        {
+            var matches = new List<Match>();
+
+            foreach (var deletion in deletions)
+            {
+                var victim = Author(deletion.Key);
+
+                var current = RatingOf(victim);
+
+                matches.Add(new DefaultMatch(current, deletion.Value));
+
+                var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Value));
+
+                if (_ratings.HasRatingOf(victim))
+                {
+                    _ratings.Insert(victim, @new, _ratings.RatingOf(victim), work);
+                }
+                else
+                {
+                    _ratings.Insert(victim, @new, work);
+                }
+            }
+
+            return matches;
         }
 
         public Work Work(WorkKey key)

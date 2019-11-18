@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <LangVersion>8</LangVersion>
         <Nullable>enable</Nullable>
@@ -9,9 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
-      <ProjectReference Include="..\EloRating\DevRating.EloRating.csproj" />
-      <ProjectReference Include="..\LibGit2SharpClient\DevRating.LibGit2SharpClient.csproj" />
-      <ProjectReference Include="..\SqlClient\DevRating.SqlClient.csproj" />
     </ItemGroup>
 
 </Project>
