@@ -12,7 +12,7 @@ namespace DevRating.LibGit2SharpClient
         private readonly Commit _end;
         private readonly IRepository _repository;
 
-        public LibGit2Diff(string start, string end, string path) : this(start, end, new Repository(path))
+        public LibGit2Diff(string path, string start, string end) : this(start, end, new Repository(path))
         {
         }
 

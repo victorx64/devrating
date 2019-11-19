@@ -11,7 +11,7 @@ namespace DevRating.ConsoleApp
         private static void Main(string[] args)
         {
             new Application(
-                    new LibGit2Diff(args[2], args[3], args[1]),
+                    new LibGit2Diff(args[1], args[2], args[3]),
                     new DbWorksRepository(
                         new SqlServerEntities(
                             new TransactedDbConnection(
