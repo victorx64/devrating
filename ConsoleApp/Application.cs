@@ -1,10 +1,6 @@
 using System;
 using System.Data;
 using DevRating.Domain;
-using DevRating.EloRating;
-using DevRating.LibGit2SharpClient;
-using DevRating.SqlClient;
-using Microsoft.Data.SqlClient;
 
 namespace DevRating.ConsoleApp
 {
@@ -13,16 +9,6 @@ namespace DevRating.ConsoleApp
         private readonly Diff _diff;
         private readonly IDbConnection _connection;
         private readonly WorksRepository _works;
-
-        public Application(string path, string start, string end, string database)
-            : this(new LibGit2Diff(start, end, path), new TransactedDbConnection(new SqlConnection(database)))
-        {
-        }
-
-        public Application(Diff diff, IDbConnection connection)
-            : this(diff, connection, new SqlWorksRepository(connection, new EloFormula()))
-        {
-        }
 
         public Application(Diff diff, IDbConnection connection, WorksRepository works)
         {

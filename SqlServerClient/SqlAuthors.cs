@@ -1,9 +1,10 @@
 using System.Data;
+using DevRating.Database;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient
+namespace DevRating.SqlServerClient
 {
-    internal sealed class SqlAuthors : Authors
+    public sealed class SqlAuthors : Authors
     {
         private readonly IDbConnection _connection;
 

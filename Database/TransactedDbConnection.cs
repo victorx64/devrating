@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
     public sealed class TransactedDbConnection : IDbConnection
     {

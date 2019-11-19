@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Data;
+using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient
+namespace DevRating.SqlServerClient
 {
-    internal sealed class SqlIdentifiableWork : IdentifiableWork
+    public sealed class SqlIdentifiableWork : IdentifiableWork
     {
         private readonly IDbConnection _connection;
         private readonly int _id;

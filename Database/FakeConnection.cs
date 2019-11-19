@@ -1,9 +1,9 @@
 using System;
 using System.Data;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal sealed class FakeConnection : IDbConnection
+    public sealed class FakeConnection : IDbConnection
     {
         private readonly FakeCommand _command;
 

@@ -11,7 +11,7 @@
       <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
       <ProjectReference Include="..\EloRating\DevRating.EloRating.csproj" />
       <ProjectReference Include="..\LibGit2SharpClient\DevRating.LibGit2SharpClient.csproj" />
-      <ProjectReference Include="..\SqlClient\DevRating.SqlClient.csproj" />
+      <ProjectReference Include="..\SqlServerClient\DevRating.SqlServerClient.csproj" />
     </ItemGroup>
 
 </Project>

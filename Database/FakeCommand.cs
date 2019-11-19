@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal sealed class FakeCommand : IDbCommand
+    public sealed class FakeCommand : IDbCommand
     {
         private readonly IDictionary<string, object> _columns;
 
@@ -53,7 +52,7 @@ namespace DevRating.SqlClient
         public string CommandText { get; set; } = string.Empty;
         public int CommandTimeout { get; set; }
         public CommandType CommandType { get; set; }
-        public IDbConnection Connection { get; set; } = new SqlConnection();
+        public IDbConnection? Connection { get; set; } = null;
         public IDataParameterCollection Parameters { get; } = new FakeDbParameterCollection();
         public IDbTransaction? Transaction { get; set; } = null;
         public UpdateRowSource UpdatedRowSource { get; set; }

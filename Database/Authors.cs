@@ -1,6 +1,6 @@
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal interface Authors
+    public interface Authors
     {
         IdentifiableAuthor Insert(string email);
         bool Exist(string email);

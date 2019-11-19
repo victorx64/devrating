@@ -1,6 +1,6 @@
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal interface Ratings
+    public interface Ratings
     {
         IdentifiableRating Insert(IdentifiableObject author,
             double value,

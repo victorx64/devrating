@@ -1,4 +1,10 @@
-﻿namespace DevRating.ConsoleApp
+﻿using DevRating.Database;
+using DevRating.EloRating;
+using DevRating.LibGit2SharpClient;
+using DevRating.SqlServerClient;
+using Microsoft.Data.SqlClient;
+
+namespace DevRating.ConsoleApp
 {
     internal static class Program
     {
@@ -13,7 +19,14 @@
                 @"Integrated Security=True;Persist Security Info=False;Pooling=False;" +
                 @"MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False";
 
-            var application = new Application(path, start, end, database);
+            var connection = new TransactedDbConnection(new SqlConnection(database));
+
+            var application = new Application(new LibGit2Diff(start, end, path),
+                connection,
+                new DbWorksRepository(new SqlWorks(connection),
+                    new SqlAuthors(connection),
+                    new SqlRatings(connection),
+                    new EloFormula()));
 
             if (command.Equals("show"))
             {

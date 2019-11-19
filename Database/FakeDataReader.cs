@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal sealed class FakeDataReader : IDataReader
+    public sealed class FakeDataReader : IDataReader
     {
         private readonly IDictionary<string, object> _columns;
         private readonly string _command;

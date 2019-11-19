@@ -1,8 +1,8 @@
 using DevRating.Domain;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal interface Works
+    public interface Works
     {
         IdentifiableWork Insert(
             string repository,

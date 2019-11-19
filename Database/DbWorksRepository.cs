@@ -1,25 +1,16 @@
 using System.Collections.Generic;
-using System.Data;
 using DevRating.Domain;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    public sealed class SqlWorksRepository : WorksRepository
+    public sealed class DbWorksRepository : WorksRepository
     {
         private readonly Works _works;
         private readonly Authors _authors;
         private readonly Ratings _ratings;
         private readonly Formula _formula;
 
-        public SqlWorksRepository(IDbConnection connection, Formula formula)
-            : this(new SqlWorks(connection),
-                new SqlAuthors(connection),
-                new SqlRatings(connection),
-                formula)
-        {
-        }
-
-        internal SqlWorksRepository(Works works, Authors authors, Ratings ratings, Formula formula)
+        public DbWorksRepository(Works works, Authors authors, Ratings ratings, Formula formula)
         {
             _works = works;
             _authors = authors;

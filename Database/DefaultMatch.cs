@@ -1,8 +1,8 @@
 using DevRating.Domain;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal sealed class DefaultMatch : Match
+    public sealed class DefaultMatch : Match
     {
         private readonly double _rating;
         private readonly uint _count;

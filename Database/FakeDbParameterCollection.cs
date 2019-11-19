@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Data.Common;
 
-namespace DevRating.SqlClient
+namespace DevRating.Database
 {
-    internal sealed class FakeDbParameterCollection : DbParameterCollection
+    public sealed class FakeDbParameterCollection : DbParameterCollection
     {
         public override int Add(object value)
         {

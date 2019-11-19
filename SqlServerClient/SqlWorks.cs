@@ -1,10 +1,11 @@
 using System.Data;
+using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.SqlClient;
 
-namespace DevRating.SqlClient
+namespace DevRating.SqlServerClient
 {
-    internal sealed class SqlWorks : Works
+    public sealed class SqlWorks : Works
     {
         private readonly IDbConnection _connection;
 
