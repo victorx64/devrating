@@ -14,7 +14,7 @@ namespace DevRating.ConsoleApp
             _works = works;
         }
 
-        public void HandleCommand(string command)
+        public void Run(string command)
         {
             if (command.Equals("show"))
             {

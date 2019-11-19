@@ -19,7 +19,7 @@ namespace DevRating.ConsoleApp
                                                   "Integrated Security=True;Persist Security Info=False;Pooling=False;" +
                                                   "MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False"))),
                         new EloFormula()))
-                .HandleCommand(args[0]);
+                .Run(args[0]);
         }
     }
 }
