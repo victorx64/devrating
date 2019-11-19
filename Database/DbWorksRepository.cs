@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using DevRating.Domain;
 
 namespace DevRating.Database
@@ -8,14 +9,27 @@ namespace DevRating.Database
         private readonly Works _works;
         private readonly Authors _authors;
         private readonly Ratings _ratings;
+        private readonly IDbConnection _connection;
         private readonly Formula _formula;
 
-        public DbWorksRepository(Works works, Authors authors, Ratings ratings, Formula formula)
+        public DbWorksRepository(Entities entities, Formula formula)
+            : this(entities.Works(), entities.Authors(), entities.Ratings(), entities.Connection(), formula)
+        {
+        }
+
+        public DbWorksRepository(Works works, Authors authors, Ratings ratings, IDbConnection connection,
+            Formula formula)
         {
             _works = works;
             _authors = authors;
             _ratings = ratings;
+            _connection = connection;
             _formula = formula;
+        }
+
+        public IDbConnection Connection()
+        {
+            return _connection;
         }
 
         public void Add(WorkKey key, string email, uint additions, IDictionary<string, uint> deletions)

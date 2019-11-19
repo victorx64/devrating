@@ -19,14 +19,14 @@ namespace DevRating.ConsoleApp
                 @"Integrated Security=True;Persist Security Info=False;Pooling=False;" +
                 @"MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False";
 
-            var connection = new TransactedDbConnection(new SqlConnection(database));
-
-            var application = new Application(new LibGit2Diff(start, end, path),
-                connection,
-                new DbWorksRepository(new SqlServerWorks(connection),
-                    new SqlServerAuthors(connection),
-                    new SqlServerRatings(connection),
-                    new EloFormula()));
+            var application =
+                new Application(
+                    new LibGit2Diff(start, end, path),
+                    new DbWorksRepository(
+                        new SqlServerEntities(
+                            new TransactedDbConnection(
+                                new SqlConnection(database))),
+                        new EloFormula()));
 
             if (command.Equals("show"))
             {

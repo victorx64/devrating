@@ -1,5 +1,4 @@
 using System;
-using System.Data;
 using DevRating.Domain;
 
 namespace DevRating.ConsoleApp
@@ -7,20 +6,19 @@ namespace DevRating.ConsoleApp
     internal sealed class Application
     {
         private readonly Diff _diff;
-        private readonly IDbConnection _connection;
         private readonly WorksRepository _works;
 
-        public Application(Diff diff, IDbConnection connection, WorksRepository works)
+        public Application(Diff diff, WorksRepository works)
         {
             _diff = diff;
-            _connection = connection;
             _works = works;
         }
 
         public void PrintToConsole()
         {
-            _connection.Open();
-            using var transaction = _connection.BeginTransaction();
+            var connection = _works.Connection();
+
+            using var transaction = connection.BeginTransaction();
 
             try
             {
@@ -31,7 +29,7 @@ namespace DevRating.ConsoleApp
             finally
             {
                 transaction.Rollback();
-                _connection.Close();
+                connection.Close();
             }
         }
 
@@ -53,9 +51,11 @@ namespace DevRating.ConsoleApp
 
         public void Save()
         {
-            _connection.Open();
+            var connection = _works.Connection();
 
-            using var transaction = _connection.BeginTransaction();
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
 
             try
             {
@@ -71,7 +71,7 @@ namespace DevRating.ConsoleApp
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
     }
