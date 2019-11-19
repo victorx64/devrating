@@ -14,7 +14,27 @@ namespace DevRating.ConsoleApp
             _works = works;
         }
 
-        public void PrintToConsole()
+        public void HandleCommand(string command)
+        {
+            if (command.Equals("show"))
+            {
+                PrintToConsole();
+            }
+            else if (command.Equals("show-saved"))
+            {
+                PrintSavedToConsole();
+            }
+            else if (command.Equals("save"))
+            {
+                Save();
+            }
+            else
+            {
+                throw new Exception("Command is not recognized");
+            }
+        }
+
+        private void PrintToConsole()
         {
             var connection = _works.Connection();
 
@@ -33,7 +53,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void PrintSavedToConsole()
+        private void PrintSavedToConsole()
         {
             var work = _works.Work(_diff.Key());
 
@@ -49,7 +69,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void Save()
+        private void Save()
         {
             var connection = _works.Connection();
 
