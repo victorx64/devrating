@@ -1,24 +1,24 @@
 using System.Data;
 using DevRating.Database;
 
-namespace DevRating.SqlServerClient
+namespace DevRating.SqliteClient
 {
-    public sealed class SqlServerEntities : Entities
+    public sealed class SqliteEntities : Entities
     {
         private readonly Works _works;
         private readonly Authors _authors;
         private readonly Ratings _ratings;
         private readonly IDbConnection _connection;
 
-        public SqlServerEntities(IDbConnection connection)
+        public SqliteEntities(IDbConnection connection)
             : this(connection,
-                new SqlServerWorks(connection),
-                new SqlServerAuthors(connection),
-                new SqlServerRatings(connection))
+                new SqliteWorks(connection),
+                new SqliteAuthors(connection),
+                new SqliteRatings(connection))
         {
         }
 
-        public SqlServerEntities(IDbConnection connection, Works works, Authors authors, Ratings ratings)
+        public SqliteEntities(IDbConnection connection, Works works, Authors authors, Ratings ratings)
         {
             _connection = connection;
             _works = works;

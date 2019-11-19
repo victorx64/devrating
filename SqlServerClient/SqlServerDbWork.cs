@@ -6,7 +6,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlServerClient
 {
-    public sealed class SqlServerDbWork : DbWork
+    internal sealed class SqlServerDbWork : DbWork
     {
         private readonly IDbConnection _connection;
         private readonly int _id;

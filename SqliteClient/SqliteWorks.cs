@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    public sealed class SqliteWorks : Works
+    internal sealed class SqliteWorks : Works
     {
         private readonly IDbConnection _connection;
 

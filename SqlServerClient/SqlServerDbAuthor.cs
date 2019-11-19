@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlServerClient
 {
-    public sealed class SqlServerDbAuthor : DbAuthor
+    internal sealed class SqlServerDbAuthor : DbAuthor
     {
         private readonly IDbConnection _connection;
         private readonly int _id;

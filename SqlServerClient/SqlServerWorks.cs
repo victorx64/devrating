@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlServerClient
 {
-    public sealed class SqlServerWorks : Works
+    internal sealed class SqlServerWorks : Works
     {
         private readonly IDbConnection _connection;
 
