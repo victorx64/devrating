@@ -23,9 +23,9 @@ namespace DevRating.ConsoleApp
 
             var application = new Application(new LibGit2Diff(start, end, path),
                 connection,
-                new DbWorksRepository(new SqlWorks(connection),
-                    new SqlAuthors(connection),
-                    new SqlRatings(connection),
+                new DbWorksRepository(new SqlServerWorks(connection),
+                    new SqlServerAuthors(connection),
+                    new SqlServerRatings(connection),
                     new EloFormula()));
 
             if (command.Equals("show"))

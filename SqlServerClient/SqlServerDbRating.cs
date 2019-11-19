@@ -5,12 +5,12 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlServerClient
 {
-    public sealed class SqlIdentifiableRating : IdentifiableRating
+    public sealed class SqlServerDbRating : DbRating
     {
         private readonly IDbConnection _connection;
         private readonly int _id;
 
-        public SqlIdentifiableRating(IDbConnection connection, int id)
+        public SqlServerDbRating(IDbConnection connection, int id)
         {
             _connection = connection;
             _id = id;
@@ -33,7 +33,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlIdentifiableRating(_connection, (int) reader["PreviousRatingId"]);
+            return new SqlServerDbRating(_connection, (int) reader["PreviousRatingId"]);
         }
 
         public bool HasPreviousRating()
@@ -61,7 +61,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlIdentifiableWork(_connection, (int) reader["WorkId"]);
+            return new SqlServerDbWork(_connection, (int) reader["WorkId"]);
         }
 
         public Author Author()
@@ -76,7 +76,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlIdentifiableAuthor(_connection, (int) reader["AuthorId"]);
+            return new SqlServerDbAuthor(_connection, (int) reader["AuthorId"]);
         }
 
         public double Value()

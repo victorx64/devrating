@@ -4,22 +4,22 @@ namespace DevRating.Database
 {
     public interface Works
     {
-        IdentifiableWork Insert(
+        DbWork Insert(
             string repository,
             string start,
             string end,
-            IdentifiableObject author,
+            DbObject author,
             double reward,
-            IdentifiableObject rating);
+            DbObject rating);
 
-        IdentifiableWork Insert(
+        DbWork Insert(
             string repository,
             string start,
             string end,
-            IdentifiableObject author,
+            DbObject author,
             double reward);
 
-        IdentifiableWork Work(WorkKey key);
+        DbWork Work(WorkKey key);
         bool Exist(WorkKey key);
     }
 }

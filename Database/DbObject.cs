@@ -1,6 +1,6 @@
 namespace DevRating.Database
 {
-    public interface IdentifiableObject
+    public interface DbObject
     {
         int Id();
     }

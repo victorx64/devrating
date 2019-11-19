@@ -25,14 +25,14 @@ namespace DevRating.Database
             InsertAuthorNewRating(author, deletions, InsertedWork(key, additions, author));
         }
 
-        private IdentifiableAuthor Author(string email)
+        private DbAuthor Author(string email)
         {
             return _authors.Exist(email)
                 ? _authors.Author(email)
                 : _authors.Insert(email);
         }
 
-        private IdentifiableWork InsertedWork(WorkKey key, uint additions, IdentifiableObject author)
+        private DbWork InsertedWork(WorkKey key, uint additions, DbObject author)
         {
             if (_ratings.HasRatingOf(author))
             {
@@ -48,15 +48,15 @@ namespace DevRating.Database
             }
         }
 
-        private double RatingOf(IdentifiableObject author)
+        private double RatingOf(DbObject author)
         {
             return _ratings.HasRatingOf(author)
                 ? _ratings.RatingOf(author).Value()
                 : _formula.DefaultRating();
         }
 
-        private void InsertAuthorNewRating(IdentifiableObject author, IDictionary<string, uint> deletions,
-            IdentifiableObject work)
+        private void InsertAuthorNewRating(DbObject author, IDictionary<string, uint> deletions,
+            DbObject work)
         {
             var current = RatingOf(author);
 
@@ -72,7 +72,7 @@ namespace DevRating.Database
             }
         }
 
-        private IEnumerable<Match> InsertVictimsNewRatings(IDictionary<string, uint> deletions, IdentifiableObject work,
+        private IEnumerable<Match> InsertVictimsNewRatings(IDictionary<string, uint> deletions, DbObject work,
             double rating)
         {
             var matches = new List<Match>();

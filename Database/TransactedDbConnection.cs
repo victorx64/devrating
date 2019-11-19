@@ -27,9 +27,9 @@ namespace DevRating.Database
             return _transaction = _origin.BeginTransaction(il);
         }
 
-        public void ChangeDatabase(string databaseName)
+        public void ChangeDatabase(string name)
         {
-            _origin.ChangeDatabase(databaseName);
+            _origin.ChangeDatabase(name);
         }
 
         public void Close()

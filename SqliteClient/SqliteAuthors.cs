@@ -1,19 +1,19 @@
 using System.Data;
 using DevRating.Database;
-using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 
-namespace DevRating.SqlServerClient
+namespace DevRating.SqliteClient
 {
-    public sealed class SqlAuthors : Authors
+    public sealed class SqliteAuthors : Authors
     {
         private readonly IDbConnection _connection;
 
-        public SqlAuthors(IDbConnection connection)
+        public SqliteAuthors(IDbConnection connection)
         {
             _connection = connection;
         }
 
-        public IdentifiableAuthor Insert(string email)
+        public DbAuthor Insert(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -24,9 +24,9 @@ namespace DevRating.SqlServerClient
                 VALUES
                     (@Email)";
 
-            command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
+            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
 
-            return new SqlIdentifiableAuthor(_connection, (int) command.ExecuteScalar());
+            return new SqliteDbAuthor(_connection, (int) command.ExecuteScalar());
         }
 
         public bool Exist(string email)
@@ -35,26 +35,26 @@ namespace DevRating.SqlServerClient
 
             command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
 
-            command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar) {Value = email});
+            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
 
             using var reader = command.ExecuteReader();
 
             return reader.Read();
         }
 
-        public IdentifiableAuthor Author(string email)
+        public DbAuthor Author(string email)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
 
-            command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar) {Value = email});
+            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
 
             using var reader = command.ExecuteReader();
 
             reader.Read();
 
-            return new SqlIdentifiableAuthor(_connection, (int) reader["Id"]);
+            return new SqliteDbAuthor(_connection, (int) reader["Id"]);
         }
     }
 }

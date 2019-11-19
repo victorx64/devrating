@@ -20,7 +20,7 @@ namespace DevRating.ConsoleApp
         public void PrintToConsole()
         {
             _connection.Open();
-            var transaction = _connection.BeginTransaction();
+            using var transaction = _connection.BeginTransaction();
 
             try
             {
@@ -55,7 +55,7 @@ namespace DevRating.ConsoleApp
         {
             _connection.Open();
 
-            var transaction = _connection.BeginTransaction();
+            using var transaction = _connection.BeginTransaction();
 
             try
             {

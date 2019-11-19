@@ -4,16 +4,16 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlServerClient
 {
-    public sealed class SqlRatings : Ratings
+    public sealed class SqlServerRatings : Ratings
     {
         private readonly IDbConnection _connection;
 
-        public SqlRatings(IDbConnection connection)
+        public SqlServerRatings(IDbConnection connection)
         {
             _connection = connection;
         }
 
-        public IdentifiableRating Insert(IdentifiableObject author, double value, IdentifiableObject work)
+        public DbRating Insert(DbObject author, double value, DbObject work)
         {
             using var command = _connection.CreateCommand();
 
@@ -34,10 +34,10 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@WorkId", SqlDbType.Int) {Value = work.Id()});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
-            return new SqlIdentifiableRating(_connection, (int) command.ExecuteScalar());
+            return new SqlServerDbRating(_connection, (int) command.ExecuteScalar());
         }
 
-        public IdentifiableRating Insert(IdentifiableObject author, double value, IdentifiableObject previous, IdentifiableObject work)
+        public DbRating Insert(DbObject author, double value, DbObject previous, DbObject work)
         {
             using var command = _connection.CreateCommand();
 
@@ -59,10 +59,10 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@WorkId", SqlDbType.Int) {Value = work.Id()});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
-            return new SqlIdentifiableRating(_connection, (int) command.ExecuteScalar());
+            return new SqlServerDbRating(_connection, (int) command.ExecuteScalar());
         }
 
-        public IdentifiableRating RatingOf(IdentifiableObject author)
+        public DbRating RatingOf(DbObject author)
         {
             using var command = _connection.CreateCommand();
 
@@ -75,10 +75,10 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlIdentifiableRating(_connection, (int) reader["Id"]);
+            return new SqlServerDbRating(_connection, (int) reader["Id"]);
         }
 
-        public bool HasRatingOf(IdentifiableObject author)
+        public bool HasRatingOf(DbObject author)
         {
             using var command = _connection.CreateCommand();
 

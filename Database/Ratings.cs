@@ -2,17 +2,17 @@ namespace DevRating.Database
 {
     public interface Ratings
     {
-        IdentifiableRating Insert(IdentifiableObject author,
+        DbRating Insert(DbObject author,
             double value,
-            IdentifiableObject work);
+            DbObject work);
 
-        IdentifiableRating Insert(IdentifiableObject author,
+        DbRating Insert(DbObject author,
             double value,
-            IdentifiableObject previous,
-            IdentifiableObject work);
+            DbObject previous,
+            DbObject work);
 
-        IdentifiableRating RatingOf(IdentifiableObject author);
+        DbRating RatingOf(DbObject author);
 
-        bool HasRatingOf(IdentifiableObject author);
+        bool HasRatingOf(DbObject author);
     }
 }

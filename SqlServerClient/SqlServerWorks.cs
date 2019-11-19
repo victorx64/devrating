@@ -5,16 +5,16 @@ using Microsoft.Data.SqlClient;
 
 namespace DevRating.SqlServerClient
 {
-    public sealed class SqlWorks : Works
+    public sealed class SqlServerWorks : Works
     {
         private readonly IDbConnection _connection;
 
-        public SqlWorks(IDbConnection connection)
+        public SqlServerWorks(IDbConnection connection)
         {
             _connection = connection;
         }
 
-        public IdentifiableWork Work(WorkKey key)
+        public DbWork Work(WorkKey key)
         {
             using var command = _connection.CreateCommand();
 
@@ -34,7 +34,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlIdentifiableWork(_connection, (int) reader["Id"]);
+            return new SqlServerDbWork(_connection, (int) reader["Id"]);
         }
 
         public bool Exist(WorkKey key)
@@ -58,8 +58,8 @@ namespace DevRating.SqlServerClient
             return reader.Read();
         }
 
-        public IdentifiableWork Insert(string repository, string start, string end, IdentifiableObject author,
-            double reward, IdentifiableObject rating)
+        public DbWork Insert(string repository, string start, string end, DbObject author,
+            double reward, DbObject rating)
         {
             using var command = _connection.CreateCommand();
 
@@ -89,10 +89,10 @@ namespace DevRating.SqlServerClient
 
             var id = (int) command.ExecuteScalar();
 
-            return new SqlIdentifiableWork(_connection, id);
+            return new SqlServerDbWork(_connection, id);
         }
 
-        public IdentifiableWork Insert(string repository, string start, string end, IdentifiableObject author,
+        public DbWork Insert(string repository, string start, string end, DbObject author,
             double reward)
         {
             using var command = _connection.CreateCommand();
@@ -122,7 +122,7 @@ namespace DevRating.SqlServerClient
 
             var id = (int) command.ExecuteScalar();
 
-            return new SqlIdentifiableWork(_connection, id);
+            return new SqlServerDbWork(_connection, id);
         }
     }
 }

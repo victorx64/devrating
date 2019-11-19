@@ -2,7 +2,7 @@ using DevRating.Domain;
 
 namespace DevRating.Database
 {
-    public interface IdentifiableRating : Rating, IdentifiableObject
+    public interface DbRating : Rating, DbObject
     {
     }
 }
