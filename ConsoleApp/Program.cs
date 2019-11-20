@@ -10,16 +10,18 @@ namespace DevRating.ConsoleApp
     {
         private static void Main(string[] args)
         {
+            var arguments = new DefaultArguments(args);
+
             new Application(
-                    new LibGit2Diff(args[1], args[2], args[3]),
-                    new DbWorksRepository(
-                        new SqlServerEntities(
-                            new TransactedDbConnection(
-                                new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DevRating;" +
-                                                  "Integrated Security=True;Persist Security Info=False;Pooling=False;" +
-                                                  "MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False"))),
+                    new LibGit2Diff(arguments.Path(), arguments.StartCommit(), arguments.EndCommit()),
+                    new SqlServerInstance(
+                        new TransactedDbConnection(
+                            new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DevRating;" +
+                                              "Integrated Security=True;Persist Security Info=False;" +
+                                              "Pooling=False;MultipleActiveResultSets=False;Encrypt=False;" +
+                                              "TrustServerCertificate=False")),
                         new EloFormula()))
-                .Run(args[0]);
+                .Run(arguments.Command());
         }
     }
 }

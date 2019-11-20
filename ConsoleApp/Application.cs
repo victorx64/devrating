@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using DevRating.Database;
 using DevRating.Domain;
 
 namespace DevRating.ConsoleApp
@@ -6,43 +8,43 @@ namespace DevRating.ConsoleApp
     internal sealed class Application
     {
         private readonly Diff _diff;
-        private readonly WorksRepository _works;
+        private readonly Instance _instance;
+        private readonly IDictionary<string, Action> _actions;
 
-        public Application(Diff diff, WorksRepository works)
+        public Application(Diff diff, Instance instance)
         {
             _diff = diff;
-            _works = works;
+            _instance = instance;
+            _actions = new Dictionary<string, Action>
+            {
+                {"show", PrintToConsole},
+                {"show-saved", PrintSavedToConsole},
+                {"save", Save},
+                {"db-exist", DbExist},
+                {"db-create", _instance.Create},
+                {"db-drop", _instance.Drop},
+            };
         }
 
         public void Run(string command)
         {
-            if (command.Equals("show"))
-            {
-                PrintToConsole();
-            }
-            else if (command.Equals("show-saved"))
-            {
-                PrintSavedToConsole();
-            }
-            else if (command.Equals("save"))
-            {
-                Save();
-            }
-            else
-            {
-                throw new Exception("Command is not recognized");
-            }
+            _actions[command].Invoke();
+        }
+
+        private void DbExist()
+        {
+            Console.WriteLine(_instance.Exist());
         }
 
         private void PrintToConsole()
         {
-            var connection = _works.Connection();
+            var connection = _instance.Connection();
 
             using var transaction = connection.BeginTransaction();
 
             try
             {
-                _diff.AddTo(_works);
+                _diff.AddTo(_instance.Works());
 
                 PrintSavedToConsole();
             }
@@ -55,7 +57,7 @@ namespace DevRating.ConsoleApp
 
         private void PrintSavedToConsole()
         {
-            var work = _works.Work(_diff.Key());
+            var work = _instance.Works().Work(_diff.Key());
 
             Console.WriteLine("Reward:");
             Console.WriteLine($"{work.Author().Email()} {work.Reward():F2}");
@@ -71,7 +73,7 @@ namespace DevRating.ConsoleApp
 
         private void Save()
         {
-            var connection = _works.Connection();
+            var connection = _instance.Connection();
 
             connection.Open();
 
@@ -79,7 +81,7 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                _diff.AddTo(_works);
+                _diff.AddTo(_instance.Works());
 
                 transaction.Commit();
             }
