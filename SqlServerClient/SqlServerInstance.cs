@@ -37,13 +37,15 @@ namespace DevRating.SqlServerClient
                 CREATE TABLE [dbo].[Author](
 	                [Id] [int] IDENTITY(1,1) NOT NULL,
 	                [Email] [nvarchar](50) NOT NULL,
-                 CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
+                 CONSTRAINT [PK_Author] PRIMARY KEY CLUSTERED 
                 (
 	                [Id] ASC
+                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+                 CONSTRAINT [UK_Author_Email] UNIQUE NONCLUSTERED 
+                (
+	                [Email] ASC
                 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
                 ) ON [PRIMARY]
-                SET ANSI_NULLS ON
-                SET QUOTED_IDENTIFIER ON
                 CREATE TABLE [dbo].[Rating](
 	                [Id] [int] IDENTITY(1,1) NOT NULL,
 	                [Rating] [real] NOT NULL,
@@ -55,21 +57,30 @@ namespace DevRating.SqlServerClient
 	                [Id] ASC
                 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
                 ) ON [PRIMARY]
-                SET ANSI_NULLS ON
-                SET QUOTED_IDENTIFIER ON
                 CREATE TABLE [dbo].[Work](
 	                [Id] [int] IDENTITY(1,1) NOT NULL,
 	                [Repository] [nvarchar](max) NOT NULL,
 	                [StartCommit] [nvarchar](50) NOT NULL,
 	                [EndCommit] [nvarchar](50) NOT NULL,
-	                [AuthorId] [int] NULL,
-	                [Reward] [real] NULL,
+	                [AuthorId] [int] NOT NULL,
+	                [Reward] [real] NOT NULL,
 	                [UsedRatingId] [int] NULL,
                  CONSTRAINT [PK_Work] PRIMARY KEY CLUSTERED 
                 (
 	                [Id] ASC
+                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+                 CONSTRAINT [UK_Work_Commits] UNIQUE NONCLUSTERED 
+                (
+	                [StartCommit] ASC,
+	                [EndCommit] ASC
                 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
                 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+                CREATE UNIQUE NONCLUSTERED INDEX [UK_Rating_PreviousRatingId] ON [dbo].[Rating]
+                (
+	                [PreviousRatingId] ASC
+                )
+                WHERE ([PreviousRatingId] IS NOT NULL)
+                WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
                 ALTER TABLE [dbo].[Rating]  WITH CHECK ADD  CONSTRAINT [FK_Rating_AuthorId] FOREIGN KEY([AuthorId])
                 REFERENCES [dbo].[Author] ([Id])
                 ALTER TABLE [dbo].[Rating] CHECK CONSTRAINT [FK_Rating_AuthorId]
