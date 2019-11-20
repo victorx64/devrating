@@ -33,29 +33,23 @@ namespace DevRating.SqliteClient
             command.CommandText = @"
                 create table Author
                 (
-                    Id    int identity
-                        constraint PK_Author
-                            primary key,
+                    Id    integer
+                        primary key autoincrement,
                     Email nvarchar(50) not null
-                        constraint UK_Author_Email
-                            unique
+                        unique
                 );
 
                 create table Rating
                 (
-                    Id               int identity
-                        constraint PK_Rating
-                            primary key,
+                    Id               integer
+                        primary key autoincrement,
                     Rating           real not null,
-                    PreviousRatingId int
-                        constraint FK_Rating_PreviousRatingId
-                            references Rating,
-                    WorkId           int  not null
-                        constraint FK_Rating_WorkId
-                            references Work,
-                    AuthorId         int  not null
-                        constraint FK_Rating_AuthorId
-                            references Author
+                    PreviousRatingId integer
+                        references Rating,
+                    WorkId           integer  not null
+                        references Work,
+                    AuthorId         integer  not null
+                        references Author
                 );
 
                 create unique index UK_Rating_PreviousRatingId
@@ -64,19 +58,16 @@ namespace DevRating.SqliteClient
 
                 create table Work
                 (
-                    Id           int identity
-                        constraint PK_Work
-                            primary key,
+                    Id           integer
+                        primary key autoincrement,
                     Repository   nvarchar     not null,
                     StartCommit  nvarchar(50) not null,
                     EndCommit    nvarchar(50) not null,
-                    AuthorId     int          not null
-                        constraint FK_Work_AuthorId
-                            references Author,
+                    AuthorId     integer      not null
+                        references Author,
                     Reward       real         not null,
-                    UsedRatingId int
-                        constraint FK_Work_RatingId
-                            references Rating,
+                    UsedRatingId integer
+                        references Rating,
                     constraint UK_Work_Commits
                         unique (StartCommit, EndCommit)
                 );";
