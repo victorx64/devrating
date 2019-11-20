@@ -31,71 +31,57 @@ namespace DevRating.SqlServerClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                USE [devrating]
-                SET ANSI_NULLS ON
-                SET QUOTED_IDENTIFIER ON
-                CREATE TABLE [dbo].[Author](
-	                [Id] [int] IDENTITY(1,1) NOT NULL,
-	                [Email] [nvarchar](50) NOT NULL,
-                 CONSTRAINT [PK_Author] PRIMARY KEY CLUSTERED 
+                create table Author
                 (
-	                [Id] ASC
-                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
-                 CONSTRAINT [UK_Author_Email] UNIQUE NONCLUSTERED 
+                    Id int identity
+                        constraint PK_Author
+                            primary key,
+                    Email nvarchar(50) not null
+                        constraint UK_Author_Email
+                            unique
+                );
+
+                create table Rating
                 (
-	                [Email] ASC
-                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-                ) ON [PRIMARY]
-                CREATE TABLE [dbo].[Rating](
-	                [Id] [int] IDENTITY(1,1) NOT NULL,
-	                [Rating] [real] NOT NULL,
-	                [PreviousRatingId] [int] NULL,
-	                [WorkId] [int] NOT NULL,
-	                [AuthorId] [int] NOT NULL,
-                 CONSTRAINT [PK_Rating] PRIMARY KEY CLUSTERED 
+                    Id int identity
+                        constraint PK_Rating
+                            primary key,
+                    Rating real not null,
+                    PreviousRatingId int
+                        constraint FK_Rating_PreviousRatingId
+                            references Rating,
+                    WorkId int not null,
+                    AuthorId int not null
+                        constraint FK_Rating_AuthorId
+                            references Author
+                );
+
+                create unique index UK_Rating_PreviousRatingId
+                    on Rating (PreviousRatingId)
+                    where [PreviousRatingId] IS NOT NULL;
+
+                create table Work
                 (
-	                [Id] ASC
-                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-                ) ON [PRIMARY]
-                CREATE TABLE [dbo].[Work](
-	                [Id] [int] IDENTITY(1,1) NOT NULL,
-	                [Repository] [nvarchar](max) NOT NULL,
-	                [StartCommit] [nvarchar](50) NOT NULL,
-	                [EndCommit] [nvarchar](50) NOT NULL,
-	                [AuthorId] [int] NOT NULL,
-	                [Reward] [real] NOT NULL,
-	                [UsedRatingId] [int] NULL,
-                 CONSTRAINT [PK_Work] PRIMARY KEY CLUSTERED 
-                (
-	                [Id] ASC
-                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
-                 CONSTRAINT [UK_Work_Commits] UNIQUE NONCLUSTERED 
-                (
-	                [StartCommit] ASC,
-	                [EndCommit] ASC
-                )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-                ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-                CREATE UNIQUE NONCLUSTERED INDEX [UK_Rating_PreviousRatingId] ON [dbo].[Rating]
-                (
-	                [PreviousRatingId] ASC
-                )
-                WHERE ([PreviousRatingId] IS NOT NULL)
-                WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-                ALTER TABLE [dbo].[Rating]  WITH CHECK ADD  CONSTRAINT [FK_Rating_AuthorId] FOREIGN KEY([AuthorId])
-                REFERENCES [dbo].[Author] ([Id])
-                ALTER TABLE [dbo].[Rating] CHECK CONSTRAINT [FK_Rating_AuthorId]
-                ALTER TABLE [dbo].[Rating]  WITH CHECK ADD  CONSTRAINT [FK_Rating_PreviousRatingId] FOREIGN KEY([PreviousRatingId])
-                REFERENCES [dbo].[Rating] ([Id])
-                ALTER TABLE [dbo].[Rating] CHECK CONSTRAINT [FK_Rating_PreviousRatingId]
-                ALTER TABLE [dbo].[Rating]  WITH CHECK ADD  CONSTRAINT [FK_Rating_WorkId] FOREIGN KEY([WorkId])
-                REFERENCES [dbo].[Work] ([Id])
-                ALTER TABLE [dbo].[Rating] CHECK CONSTRAINT [FK_Rating_WorkId]
-                ALTER TABLE [dbo].[Work]  WITH CHECK ADD  CONSTRAINT [FK_Work_AuthorId] FOREIGN KEY([AuthorId])
-                REFERENCES [dbo].[Author] ([Id])
-                ALTER TABLE [dbo].[Work] CHECK CONSTRAINT [FK_Work_AuthorId]
-                ALTER TABLE [dbo].[Work]  WITH CHECK ADD  CONSTRAINT [FK_Work_RatingId] FOREIGN KEY([UsedRatingId])
-                REFERENCES [dbo].[Rating] ([Id])
-                ALTER TABLE [dbo].[Work] CHECK CONSTRAINT [FK_Work_RatingId]";
+                    Id int identity
+                        constraint PK_Work
+                            primary key,
+                    Repository nvarchar(max) not null,
+                    StartCommit nvarchar(50) not null,
+                    EndCommit nvarchar(50) not null,
+                    AuthorId int not null
+                        constraint FK_Work_AuthorId
+                            references Author,
+                    Reward real not null,
+                    UsedRatingId int
+                        constraint FK_Work_RatingId
+                            references Rating,
+                    constraint UK_Work_Commits
+                        unique (StartCommit, EndCommit)
+                );
+
+                alter table Rating
+                    add constraint FK_Rating_WorkId
+                        foreign key (WorkId) references Work;";
 
             command.ExecuteNonQuery();
         }
@@ -105,15 +91,14 @@ namespace DevRating.SqlServerClient
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                USE [devrating]
-                ALTER TABLE [dbo].[Work] DROP CONSTRAINT [FK_Work_RatingId]
-                ALTER TABLE [dbo].[Work] DROP CONSTRAINT [FK_Work_AuthorId]
-                ALTER TABLE [dbo].[Rating] DROP CONSTRAINT [FK_Rating_WorkId]
-                ALTER TABLE [dbo].[Rating] DROP CONSTRAINT [FK_Rating_PreviousRatingId]
-                ALTER TABLE [dbo].[Rating] DROP CONSTRAINT [FK_Rating_AuthorId]
-                DROP TABLE [dbo].[Work]
-                DROP TABLE [dbo].[Rating]
-                DROP TABLE [dbo].[Author]";
+                alter table Work drop constraint FK_Work_RatingId
+                alter table Work drop constraint FK_Work_AuthorId
+                alter table Rating drop constraint FK_Rating_WorkId
+                alter table Rating drop constraint FK_Rating_PreviousRatingId
+                alter table Rating drop constraint FK_Rating_AuthorId
+                drop table Work
+                drop table Rating
+                drop table Author";
 
             command.ExecuteNonQuery();
         }
@@ -138,11 +123,11 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@table", SqlDbType.NVarChar, 50) {Value = name});
 
             var reader = command.ExecuteReader();
-            
+
             var exist = reader.Read();
-            
+
             reader.Close();
-            
+
             return exist;
         }
 
