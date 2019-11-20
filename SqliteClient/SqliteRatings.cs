@@ -23,18 +23,18 @@ namespace DevRating.SqliteClient
                     ,PreviousRatingId
                     ,WorkId
                     ,AuthorId)
-                OUTPUT Inserted.Id
                 VALUES
                     (@Rating
                     ,NULL
                     ,@WorkId
-                    ,@AuthorId)";
+                    ,@AuthorId);
+                SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Rating", SqliteType.Real) {Value = value});
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, (int) command.ExecuteScalar());
+            return new SqliteDbRating(_connection, (long) command.ExecuteScalar());
         }
 
         public DbRating Insert(DbObject author, double value, DbObject previous, DbObject work)
@@ -47,19 +47,19 @@ namespace DevRating.SqliteClient
                     ,PreviousRatingId
                     ,WorkId
                     ,AuthorId)
-                OUTPUT Inserted.Id
                 VALUES
                     (@Rating
                     ,@PreviousRatingId
                     ,@WorkId
-                    ,@AuthorId)";
+                    ,@AuthorId);
+                SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Rating", SqliteType.Real) {Value = value});
             command.Parameters.Add(new SqliteParameter("@PreviousRatingId", SqliteType.Integer) {Value = previous.Id()});
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, (int) command.ExecuteScalar());
+            return new SqliteDbRating(_connection, (long) command.ExecuteScalar());
         }
 
         public DbRating RatingOf(DbObject author)
@@ -67,7 +67,7 @@ namespace DevRating.SqliteClient
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT TOP (1) Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC";
+                "SELECT Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC LIMIT 1";
 
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
@@ -75,7 +75,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, (int) reader["Id"]);
+            return new SqliteDbRating(_connection, (long) reader["Id"]);
         }
 
         public bool HasRatingOf(DbObject author)
@@ -83,7 +83,7 @@ namespace DevRating.SqliteClient
             using var command = _connection.CreateCommand();
 
             command.CommandText =
-                "SELECT TOP (1) Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC";
+                "SELECT Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC LIMIT 1";
 
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 

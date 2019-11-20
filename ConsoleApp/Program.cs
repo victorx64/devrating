@@ -1,7 +1,9 @@
 ﻿using DevRating.Database;
 using DevRating.EloRating;
+using DevRating.SqliteClient;
 using DevRating.SqlServerClient;
 using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace DevRating.ConsoleApp
 {
@@ -11,12 +13,9 @@ namespace DevRating.ConsoleApp
         {
             new DefaultApplication(
                 new DefaultArguments(args),
-                new SqlServerInstance(
+                new SqliteInstance(
                     new TransactedDbConnection(
-                        new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=devrating;" +
-                                          "Integrated Security=True;Persist Security Info=False;" +
-                                          "Pooling=False;MultipleActiveResultSets=False;Encrypt=False;" +
-                                          "TrustServerCertificate=False")),
+                        new SqliteConnection("Data Source=local.db")),
                     new EloFormula())).Run();
         }
     }

@@ -34,7 +34,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbWork(_connection, (int) reader["Id"]);
+            return new SqliteDbWork(_connection, (long) reader["Id"]);
         }
 
         public bool Exist(WorkKey key)
@@ -58,8 +58,8 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public DbWork Insert(string repository, string start, string end, DbObject author,
-            double reward, DbObject rating)
+        public DbWork Insert(string repository, string start, string end, DbObject author, double reward,
+            DbObject rating)
         {
             using var command = _connection.CreateCommand();
 
@@ -71,14 +71,14 @@ namespace DevRating.SqliteClient
                     ,AuthorId
                     ,Reward
                     ,UsedRatingId)
-                OUTPUT Inserted.Id
                 VALUES
                     (@Repository
                     ,@StartCommit
                     ,@EndCommit
                     ,@AuthorId
                     ,@Reward
-                    ,@UsedRatingId)";
+                    ,@UsedRatingId);
+                SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
@@ -87,13 +87,12 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@Reward", SqlDbType.Real) {Value = reward});
             command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) {Value = rating.Id()});
 
-            var id = (int) command.ExecuteScalar();
+            var id = (long) command.ExecuteScalar();
 
             return new SqliteDbWork(_connection, id);
         }
 
-        public DbWork Insert(string repository, string start, string end, DbObject author,
-            double reward)
+        public DbWork Insert(string repository, string start, string end, DbObject author, double reward)
         {
             using var command = _connection.CreateCommand();
 
@@ -105,14 +104,14 @@ namespace DevRating.SqliteClient
                     ,AuthorId
                     ,Reward
                     ,UsedRatingId)
-                OUTPUT Inserted.Id
                 VALUES
                     (@Repository
                     ,@StartCommit
                     ,@EndCommit
                     ,@AuthorId
                     ,@Reward
-                    ,NULL)";
+                    ,NULL);
+                SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
@@ -120,7 +119,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
             command.Parameters.Add(new SqliteParameter("@Reward", SqlDbType.Real) {Value = reward});
 
-            var id = (int) command.ExecuteScalar();
+            var id = (long) command.ExecuteScalar();
 
             return new SqliteDbWork(_connection, id);
         }

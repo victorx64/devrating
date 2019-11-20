@@ -20,13 +20,13 @@ namespace DevRating.SqliteClient
             command.CommandText = @"
                 INSERT INTO Author
                     (Email)
-                OUTPUT Inserted.Id
                 VALUES
-                    (@Email)";
+                    (@Email);
+                SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
 
-            return new SqliteDbAuthor(_connection, (int) command.ExecuteScalar());
+            return new SqliteDbAuthor(_connection, (long) command.ExecuteScalar());
         }
 
         public bool Exist(string email)
@@ -54,7 +54,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, (int) reader["Id"]);
+            return new SqliteDbAuthor(_connection, (long) reader["Id"]);
         }
     }
 }

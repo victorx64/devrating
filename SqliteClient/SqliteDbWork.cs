@@ -9,15 +9,15 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteDbWork : DbWork
     {
         private readonly IDbConnection _connection;
-        private readonly int _id;
+        private readonly long _id;
 
-        public SqliteDbWork(IDbConnection connection, int id)
+        public SqliteDbWork(IDbConnection connection, long id)
         {
             _connection = connection;
             _id = id;
         }
 
-        public int Id()
+        public object Id()
         {
             return _id;
         }
@@ -34,7 +34,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return (float) reader["Reward"];
+            return (double) reader["Reward"];
         }
 
         public Author Author()
@@ -49,7 +49,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, (int) reader["AuthorId"]);
+            return new SqliteDbAuthor(_connection, (long) reader["AuthorId"]);
         }
 
         public IEnumerable<Rating> Ratings()
@@ -66,7 +66,7 @@ namespace DevRating.SqliteClient
 
             while (reader.Read())
             {
-                ratings.Add(new SqliteDbRating(_connection, (int) reader["Id"]));
+                ratings.Add(new SqliteDbRating(_connection, (long) reader["Id"]));
             }
 
             return ratings;

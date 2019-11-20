@@ -43,9 +43,19 @@ namespace DevRating.ConsoleApp
 
             connection.Open();
 
+            using var transaction = connection.BeginTransaction();
+
             try
             {
                 Console.WriteLine(_instance.Exist());
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+
+                throw;
             }
             finally
             {
@@ -59,9 +69,19 @@ namespace DevRating.ConsoleApp
 
             connection.Open();
 
+            using var transaction = connection.BeginTransaction();
+
             try
             {
                 _instance.Create();
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+
+                throw;
             }
             finally
             {
@@ -75,9 +95,19 @@ namespace DevRating.ConsoleApp
 
             connection.Open();
 
+            using var transaction = connection.BeginTransaction();
+
             try
             {
                 _instance.Drop();
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+
+                throw;
             }
             finally
             {
@@ -124,7 +154,7 @@ namespace DevRating.ConsoleApp
                 connection.Close();
             }
         }
-        
+
         private void PrintWorkToConsole(Work work)
         {
             Console.WriteLine("Reward:");

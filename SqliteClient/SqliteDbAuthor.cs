@@ -7,15 +7,15 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteDbAuthor : DbAuthor
     {
         private readonly IDbConnection _connection;
-        private readonly int _id;
+        private readonly long _id;
 
-        public SqliteDbAuthor(IDbConnection connection, int id)
+        public SqliteDbAuthor(IDbConnection connection, long id)
         {
             _connection = connection;
             _id = id;
         }
 
-        public int Id()
+        public object Id()
         {
             return _id;
         }

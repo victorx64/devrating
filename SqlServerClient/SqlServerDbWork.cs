@@ -17,7 +17,7 @@ namespace DevRating.SqlServerClient
             _id = id;
         }
 
-        public int Id()
+        public object Id()
         {
             return _id;
         }
