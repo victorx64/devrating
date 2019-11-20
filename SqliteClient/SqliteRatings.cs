@@ -34,7 +34,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, (long) command.ExecuteScalar());
+            return new SqliteDbRating(_connection, command.ExecuteScalar());
         }
 
         public DbRating Insert(DbObject author, double value, DbObject previous, DbObject work)
@@ -59,7 +59,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, (long) command.ExecuteScalar());
+            return new SqliteDbRating(_connection, command.ExecuteScalar());
         }
 
         public DbRating RatingOf(DbObject author)
@@ -75,7 +75,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, (long) reader["Id"]);
+            return new SqliteDbRating(_connection, reader["Id"]);
         }
 
         public bool HasRatingOf(DbObject author)

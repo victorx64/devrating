@@ -8,9 +8,9 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteDbRating : DbRating
     {
         private readonly IDbConnection _connection;
-        private readonly long _id;
+        private readonly object _id;
 
-        public SqliteDbRating(IDbConnection connection, long id)
+        public SqliteDbRating(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;
@@ -33,7 +33,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, (long) reader["PreviousRatingId"]);
+            return new SqliteDbRating(_connection, reader["PreviousRatingId"]);
         }
 
         public bool HasPreviousRating()
@@ -61,7 +61,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbWork(_connection, (long) reader["WorkId"]);
+            return new SqliteDbWork(_connection, reader["WorkId"]);
         }
 
         public Author Author()
@@ -76,7 +76,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, (long) reader["AuthorId"]);
+            return new SqliteDbAuthor(_connection, reader["AuthorId"]);
         }
 
         public double Value()

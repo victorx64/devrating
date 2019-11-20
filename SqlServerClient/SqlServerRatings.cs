@@ -34,7 +34,7 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@WorkId", SqlDbType.Int) {Value = work.Id()});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
-            return new SqlServerDbRating(_connection, (int) command.ExecuteScalar());
+            return new SqlServerDbRating(_connection, command.ExecuteScalar());
         }
 
         public DbRating Insert(DbObject author, double value, DbObject previous, DbObject work)
@@ -59,7 +59,7 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@WorkId", SqlDbType.Int) {Value = work.Id()});
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
 
-            return new SqlServerDbRating(_connection, (int) command.ExecuteScalar());
+            return new SqlServerDbRating(_connection, command.ExecuteScalar());
         }
 
         public DbRating RatingOf(DbObject author)
@@ -75,7 +75,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbRating(_connection, (int) reader["Id"]);
+            return new SqlServerDbRating(_connection, reader["Id"]);
         }
 
         public bool HasRatingOf(DbObject author)

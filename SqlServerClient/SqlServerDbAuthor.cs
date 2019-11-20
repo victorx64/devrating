@@ -7,9 +7,9 @@ namespace DevRating.SqlServerClient
     internal sealed class SqlServerDbAuthor : DbAuthor
     {
         private readonly IDbConnection _connection;
-        private readonly int _id;
+        private readonly object _id;
 
-        public SqlServerDbAuthor(IDbConnection connection, int id)
+        public SqlServerDbAuthor(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;

@@ -26,7 +26,7 @@ namespace DevRating.SqlServerClient
 
             command.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 50) {Value = email});
 
-            return new SqlServerDbAuthor(_connection, (int) command.ExecuteScalar());
+            return new SqlServerDbAuthor(_connection, command.ExecuteScalar());
         }
 
         public bool Exist(string email)
@@ -54,7 +54,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbAuthor(_connection, (int) reader["Id"]);
+            return new SqlServerDbAuthor(_connection, reader["Id"]);
         }
     }
 }

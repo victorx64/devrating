@@ -34,7 +34,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbWork(_connection, (long) reader["Id"]);
+            return new SqliteDbWork(_connection, reader["Id"]);
         }
 
         public bool Exist(WorkKey key)
@@ -87,7 +87,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@Reward", SqlDbType.Real) {Value = reward});
             command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) {Value = rating.Id()});
 
-            var id = (long) command.ExecuteScalar();
+            var id = command.ExecuteScalar();
 
             return new SqliteDbWork(_connection, id);
         }
@@ -119,7 +119,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
             command.Parameters.Add(new SqliteParameter("@Reward", SqlDbType.Real) {Value = reward});
 
-            var id = (long) command.ExecuteScalar();
+            var id = command.ExecuteScalar();
 
             return new SqliteDbWork(_connection, id);
         }

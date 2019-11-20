@@ -34,7 +34,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbWork(_connection, (int) reader["Id"]);
+            return new SqlServerDbWork(_connection, reader["Id"]);
         }
 
         public bool Exist(WorkKey key)
@@ -87,7 +87,7 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = reward});
             command.Parameters.Add(new SqlParameter("@UsedRatingId", SqlDbType.Int) {Value = rating.Id()});
 
-            var id = (int) command.ExecuteScalar();
+            var id = command.ExecuteScalar();
 
             return new SqlServerDbWork(_connection, id);
         }
@@ -120,7 +120,7 @@ namespace DevRating.SqlServerClient
             command.Parameters.Add(new SqlParameter("@AuthorId", SqlDbType.Int) {Value = author.Id()});
             command.Parameters.Add(new SqlParameter("@Reward", SqlDbType.Real) {Value = reward});
 
-            var id = (int) command.ExecuteScalar();
+            var id = command.ExecuteScalar();
 
             return new SqlServerDbWork(_connection, id);
         }

@@ -9,9 +9,9 @@ namespace DevRating.SqlServerClient
     internal sealed class SqlServerDbWork : DbWork
     {
         private readonly IDbConnection _connection;
-        private readonly int _id;
+        private readonly object _id;
 
-        public SqlServerDbWork(IDbConnection connection, int id)
+        public SqlServerDbWork(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;
@@ -49,7 +49,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbAuthor(_connection, (int) reader["AuthorId"]);
+            return new SqlServerDbAuthor(_connection, reader["AuthorId"]);
         }
 
         public IEnumerable<Rating> Ratings()
@@ -66,7 +66,7 @@ namespace DevRating.SqlServerClient
 
             while (reader.Read())
             {
-                ratings.Add(new SqlServerDbRating(_connection, (int) reader["Id"]));
+                ratings.Add(new SqlServerDbRating(_connection, reader["Id"]));
             }
 
             return ratings;

@@ -26,7 +26,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
 
-            return new SqliteDbAuthor(_connection, (long) command.ExecuteScalar());
+            return new SqliteDbAuthor(_connection, command.ExecuteScalar());
         }
 
         public bool Exist(string email)
@@ -54,7 +54,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, (long) reader["Id"]);
+            return new SqliteDbAuthor(_connection, reader["Id"]);
         }
     }
 }

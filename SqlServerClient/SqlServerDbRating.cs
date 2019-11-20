@@ -8,9 +8,9 @@ namespace DevRating.SqlServerClient
     internal sealed class SqlServerDbRating : DbRating
     {
         private readonly IDbConnection _connection;
-        private readonly int _id;
+        private readonly object _id;
 
-        public SqlServerDbRating(IDbConnection connection, int id)
+        public SqlServerDbRating(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;
@@ -33,7 +33,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbRating(_connection, (int) reader["PreviousRatingId"]);
+            return new SqlServerDbRating(_connection, reader["PreviousRatingId"]);
         }
 
         public bool HasPreviousRating()
@@ -61,7 +61,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbWork(_connection, (int) reader["WorkId"]);
+            return new SqlServerDbWork(_connection, reader["WorkId"]);
         }
 
         public Author Author()
@@ -76,7 +76,7 @@ namespace DevRating.SqlServerClient
 
             reader.Read();
 
-            return new SqlServerDbAuthor(_connection, (int) reader["AuthorId"]);
+            return new SqlServerDbAuthor(_connection, reader["AuthorId"]);
         }
 
         public double Value()
