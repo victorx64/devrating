@@ -2,18 +2,19 @@ using System;
 using System.Collections.Generic;
 using DevRating.Database;
 using DevRating.Domain;
+using DevRating.LibGit2SharpClient;
 
 namespace DevRating.ConsoleApp
 {
     internal sealed class Application
     {
-        private readonly Diff _diff;
+        private readonly Arguments _arguments;
         private readonly Instance _instance;
         private readonly IDictionary<string, Action> _actions;
 
-        public Application(Diff diff, Instance instance)
+        public Application(Arguments arguments, Instance instance)
         {
-            _diff = diff;
+            _arguments = arguments;
             _instance = instance;
             _actions = new Dictionary<string, Action>
             {
@@ -21,30 +22,80 @@ namespace DevRating.ConsoleApp
                 {"show-saved", PrintSavedToConsole},
                 {"save", Save},
                 {"db-exist", DbExist},
-                {"db-create", _instance.Create},
-                {"db-drop", _instance.Drop},
+                {"db-create", DbCreate},
+                {"db-drop", DbDrop},
             };
         }
 
-        public void Run(string command)
+        public void Run()
         {
-            _actions[command].Invoke();
+            _actions[_arguments.Command()].Invoke();
+        }
+
+        private Diff Diff()
+        {
+            return new LibGit2Diff(_arguments.Path(), _arguments.StartCommit(), _arguments.EndCommit());
         }
 
         private void DbExist()
         {
-            Console.WriteLine(_instance.Exist());
+            var connection = _instance.Connection();
+
+            connection.Open();
+
+            try
+            {
+                Console.WriteLine(_instance.Exist());
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        private void DbCreate()
+        {
+            var connection = _instance.Connection();
+
+            connection.Open();
+
+            try
+            {
+                _instance.Create();
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        private void DbDrop()
+        {
+            var connection = _instance.Connection();
+
+            connection.Open();
+
+            try
+            {
+                _instance.Drop();
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
         private void PrintToConsole()
         {
             var connection = _instance.Connection();
 
+            connection.Open();
+
             using var transaction = connection.BeginTransaction();
 
             try
             {
-                _diff.AddTo(_instance.Works());
+                Diff().AddTo(_instance.Works());
 
                 PrintSavedToConsole();
             }
@@ -57,8 +108,22 @@ namespace DevRating.ConsoleApp
 
         private void PrintSavedToConsole()
         {
-            var work = _instance.Works().Work(_diff.Key());
+            var connection = _instance.Connection();
 
+            connection.Open();
+
+            try
+            {
+                PrintWorkToConsole(_instance.Works().Work(Diff().Key()));
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        
+        private void PrintWorkToConsole(Work work)
+        {
             Console.WriteLine("Reward:");
             Console.WriteLine($"{work.Author().Email()} {work.Reward():F2}");
             Console.WriteLine("Rating updates:");
@@ -81,7 +146,7 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                _diff.AddTo(_instance.Works());
+                Diff().AddTo(_instance.Works());
 
                 transaction.Commit();
             }
