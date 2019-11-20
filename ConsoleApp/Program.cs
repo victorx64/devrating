@@ -9,7 +9,7 @@ namespace DevRating.ConsoleApp
     {
         private static void Main(string[] args)
         {
-            new Application(
+            new DefaultApplication(
                 new DefaultArguments(args),
                 new SqlServerInstance(
                     new TransactedDbConnection(
