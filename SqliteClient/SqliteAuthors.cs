@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using DevRating.Database;
 using Microsoft.Data.Sqlite;
@@ -55,6 +56,45 @@ namespace DevRating.SqliteClient
             reader.Read();
 
             return new SqliteDbAuthor(_connection, reader["Id"]);
+        }
+
+        public IEnumerable<DbAuthor> TopAuthors()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT a.Id,
+                       a.Email,
+                       r1.Rating,
+                       r1.Id RatingId
+                FROM Author a
+                         INNER JOIN Rating r1 ON a.Id = r1.AuthorId
+                         LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
+                WHERE r2.Id IS NULL
+                ORDER BY r1.Rating DESC";
+
+            using var reader = command.ExecuteReader();
+
+            var authors = new List<SqliteDbAuthor>();
+
+            while (reader.Read())
+            {
+                authors.Add(
+                    new SqliteDbAuthor(
+                        new FakeConnection(
+                            new FakeCommand(
+                                new Dictionary<string, object>
+                                {
+                                    {"Email", reader["Email"]},
+                                    {"Id", reader["RatingId"]},
+                                    {"Rating", reader["Rating"]}
+                                }
+                            )
+                        ),
+                        reader["Id"]));
+            }
+
+            return authors;
         }
     }
 }

@@ -10,5 +10,6 @@ namespace DevRating.Database
         bool Exist();
         IDbConnection Connection();
         WorksRepository Works();
+        AuthorsRepository Authors();
     }
 }

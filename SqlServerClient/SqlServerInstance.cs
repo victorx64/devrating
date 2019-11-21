@@ -9,21 +9,29 @@ namespace DevRating.SqlServerClient
     {
         private readonly IDbConnection _connection;
         private readonly WorksRepository _works;
+        private readonly AuthorsRepository _authors;
 
         public SqlServerInstance(IDbConnection connection, Formula formula)
-            : this(connection,
-                new DbWorksRepository(
-                    new SqlServerWorks(connection),
-                    new SqlServerAuthors(connection),
-                    new SqlServerRatings(connection),
-                    formula))
+            : this(connection, formula,
+                new SqlServerWorks(connection),
+                new SqlServerAuthors(connection),
+                new SqlServerRatings(connection))
         {
         }
 
-        public SqlServerInstance(IDbConnection connection, WorksRepository works)
+        public SqlServerInstance(IDbConnection connection, Formula formula, Works works, Authors authors,
+            Ratings ratings)
+            : this(connection,
+                new DbWorksRepository(works, authors, ratings, formula),
+                new DbAuthorsRepository(authors))
+        {
+        }
+
+        public SqlServerInstance(IDbConnection connection, WorksRepository works, AuthorsRepository authors)
         {
             _connection = connection;
             _works = works;
+            _authors = authors;
         }
 
         public void Create()
@@ -139,6 +147,11 @@ namespace DevRating.SqlServerClient
         public WorksRepository Works()
         {
             return _works;
+        }
+
+        public AuthorsRepository Authors()
+        {
+            return _authors;
         }
     }
 }

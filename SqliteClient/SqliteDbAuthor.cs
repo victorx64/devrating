@@ -1,5 +1,6 @@
 using System.Data;
 using DevRating.Database;
+using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
@@ -33,6 +34,34 @@ namespace DevRating.SqliteClient
             reader.Read();
 
             return (string) reader["Email"];
+        }
+
+        public Rating Rating()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Rating WHERE Rating.AuthorId = @AuthorId ORDER BY Id DESC LIMIT 1";
+
+            command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return new SqliteDbRating(_connection, reader["Id"]);
+        }
+
+        public bool HasRating()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Rating WHERE Rating.AuthorId = @AuthorId ORDER BY Id DESC LIMIT 1";
+
+            command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
     }
 }

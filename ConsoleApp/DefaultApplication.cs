@@ -22,7 +22,30 @@ namespace DevRating.ConsoleApp
                 {"show-saved", PrintSavedToConsole},
                 {"save", Save},
                 {"reset", Reset},
+                {"top", Top}
             };
+        }
+
+        private void Top()
+        {
+            var connection = _instance.Connection();
+
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
+
+            try
+            {
+                foreach (var author in _instance.Authors().TopAuthors())
+                {
+                    Console.WriteLine($"{author.Email()} {author.Rating().Value():F2}");
+                }
+            }
+            finally
+            {
+                transaction.Rollback();
+                connection.Close();
+            }
         }
 
         public void Run()

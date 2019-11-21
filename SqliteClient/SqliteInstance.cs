@@ -9,21 +9,28 @@ namespace DevRating.SqliteClient
     {
         private readonly IDbConnection _connection;
         private readonly WorksRepository _works;
+        private readonly AuthorsRepository _authors;
 
         public SqliteInstance(IDbConnection connection, Formula formula)
-            : this(connection,
-                new DbWorksRepository(
-                    new SqliteWorks(connection),
-                    new SqliteAuthors(connection),
-                    new SqliteRatings(connection),
-                    formula))
+            : this(connection, formula,
+                new SqliteWorks(connection),
+                new SqliteAuthors(connection),
+                new SqliteRatings(connection))
         {
         }
 
-        public SqliteInstance(IDbConnection connection, WorksRepository works)
+        public SqliteInstance(IDbConnection connection, Formula formula, Works works, Authors authors, Ratings ratings)
+            : this(connection,
+                new DbWorksRepository(works, authors, ratings, formula),
+                new DbAuthorsRepository(authors))
+        {
+        }
+
+        public SqliteInstance(IDbConnection connection, WorksRepository works, AuthorsRepository authors)
         {
             _connection = connection;
             _works = works;
+            _authors = authors;
         }
 
         public void Create()
@@ -126,6 +133,11 @@ namespace DevRating.SqliteClient
         public WorksRepository Works()
         {
             return _works;
+        }
+
+        public AuthorsRepository Authors()
+        {
+            return _authors;
         }
     }
 }
