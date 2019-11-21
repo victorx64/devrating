@@ -19,11 +19,21 @@ namespace DevRating.ConsoleApp
             _actions = new Dictionary<string, Action>
             {
                 {"show", PrintToConsole},
-                {"show-saved", PrintSavedToConsole},
+                {"load", PrintSavedToConsole},
                 {"save", Save},
                 {"reset", Reset},
                 {"top", Top}
             };
+        }
+
+        public void Run()
+        {
+            _actions[_arguments.Command()].Invoke();
+        }
+
+        private Diff Diff()
+        {
+            return new LibGit2Diff(_arguments.Path(), _arguments.StartCommit(), _arguments.EndCommit());
         }
 
         private void Top()
@@ -46,16 +56,6 @@ namespace DevRating.ConsoleApp
                 transaction.Rollback();
                 connection.Close();
             }
-        }
-
-        public void Run()
-        {
-            _actions[_arguments.Command()].Invoke();
-        }
-
-        private Diff Diff()
-        {
-            return new LibGit2Diff(_arguments.Path(), _arguments.StartCommit(), _arguments.EndCommit());
         }
 
         private void Reset()
