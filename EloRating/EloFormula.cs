@@ -7,15 +7,17 @@ namespace DevRating.EloRating
 {
     public sealed class EloFormula : Formula
     {
+        private readonly double _k;
         private readonly double _n;
         private readonly double _default;
 
-        public EloFormula() : this(400d, 1500d)
+        public EloFormula() : this(2d, 400d, 1500d)
         {
         }
 
-        public EloFormula(double n, double @default)
+        public EloFormula(double k, double n, double @default)
         {
+            _k = k;
             _n = n;
             _default = @default;
         }
@@ -32,28 +34,22 @@ namespace DevRating.EloRating
 
         public double WinnerNewRating(double current, IEnumerable<Match> matches)
         {
-            var total = matches.Sum(MatchContenderRating);
-            var games = matches.Sum(MatchCount);
+            double MatchExtraPoints(Match match)
+            {
+                return WinnerExtraPoints(current, match.ContenderRating()) * match.Count();
+            }
 
-            return (total + _n * games) / games;
+            return current + matches.Sum(MatchExtraPoints);
         }
 
         public double LoserNewRating(double current, Match match)
         {
-            var total = match.ContenderRating();
-            var games = match.Count();
-
-            return (total - _n * games) / games;
+            return current - WinnerExtraPoints(current, match.ContenderRating()) * match.Count();
         }
 
-        private long MatchCount(Match match)
+        private double WinnerExtraPoints(double winner, double loser)
         {
-            return match.Count();
-        }
-
-        private double MatchContenderRating(Match match)
-        {
-            return match.ContenderRating();
+            return _k * (1d - WinProbability(winner, loser));
         }
 
         private double WinProbability(double winner, double loser)
