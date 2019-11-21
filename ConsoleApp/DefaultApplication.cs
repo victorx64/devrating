@@ -21,9 +21,7 @@ namespace DevRating.ConsoleApp
                 {"show", PrintToConsole},
                 {"show-saved", PrintSavedToConsole},
                 {"save", Save},
-                {"db-exist", DbExist},
-                {"db-create", DbCreate},
-                {"db-drop", DbDrop},
+                {"reset", Reset},
             };
         }
 
@@ -47,59 +45,12 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                Console.WriteLine(_instance.Exist());
+                if (_instance.Exist())
+                {
+                    _instance.Drop();
+                }
 
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-
-                throw;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        private void DbCreate()
-        {
-            var connection = _instance.Connection();
-
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
                 _instance.Create();
-
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-
-                throw;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        private void DbDrop()
-        {
-            var connection = _instance.Connection();
-
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                _instance.Drop();
 
                 transaction.Commit();
             }
