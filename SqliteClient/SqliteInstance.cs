@@ -43,12 +43,12 @@ namespace DevRating.SqliteClient
                 (
                     Id               integer
                         primary key autoincrement,
-                    Rating           real not null,
+                    Rating           real    not null,
                     PreviousRatingId integer
                         references Rating,
-                    WorkId           integer  not null
+                    WorkId           integer not null
                         references Work,
-                    AuthorId         integer  not null
+                    AuthorId         integer not null
                         references Author
                 );
 
@@ -81,8 +81,8 @@ namespace DevRating.SqliteClient
 
             command.CommandText = @"
                 drop table Rating;
-                drop table Author;
-                drop table Work;";
+                drop table Work;
+                drop table Author;";
 
             command.ExecuteNonQuery();
         }
