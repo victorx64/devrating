@@ -1,39 +1,59 @@
+using System;
+using System.Collections.Generic;
+using DevRating.Domain;
+using DevRating.LibGit2SharpClient;
+
 namespace DevRating.ConsoleApp
 {
-    public sealed class ConsoleArguments : Arguments
+    internal sealed class ConsoleArguments : Arguments
     {
         private readonly string[] _args;
+        private readonly IDictionary<string, Action> _actions;
 
-        public ConsoleArguments(string[] args)
+        public ConsoleArguments(string[] args, Application application)
         {
             _args = args;
+            _actions = new Dictionary<string, Action>
+            {
+                {"show", delegate { application.PrintToConsole(Diff()); }},
+                {"add", delegate { application.Save(Diff()); }},
+                {"clear", application.Reset},
+                {"top", application.Top}
+            };
         }
 
-        public string Command()
+        public void Run()
         {
-            return _args[0];
+            if (_args.Length > 1 && _actions.ContainsKey(_args[0]))
+            {
+                _actions[_args[0]].Invoke();
+            }
+            else
+            {
+                PrintUsage();
+            }
         }
 
-        public string Path()
+        private Diff Diff()
         {
-            return ArgumentAt(1);
+            return new LibGit2Diff(_args[1], _args[2], _args[3]);
         }
 
-        public string StartCommit()
+        private void PrintUsage()
         {
-            return ArgumentAt(2);
-        }
-
-        public string EndCommit()
-        {
-            return ArgumentAt(3);
-        }
-
-        private string ArgumentAt(int i)
-        {
-            return _args.Length > i
-                ? _args[i]
-                : string.Empty;
+            Console.WriteLine("DevRating calculates developer ratings and rewards based on git log.");
+            Console.WriteLine();
+            Console.WriteLine("Usage:");
+            Console.WriteLine("  devrating top");
+            Console.WriteLine("  devrating clear");
+            Console.WriteLine("  devrating show <path-to-repo> <commit> <commit>");
+            Console.WriteLine("  devrating add <path-to-repo> <commit> <commit>");
+            Console.WriteLine();
+            Console.WriteLine("Description:");
+            Console.WriteLine("  top        Show the leaderboard");
+            Console.WriteLine("  clear      Drop the leaderboard");
+            Console.WriteLine("  show       Show the rating updates made by the difference of commits");
+            Console.WriteLine("  add        Take into account the rating updates made by the difference of commits");
         }
     }
 }

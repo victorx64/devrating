@@ -1,42 +1,19 @@
 using System;
-using System.Collections.Generic;
 using DevRating.Database;
 using DevRating.Domain;
-using DevRating.LibGit2SharpClient;
 
 namespace DevRating.ConsoleApp
 {
     internal sealed class ConsoleApplication : Application
     {
-        private readonly Arguments _arguments;
         private readonly Instance _instance;
-        private readonly IDictionary<string, Action> _actions;
 
-        public ConsoleApplication(Arguments arguments, Instance instance)
+        public ConsoleApplication(Instance instance)
         {
-            _arguments = arguments;
             _instance = instance;
-            _actions = new Dictionary<string, Action>
-            {
-                {"show", PrintToConsole},
-                {"load", PrintSavedToConsole},
-                {"save", Save},
-                {"reset", Reset},
-                {"top", Top}
-            };
         }
 
-        public void Run()
-        {
-            _actions[_arguments.Command()].Invoke();
-        }
-
-        private Diff Diff()
-        {
-            return new LibGit2Diff(_arguments.Path(), _arguments.StartCommit(), _arguments.EndCommit());
-        }
-
-        private void Top()
+        public void Top()
         {
             var connection = _instance.Connection();
 
@@ -58,7 +35,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        private void Reset()
+        public void Reset()
         {
             var connection = _instance.Connection();
 
@@ -89,7 +66,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        private void PrintToConsole()
+        public void Save(Diff diff)
         {
             var connection = _instance.Connection();
 
@@ -99,18 +76,28 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                Diff().AddTo(_instance.Storage());
+                if (_instance.Storage().WorkExist(diff.Key()))
+                {
+                    throw new Exception("The diff is already listed.");
+                }
 
-                PrintWorkToConsole(_instance.Storage().Work(Diff().Key()));
+                diff.AddTo(_instance.Storage());
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+
+                throw;
             }
             finally
             {
-                transaction.Rollback();
                 connection.Close();
             }
         }
 
-        private void PrintSavedToConsole()
+        public void PrintToConsole(Diff diff)
         {
             var connection = _instance.Connection();
 
@@ -120,7 +107,16 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                PrintWorkToConsole(_instance.Storage().Work(Diff().Key()));
+                var key = diff.Key();
+
+                if (!_instance.Storage().WorkExist(key))
+                {
+                    diff.AddTo(_instance.Storage());
+
+                    Console.WriteLine("Run 'devrating add <path-to-repo> <commit> <commit>' to include these updates.");
+                }
+
+                PrintWorkToConsole(_instance.Storage().Work(key));
             }
             finally
             {
@@ -140,32 +136,6 @@ namespace DevRating.ConsoleApp
                 Console.WriteLine(rating.HasPreviousRating()
                     ? $"{rating.Author().Email()} {rating.PreviousRating().Value():F2} -> {rating.Value():F2}"
                     : $"{rating.Author().Email()} {rating.Value():F2}");
-            }
-        }
-
-        private void Save()
-        {
-            var connection = _instance.Connection();
-
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                Diff().AddTo(_instance.Storage());
-
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-
-                throw;
-            }
-            finally
-            {
-                connection.Close();
             }
         }
     }

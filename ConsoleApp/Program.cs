@@ -9,12 +9,14 @@ namespace DevRating.ConsoleApp
     {
         private static void Main(string[] args)
         {
-            new ConsoleApplication(
-                new ConsoleArguments(args),
-                new SqliteInstance(
-                    new TransactedDbConnection(
-                        new SqliteConnection("Data Source=local.db")),
-                    new EloFormula())).Run();
+            new ConsoleArguments(
+                    args,
+                    new ConsoleApplication(
+                        new SqliteInstance(
+                            new TransactedDbConnection(
+                                new SqliteConnection("Data Source=local.db")),
+                            new EloFormula())))
+                .Run();
         }
     }
 }
