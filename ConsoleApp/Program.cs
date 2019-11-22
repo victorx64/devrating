@@ -1,8 +1,6 @@
 ﻿using DevRating.Database;
 using DevRating.EloRating;
 using DevRating.SqliteClient;
-using DevRating.SqlServerClient;
-using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.ConsoleApp
