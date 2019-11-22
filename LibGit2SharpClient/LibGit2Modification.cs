@@ -13,7 +13,7 @@ namespace DevRating.LibGit2SharpClient
             _count = count;
         }
         
-        public string Author()
+        public string Email()
         {
             return _signature.Email;
         }

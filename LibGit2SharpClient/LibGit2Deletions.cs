@@ -6,13 +6,11 @@ namespace DevRating.LibGit2SharpClient
 {
     internal sealed class LibGit2Deletions : Deletions
     {
-        private readonly IRepository _repository;
         private readonly string _patch;
         private readonly BlameHunkCollection _blames;
 
-        public LibGit2Deletions(IRepository repository, string patch, BlameHunkCollection blames)
+        public LibGit2Deletions(string patch, BlameHunkCollection blames)
         {
-            _repository = repository;
             _patch = patch;
             _blames = blames;
         }
@@ -53,8 +51,7 @@ namespace DevRating.LibGit2SharpClient
 
                 increment = BlameHunkLastLineIndex(blame, index + count) - i;
 
-                yield return new LibGit2Modification(_repository.Mailmap.ResolveSignature(blame.FinalCommit.Author),
-                    increment);
+                yield return new LibGit2Modification(blame.FinalCommit.Author, increment);
             }
         }
 

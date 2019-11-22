@@ -2,7 +2,7 @@ namespace DevRating.LibGit2SharpClient
 {
     internal interface Modification
     {
-        string Author();
+        string Email();
         uint Count();
     }
 }

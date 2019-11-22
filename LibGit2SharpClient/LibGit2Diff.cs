@@ -37,12 +37,7 @@ namespace DevRating.LibGit2SharpClient
         {
             var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
 
-            storage.AddWork(Key(), Email(), Additions(hunks), Deletions(hunks));
-        }
-
-        private string Email()
-        {
-            return _repository.Mailmap.ResolveSignature(_end.Author).Email;
+            storage.AddWork(Key(), _end.Author.Email, Additions(hunks), Deletions(hunks));
         }
 
         private uint Additions(IEnumerable<Hunk> hunks)
@@ -56,8 +51,9 @@ namespace DevRating.LibGit2SharpClient
         }
 
         // TODO Extract the region
+
         #region Converts hunks into a deletions dictionary
-        
+
         private IDictionary<string, uint> Deletions(IEnumerable<Hunk> hunks)
         {
             return hunks
@@ -73,7 +69,7 @@ namespace DevRating.LibGit2SharpClient
 
         private string ModificationAuthor(Modification modification)
         {
-            return modification.Author();
+            return modification.Email();
         }
 
         private string ModificationsAuthor(IGrouping<string, Modification> grouping)
@@ -101,8 +97,7 @@ namespace DevRating.LibGit2SharpClient
             {
                 LibGit2Hunk Function()
                 {
-                    return new LibGit2Hunk(_repository, difference.Patch,
-                        _repository.Blame(difference.OldPath, options));
+                    return new LibGit2Hunk(difference.Patch, _repository.Blame(difference.OldPath, options));
                 }
 
                 yield return Task.Run(Function);

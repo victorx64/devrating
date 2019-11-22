@@ -1,3 +1,0 @@
-[submodule "libgit2sharp"]
-	path = libgit2sharp
-	url = https://github.com/victorx64/libgit2sharp

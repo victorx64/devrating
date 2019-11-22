@@ -7,8 +7,8 @@ namespace DevRating.LibGit2SharpClient
         private readonly Deletions _deletions;
         private readonly Additions _additions;
 
-        public LibGit2Hunk(IRepository repository, string patch, BlameHunkCollection blames)
-            : this(new LibGit2Deletions(repository, patch, blames), new LibGit2Additions(patch))
+        public LibGit2Hunk(string patch, BlameHunkCollection blames)
+            : this(new LibGit2Deletions(patch, blames), new LibGit2Additions(patch))
         {
         }
 
