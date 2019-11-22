@@ -2,12 +2,12 @@ using DevRating.Domain;
 
 namespace DevRating.Database
 {
-    public sealed class DefaultMatch : Match
+    public sealed class DbMatch : Match
     {
         private readonly double _rating;
         private readonly uint _count;
 
-        public DefaultMatch(double rating, uint count)
+        public DbMatch(double rating, uint count)
         {
             _rating = rating;
             _count = count;

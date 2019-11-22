@@ -2,7 +2,7 @@ namespace DevRating.Domain
 {
     public interface Diff
     {
-        void AddTo(WorksRepository works);
+        void AddTo(Storage storage);
         WorkKey Key();
     }
 }

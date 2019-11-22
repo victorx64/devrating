@@ -1,10 +1,10 @@
 namespace DevRating.ConsoleApp
 {
-    public sealed class DefaultArguments : Arguments
+    public sealed class ConsoleArguments : Arguments
     {
         private readonly string[] _args;
 
-        public DefaultArguments(string[] args)
+        public ConsoleArguments(string[] args)
         {
             _args = args;
         }

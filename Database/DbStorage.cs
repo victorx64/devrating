@@ -3,14 +3,14 @@ using DevRating.Domain;
 
 namespace DevRating.Database
 {
-    public sealed class DbWorksRepository : WorksRepository
+    public sealed class DbStorage : Storage
     {
         private readonly Works _works;
         private readonly Authors _authors;
         private readonly Ratings _ratings;
         private readonly Formula _formula;
 
-        public DbWorksRepository(Works works, Authors authors, Ratings ratings, Formula formula)
+        public DbStorage(Works works, Authors authors, Ratings ratings, Formula formula)
         {
             _works = works;
             _authors = authors;
@@ -18,7 +18,7 @@ namespace DevRating.Database
             _formula = formula;
         }
 
-        public void Add(WorkKey key, string email, uint additions, IDictionary<string, uint> deletions)
+        public void AddWork(WorkKey key, string email, uint additions, IDictionary<string, uint> deletions)
         {
             var author = Author(email);
 
@@ -83,9 +83,9 @@ namespace DevRating.Database
 
                 var current = RatingOf(victim);
 
-                matches.Add(new DefaultMatch(current, deletion.Value));
+                matches.Add(new DbMatch(current, deletion.Value));
 
-                var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Value));
+                var @new = _formula.LoserNewRating(current, new DbMatch(rating, deletion.Value));
 
                 if (_ratings.HasRatingOf(victim))
                 {
@@ -105,9 +105,14 @@ namespace DevRating.Database
             return _works.Work(key);
         }
 
-        public bool Exist(WorkKey key)
+        public bool WorkExist(WorkKey key)
         {
             return _works.Exist(key);
+        }
+
+        public IEnumerable<Author> TopAuthors()
+        {
+            return _authors.TopAuthors();
         }
     }
 }

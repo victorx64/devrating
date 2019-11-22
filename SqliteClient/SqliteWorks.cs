@@ -14,7 +14,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public DbWork Work(WorkKey key)
+        public Work Work(WorkKey key)
         {
             using var command = _connection.CreateCommand();
 

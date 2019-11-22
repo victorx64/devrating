@@ -33,11 +33,11 @@ namespace DevRating.LibGit2SharpClient
             return new LibGit2WorkKey(_start, _end, _repository);
         }
 
-        public void AddTo(WorksRepository works)
+        public void AddTo(Storage storage)
         {
             var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
 
-            works.Add(Key(), Email(), Additions(hunks), Deletions(hunks));
+            storage.AddWork(Key(), Email(), Additions(hunks), Deletions(hunks));
         }
 
         private string Email()

@@ -9,7 +9,6 @@ namespace DevRating.Database
         void Drop();
         bool Exist();
         IDbConnection Connection();
-        WorksRepository Works();
-        AuthorsRepository Authors();
+        Storage Storage();
     }
 }

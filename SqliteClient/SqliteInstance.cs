@@ -8,8 +8,7 @@ namespace DevRating.SqliteClient
     public sealed class SqliteInstance : Instance
     {
         private readonly IDbConnection _connection;
-        private readonly WorksRepository _works;
-        private readonly AuthorsRepository _authors;
+        private readonly Storage _storage;
 
         public SqliteInstance(IDbConnection connection, Formula formula)
             : this(connection, formula,
@@ -20,17 +19,14 @@ namespace DevRating.SqliteClient
         }
 
         public SqliteInstance(IDbConnection connection, Formula formula, Works works, Authors authors, Ratings ratings)
-            : this(connection,
-                new DbWorksRepository(works, authors, ratings, formula),
-                new DbAuthorsRepository(authors))
+            : this(connection, new DbStorage(works, authors, ratings, formula))
         {
         }
 
-        public SqliteInstance(IDbConnection connection, WorksRepository works, AuthorsRepository authors)
+        public SqliteInstance(IDbConnection connection, Storage storage)
         {
             _connection = connection;
-            _works = works;
-            _authors = authors;
+            _storage = storage;
         }
 
         public void Create()
@@ -130,14 +126,9 @@ namespace DevRating.SqliteClient
             return _connection;
         }
 
-        public WorksRepository Works()
+        public Storage Storage()
         {
-            return _works;
-        }
-
-        public AuthorsRepository Authors()
-        {
-            return _authors;
+            return _storage;
         }
     }
 }

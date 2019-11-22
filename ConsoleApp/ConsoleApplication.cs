@@ -6,13 +6,13 @@ using DevRating.LibGit2SharpClient;
 
 namespace DevRating.ConsoleApp
 {
-    internal sealed class DefaultApplication : Application
+    internal sealed class ConsoleApplication : Application
     {
         private readonly Arguments _arguments;
         private readonly Instance _instance;
         private readonly IDictionary<string, Action> _actions;
 
-        public DefaultApplication(Arguments arguments, Instance instance)
+        public ConsoleApplication(Arguments arguments, Instance instance)
         {
             _arguments = arguments;
             _instance = instance;
@@ -46,7 +46,7 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                foreach (var author in _instance.Authors().TopAuthors())
+                foreach (var author in _instance.Storage().TopAuthors())
                 {
                     Console.WriteLine($"{author.Email()} {author.Rating().Value():F2}");
                 }
@@ -99,9 +99,9 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                Diff().AddTo(_instance.Works());
+                Diff().AddTo(_instance.Storage());
 
-                PrintWorkToConsole(_instance.Works().Work(Diff().Key()));
+                PrintWorkToConsole(_instance.Storage().Work(Diff().Key()));
             }
             finally
             {
@@ -120,7 +120,7 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                PrintWorkToConsole(_instance.Works().Work(Diff().Key()));
+                PrintWorkToConsole(_instance.Storage().Work(Diff().Key()));
             }
             finally
             {
@@ -153,7 +153,7 @@ namespace DevRating.ConsoleApp
 
             try
             {
-                Diff().AddTo(_instance.Works());
+                Diff().AddTo(_instance.Storage());
 
                 transaction.Commit();
             }

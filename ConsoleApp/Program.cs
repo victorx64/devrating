@@ -9,8 +9,8 @@ namespace DevRating.ConsoleApp
     {
         private static void Main(string[] args)
         {
-            new DefaultApplication(
-                new DefaultArguments(args),
+            new ConsoleApplication(
+                new ConsoleArguments(args),
                 new SqliteInstance(
                     new TransactedDbConnection(
                         new SqliteConnection("Data Source=local.db")),
