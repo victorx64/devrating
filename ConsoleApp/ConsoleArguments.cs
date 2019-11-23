@@ -52,7 +52,7 @@ namespace DevRating.ConsoleApp
             Console.WriteLine("Description:");
             Console.WriteLine("  top        Show the leaderboard");
             Console.WriteLine("  clear      Drop the leaderboard");
-            Console.WriteLine("  show       Show rating updates made by changes between the commits");
+            Console.WriteLine("  show       Show not included rating updates made by changes between the commits");
             Console.WriteLine("  add        Take into account rating updates made by changes between the commits");
         }
     }

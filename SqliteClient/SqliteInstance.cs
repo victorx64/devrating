@@ -48,11 +48,11 @@ namespace DevRating.SqliteClient
                         primary key autoincrement,
                     Rating           real    not null,
                     PreviousRatingId integer
-                        references Rating,
+                        references Rating on delete cascade,
                     WorkId           integer not null
-                        references Work,
+                        references Work on delete cascade,
                     AuthorId         integer not null
-                        references Author
+                        references Author on delete cascade
                 );
 
                 create unique index UK_Rating_PreviousRatingId
@@ -67,10 +67,10 @@ namespace DevRating.SqliteClient
                     StartCommit  nvarchar(50) not null,
                     EndCommit    nvarchar(50) not null,
                     AuthorId     integer      not null
-                        references Author,
+                        references Author on delete cascade,
                     Reward       real         not null,
                     UsedRatingId integer
-                        references Rating,
+                        references Rating on delete cascade,
                     constraint UK_Work_Commits
                         unique (StartCommit, EndCommit)
                 );";
