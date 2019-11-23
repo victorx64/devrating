@@ -8,14 +8,15 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.0-alpha2</PackageVersion>
+        <PackageVersion>1.0.0-alpha3</PackageVersion>
         <Authors>Victor Semenov</Authors>
-        <Title>DevRating.ConsoleApp</Title>
+        <Title>devrating</Title>
         <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
         <OutputType>Exe</OutputType>
+        <PackageId>devrating</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
