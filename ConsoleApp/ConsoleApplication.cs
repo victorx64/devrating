@@ -127,9 +127,10 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkToConsole(Work work)
         {
-            Console.WriteLine("Reward:");
+            Console.WriteLine("Reward");
             Console.WriteLine($"{work.Author().Email()} {work.Reward():F2}");
-            Console.WriteLine("Rating updates:");
+            Console.WriteLine();
+            Console.WriteLine("Rating updates");
 
             foreach (var rating in work.Ratings())
             {
