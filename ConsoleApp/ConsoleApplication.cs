@@ -23,6 +23,11 @@ namespace DevRating.ConsoleApp
 
             try
             {
+                if (!_instance.Exist())
+                {
+                    _instance.Create();
+                }
+
                 foreach (var author in _instance.Storage().TopAuthors())
                 {
                     Console.WriteLine($"{author.Email()} {author.Rating().Value():F2}");
@@ -76,6 +81,11 @@ namespace DevRating.ConsoleApp
 
             try
             {
+                if (!_instance.Exist())
+                {
+                    _instance.Create();
+                }
+
                 if (_instance.Storage().WorkExist(diff.Key()))
                 {
                     throw new Exception("The diff is already listed.");
@@ -107,6 +117,11 @@ namespace DevRating.ConsoleApp
 
             try
             {
+                if (!_instance.Exist())
+                {
+                    _instance.Create();
+                }
+
                 var key = diff.Key();
 
                 if (!_instance.Storage().WorkExist(key))
