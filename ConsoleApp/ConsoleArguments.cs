@@ -24,7 +24,7 @@ namespace DevRating.ConsoleApp
 
         public void Run()
         {
-            if (_args.Length > 1 && _actions.ContainsKey(_args[0]))
+            if (_args.Length > 0 && _actions.ContainsKey(_args[0]))
             {
                 _actions[_args[0]].Invoke();
             }
