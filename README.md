@@ -1,25 +1,53 @@
-[![NuGet](https://img.shields.io/nuget/v/DevRating.Console.svg)](https://www.nuget.org/packages/DevRating.Console/)
+[![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
 
-# DevRating
+**DevRating** is a command-line tool for measuring a reward of developers 
+based on a git log. Every single line deletion gives rating points to 
+an author and lowers points of the deleted line author. 
+It uses the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system). 
+Every added line gives a reward to its author proportionally to his rating.
 
-Calculates developers rating based on a history of files modifications. Works in a git repository. Every code line modification gives points to a modifier and lowers points of the previous author of the line. Uses [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system).
+First, use [dotnet](https://dotnet.microsoft.com/download/dotnet-core) 
+to install it:
 
-Creating a new file doesn't affect anything. Removing a file gives points. Ignores merge commits.
-
-## Prerequisites
-1. [.NET Core 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1) runtime
-2. [Git](https://git-scm.com/downloads) client
-
-## Install
-```Batchfile
-dotnet tool install -g DevRating.Console --version 0.1.3
+```
+$ dotnet tool install -g devrating.consoleapp
 ```
 
-## Run
-Move to a repository that you want to inspect. Run `devrating`:
+Then, you run it and follow the instructions:
 
-```Batchfile
-devrating
+```
+$ devrating
 ```
 
-It can take minutes to get done. The result will be printed after `Author, Wins, Defeats, Points` line. Every developer starts with `1200` points. `Wins` shows the number of lines modified by this person, and `Defeats` is number of lines of this developer modified by another member.
+It should be clear what to do. If not, ask us in
+our [Telegram chat](https://t.me/devrating).
+
+## Rating updates
+
+Print the *reward* and the *rating* changes made by the work between commits:
+
+```
+$ devrating show <path-to-repo> <commit> <commit>
+```
+
+Update the leaderboard by committing the rating changes:
+
+```
+$ devrating add <path-to-repo> <commit> <commit>
+```
+
+## Leaderboard
+
+Print the leaderboard:
+
+```
+$ devrating top
+```
+
+The leaderboard is stored in the `devrating.db` file in a working directory.
+
+## How to contribute
+
+Fork repository, make changes, send us a pull request. We will review
+your changes and apply them to the `master` branch shortly, provided
+they don't violate our quality standards.
