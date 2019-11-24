@@ -7,7 +7,7 @@ It uses the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system)
 Every added line gives a reward to its author proportionally to his rating.
 
 First, use [dotnet](https://dotnet.microsoft.com/download/dotnet-core) 
-to install it:
+to install the app:
 
 ```
 $ dotnet tool install -g devrating.consoleapp

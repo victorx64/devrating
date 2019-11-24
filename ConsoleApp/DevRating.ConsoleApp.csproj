@@ -8,14 +8,16 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.0-alpha7</PackageVersion>
+        <PackageVersion>1.0.0-alpha8</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.ConsoleApp</Title>
-        <PackageProjectUrl>https://github.com/victorx64/devrating</PackageProjectUrl>
+        <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
         <OutputType>Exe</OutputType>
+        <Description>DevRating is a command-line tool for measuring a reward of developers based on a git log.</Description>
+        <Copyright>Copyright © Victor Semenov 2020</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
