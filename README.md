@@ -24,13 +24,13 @@ our [Telegram chat](https://t.me/devrating).
 
 ## Rating updates
 
-Print the *reward* and the *rating* changes made by the work between commits:
+Print *reward* and *rating updates* made by changes between commits:
 
 ```
 $ devrating show <path-to-repo> <commit> <commit>
 ```
 
-Update the leaderboard by committing the rating changes:
+Update the leaderboard by committing changes between commits:
 
 ```
 $ devrating add <path-to-repo> <commit> <commit>
