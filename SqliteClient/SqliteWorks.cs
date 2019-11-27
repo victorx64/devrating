@@ -14,7 +14,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Work Work(WorkKey key)
+        public DbWork Work(Diff diff)
         {
             using var command = _connection.CreateCommand();
 
@@ -25,10 +25,10 @@ namespace DevRating.SqliteClient
                 AND StartCommit = @StartCommit
                 AND EndCommit = @EndCommit";
 
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = key.Repository()});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = diff.Key()});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50)
-                {Value = key.StartCommit()});
-            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = key.EndCommit()});
+                {Value = diff.StartCommit()});
+            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = diff.EndCommit()});
 
             using var reader = command.ExecuteReader();
 
@@ -37,7 +37,7 @@ namespace DevRating.SqliteClient
             return new SqliteDbWork(_connection, reader["Id"]);
         }
 
-        public bool Exist(WorkKey key)
+        public bool Exist(Diff diff)
         {
             using var command = _connection.CreateCommand();
 
@@ -48,10 +48,10 @@ namespace DevRating.SqliteClient
                 AND StartCommit = @StartCommit
                 AND EndCommit = @EndCommit";
 
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = key.Repository()});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = diff.Key()});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50)
-                {Value = key.StartCommit()});
-            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = key.EndCommit()});
+                {Value = diff.StartCommit()});
+            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = diff.EndCommit()});
 
             using var reader = command.ExecuteReader();
 

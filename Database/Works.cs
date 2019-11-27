@@ -19,7 +19,7 @@ namespace DevRating.Database
             DbObject author,
             double reward);
 
-        Work Work(WorkKey key);
-        bool Exist(WorkKey key);
+        DbWork Work(Diff diff);
+        bool Exist(Diff diff);
     }
 }

@@ -86,7 +86,7 @@ namespace DevRating.ConsoleApp
                     _instance.Create();
                 }
 
-                if (_instance.Storage().WorkExist(diff.Key()))
+                if (_instance.Storage().WorkExist(diff))
                 {
                     throw new Exception("The diff is already added.");
                 }
@@ -122,16 +122,14 @@ namespace DevRating.ConsoleApp
                     _instance.Create();
                 }
 
-                var key = diff.Key();
-
-                if (!_instance.Storage().WorkExist(key))
+                if (!_instance.Storage().WorkExist(diff))
                 {
                     diff.AddTo(_instance.Storage());
 
                     Console.WriteLine("To add these updates run `devrating add <path-to-repo> <commit> <commit>`.");
                 }
 
-                PrintWorkToConsole(_instance.Storage().Work(key));
+                PrintWorkToConsole(_instance.Storage().Work(diff));
             }
             finally
             {

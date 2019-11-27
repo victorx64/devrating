@@ -18,11 +18,11 @@ namespace DevRating.Database
             _formula = formula;
         }
 
-        public void AddWork(WorkKey key, string email, uint additions, IDictionary<string, uint> deletions)
+        public void AddWork(Diff diff, string email, uint additions, IDictionary<string, uint> deletions)
         {
             var author = Author(email);
 
-            InsertAuthorNewRating(author, deletions, InsertedWork(key, additions, author));
+            InsertAuthorNewRating(author, deletions, InsertedWork(diff, additions, author));
         }
 
         private DbAuthor Author(string email)
@@ -32,18 +32,18 @@ namespace DevRating.Database
                 : _authors.Insert(email);
         }
 
-        private DbWork InsertedWork(WorkKey key, uint additions, DbObject author)
+        private DbWork InsertedWork(Diff diff, uint additions, DbObject author)
         {
             if (_ratings.HasRatingOf(author))
             {
                 var rating = _ratings.RatingOf(author);
 
-                return _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), author,
+                return _works.Insert(diff.Key(), diff.StartCommit(), diff.EndCommit(), author,
                     _formula.Reward(rating.Value(), additions), rating);
             }
             else
             {
-                return _works.Insert(key.Repository(), key.StartCommit(), key.EndCommit(), author,
+                return _works.Insert(diff.Key(), diff.StartCommit(), diff.EndCommit(), author,
                     _formula.Reward(_formula.DefaultRating(), additions));
             }
         }
@@ -100,14 +100,14 @@ namespace DevRating.Database
             return matches;
         }
 
-        public Work Work(WorkKey key)
+        public Work Work(Diff diff)
         {
-            return _works.Work(key);
+            return _works.Work(diff);
         }
 
-        public bool WorkExist(WorkKey key)
+        public bool WorkExist(Diff diff)
         {
-            return _works.Exist(key);
+            return _works.Exist(diff);
         }
 
         public IEnumerable<Author> TopAuthors()

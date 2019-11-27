@@ -4,9 +4,9 @@ namespace DevRating.Domain
 {
     public interface Storage
     {
-        void AddWork(WorkKey key, string email, uint additions, IDictionary<string, uint> deletions);
-        Work Work(WorkKey key);
-        bool WorkExist(WorkKey key);
+        void AddWork(Diff diff, string email, uint additions, IDictionary<string, uint> deletions);
+        Work Work(Diff diff);
+        bool WorkExist(Diff diff);
         IEnumerable<Author> TopAuthors();
     }
 }
