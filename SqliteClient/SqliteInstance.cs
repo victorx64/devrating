@@ -78,18 +78,6 @@ namespace DevRating.SqliteClient
             command.ExecuteNonQuery();
         }
 
-        public void Drop()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = @"
-                drop table Rating;
-                drop table Work;
-                drop table Author;";
-
-            command.ExecuteNonQuery();
-        }
-
         public bool Exist()
         {
             return TableExist("Author") &&
