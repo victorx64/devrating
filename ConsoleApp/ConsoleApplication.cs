@@ -40,37 +40,6 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void Reset()
-        {
-            var connection = _instance.Connection();
-
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                if (_instance.Exist())
-                {
-                    _instance.Drop();
-                }
-
-                _instance.Create();
-
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-
-                throw;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
         public void Save(Diff diff)
         {
             var connection = _instance.Connection();

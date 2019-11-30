@@ -17,7 +17,6 @@ namespace DevRating.ConsoleApp
             {
                 {"show", delegate { application.PrintToConsole(Diff()); }},
                 {"add", delegate { application.Save(Diff()); }},
-                {"clear", application.Reset},
                 {"top", application.Top}
             };
         }
@@ -45,13 +44,11 @@ namespace DevRating.ConsoleApp
             Console.WriteLine();
             Console.WriteLine("Usage:");
             Console.WriteLine("  devrating top");
-            Console.WriteLine("  devrating clear");
             Console.WriteLine("  devrating show <path-to-repo> <commit> <commit>");
             Console.WriteLine("  devrating add <path-to-repo> <commit> <commit>");
             Console.WriteLine();
             Console.WriteLine("Description:");
             Console.WriteLine("  top        Show the leaderboard");
-            Console.WriteLine("  clear      Drop the leaderboard");
             Console.WriteLine("  show       Show rating updates made by changes between the commits");
             Console.WriteLine("  add        Add rating updates made by changes between the commits");
         }
