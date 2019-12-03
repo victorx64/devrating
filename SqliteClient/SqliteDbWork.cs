@@ -71,5 +71,31 @@ namespace DevRating.SqliteClient
 
             return ratings;
         }
+
+        public Rating UsedRating()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT UsedRatingId FROM Work WHERE Id = @Id AND UsedRatingId IS NOT NULL";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return new SqliteDbRating(_connection, reader["UsedRatingId"]);
+        }
+
+        public bool HasUsedRating()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT UsedRatingId FROM Work WHERE Id = @Id AND UsedRatingId IS NOT NULL";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
+        }
     }
 }

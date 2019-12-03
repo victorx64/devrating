@@ -7,5 +7,7 @@ namespace DevRating.Domain
         double Reward();
         Author Author();
         IEnumerable<Rating> Ratings();
+        Rating UsedRating();
+        bool HasUsedRating();
     }
 }
