@@ -110,7 +110,9 @@ namespace DevRating.ConsoleApp
         private void PrintWorkToConsole(Work work)
         {
             Console.WriteLine("Reward");
-            Console.WriteLine($"{work.Author().Email()} {work.Reward():F2}");
+            Console.WriteLine(work.HasUsedRating()
+                ? $"{work.Author().Email()} {work.Reward():F2} (based on {work.UsedRating().Value()} rating)"
+                : $"{work.Author().Email()} {work.Reward():F2} (based on initial rating)");
             Console.WriteLine();
             Console.WriteLine("Rating updates");
 
@@ -118,7 +120,7 @@ namespace DevRating.ConsoleApp
             {
                 Console.WriteLine(rating.HasPreviousRating()
                     ? $"{rating.Author().Email()} {rating.PreviousRating().Value():F2} -> {rating.Value():F2}"
-                    : $"{rating.Author().Email()} {rating.Value():F2}");
+                    : $"{rating.Author().Email()} initial -> {rating.Value():F2}");
             }
         }
     }
