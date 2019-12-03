@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DevRating.Domain;
 
 namespace DevRating.Database
@@ -22,7 +23,16 @@ namespace DevRating.Database
         {
             var author = Author(email);
 
-            InsertAuthorNewRating(author, deletions, InsertedWork(diff, additions, author));
+            var work = InsertedWork(diff, additions, author);
+
+            deletions.Remove(email);
+
+            if (deletions.Count > 0)
+            {
+                InsertAuthorNewRating(author, deletions, work);
+
+                InsertVictimsNewRatings(deletions, work, RatingOf(author));
+            }
         }
 
         private DbAuthor Author(string email)
@@ -55,12 +65,11 @@ namespace DevRating.Database
                 : _formula.DefaultRating();
         }
 
-        private void InsertAuthorNewRating(DbObject author, IDictionary<string, uint> deletions,
-            DbObject work)
+        private void InsertAuthorNewRating(DbObject author, IDictionary<string, uint> deletions, DbObject work)
         {
             var current = RatingOf(author);
 
-            var @new = _formula.WinnerNewRating(current, InsertVictimsNewRatings(deletions, work, current));
+            var @new = _formula.WinnerNewRating(current, deletions.Select(Match));
 
             if (_ratings.HasRatingOf(author))
             {
@@ -72,18 +81,13 @@ namespace DevRating.Database
             }
         }
 
-        private IEnumerable<Match> InsertVictimsNewRatings(IDictionary<string, uint> deletions, DbObject work,
-            double rating)
+        private void InsertVictimsNewRatings(IDictionary<string, uint> deletions, DbObject work, double rating)
         {
-            var matches = new List<Match>();
-
             foreach (var deletion in deletions)
             {
                 var victim = Author(deletion.Key);
 
                 var current = RatingOf(victim);
-
-                matches.Add(new DbMatch(current, deletion.Value));
 
                 var @new = _formula.LoserNewRating(current, new DbMatch(rating, deletion.Value));
 
@@ -96,8 +100,11 @@ namespace DevRating.Database
                     _ratings.Insert(victim, @new, work);
                 }
             }
+        }
 
-            return matches;
+        private Match Match(KeyValuePair<string, uint> deletion)
+        {
+            return new DbMatch(RatingOf(Author(deletion.Key)), deletion.Value);
         }
 
         public Work Work(Diff diff)
