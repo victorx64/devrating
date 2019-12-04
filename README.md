@@ -1,7 +1,7 @@
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
 
-**DevRating** is a command-line tool for measuring a reward of developers 
-based on a git log. Every single line deletion gives rating points to an author 
+**DevRating** is a command-line tool for measuring reward of developers 
+based on git diff. Every single line deletion gives rating points to an author 
 and lowers points of the deleted line author. 
 It uses the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system). 
 Every added line gives a reward to its author proportionally to his rating.
@@ -9,7 +9,7 @@ Every added line gives a reward to its author proportionally to his rating.
 The tool is also available as [GitHub App](https://github.com/apps/devrating). 
 
 First, use [dotnet](https://dotnet.microsoft.com/download/dotnet-core) 
-to install the app:
+to install the tool:
 
 ```
 $ dotnet tool install -g devrating.consoleapp
@@ -24,9 +24,9 @@ $ devrating
 It should be clear what to do. If not, ask us in
 our [Telegram chat](https://t.me/devrating).
 
-## Rating updates
+## Reward
 
-Print *reward* and *rating updates* made by changes between commits:
+Print **reward** and **rating updates** made by changes between commits:
 
 ```
 $ devrating show <path-to-repo> <commit> <commit>
