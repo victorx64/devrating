@@ -4,7 +4,8 @@
 based on git diff. Every single line deletion gives rating points to an author 
 and lowers points of the deleted line author. 
 It uses the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system). 
-Every added line gives a reward to its author proportionally to his rating.
+Every added line gives reward to its author equal to win probability against an 
+author with the default rating.
 
 The tool is also available as [GitHub App](https://github.com/apps/devrating). 
 
