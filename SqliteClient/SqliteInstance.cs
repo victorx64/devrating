@@ -68,7 +68,7 @@ namespace DevRating.SqliteClient
                     EndCommit    nvarchar(50) not null,
                     AuthorId     integer      not null
                         references Author on delete cascade,
-                    Reward       real         not null,
+                    Additions    integer      not null,
                     UsedRatingId integer
                         references Rating on delete cascade,
                     constraint UK_Work_Commits

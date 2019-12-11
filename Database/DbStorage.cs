@@ -46,15 +46,12 @@ namespace DevRating.Database
         {
             if (_ratings.HasRatingOf(author))
             {
-                var rating = _ratings.RatingOf(author);
-
-                return _works.Insert(diff.Key(), diff.StartCommit(), diff.EndCommit(), author,
-                    _formula.Reward(rating.Value(), additions), rating);
+                return _works.Insert(diff.Key(), diff.StartCommit(), diff.EndCommit(), author, additions,
+                    _ratings.RatingOf(author));
             }
             else
             {
-                return _works.Insert(diff.Key(), diff.StartCommit(), diff.EndCommit(), author,
-                    _formula.Reward(_formula.DefaultRating(), additions));
+                return _works.Insert(diff.Key(), diff.StartCommit(), diff.EndCommit(), author, additions);
             }
         }
 
@@ -67,9 +64,7 @@ namespace DevRating.Database
 
         private void InsertAuthorNewRating(DbObject author, IDictionary<string, uint> deletions, DbObject work)
         {
-            var current = RatingOf(author);
-
-            var @new = _formula.WinnerNewRating(current, deletions.Select(Match));
+            var @new = _formula.WinnerNewRating(RatingOf(author), deletions.Select(Match));
 
             if (_ratings.HasRatingOf(author))
             {

@@ -15,7 +15,8 @@ namespace DevRating.ConsoleApp
                         new SqliteInstance(
                             new TransactedDbConnection(
                                 new SqliteConnection("Data Source=devrating.db")),
-                            new EloFormula())))
+                            new EloFormula()),
+                        new EloFormula()))
                 .Run();
         }
     }

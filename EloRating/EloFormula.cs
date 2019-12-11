@@ -27,11 +27,6 @@ namespace DevRating.EloRating
             return _default;
         }
 
-        public double Reward(double rating, uint count)
-        {
-            return WinProbability(rating, DefaultRating()) * count;
-        }
-
         public double WinnerNewRating(double current, IEnumerable<Match> matches)
         {
             double MatchExtraPoints(Match match)
@@ -49,14 +44,14 @@ namespace DevRating.EloRating
 
         private double WinnerExtraPoints(double winner, double loser)
         {
-            return _k * (1d - WinProbability(winner, loser));
+            return _k * (1d - WinProbabilityOfA(winner, loser));
         }
 
-        private double WinProbability(double winner, double loser)
+        public double WinProbabilityOfA(double a, double b)
         {
-            var qa = Math.Pow(10d, winner / _n);
+            var qa = Math.Pow(10d, a / _n);
 
-            var qb = Math.Pow(10d, loser / _n);
+            var qb = Math.Pow(10d, b / _n);
 
             var ea = qa / (qa + qb);
 
