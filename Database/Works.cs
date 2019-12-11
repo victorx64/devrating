@@ -9,7 +9,7 @@ namespace DevRating.Database
             string start,
             string end,
             DbObject author,
-            double reward,
+            uint additions,
             DbObject rating);
 
         DbWork Insert(
@@ -17,7 +17,7 @@ namespace DevRating.Database
             string start,
             string end,
             DbObject author,
-            double reward);
+            uint additions);
 
         DbWork Work(Diff diff);
         bool Exist(Diff diff);

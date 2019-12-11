@@ -40,17 +40,20 @@ namespace DevRating.ConsoleApp
 
         private void PrintUsage()
         {
-            Console.WriteLine("DevRating calculates developer ratings and rewards based on git log.");
+            Console.WriteLine("DevRating evaluates developers rating and rewards based on git diff.");
             Console.WriteLine();
             Console.WriteLine("Usage:");
             Console.WriteLine("  devrating top");
-            Console.WriteLine("  devrating show <path-to-repo> <commit> <commit>");
-            Console.WriteLine("  devrating add <path-to-repo> <commit> <commit>");
+            Console.WriteLine("  devrating show <path> <before> <after>");
+            Console.WriteLine("  devrating add <path> <before> <after>");
             Console.WriteLine();
             Console.WriteLine("Description:");
-            Console.WriteLine("  top        Show the leaderboard");
-            Console.WriteLine("  show       Show rating updates made by changes between the commits");
-            Console.WriteLine("  add        Add rating updates made by changes between the commits");
+            Console.WriteLine("  top        Print the rating");
+            Console.WriteLine("  show       Print a reward for the work between commits");
+            Console.WriteLine("  add        Update the rating by committing the work between commits");
+            Console.WriteLine("  <path>     Path to a local repository. E.g. '~/repos/devrating'");
+            Console.WriteLine("  <before>   Sha of the parent commit of the first commit of the work");
+            Console.WriteLine("  <after>    Sha of the last commit of the work");
         }
     }
 }

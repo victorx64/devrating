@@ -22,11 +22,11 @@ namespace DevRating.SqliteClient
             return _id;
         }
 
-        public double Reward()
+        public uint Additions()
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Reward FROM Work WHERE Id = @Id";
+            command.CommandText = "SELECT Additions FROM Work WHERE Id = @Id";
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
 
@@ -34,7 +34,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return (double) reader["Reward"];
+            return (uint) (long) reader["Additions"];
         }
 
         public Author Author()

@@ -58,7 +58,7 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public DbWork Insert(string repository, string start, string end, DbObject author, double reward,
+        public DbWork Insert(string repository, string start, string end, DbObject author, uint additions,
             DbObject rating)
         {
             using var command = _connection.CreateCommand();
@@ -69,14 +69,14 @@ namespace DevRating.SqliteClient
                     ,StartCommit
                     ,EndCommit
                     ,AuthorId
-                    ,Reward
+                    ,Additions
                     ,UsedRatingId)
                 VALUES
                     (@Repository
                     ,@StartCommit
                     ,@EndCommit
                     ,@AuthorId
-                    ,@Reward
+                    ,@Additions
                     ,@UsedRatingId);
                 SELECT last_insert_rowid();";
 
@@ -84,7 +84,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
-            command.Parameters.Add(new SqliteParameter("@Reward", SqlDbType.Real) {Value = reward});
+            command.Parameters.Add(new SqliteParameter("@Additions", SqlDbType.Real) {Value = additions});
             command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) {Value = rating.Id()});
 
             var id = command.ExecuteScalar();
@@ -92,7 +92,7 @@ namespace DevRating.SqliteClient
             return new SqliteDbWork(_connection, id);
         }
 
-        public DbWork Insert(string repository, string start, string end, DbObject author, double reward)
+        public DbWork Insert(string repository, string start, string end, DbObject author, uint additions)
         {
             using var command = _connection.CreateCommand();
 
@@ -102,14 +102,14 @@ namespace DevRating.SqliteClient
                     ,StartCommit
                     ,EndCommit
                     ,AuthorId
-                    ,Reward
+                    ,Additions
                     ,UsedRatingId)
                 VALUES
                     (@Repository
                     ,@StartCommit
                     ,@EndCommit
                     ,@AuthorId
-                    ,@Reward
+                    ,@Additions
                     ,NULL);
                 SELECT last_insert_rowid();";
 
@@ -117,7 +117,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
-            command.Parameters.Add(new SqliteParameter("@Reward", SqlDbType.Real) {Value = reward});
+            command.Parameters.Add(new SqliteParameter("@Additions", SqlDbType.Real) {Value = additions});
 
             var id = command.ExecuteScalar();
 
