@@ -32,7 +32,9 @@ namespace DevRating.ConsoleApp
 
                 foreach (var author in _instance.Storage().TopAuthors())
                 {
-                    Console.WriteLine($"{author.Email()} {author.Rating().Value():F2}");
+                    var percentile = _formula.WinProbabilityOfA(author.Rating().Value(), _formula.DefaultRating());
+
+                    Console.WriteLine($"{author.Email()} {author.Rating().Value():F2} ({percentile:P} percentile)");
                 }
             }
             finally
@@ -97,7 +99,7 @@ namespace DevRating.ConsoleApp
                 {
                     diff.AddTo(_instance.Storage());
 
-                    Console.WriteLine("To add these updates run `devrating add <path-to-repo> <commit> <commit>`.");
+                    Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     Console.WriteLine();
                 }
 
