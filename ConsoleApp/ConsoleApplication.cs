@@ -120,8 +120,10 @@ namespace DevRating.ConsoleApp
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
-            Console.WriteLine($"{work.Author().Email()} added {work.Additions()} lines " +
-                              $"with {rating} rating ({percentile:P} percentile)");
+            Console.WriteLine(work.Author().Email());
+            Console.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
+            Console.WriteLine(
+                $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
             Console.WriteLine();
 
             PrintWorkRatingsToConsole(work);
