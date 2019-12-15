@@ -15,8 +15,8 @@ namespace DevRating.ConsoleApp
             _args = args;
             _actions = new Dictionary<string, Action>
             {
-                {"show", delegate { application.PrintToConsole(Diff()); }},
-                {"add", delegate { application.Save(Diff()); }},
+                {"show", delegate { application.PrintToConsole(_args[1], _args[2], _args[3]); }},
+                {"add", delegate { application.Save(_args[1], _args[2], _args[3]); }},
                 {"top", application.Top}
             };
         }
@@ -31,11 +31,6 @@ namespace DevRating.ConsoleApp
             {
                 PrintUsage();
             }
-        }
-
-        private Diff Diff()
-        {
-            return new LibGit2Diff(_args[1], _args[2], _args[3]);
         }
 
         private void PrintUsage()

@@ -1,11 +1,9 @@
-using DevRating.Domain;
-
 namespace DevRating.ConsoleApp
 {
     internal interface Application
     {
         void Top();
-        void Save(Diff diff);
-        void PrintToConsole(Diff diff);
+        void Save(string path, string start, string end);
+        void PrintToConsole(string path, string start, string end);
     }
 }

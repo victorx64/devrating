@@ -1,5 +1,5 @@
 using System.Data;
-using DevRating.Database;
+using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
@@ -13,7 +13,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public DbRating Insert(DbObject author, double value, DbObject work)
+        public Rating Insert(IdObject author, double value, IdObject work)
         {
             using var command = _connection.CreateCommand();
 
@@ -34,10 +34,10 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, command.ExecuteScalar());
+            return new SqliteRating(_connection, command.ExecuteScalar());
         }
 
-        public DbRating Insert(DbObject author, double value, DbObject previous, DbObject work)
+        public Rating Insert(IdObject author, double value, IdObject previous, IdObject work)
         {
             using var command = _connection.CreateCommand();
 
@@ -59,10 +59,10 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, command.ExecuteScalar());
+            return new SqliteRating(_connection, command.ExecuteScalar());
         }
 
-        public DbRating RatingOf(DbObject author)
+        public Rating RatingOf(IdObject author)
         {
             using var command = _connection.CreateCommand();
 
@@ -75,10 +75,10 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, reader["Id"]);
+            return new SqliteRating(_connection, reader["Id"]);
         }
 
-        public bool HasRatingOf(DbObject author)
+        public bool ContainsRatingOf(IdObject author)
         {
             using var command = _connection.CreateCommand();
 

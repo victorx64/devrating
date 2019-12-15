@@ -1,5 +1,4 @@
 using System.Data;
-using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
@@ -14,7 +13,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public DbWork Work(Diff diff)
+        public Work Work(string repository, string start, string end)
         {
             using var command = _connection.CreateCommand();
 
@@ -25,19 +24,18 @@ namespace DevRating.SqliteClient
                 AND StartCommit = @StartCommit
                 AND EndCommit = @EndCommit";
 
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = diff.Key()});
-            command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50)
-                {Value = diff.StartCommit()});
-            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = diff.EndCommit()});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
+            command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
+            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
 
             using var reader = command.ExecuteReader();
 
             reader.Read();
 
-            return new SqliteDbWork(_connection, reader["Id"]);
+            return new SqliteWork(_connection, reader["Id"]);
         }
 
-        public bool Exist(Diff diff)
+        public bool Contains(string repository, string start, string end)
         {
             using var command = _connection.CreateCommand();
 
@@ -48,18 +46,17 @@ namespace DevRating.SqliteClient
                 AND StartCommit = @StartCommit
                 AND EndCommit = @EndCommit";
 
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = diff.Key()});
-            command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50)
-                {Value = diff.StartCommit()});
-            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = diff.EndCommit()});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
+            command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
+            command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
 
             using var reader = command.ExecuteReader();
 
             return reader.Read();
         }
 
-        public DbWork Insert(string repository, string start, string end, DbObject author, uint additions,
-            DbObject rating)
+        public Work Insert(string repository, string start, string end, IdObject author, uint additions,
+            IdObject rating)
         {
             using var command = _connection.CreateCommand();
 
@@ -89,10 +86,10 @@ namespace DevRating.SqliteClient
 
             var id = command.ExecuteScalar();
 
-            return new SqliteDbWork(_connection, id);
+            return new SqliteWork(_connection, id);
         }
 
-        public DbWork Insert(string repository, string start, string end, DbObject author, uint additions)
+        public Work Insert(string repository, string start, string end, IdObject author, uint additions)
         {
             using var command = _connection.CreateCommand();
 
@@ -121,7 +118,7 @@ namespace DevRating.SqliteClient
 
             var id = command.ExecuteScalar();
 
-            return new SqliteDbWork(_connection, id);
+            return new SqliteWork(_connection, id);
         }
     }
 }

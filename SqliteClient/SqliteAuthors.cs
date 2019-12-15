@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using DevRating.Database;
+using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
@@ -14,7 +14,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public DbAuthor Insert(string email)
+        public Author Insert(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -27,10 +27,10 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
 
-            return new SqliteDbAuthor(_connection, command.ExecuteScalar());
+            return new SqliteAuthor(_connection, command.ExecuteScalar());
         }
 
-        public bool Exist(string email)
+        public bool Contains(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -43,7 +43,7 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public DbAuthor Author(string email)
+        public Author Author(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -55,10 +55,10 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, reader["Id"]);
+            return new SqliteAuthor(_connection, reader["Id"]);
         }
 
-        public IEnumerable<DbAuthor> TopAuthors()
+        public IEnumerable<Author> TopAuthors()
         {
             using var command = _connection.CreateCommand();
 
@@ -72,11 +72,11 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
-            var authors = new List<SqliteDbAuthor>();
+            var authors = new List<SqliteAuthor>();
 
             while (reader.Read())
             {
-                authors.Add(new SqliteDbAuthor(_connection, reader["Id"]));
+                authors.Add(new SqliteAuthor(_connection, reader["Id"]));
             }
 
             return authors;
