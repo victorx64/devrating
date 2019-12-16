@@ -41,10 +41,8 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void Save(string path, string start, string end)
+        public void Save(Diff diff)
         {
-            var diff = new LibGit2Diff(path, start, end);
-
             _diffs.Database().Connection().Open();
 
             using var transaction = _diffs.Database().Connection().BeginTransaction();
@@ -56,7 +54,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Create();
                 }
 
-                if (_diffs.Database().Works().Contains(diff.RepositoryName(), start, end))
+                if (_diffs.Database().Works().Contains(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()))
                 {
                     throw new Exception("The diff is already added.");
                 }
@@ -77,10 +75,8 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void PrintToConsole(string path, string start, string end)
+        public void PrintToConsole(Diff diff)
         {
-            var diff = new LibGit2Diff(path, start, end);
-
             _diffs.Database().Connection().Open();
 
             using var transaction = _diffs.Database().Connection().BeginTransaction();
@@ -92,7 +88,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Create();
                 }
 
-                if (!_diffs.Database().Works().Contains(diff.RepositoryName(), start, end))
+                if (!_diffs.Database().Works().Contains(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()))
                 {
                     diff.AddTo(_diffs);
 
@@ -100,7 +96,8 @@ namespace DevRating.ConsoleApp
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(_diffs.Database().Works().Work(diff.RepositoryName(), start, end));
+                PrintWorkToConsole(_diffs.Database().Works()
+                    .Work(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()));
             }
             finally
             {

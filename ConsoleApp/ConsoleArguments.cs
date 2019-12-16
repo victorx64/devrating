@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DevRating.Domain;
 using DevRating.LibGit2SharpClient;
 
 namespace DevRating.ConsoleApp
@@ -15,8 +14,8 @@ namespace DevRating.ConsoleApp
             _args = args;
             _actions = new Dictionary<string, Action>
             {
-                {"show", delegate { application.PrintToConsole(_args[1], _args[2], _args[3]); }},
-                {"add", delegate { application.Save(_args[1], _args[2], _args[3]); }},
+                {"show", delegate { application.PrintToConsole(new LibGit2Diff(_args[1], _args[2], _args[3])); }},
+                {"add", delegate { application.Save(new LibGit2Diff(_args[1], _args[2], _args[3])); }},
                 {"top", application.Top}
             };
         }

@@ -4,5 +4,7 @@ namespace DevRating.Domain
     {
         void AddTo(Diffs diffs);
         string RepositoryName();
+        string StartCommit();
+        string EndCommit();
     }
 }

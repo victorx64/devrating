@@ -12,33 +12,58 @@ namespace DevRating.LibGit2SharpClient
         private readonly Commit _start;
         private readonly Commit _end;
         private readonly IRepository _repository;
+        private readonly string _key;
 
         public LibGit2Diff(string path, string start, string end) : this(start, end, new Repository(path))
         {
         }
 
-        public LibGit2Diff(string start, string end, IRepository repository)
-            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository)
+        public LibGit2Diff(string path, string start, string end, string key)
+            : this(start, end, new Repository(path), key)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, IRepository repository)
+        public LibGit2Diff(string start, string end, IRepository repository)
+            : this(repository.Lookup<Commit>(start),
+                repository.Lookup<Commit>(end),
+                repository,
+                repository.Network.Remotes.First().Url)
+        {
+        }
+
+        public LibGit2Diff(string start, string end, IRepository repository, string key)
+            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key)
+        {
+        }
+
+        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key)
         {
             _start = start;
             _end = end;
             _repository = repository;
+            _key = key;
         }
 
         public string RepositoryName()
         {
-            return _repository.Network.Remotes.First().Url;
+            return _key;
+        }
+
+        public string StartCommit()
+        {
+            return _start.Sha;
+        }
+
+        public string EndCommit()
+        {
+            return _end.Sha;
         }
 
         public void AddTo(Diffs diffs)
         {
             var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
 
-            diffs.Insert(RepositoryName(), _start.Sha, _end.Sha, _end.Author.Email, Additions(hunks), Deletions(hunks));
+            diffs.Insert(RepositoryName(), StartCommit(), EndCommit(), _end.Author.Email, Additions(hunks), Deletions(hunks));
         }
 
         private uint Additions(IEnumerable<Hunk> hunks)
