@@ -2,17 +2,18 @@ namespace DevRating.Domain
 {
     public interface Ratings
     {
-        Rating Insert(IdObject author,
+        Rating Insert(Entity author,
             double value,
-            IdObject work);
+            Entity work);
 
-        Rating Insert(IdObject author,
+        Rating Insert(Entity author,
             double value,
-            IdObject previous,
-            IdObject work);
+            Entity previous,
+            Entity work);
 
-        Rating RatingOf(IdObject author);
+        Rating RatingOf(Entity author);
+        Rating Rating(string id);
 
-        bool ContainsRatingOf(IdObject author);
+        bool ContainsRatingOf(Entity author);
     }
 }

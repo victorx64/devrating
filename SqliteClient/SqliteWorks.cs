@@ -35,6 +35,11 @@ namespace DevRating.SqliteClient
             return new SqliteWork(_connection, reader["Id"]);
         }
 
+        public Work Work(string id)
+        {
+            return new SqliteWork(_connection, long.Parse(id));
+        }
+
         public bool Contains(string repository, string start, string end)
         {
             using var command = _connection.CreateCommand();
@@ -55,8 +60,8 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public Work Insert(string repository, string start, string end, IdObject author, uint additions,
-            IdObject rating)
+        public Work Insert(string repository, string start, string end, Entity author, uint additions,
+            Entity rating)
         {
             using var command = _connection.CreateCommand();
 
@@ -89,7 +94,7 @@ namespace DevRating.SqliteClient
             return new SqliteWork(_connection, id);
         }
 
-        public Work Insert(string repository, string start, string end, IdObject author, uint additions)
+        public Work Insert(string repository, string start, string end, Entity author, uint additions)
         {
             using var command = _connection.CreateCommand();
 

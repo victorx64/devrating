@@ -44,11 +44,11 @@ namespace DevRating.Domain
         private Author Author(string email)
         {
             return _database.Authors().Contains(email)
-                ? _database.Authors().Author(email)
+                ? _database.Authors().AuthorByEmail(email)
                 : _database.Authors().Insert(email);
         }
 
-        private Work InsertedWork(string repository, string start, string end, uint additions, IdObject author)
+        private Work InsertedWork(string repository, string start, string end, uint additions, Entity author)
         {
             if (_database.Ratings().ContainsRatingOf(author))
             {
@@ -61,14 +61,14 @@ namespace DevRating.Domain
             }
         }
 
-        private double RatingOf(IdObject author)
+        private double RatingOf(Entity author)
         {
             return _database.Ratings().ContainsRatingOf(author)
                 ? _database.Ratings().RatingOf(author).Value()
                 : _formula.DefaultRating();
         }
 
-        private void InsertAuthorNewRating(IdObject author, IDictionary<string, uint> deletions, IdObject work)
+        private void InsertAuthorNewRating(Entity author, IDictionary<string, uint> deletions, Entity work)
         {
             var @new = _formula.WinnerNewRating(RatingOf(author), deletions.Select(Match));
 
@@ -82,7 +82,7 @@ namespace DevRating.Domain
             }
         }
 
-        private void InsertVictimsNewRatings(IDictionary<string, uint> deletions, IdObject work, double rating)
+        private void InsertVictimsNewRatings(IDictionary<string, uint> deletions, Entity work, double rating)
         {
             foreach (var deletion in deletions)
             {

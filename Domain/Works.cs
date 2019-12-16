@@ -6,18 +6,19 @@ namespace DevRating.Domain
             string repository,
             string start,
             string end,
-            IdObject author,
+            Entity author,
             uint additions,
-            IdObject rating);
+            Entity rating);
 
         Work Insert(
             string repository,
             string start,
             string end,
-            IdObject author,
+            Entity author,
             uint additions);
 
         Work Work(string repository, string start, string end);
+        Work Work(string id);
         bool Contains(string repository, string start, string end);
     }
 }

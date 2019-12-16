@@ -43,7 +43,7 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public Author Author(string email)
+        public Author AuthorByEmail(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -56,6 +56,11 @@ namespace DevRating.SqliteClient
             reader.Read();
 
             return new SqliteAuthor(_connection, reader["Id"]);
+        }
+
+        public Author Author(string id)
+        {
+            return new SqliteAuthor(_connection, long.Parse(id));
         }
 
         public IEnumerable<Author> TopAuthors()

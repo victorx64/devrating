@@ -20,6 +20,11 @@ namespace DevRating.SqliteClient
             return _id;
         }
 
+        public string ToJson()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public string Email()
         {
             using var command = _connection.CreateCommand();

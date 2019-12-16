@@ -1,6 +1,6 @@
 namespace DevRating.Domain
 {
-    public interface Author : IdObject
+    public interface Author : Entity
     {
         string Email();
         Rating Rating();

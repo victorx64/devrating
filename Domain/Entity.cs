@@ -1,7 +1,8 @@
 namespace DevRating.Domain
 {
-    public interface IdObject
+    public interface Entity
     {
         object Id();
+        string ToJson();
     }
 }

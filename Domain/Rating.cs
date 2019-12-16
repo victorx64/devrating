@@ -1,6 +1,6 @@
 namespace DevRating.Domain
 {
-    public interface Rating : IdObject
+    public interface Rating : Entity
     {
         double Value();
         bool HasPreviousRating();
