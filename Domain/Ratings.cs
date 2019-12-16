@@ -12,8 +12,9 @@ namespace DevRating.Domain
             Entity work);
 
         Rating RatingOf(Entity author);
-        Rating Rating(string id);
+        Rating Rating(object id);
 
         bool ContainsRatingOf(Entity author);
+        bool Contains(object id);
     }
 }

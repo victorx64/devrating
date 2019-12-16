@@ -35,9 +35,9 @@ namespace DevRating.SqliteClient
             return new SqliteWork(_connection, reader["Id"]);
         }
 
-        public Work Work(string id)
+        public Work Work(object id)
         {
-            return new SqliteWork(_connection, long.Parse(id));
+            return new SqliteWork(_connection, id);
         }
 
         public bool Contains(string repository, string start, string end)
@@ -54,6 +54,19 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
+        }
+
+        public bool Contains(object id)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Work WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
 
             using var reader = command.ExecuteReader();
 

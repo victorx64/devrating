@@ -6,8 +6,9 @@ namespace DevRating.Domain
     {
         Author Insert(string email);
         bool Contains(string email);
-        Author AuthorByEmail(string email);
-        Author Author(string id);
+        Author Author(string email);
+        Author Author(object id);
         IEnumerable<Author> TopAuthors();
+        bool Contains(object id);
     }
 }

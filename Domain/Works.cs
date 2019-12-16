@@ -18,7 +18,8 @@ namespace DevRating.Domain
             uint additions);
 
         Work Work(string repository, string start, string end);
-        Work Work(string id);
+        Work Work(object id);
         bool Contains(string repository, string start, string end);
+        bool Contains(object id);
     }
 }

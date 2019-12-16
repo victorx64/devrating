@@ -44,7 +44,7 @@ namespace DevRating.Domain
         private Author Author(string email)
         {
             return _database.Authors().Contains(email)
-                ? _database.Authors().AuthorByEmail(email)
+                ? _database.Authors().Author(email)
                 : _database.Authors().Insert(email);
         }
 

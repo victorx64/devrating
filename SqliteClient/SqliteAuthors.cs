@@ -43,7 +43,7 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public Author AuthorByEmail(string email)
+        public Author Author(string email)
         {
             using var command = _connection.CreateCommand();
 
@@ -58,9 +58,22 @@ namespace DevRating.SqliteClient
             return new SqliteAuthor(_connection, reader["Id"]);
         }
 
-        public Author Author(string id)
+        public Author Author(object id)
         {
-            return new SqliteAuthor(_connection, long.Parse(id));
+            return new SqliteAuthor(_connection, id);
+        }
+
+        public bool Contains(object id)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Author WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
 
         public IEnumerable<Author> TopAuthors()
@@ -70,8 +83,8 @@ namespace DevRating.SqliteClient
             command.CommandText = @"
                 SELECT a.Id
                 FROM Author a
-                         INNER JOIN Rating r1 ON a.Id = r1.AuthorId
-                         LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
+                     INNER JOIN Rating r1 ON a.Id = r1.AuthorId
+                     LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
                 WHERE r2.Id IS NULL
                 ORDER BY r1.Rating DESC";
 

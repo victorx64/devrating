@@ -79,9 +79,22 @@ namespace DevRating.SqliteClient
             return new SqliteRating(_connection, reader["Id"]);
         }
 
-        public Rating Rating(string id)
+        public Rating Rating(object id)
         {
-            return new SqliteRating(_connection, long.Parse(id));
+            return new SqliteRating(_connection, id);
+        }
+
+        public bool Contains(object id)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Rating WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
         }
 
         public bool ContainsRatingOf(Entity author)
