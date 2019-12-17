@@ -1,5 +1,5 @@
 using System.Data;
-using DevRating.Database;
+using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
@@ -13,7 +13,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public DbRating Insert(DbObject author, double value, DbObject work)
+        public Rating Insert(Entity author, double value, Entity work)
         {
             using var command = _connection.CreateCommand();
 
@@ -34,10 +34,10 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, command.ExecuteScalar());
+            return new SqliteRating(_connection, command.ExecuteScalar());
         }
 
-        public DbRating Insert(DbObject author, double value, DbObject previous, DbObject work)
+        public Rating Insert(Entity author, double value, Entity previous, Entity work)
         {
             using var command = _connection.CreateCommand();
 
@@ -55,14 +55,15 @@ namespace DevRating.SqliteClient
                 SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Rating", SqliteType.Real) {Value = value});
-            command.Parameters.Add(new SqliteParameter("@PreviousRatingId", SqliteType.Integer) {Value = previous.Id()});
+            command.Parameters.Add(new SqliteParameter("@PreviousRatingId", SqliteType.Integer)
+                {Value = previous.Id()});
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Id()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
 
-            return new SqliteDbRating(_connection, command.ExecuteScalar());
+            return new SqliteRating(_connection, command.ExecuteScalar());
         }
 
-        public DbRating RatingOf(DbObject author)
+        public Rating RatingOf(Entity author)
         {
             using var command = _connection.CreateCommand();
 
@@ -75,10 +76,28 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, reader["Id"]);
+            return new SqliteRating(_connection, reader["Id"]);
         }
 
-        public bool HasRatingOf(DbObject author)
+        public Rating Rating(object id)
+        {
+            return new SqliteRating(_connection, id);
+        }
+
+        public bool Contains(object id)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Id FROM Rating WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
+        }
+
+        public bool ContainsRatingOf(Entity author)
         {
             using var command = _connection.CreateCommand();
 

@@ -1,16 +1,15 @@
 using System.Data;
-using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    internal sealed class SqliteDbRating : DbRating
+    internal sealed class SqliteRating : Rating
     {
         private readonly IDbConnection _connection;
         private readonly object _id;
 
-        public SqliteDbRating(IDbConnection connection, object id)
+        public SqliteRating(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;
@@ -19,6 +18,11 @@ namespace DevRating.SqliteClient
         public object Id()
         {
             return _id;
+        }
+
+        public string ToJson()
+        {
+            throw new System.NotImplementedException();
         }
 
         public Rating PreviousRating()
@@ -33,7 +37,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, reader["PreviousRatingId"]);
+            return new SqliteRating(_connection, reader["PreviousRatingId"]);
         }
 
         public bool HasPreviousRating()
@@ -61,7 +65,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbWork(_connection, reader["WorkId"]);
+            return new SqliteWork(_connection, reader["WorkId"]);
         }
 
         public Author Author()
@@ -76,7 +80,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, reader["AuthorId"]);
+            return new SqliteAuthor(_connection, reader["AuthorId"]);
         }
 
         public double Value()

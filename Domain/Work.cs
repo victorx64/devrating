@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DevRating.Domain
 {
-    public interface Work
+    public interface Work : Entity
     {
         uint Additions();
         Author Author();

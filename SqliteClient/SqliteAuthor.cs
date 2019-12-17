@@ -1,16 +1,15 @@
 using System.Data;
-using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    internal sealed class SqliteDbAuthor : DbAuthor
+    internal sealed class SqliteAuthor : Author
     {
         private readonly IDbConnection _connection;
         private readonly object _id;
 
-        public SqliteDbAuthor(IDbConnection connection, object id)
+        public SqliteAuthor(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;
@@ -19,6 +18,11 @@ namespace DevRating.SqliteClient
         public object Id()
         {
             return _id;
+        }
+
+        public string ToJson()
+        {
+            throw new System.NotImplementedException();
         }
 
         public string Email()
@@ -48,7 +52,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbRating(_connection, reader["Id"]);
+            return new SqliteRating(_connection, reader["Id"]);
         }
 
         public bool HasRating()

@@ -1,32 +1,55 @@
 using System.Data;
-using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    public sealed class SqliteInstance : Instance
+    public sealed class SqliteDatabase : Database
     {
+        private readonly Works _works;
+        private readonly Ratings _ratings;
+        private readonly Authors _authors;
         private readonly IDbConnection _connection;
-        private readonly Storage _storage;
 
-        public SqliteInstance(IDbConnection connection, Formula formula)
-            : this(connection, formula,
+        public SqliteDatabase(IDbConnection connection)
+            : this(connection,
                 new SqliteWorks(connection),
-                new SqliteAuthors(connection),
-                new SqliteRatings(connection))
+                new SqliteRatings(connection),
+                new SqliteAuthors(connection))
         {
         }
 
-        public SqliteInstance(IDbConnection connection, Formula formula, Works works, Authors authors, Ratings ratings)
-            : this(connection, new DbStorage(works, authors, ratings, formula))
-        {
-        }
-
-        public SqliteInstance(IDbConnection connection, Storage storage)
+        public SqliteDatabase(IDbConnection connection, Works works, Ratings ratings, Authors authors)
         {
             _connection = connection;
-            _storage = storage;
+            _works = works;
+            _ratings = ratings;
+            _authors = authors;
+        }
+
+        public IDbConnection Connection()
+        {
+            return _connection;
+        }
+
+        public Works Works()
+        {
+            return _works;
+        }
+
+        public Ratings Ratings()
+        {
+            return _ratings;
+        }
+
+        public Authors Authors()
+        {
+            return _authors;
+        }
+
+        public object ToIdObject(string id)
+        {
+            return long.Parse(id);
         }
 
         public void Create()
@@ -107,16 +130,6 @@ namespace DevRating.SqliteClient
             reader.Close();
 
             return exist;
-        }
-
-        public IDbConnection Connection()
-        {
-            return _connection;
-        }
-
-        public Storage Storage()
-        {
-            return _storage;
         }
     }
 }

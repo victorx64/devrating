@@ -24,11 +24,12 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(string start, string end, IRepository repository)
-            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository,
+            : this(repository.Lookup<Commit>(start),
+                repository.Lookup<Commit>(end),
+                repository,
                 repository.Network.Remotes.First().Url)
         {
         }
-
 
         public LibGit2Diff(string start, string end, IRepository repository, string key)
             : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key)
@@ -43,14 +44,7 @@ namespace DevRating.LibGit2SharpClient
             _key = key;
         }
 
-        public void AddTo(Storage storage)
-        {
-            var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
-
-            storage.AddWork(this, _end.Author.Email, Additions(hunks), Deletions(hunks));
-        }
-
-        public string Key()
+        public string RepositoryName()
         {
             return _key;
         }
@@ -63,6 +57,13 @@ namespace DevRating.LibGit2SharpClient
         public string EndCommit()
         {
             return _end.Sha;
+        }
+
+        public void AddTo(Diffs diffs)
+        {
+            var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
+
+            diffs.Insert(RepositoryName(), StartCommit(), EndCommit(), _end.Author.Email, Additions(hunks), Deletions(hunks));
         }
 
         private uint Additions(IEnumerable<Hunk> hunks)

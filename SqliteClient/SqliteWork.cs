@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using System.Data;
-using DevRating.Database;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    internal sealed class SqliteDbWork : DbWork
+    internal sealed class SqliteWork : Work
     {
         private readonly IDbConnection _connection;
         private readonly object _id;
 
-        public SqliteDbWork(IDbConnection connection, object id)
+        public SqliteWork(IDbConnection connection, object id)
         {
             _connection = connection;
             _id = id;
@@ -20,6 +19,11 @@ namespace DevRating.SqliteClient
         public object Id()
         {
             return _id;
+        }
+
+        public string ToJson()
+        {
+            throw new System.NotImplementedException();
         }
 
         public uint Additions()
@@ -49,7 +53,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteDbAuthor(_connection, reader["AuthorId"]);
+            return new SqliteAuthor(_connection, reader["AuthorId"]);
         }
 
         public IEnumerable<Rating> Ratings()
@@ -66,7 +70,7 @@ namespace DevRating.SqliteClient
 
             while (reader.Read())
             {
-                ratings.Add(new SqliteDbRating(_connection, reader["Id"]));
+                ratings.Add(new SqliteRating(_connection, reader["Id"]));
             }
 
             return ratings;
@@ -82,7 +86,7 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
-            return new SqliteDbRating(_connection, reader["UsedRatingId"]);
+            return new SqliteRating(_connection, reader["UsedRatingId"]);
         }
 
         public bool HasUsedRating()

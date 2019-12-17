@@ -1,38 +1,35 @@
 using System;
-using DevRating.Database;
 using DevRating.Domain;
+using DevRating.LibGit2SharpClient;
 
 namespace DevRating.ConsoleApp
 {
     internal sealed class ConsoleApplication : Application
     {
-        private readonly Instance _instance;
-        private readonly Formula _formula;
+        private readonly Diffs _diffs;
 
-        public ConsoleApplication(Instance instance, Formula formula)
+        public ConsoleApplication(Diffs diffs)
         {
-            _instance = instance;
-            _formula = formula;
+            _diffs = diffs;
         }
 
         public void Top()
         {
-            var connection = _instance.Connection();
+            _diffs.Database().Connection().Open();
 
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
+            using var transaction = _diffs.Database().Connection().BeginTransaction();
 
             try
             {
-                if (!_instance.Exist())
+                if (!_diffs.Database().Exist())
                 {
-                    _instance.Create();
+                    _diffs.Database().Create();
                 }
 
-                foreach (var author in _instance.Storage().TopAuthors())
+                foreach (var author in _diffs.Database().Authors().TopAuthors())
                 {
-                    var percentile = _formula.WinProbabilityOfA(author.Rating().Value(), _formula.DefaultRating());
+                    var percentile = _diffs.Formula()
+                        .WinProbabilityOfA(author.Rating().Value(), _diffs.Formula().DefaultRating());
 
                     Console.WriteLine($"{author.Email()} {author.Rating().Value():F2} ({percentile:P} percentile)");
                 }
@@ -40,31 +37,29 @@ namespace DevRating.ConsoleApp
             finally
             {
                 transaction.Rollback();
-                connection.Close();
+                _diffs.Database().Connection().Close();
             }
         }
 
         public void Save(Diff diff)
         {
-            var connection = _instance.Connection();
+            _diffs.Database().Connection().Open();
 
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
+            using var transaction = _diffs.Database().Connection().BeginTransaction();
 
             try
             {
-                if (!_instance.Exist())
+                if (!_diffs.Database().Exist())
                 {
-                    _instance.Create();
+                    _diffs.Database().Create();
                 }
 
-                if (_instance.Storage().WorkExist(diff))
+                if (_diffs.Database().Works().Contains(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()))
                 {
                     throw new Exception("The diff is already added.");
                 }
 
-                diff.AddTo(_instance.Storage());
+                diff.AddTo(_diffs);
 
                 transaction.Commit();
             }
@@ -76,39 +71,38 @@ namespace DevRating.ConsoleApp
             }
             finally
             {
-                connection.Close();
+                _diffs.Database().Connection().Close();
             }
         }
 
         public void PrintToConsole(Diff diff)
         {
-            var connection = _instance.Connection();
+            _diffs.Database().Connection().Open();
 
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
+            using var transaction = _diffs.Database().Connection().BeginTransaction();
 
             try
             {
-                if (!_instance.Exist())
+                if (!_diffs.Database().Exist())
                 {
-                    _instance.Create();
+                    _diffs.Database().Create();
                 }
 
-                if (!_instance.Storage().WorkExist(diff))
+                if (!_diffs.Database().Works().Contains(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()))
                 {
-                    diff.AddTo(_instance.Storage());
+                    diff.AddTo(_diffs);
 
                     Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(_instance.Storage().Work(diff));
+                PrintWorkToConsole(_diffs.Database().Works()
+                    .Work(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()));
             }
             finally
             {
                 transaction.Rollback();
-                connection.Close();
+                _diffs.Database().Connection().Close();
             }
         }
 
@@ -116,9 +110,9 @@ namespace DevRating.ConsoleApp
         {
             var rating = work.HasUsedRating()
                 ? work.UsedRating().Value()
-                : _formula.DefaultRating();
+                : _diffs.Formula().DefaultRating();
 
-            var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
+            var percentile = _diffs.Formula().WinProbabilityOfA(rating, _diffs.Formula().DefaultRating());
 
             Console.WriteLine(work.Author().Email());
             Console.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
@@ -135,11 +129,11 @@ namespace DevRating.ConsoleApp
 
             foreach (var rating in work.Ratings())
             {
-                var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
+                var percentile = _diffs.Formula().WinProbabilityOfA(rating.Value(), _diffs.Formula().DefaultRating());
 
                 var previous = rating.HasPreviousRating()
                     ? rating.PreviousRating().Value()
-                    : _formula.DefaultRating();
+                    : _diffs.Formula().DefaultRating();
 
                 Console.WriteLine(
                     $"{rating.Author().Email()} {previous:F2} -> {rating.Value():F2} ({percentile:P} percentile)");
