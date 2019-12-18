@@ -86,6 +86,8 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
+            reader.Read();
+
             return new SqliteRating(_connection, reader["UsedRatingId"]);
         }
 
