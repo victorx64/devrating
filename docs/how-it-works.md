@@ -1,12 +1,12 @@
-##How DevRating works
+## How DevRating works
 
-###TL;DR
+### TL;DR
 
 Every single line deletion gives rating points to an author and lowers points 
 of the deleted line author. Every added line gives a reward to its author 
 proportionally to his rating.
 
-###More details
+### More details
 
 DevRating evaluates a reward of a developer for a work. Work is described as 
 a number of added and deleted lines of code between two commits. It's similar 
