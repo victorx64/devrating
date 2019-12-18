@@ -3,12 +3,8 @@
 **DevRating** is a command-line tool that evaluates rewards and a rating of 
 developers based on git diff. 
 
-Every single line deletion gives rating points to an author 
-and lowers points of the deleted line author.  
-Every added line gives a reward to its author proportionally to his rating.
-
-Read the [white paper](docs/white-paper.md)
-(in [russian](docs/white-paper-ru.md)).
+Read [how it works](docs/how-it-works.md). Read the 
+[white paper](docs/white-paper.md) (in [russian](docs/white-paper-ru.md)).
 
 Also, check [DevRating](https://github.com/apps/devrating) app for GitHub that 
 automatically analyzes pull requests. 
