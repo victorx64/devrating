@@ -22,7 +22,7 @@ $ devrating
 ```
 
 It should be clear what to do. If not, ask us in
-our [Telegram chat](https://t.me/devrating).
+our [Telegram chat](https://t.me/devratingchat).
 
 ## Reward
 
