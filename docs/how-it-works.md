@@ -1,5 +1,8 @@
 ## How DevRating works
 
+Read the 
+[white paper](docs/white-paper.md) (in [russian](docs/white-paper-ru.md)).
+
 ### TL;DR
 
 Every single line deletion gives rating points to an author and lowers points 
@@ -33,7 +36,7 @@ Qb = 10 ^ (b / 400);
 p = Qa / (Qa   Qb);
 ```
 
-where a - rating of the developer, `b` - average rating, which is currently 
+where `a` - rating of the developer, `b` - average rating, which is currently 
 `1500`.
 
 Then, DevRating updates the ratings.
