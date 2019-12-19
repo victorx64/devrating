@@ -1,7 +1,7 @@
 ## How DevRating works
 
 Read the 
-[white paper](docs/white-paper.md) (in [russian](docs/white-paper-ru.md)).
+[white paper](white-paper.md) (in [russian](white-paper-ru.md)).
 
 ### TL;DR
 
