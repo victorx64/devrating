@@ -1,4 +1,4 @@
-## How DevRating works
+## How Dev Rating works
 
 ### TL;DR
 
@@ -8,12 +8,12 @@ proportionally to his rating.
 
 ### More details
 
-DevRating evaluates a reward of a developer for a work. Work is described as 
+Dev Rating evaluates a reward of a developer for a work. Work is described as 
 a number of added and deleted lines of code between two commits. It's similar 
 to what git diff shows. An author of the second commit is treated as the 
 developer of the work.
 
-First, DevRating counts a reward based on a number of added lines and on the 
+First, Dev Rating counts a reward based on a number of added lines and on the 
 current rating of the developer:
 
 ```
@@ -36,7 +36,7 @@ p = Qa / (Qa   Qb);
 where a - rating of the developer, `b` - average rating, which is currently 
 `1500`.
 
-Then, DevRating updates the ratings.
+Then, Dev Rating updates the ratings.
 
 When a developer deletes a line, he increases his rating and lowers the 
 rating of the deleted line author. The 

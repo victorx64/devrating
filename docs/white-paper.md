@@ -1,4 +1,4 @@
-# DevRating: Software Developer Reward System
+# Dev Rating: Software Developer Reward System
 
 ## Introduction
 
@@ -14,7 +14,7 @@ reputation that would follow them from project to project.
 
 We need a way to determine the reward of a programmer based on the quality and 
 size of the written code. The quality of the code would be measured based on 
-statistics and would be open. The award would not take into account the 
+statistics and would be open. The reward would not take into account the 
 personal qualities of the programmer and the preparatory work carried out, but 
 only the final result.
 

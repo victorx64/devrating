@@ -16,7 +16,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
         <OutputType>Exe</OutputType>
-        <Description>DevRating is a tool that evaluates a reward of a developer based on git diff</Description>
+        <Description>Dev Rating is a tool that evaluates a reward of a developer based on git diff</Description>
         <Copyright>Copyright © Victor Semenov 2020</Copyright>
     </PropertyGroup>
 
