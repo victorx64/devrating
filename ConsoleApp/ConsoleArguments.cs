@@ -34,7 +34,7 @@ namespace DevRating.ConsoleApp
 
         private void PrintUsage()
         {
-            Console.WriteLine("DevRating evaluates developers rating and rewards based on git diff.");
+            Console.WriteLine("Dev Rating evaluates developers rating and rewards based on git diff.");
             Console.WriteLine();
             Console.WriteLine("Usage:");
             Console.WriteLine("  devrating top");

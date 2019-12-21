@@ -1,13 +1,13 @@
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
 
-**DevRating** is a command-line tool that evaluates rewards and a rating of 
+**Dev Rating** is a command-line tool that evaluates rewards and a rating of 
 developers based on git diff. 
 
 Read [how it works](docs/how-it-works.md). Read the 
 [white paper](docs/white-paper.md) (in [russian](docs/white-paper-ru.md)).
 
-Also, check [DevRating](https://github.com/apps/devrating) app for GitHub that 
-automatically analyzes pull requests. 
+Also, check [Dev Rating](https://github.com/marketplace/dev-rating) app for 
+GitHub that automatically analyzes pull requests. 
 
 First, install the tool:
 
