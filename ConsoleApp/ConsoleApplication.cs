@@ -54,7 +54,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Create();
                 }
 
-                if (_diffs.Database().Works().Contains(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()))
+                if (diff.ExistIn(_diffs.Database().Works()))
                 {
                     throw new Exception("The diff is already added.");
                 }
@@ -88,7 +88,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Create();
                 }
 
-                if (!_diffs.Database().Works().Contains(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()))
+                if (!diff.ExistIn(_diffs.Database().Works()))
                 {
                     diff.AddTo(_diffs);
 
@@ -96,8 +96,7 @@ namespace DevRating.ConsoleApp
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(_diffs.Database().Works()
-                    .Work(diff.RepositoryName(), diff.StartCommit(), diff.EndCommit()));
+                PrintWorkToConsole(diff.WorkFrom(_diffs.Database().Works()));
             }
             finally
             {

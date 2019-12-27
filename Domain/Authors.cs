@@ -9,6 +9,7 @@ namespace DevRating.Domain
         Author Author(string email);
         Author Author(object id);
         IEnumerable<Author> TopAuthors();
+        IEnumerable<Author> TopAuthors(string repository);
         bool Contains(object id);
     }
 }

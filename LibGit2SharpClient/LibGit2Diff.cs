@@ -44,26 +44,22 @@ namespace DevRating.LibGit2SharpClient
             _key = key;
         }
 
-        public string RepositoryName()
+        public Work WorkFrom(Works works)
         {
-            return _key;
+            return works.Work(_key, _start.Sha, _end.Sha);
         }
 
-        public string StartCommit()
+        public bool ExistIn(Works works)
         {
-            return _start.Sha;
-        }
-
-        public string EndCommit()
-        {
-            return _end.Sha;
+            return works.Contains(_key, _start.Sha, _end.Sha);
         }
 
         public void AddTo(Diffs diffs)
         {
             var hunks = Task.WhenAll(HunkTasks()).GetAwaiter().GetResult();
 
-            diffs.Insert(RepositoryName(), StartCommit(), EndCommit(), _end.Author.Email, Additions(hunks), Deletions(hunks));
+            diffs.Insert(_key, _start.Sha, _end.Sha, _end.Author.Email, Additions(hunks),
+                Deletions(hunks));
         }
 
         private uint Additions(IEnumerable<Hunk> hunks)
