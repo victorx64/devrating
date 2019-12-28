@@ -115,7 +115,7 @@ namespace DevRating.LibGit2SharpClient
         {
             var options = new BlameOptions {StartingAt = _start};
 
-            foreach (var difference in Differences())
+            foreach (var difference in FileModifications())
             {
                 LibGit2Hunk Function()
                 {
@@ -124,9 +124,15 @@ namespace DevRating.LibGit2SharpClient
 
                 yield return Task.Run(Function);
             }
+
+            foreach (var difference in FileCreations())
+            {
+                yield return Task.FromResult(new LibGit2Hunk(new EmptyDeletions(),
+                    new LibGit2Additions(difference.Patch)));
+            }
         }
 
-        private IEnumerable<PatchEntryChanges> Differences()
+        private IEnumerable<PatchEntryChanges> FileModifications()
         {
             foreach (var difference in _repository.Diff.Compare<Patch>(_start.Tree, _end.Tree,
                 new CompareOptions {ContextLines = 0}))
@@ -136,6 +142,21 @@ namespace DevRating.LibGit2SharpClient
                     difference.Mode == Mode.NonExecutableFile &&
                     (difference.Status == ChangeKind.Deleted ||
                      difference.Status == ChangeKind.Modified))
+                {
+                    yield return difference;
+                }
+            }
+        }
+
+        private IEnumerable<PatchEntryChanges> FileCreations()
+        {
+            foreach (var difference in _repository.Diff.Compare<Patch>(_start.Tree, _end.Tree,
+                new CompareOptions {ContextLines = 0}))
+            {
+                if (!difference.IsBinaryComparison &&
+                    difference.Mode == Mode.NonExecutableFile &&
+                    difference.OldMode == Mode.Nonexistent &&
+                    difference.Status == ChangeKind.Added)
                 {
                     yield return difference;
                 }
