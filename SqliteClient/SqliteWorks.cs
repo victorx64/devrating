@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
@@ -71,6 +72,31 @@ namespace DevRating.SqliteClient
             using var reader = command.ExecuteReader();
 
             return reader.Read();
+        }
+
+        public IEnumerable<Work> LastWorks(string repository)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT w.Id
+                FROM Work w
+                WHERE w.Repository = @Repository
+                ORDER BY w.Id DESC
+                LIMIT 10";
+
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
+
+            using var reader = command.ExecuteReader();
+
+            var works = new List<SqliteWork>();
+
+            while (reader.Read())
+            {
+                works.Add(new SqliteWork(_connection, reader["Id"]));
+            }
+
+            return works;
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions,

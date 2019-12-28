@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DevRating.Domain
 {
     public interface Works
@@ -21,5 +23,6 @@ namespace DevRating.Domain
         Work Work(object id);
         bool Contains(string repository, string start, string end);
         bool Contains(object id);
+        IEnumerable<Work> LastWorks(string repository);
     }
 }
