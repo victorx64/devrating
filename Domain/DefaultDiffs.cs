@@ -41,7 +41,7 @@ namespace DevRating.Domain
             InsertNewRatings(email, deletions, author, InsertedWork(repository, link, start, end, additions, author));
         }
 
-        private void InsertNewRatings(string email, IEnumerable<Deletion> deletions, Author author, Work work)
+        private void InsertNewRatings(string email, IEnumerable<Deletion> deletions, Entity author, Entity work)
         {
             var victims = Victims(email, deletions);
 
