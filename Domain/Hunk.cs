@@ -1,6 +1,6 @@
-namespace DevRating.LibGit2SharpClient
+namespace DevRating.Domain
 {
-    internal interface Hunk
+    public interface Hunk
     {
         Deletions Deletions();
         Additions Additions();

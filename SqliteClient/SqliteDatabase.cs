@@ -87,6 +87,7 @@ namespace DevRating.SqliteClient
                     Id           integer
                         primary key autoincrement,
                     Repository   nvarchar     not null,
+                    Link         nvarchar,
                     StartCommit  nvarchar(50) not null,
                     EndCommit    nvarchar(50) not null,
                     AuthorId     integer      not null

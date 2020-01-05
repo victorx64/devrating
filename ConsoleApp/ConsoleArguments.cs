@@ -1,21 +1,24 @@
 using System;
 using System.Collections.Generic;
 using DevRating.LibGit2SharpClient;
+using LibGit2Sharp;
 
 namespace DevRating.ConsoleApp
 {
     internal sealed class ConsoleArguments : Arguments
     {
         private readonly string[] _args;
+        private readonly Application _application;
         private readonly IDictionary<string, Action> _actions;
 
         public ConsoleArguments(string[] args, Application application)
         {
             _args = args;
+            _application = application;
             _actions = new Dictionary<string, Action>
             {
-                {"show", delegate { application.PrintToConsole(new LibGit2Diff(_args[1], _args[2], _args[3])); }},
-                {"add", delegate { application.Save(new LibGit2Diff(_args[1], _args[2], _args[3])); }},
+                {"show", Show},
+                {"add", Add},
                 {"top", application.Top}
             };
         }
@@ -30,6 +33,20 @@ namespace DevRating.ConsoleApp
             {
                 PrintUsage();
             }
+        }
+
+        private void Show()
+        {
+            using var repository = new Repository(_args[3]);
+
+            _application.PrintToConsole(new LibGit2Diff(_args[1], _args[2], repository));
+        }
+
+        private void Add()
+        {
+            using var repository = new Repository(_args[3]);
+
+            _application.Save(new LibGit2Diff(_args[1], _args[2], repository));
         }
 
         private void PrintUsage()
