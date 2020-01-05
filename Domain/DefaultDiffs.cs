@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,20 +26,41 @@ namespace DevRating.Domain
         }
 
         public void Insert(string repository, string start, string end, string email, uint additions,
-            IDictionary<string, uint> deletions)
+            IEnumerable<Deletion> deletions)
         {
             var author = Author(email);
 
-            var work = InsertedWork(repository, start, end, additions, author);
+            InsertNewRatings(email, deletions, author, InsertedWork(repository, start, end, additions, author));
+        }
 
-            deletions.Remove(email);
+        public void Insert(string repository, string link, string start, string end, string email, uint additions,
+            IEnumerable<Deletion> deletions)
+        {
+            var author = Author(email);
 
-            if (deletions.Count > 0)
+            InsertNewRatings(email, deletions, author, InsertedWork(repository, link, start, end, additions, author));
+        }
+
+        private void InsertNewRatings(string email, IEnumerable<Deletion> deletions, Entity author, Entity work)
+        {
+            var victims = Victims(email, deletions);
+
+            if (victims.Any())
             {
-                InsertAuthorNewRating(author, deletions, work);
+                InsertAuthorNewRating(author, victims, work);
 
-                InsertVictimsNewRatings(deletions, work, RatingOf(author));
+                InsertVictimsNewRatings(victims, work, RatingOf(author));
             }
+        }
+
+        private IList<Deletion> Victims(string email, IEnumerable<Deletion> deletions)
+        {
+            bool NotSelfDeletion(Deletion deletion)
+            {
+                return !deletion.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return deletions.Where(NotSelfDeletion).ToList();
         }
 
         private Author Author(string email)
@@ -61,6 +83,20 @@ namespace DevRating.Domain
             }
         }
 
+        private Work InsertedWork(string repository, string link, string start, string end, uint additions,
+            Entity author)
+        {
+            if (_database.Ratings().ContainsRatingOf(author))
+            {
+                return _database.Works().Insert(repository, start, end, author, additions,
+                    _database.Ratings().RatingOf(author), link);
+            }
+            else
+            {
+                return _database.Works().Insert(repository, start, end, author, additions, link);
+            }
+        }
+
         private double RatingOf(Entity author)
         {
             return _database.Ratings().ContainsRatingOf(author)
@@ -68,9 +104,9 @@ namespace DevRating.Domain
                 : _formula.DefaultRating();
         }
 
-        private void InsertAuthorNewRating(Entity author, IDictionary<string, uint> deletions, Entity work)
+        private void InsertAuthorNewRating(Entity author, IEnumerable<Deletion> victims, Entity work)
         {
-            var @new = _formula.WinnerNewRating(RatingOf(author), deletions.Select(Match));
+            var @new = _formula.WinnerNewRating(RatingOf(author), victims.Select(Match));
 
             if (_database.Ratings().ContainsRatingOf(author))
             {
@@ -82,15 +118,15 @@ namespace DevRating.Domain
             }
         }
 
-        private void InsertVictimsNewRatings(IDictionary<string, uint> deletions, Entity work, double rating)
+        private void InsertVictimsNewRatings(IEnumerable<Deletion> victims, Entity work, double rating)
         {
-            foreach (var deletion in deletions)
+            foreach (var deletion in victims)
             {
-                var victim = Author(deletion.Key);
+                var victim = Author(deletion.Email());
 
                 var current = RatingOf(victim);
 
-                var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Value));
+                var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Count()));
 
                 if (_database.Ratings().ContainsRatingOf(victim))
                 {
@@ -103,9 +139,9 @@ namespace DevRating.Domain
             }
         }
 
-        private Match Match(KeyValuePair<string, uint> deletion)
+        private Match Match(Deletion deletion)
         {
-            return new DefaultMatch(RatingOf(Author(deletion.Key)), deletion.Value);
+            return new DefaultMatch(RatingOf(Author(deletion.Email())), deletion.Count());
         }
     }
 }

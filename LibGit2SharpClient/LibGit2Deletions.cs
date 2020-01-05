@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DevRating.Domain;
 using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
@@ -15,9 +16,9 @@ namespace DevRating.LibGit2SharpClient
             _blames = blames;
         }
 
-        public IEnumerable<Modification> Items()
+        public IEnumerable<Deletion> Items()
         {
-            var deletions = new List<Modification>();
+            var deletions = new List<Deletion>();
 
             foreach (var header in DeletionHeaders())
             {
@@ -38,7 +39,7 @@ namespace DevRating.LibGit2SharpClient
             }
         }
 
-        private IEnumerable<Modification> HunkDeletions(string header)
+        private IEnumerable<Deletion> HunkDeletions(string header)
         {
             var parts = HeaderParts(header);
             var index = Index(parts);
@@ -51,7 +52,7 @@ namespace DevRating.LibGit2SharpClient
 
                 increment = BlameHunkLastLineIndex(blame, index + count) - i;
 
-                yield return new LibGit2Modification(blame.FinalCommit.Author, increment);
+                yield return new DefaultDeletion(blame.FinalCommit.Author.Email, increment);
             }
         }
 
