@@ -47,11 +47,6 @@ namespace DevRating.SqliteClient
             return _authors;
         }
 
-        public object ToIdObject(string id)
-        {
-            return long.Parse(id);
-        }
-
         public void Create()
         {
             using var command = _connection.CreateCommand();
