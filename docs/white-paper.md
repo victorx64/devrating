@@ -20,8 +20,8 @@ only the final result.
 
 ## Quality of code
 
-A high-quality code is a code that changes easily. The less code you need to 
-remove when changing requirements, the better-written codebase.
+A high-quality code is a code that changes easily. The less code you have to 
+remove to meet new requirements, the more maintainable is the codebase.
 
 Thus, each removal of the code is an omission of the programmer who wrote this 
 code. The task of the programmer is to minimize possible changes, making the 
@@ -35,12 +35,12 @@ line.
 
 We introduce a rating system that will show whose code is deleted more often, 
 and who more often removes someone else's code. All programmers start with a 
-certain rating. Each time someone deletes other people's lines, we will 
-increase the rating of the deletor and lower the rating of the author of the 
-deleted line in accordance with the Elo formula. If a programmer deleted the 
-lines of several authors in one work, we first lower the ratings of the authors 
-of deleted lines. Then we increase the programmer’s rating by the sum of the 
-changes in the ratings of the authors of deleted lines.
+certain rating. Each time someone deletes other people's lines, we will increase 
+the rating of the deletor and lower the rating of the author of the deleted line 
+in accordance with the Elo formula. If a programmer deletes lines of several 
+authors in a work, we first lower the ratings of the authors of the deleted 
+lines. Then we increase the programmer’s rating by the sum of the changes of the 
+ratings of the authors of the deleted lines.
 
 To reduce the risk of a sharp drop in the rating due to new requirements, the 
 programmer is motivated to work on several functionalities or projects in 
