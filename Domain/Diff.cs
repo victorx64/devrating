@@ -4,6 +4,6 @@ namespace DevRating.Domain
     {
         void AddTo(Diffs diffs);
         Work WorkFrom(Works works);
-        bool ExistIn(Works works);
+        bool PresentIn(Works works);
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using DevRating.Domain;
-using DevRating.LibGit2SharpClient;
 
 namespace DevRating.ConsoleApp
 {
@@ -15,18 +14,18 @@ namespace DevRating.ConsoleApp
 
         public void Top()
         {
-            _diffs.Database().Connection().Open();
+            _diffs.Database().Instance().Connection().Open();
 
-            using var transaction = _diffs.Database().Connection().BeginTransaction();
+            using var transaction = _diffs.Database().Instance().Connection().BeginTransaction();
 
             try
             {
-                if (!_diffs.Database().Exist())
+                if (!_diffs.Database().Instance().Present())
                 {
-                    _diffs.Database().Create();
+                    _diffs.Database().Instance().Create();
                 }
 
-                foreach (var author in _diffs.Database().Authors().TopAuthors())
+                foreach (var author in _diffs.Database().Entities().Authors().GetOperation().Top())
                 {
                     var percentile = _diffs.Formula()
                         .WinProbabilityOfA(author.Rating().Value(), _diffs.Formula().DefaultRating());
@@ -37,24 +36,24 @@ namespace DevRating.ConsoleApp
             finally
             {
                 transaction.Rollback();
-                _diffs.Database().Connection().Close();
+                _diffs.Database().Instance().Connection().Close();
             }
         }
 
         public void Save(Diff diff)
         {
-            _diffs.Database().Connection().Open();
+            _diffs.Database().Instance().Connection().Open();
 
-            using var transaction = _diffs.Database().Connection().BeginTransaction();
+            using var transaction = _diffs.Database().Instance().Connection().BeginTransaction();
 
             try
             {
-                if (!_diffs.Database().Exist())
+                if (!_diffs.Database().Instance().Present())
                 {
-                    _diffs.Database().Create();
+                    _diffs.Database().Instance().Create();
                 }
 
-                if (diff.ExistIn(_diffs.Database().Works()))
+                if (diff.PresentIn(_diffs.Database().Entities().Works()))
                 {
                     throw new Exception("The diff is already added.");
                 }
@@ -71,24 +70,24 @@ namespace DevRating.ConsoleApp
             }
             finally
             {
-                _diffs.Database().Connection().Close();
+                _diffs.Database().Instance().Connection().Close();
             }
         }
 
         public void PrintToConsole(Diff diff)
         {
-            _diffs.Database().Connection().Open();
+            _diffs.Database().Instance().Connection().Open();
 
-            using var transaction = _diffs.Database().Connection().BeginTransaction();
+            using var transaction = _diffs.Database().Instance().Connection().BeginTransaction();
 
             try
             {
-                if (!_diffs.Database().Exist())
+                if (!_diffs.Database().Instance().Present())
                 {
-                    _diffs.Database().Create();
+                    _diffs.Database().Instance().Create();
                 }
 
-                if (!diff.ExistIn(_diffs.Database().Works()))
+                if (!diff.PresentIn(_diffs.Database().Entities().Works()))
                 {
                     diff.AddTo(_diffs);
 
@@ -96,12 +95,12 @@ namespace DevRating.ConsoleApp
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(diff.WorkFrom(_diffs.Database().Works()));
+                PrintWorkToConsole(diff.WorkFrom(_diffs.Database().Entities().Works()));
             }
             finally
             {
                 transaction.Rollback();
-                _diffs.Database().Connection().Close();
+                _diffs.Database().Instance().Connection().Close();
             }
         }
 
