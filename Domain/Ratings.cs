@@ -2,7 +2,7 @@ namespace DevRating.Domain
 {
     public interface Ratings
     {
-        RatingInsertOperation InsertOperation();
+        InsertRatingOperation InsertOperation();
 
         Rating RatingOf(Entity author);
         Rating Rating(object id);

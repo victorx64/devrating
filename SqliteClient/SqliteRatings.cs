@@ -7,19 +7,19 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteRatings : Ratings
     {
         private readonly IDbConnection _connection;
-        private readonly SqliteRatingInsertOperation _insert;
+        private readonly SqliteInsertRatingOperation _insert;
 
         public SqliteRatings(IDbConnection connection)
-            : this(new SqliteRatingInsertOperation(connection))
+            : this(new SqliteInsertRatingOperation(connection))
         {
         }
 
-        public SqliteRatings(SqliteRatingInsertOperation insert)
+        public SqliteRatings(SqliteInsertRatingOperation insert)
         {
             _insert = insert;
         }
 
-        public RatingInsertOperation InsertOperation()
+        public InsertRatingOperation InsertOperation()
         {
             return _insert;
         }

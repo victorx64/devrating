@@ -4,11 +4,11 @@ using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    internal sealed class SqliteRatingInsertOperation : RatingInsertOperation
+    internal sealed class SqliteInsertRatingOperation : InsertRatingOperation
     {
         private readonly IDbConnection _connection;
 
-        public SqliteRatingInsertOperation(IDbConnection connection)
+        public SqliteInsertRatingOperation(IDbConnection connection)
         {
             _connection = connection;
         }

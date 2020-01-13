@@ -1,6 +1,6 @@
 namespace DevRating.Domain
 {
-    public interface RatingInsertOperation
+    public interface InsertRatingOperation
     {
         Rating Insert(Entity author,
             double value,
