@@ -74,12 +74,12 @@ namespace DevRating.Domain
         {
             if (_database.Ratings().ContainsRatingOf(author))
             {
-                return _database.Works().Insert(repository, start, end, author, additions,
+                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions,
                     _database.Ratings().RatingOf(author));
             }
             else
             {
-                return _database.Works().Insert(repository, start, end, author, additions);
+                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions);
             }
         }
 
@@ -88,12 +88,12 @@ namespace DevRating.Domain
         {
             if (_database.Ratings().ContainsRatingOf(author))
             {
-                return _database.Works().Insert(repository, start, end, author, additions,
+                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions,
                     _database.Ratings().RatingOf(author), link);
             }
             else
             {
-                return _database.Works().Insert(repository, start, end, author, additions, link);
+                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions, link);
             }
         }
 
