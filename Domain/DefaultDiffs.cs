@@ -111,12 +111,12 @@ namespace DevRating.Domain
 
             if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
-                _database.Entities().Ratings()
+                _database.Entities().Ratings().InsertOperation()
                     .Insert(author, @new, _database.Entities().Ratings().RatingOf(author), work);
             }
             else
             {
-                _database.Entities().Ratings().Insert(author, @new, work);
+                _database.Entities().Ratings().InsertOperation().Insert(author, @new, work);
             }
         }
 
@@ -132,12 +132,12 @@ namespace DevRating.Domain
 
                 if (_database.Entities().Ratings().ContainsRatingOf(victim))
                 {
-                    _database.Entities().Ratings()
+                    _database.Entities().Ratings().InsertOperation()
                         .Insert(victim, @new, _database.Entities().Ratings().RatingOf(victim), work);
                 }
                 else
                 {
-                    _database.Entities().Ratings().Insert(victim, @new, work);
+                    _database.Entities().Ratings().InsertOperation().Insert(victim, @new, work);
                 }
             }
         }
