@@ -46,7 +46,7 @@ namespace DevRating.LibGit2SharpClient
 
         public Work WorkFrom(Works works)
         {
-            return works.Work(_key, _start.Sha, _end.Sha);
+            return works.GetOperation().Work(_key, _start.Sha, _end.Sha);
         }
 
         public bool ExistIn(Works works)

@@ -1,40 +1,20 @@
+using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    internal sealed class SqliteWorks : Works
+    public class SqliteGetWorkOperation : GetWorkOperation
     {
         private readonly IDbConnection _connection;
-        private readonly InsertWorkOperation _insert;
-        private readonly GetWorkOperation _get;
 
-        public SqliteWorks(IDbConnection connection) : this(
-            connection,
-            new SqliteInsertWorkOperation(connection),
-            new SqliteGetWorkOperation(connection))
-        {
-        }
-
-        public SqliteWorks(IDbConnection connection, InsertWorkOperation insert, GetWorkOperation get)
+        public SqliteGetWorkOperation(IDbConnection connection)
         {
             _connection = connection;
-            _insert = insert;
-            _get = get;
         }
 
-        public InsertWorkOperation InsertOperation()
-        {
-            return _insert;
-        }
-
-        public GetWorkOperation GetOperation()
-        {
-            return _get;
-        }
-
-        public bool Contains(string repository, string start, string end)
+        public Work Work(string repository, string start, string end)
         {
             using var command = _connection.CreateCommand();
 
@@ -51,20 +31,39 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
-            return reader.Read();
+            reader.Read();
+
+            return new SqliteWork(_connection, reader["Id"]);
         }
 
-        public bool Contains(object id)
+        public Work Work(object id)
+        {
+            return new SqliteWork(_connection, id);
+        }
+
+        public IEnumerable<Work> Lasts(string repository)
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Id FROM Work WHERE Id = @Id";
+            command.CommandText = @"
+                SELECT w.Id
+                FROM Work w
+                WHERE w.Repository = @Repository
+                ORDER BY w.Id DESC
+                LIMIT 10";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
 
             using var reader = command.ExecuteReader();
 
-            return reader.Read();
+            var works = new List<SqliteWork>();
+
+            while (reader.Read())
+            {
+                works.Add(new SqliteWork(_connection, reader["Id"]));
+            }
+
+            return works;
         }
     }
 }
