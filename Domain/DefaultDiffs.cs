@@ -65,42 +65,43 @@ namespace DevRating.Domain
 
         private Author Author(string email)
         {
-            return _database.Authors().Contains(email)
-                ? _database.Authors().Author(email)
-                : _database.Authors().Insert(email);
+            return _database.Entities().Authors().Contains(email)
+                ? _database.Entities().Authors().Author(email)
+                : _database.Entities().Authors().Insert(email);
         }
 
         private Work InsertedWork(string repository, string start, string end, uint additions, Entity author)
         {
-            if (_database.Ratings().ContainsRatingOf(author))
+            if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
-                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions,
-                    _database.Ratings().RatingOf(author));
+                return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
+                    _database.Entities().Ratings().RatingOf(author));
             }
             else
             {
-                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions);
+                return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions);
             }
         }
 
         private Work InsertedWork(string repository, string link, string start, string end, uint additions,
             Entity author)
         {
-            if (_database.Ratings().ContainsRatingOf(author))
+            if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
-                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions,
-                    _database.Ratings().RatingOf(author), link);
+                return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
+                    _database.Entities().Ratings().RatingOf(author), link);
             }
             else
             {
-                return _database.Works().InsertOperation().Insert(repository, start, end, author, additions, link);
+                return _database.Entities().Works().InsertOperation()
+                    .Insert(repository, start, end, author, additions, link);
             }
         }
 
         private double RatingOf(Entity author)
         {
-            return _database.Ratings().ContainsRatingOf(author)
-                ? _database.Ratings().RatingOf(author).Value()
+            return _database.Entities().Ratings().ContainsRatingOf(author)
+                ? _database.Entities().Ratings().RatingOf(author).Value()
                 : _formula.DefaultRating();
         }
 
@@ -108,13 +109,14 @@ namespace DevRating.Domain
         {
             var @new = _formula.WinnerNewRating(RatingOf(author), victims.Select(Match));
 
-            if (_database.Ratings().ContainsRatingOf(author))
+            if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
-                _database.Ratings().Insert(author, @new, _database.Ratings().RatingOf(author), work);
+                _database.Entities().Ratings()
+                    .Insert(author, @new, _database.Entities().Ratings().RatingOf(author), work);
             }
             else
             {
-                _database.Ratings().Insert(author, @new, work);
+                _database.Entities().Ratings().Insert(author, @new, work);
             }
         }
 
@@ -128,13 +130,14 @@ namespace DevRating.Domain
 
                 var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Count()));
 
-                if (_database.Ratings().ContainsRatingOf(victim))
+                if (_database.Entities().Ratings().ContainsRatingOf(victim))
                 {
-                    _database.Ratings().Insert(victim, @new, _database.Ratings().RatingOf(victim), work);
+                    _database.Entities().Ratings()
+                        .Insert(victim, @new, _database.Entities().Ratings().RatingOf(victim), work);
                 }
                 else
                 {
-                    _database.Ratings().Insert(victim, @new, work);
+                    _database.Entities().Ratings().Insert(victim, @new, work);
                 }
             }
         }

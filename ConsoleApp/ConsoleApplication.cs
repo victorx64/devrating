@@ -25,7 +25,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Instance().Create();
                 }
 
-                foreach (var author in _diffs.Database().Authors().TopAuthors())
+                foreach (var author in _diffs.Database().Entities().Authors().TopAuthors())
                 {
                     var percentile = _diffs.Formula()
                         .WinProbabilityOfA(author.Rating().Value(), _diffs.Formula().DefaultRating());
@@ -53,7 +53,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Instance().Create();
                 }
 
-                if (diff.ExistIn(_diffs.Database().Works()))
+                if (diff.ExistIn(_diffs.Database().Entities().Works()))
                 {
                     throw new Exception("The diff is already added.");
                 }
@@ -87,7 +87,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Instance().Create();
                 }
 
-                if (!diff.ExistIn(_diffs.Database().Works()))
+                if (!diff.ExistIn(_diffs.Database().Entities().Works()))
                 {
                     diff.AddTo(_diffs);
 
@@ -95,7 +95,7 @@ namespace DevRating.ConsoleApp
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(diff.WorkFrom(_diffs.Database().Works()));
+                PrintWorkToConsole(diff.WorkFrom(_diffs.Database().Entities().Works()));
             }
             finally
             {

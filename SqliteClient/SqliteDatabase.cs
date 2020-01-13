@@ -5,26 +5,18 @@ namespace DevRating.SqliteClient
 {
     public sealed class SqliteDatabase : Database
     {
-        private readonly Works _works;
-        private readonly Ratings _ratings;
-        private readonly Authors _authors;
+        private readonly Entities _entities;
         private readonly DbInstance _instance;
 
         public SqliteDatabase(IDbConnection connection)
-            : this(new SqliteDbInstance(connection),
-                new SqliteWorks(connection),
-                new SqliteRatings(connection),
-                new SqliteAuthors(connection))
+            : this(new SqliteDbInstance(connection), new SqliteEntities(connection))
         {
         }
 
-        public SqliteDatabase(DbInstance instance, Works works, Ratings ratings,
-            Authors authors)
+        public SqliteDatabase(DbInstance instance, Entities entities)
         {
             _instance = instance;
-            _works = works;
-            _ratings = ratings;
-            _authors = authors;
+            _entities = entities;
         }
 
         public DbInstance Instance()
@@ -32,19 +24,9 @@ namespace DevRating.SqliteClient
             return _instance;
         }
 
-        public Works Works()
+        public Entities Entities()
         {
-            return _works;
-        }
-
-        public Ratings Ratings()
-        {
-            return _ratings;
-        }
-
-        public Authors Authors()
-        {
-            return _authors;
+            return _entities;
         }
     }
 }
