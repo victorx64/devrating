@@ -53,7 +53,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Instance().Create();
                 }
 
-                if (diff.ExistIn(_diffs.Database().Entities().Works()))
+                if (diff.PresentIn(_diffs.Database().Entities().Works()))
                 {
                     throw new Exception("The diff is already added.");
                 }
@@ -87,7 +87,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Instance().Create();
                 }
 
-                if (!diff.ExistIn(_diffs.Database().Entities().Works()))
+                if (!diff.PresentIn(_diffs.Database().Entities().Works()))
                 {
                     diff.AddTo(_diffs);
 

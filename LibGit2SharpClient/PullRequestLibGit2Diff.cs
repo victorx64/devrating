@@ -53,7 +53,7 @@ namespace DevRating.LibGit2SharpClient
             return works.GetOperation().Work(_key, _start.Sha, _end.Sha);
         }
 
-        public bool ExistIn(Works works)
+        public bool PresentIn(Works works)
         {
             return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
         }
