@@ -1,20 +1,19 @@
-using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
-    internal sealed class SqliteGetWorkOperation : GetWorkOperation
+    internal sealed class SqliteContainsWorkOperation : ContainsWorkOperation
     {
         private readonly IDbConnection _connection;
 
-        public SqliteGetWorkOperation(IDbConnection connection)
+        public SqliteContainsWorkOperation(IDbConnection connection)
         {
             _connection = connection;
         }
 
-        public Work Work(string repository, string start, string end)
+        public bool Contains(string repository, string start, string end)
         {
             using var command = _connection.CreateCommand();
 
@@ -31,39 +30,20 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
-            reader.Read();
-
-            return new SqliteWork(_connection, reader["Id"]);
+            return reader.Read();
         }
 
-        public Work Work(object id)
-        {
-            return new SqliteWork(_connection, id);
-        }
-
-        public IEnumerable<Work> Lasts(string repository)
+        public bool Contains(object id)
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = @"
-                SELECT w.Id
-                FROM Work w
-                WHERE w.Repository = @Repository
-                ORDER BY w.Id DESC
-                LIMIT 10";
+            command.CommandText = "SELECT Id FROM Work WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
 
             using var reader = command.ExecuteReader();
 
-            var works = new List<SqliteWork>();
-
-            while (reader.Read())
-            {
-                works.Add(new SqliteWork(_connection, reader["Id"]));
-            }
-
-            return works;
+            return reader.Read();
         }
     }
 }

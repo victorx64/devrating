@@ -51,7 +51,7 @@ namespace DevRating.LibGit2SharpClient
 
         public bool ExistIn(Works works)
         {
-            return works.Contains(_key, _start.Sha, _end.Sha);
+            return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
         }
 
         public void AddTo(Diffs diffs)

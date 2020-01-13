@@ -4,7 +4,6 @@ namespace DevRating.Domain
     {
         InsertWorkOperation InsertOperation();
         GetWorkOperation GetOperation();
-        bool Contains(string repository, string start, string end);
-        bool Contains(object id);
+        ContainsWorkOperation ContainsOperation();
     }
 }
