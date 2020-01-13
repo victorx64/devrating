@@ -4,8 +4,7 @@ namespace DevRating.Domain
     {
         InsertRatingOperation InsertOperation();
 
-        Rating RatingOf(Entity author);
-        Rating Rating(object id);
+        GetRatingOperation GetOperation();
 
         bool ContainsRatingOf(Entity author);
         bool Contains(object id);

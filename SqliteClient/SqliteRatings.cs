@@ -7,16 +7,19 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteRatings : Ratings
     {
         private readonly IDbConnection _connection;
-        private readonly SqliteInsertRatingOperation _insert;
+        private readonly InsertRatingOperation _insert;
+        private readonly GetRatingOperation _get;
 
         public SqliteRatings(IDbConnection connection)
-            : this(new SqliteInsertRatingOperation(connection))
+            : this(new SqliteInsertRatingOperation(connection),
+                new SqliteGetRatingOperation(connection))
         {
         }
 
-        public SqliteRatings(SqliteInsertRatingOperation insert)
+        public SqliteRatings(InsertRatingOperation insert, GetRatingOperation get)
         {
             _insert = insert;
+            _get = get;
         }
 
         public InsertRatingOperation InsertOperation()
@@ -24,26 +27,11 @@ namespace DevRating.SqliteClient
             return _insert;
         }
 
-        public Rating RatingOf(Entity author)
+        public GetRatingOperation GetOperation()
         {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText =
-                "SELECT Id FROM Rating WHERE AuthorId = @AuthorId ORDER BY Id DESC LIMIT 1";
-
-            command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Id()});
-
-            using var reader = command.ExecuteReader();
-
-            reader.Read();
-
-            return new SqliteRating(_connection, reader["Id"]);
+            return _get;
         }
 
-        public Rating Rating(object id)
-        {
-            return new SqliteRating(_connection, id);
-        }
 
         public bool Contains(object id)
         {

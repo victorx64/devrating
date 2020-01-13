@@ -75,7 +75,7 @@ namespace DevRating.Domain
             if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
                 return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
-                    _database.Entities().Ratings().RatingOf(author));
+                    _database.Entities().Ratings().GetOperation().RatingOf(author));
             }
             else
             {
@@ -89,7 +89,7 @@ namespace DevRating.Domain
             if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
                 return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
-                    _database.Entities().Ratings().RatingOf(author), link);
+                    _database.Entities().Ratings().GetOperation().RatingOf(author), link);
             }
             else
             {
@@ -101,7 +101,7 @@ namespace DevRating.Domain
         private double RatingOf(Entity author)
         {
             return _database.Entities().Ratings().ContainsRatingOf(author)
-                ? _database.Entities().Ratings().RatingOf(author).Value()
+                ? _database.Entities().Ratings().GetOperation().RatingOf(author).Value()
                 : _formula.DefaultRating();
         }
 
@@ -112,7 +112,7 @@ namespace DevRating.Domain
             if (_database.Entities().Ratings().ContainsRatingOf(author))
             {
                 _database.Entities().Ratings().InsertOperation()
-                    .Insert(author, @new, _database.Entities().Ratings().RatingOf(author), work);
+                    .Insert(author, @new, _database.Entities().Ratings().GetOperation().RatingOf(author), work);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace DevRating.Domain
                 if (_database.Entities().Ratings().ContainsRatingOf(victim))
                 {
                     _database.Entities().Ratings().InsertOperation()
-                        .Insert(victim, @new, _database.Entities().Ratings().RatingOf(victim), work);
+                        .Insert(victim, @new, _database.Entities().Ratings().GetOperation().RatingOf(victim), work);
                 }
                 else
                 {
