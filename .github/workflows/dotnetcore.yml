@@ -16,7 +16,7 @@ jobs:
     - name: Build with dotnet
       run:  dotnet build --configuration Release
     - name: Run tests
-      run: dotnet test --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover
+      run: dotnet test --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]*
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
