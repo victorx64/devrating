@@ -72,7 +72,7 @@ namespace DevRating.Domain
 
         private Work InsertedWork(string repository, string start, string end, uint additions, Entity author)
         {
-            if (_database.Entities().Ratings().ContainsRatingOf(author))
+            if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
             {
                 return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
                     _database.Entities().Ratings().GetOperation().RatingOf(author));
@@ -86,7 +86,7 @@ namespace DevRating.Domain
         private Work InsertedWork(string repository, string link, string start, string end, uint additions,
             Entity author)
         {
-            if (_database.Entities().Ratings().ContainsRatingOf(author))
+            if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
             {
                 return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
                     _database.Entities().Ratings().GetOperation().RatingOf(author), link);
@@ -100,7 +100,7 @@ namespace DevRating.Domain
 
         private double RatingOf(Entity author)
         {
-            return _database.Entities().Ratings().ContainsRatingOf(author)
+            return _database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author)
                 ? _database.Entities().Ratings().GetOperation().RatingOf(author).Value()
                 : _formula.DefaultRating();
         }
@@ -109,7 +109,7 @@ namespace DevRating.Domain
         {
             var @new = _formula.WinnerNewRating(RatingOf(author), victims.Select(Match));
 
-            if (_database.Entities().Ratings().ContainsRatingOf(author))
+            if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
             {
                 _database.Entities().Ratings().InsertOperation()
                     .Insert(author, @new, _database.Entities().Ratings().GetOperation().RatingOf(author), work);
@@ -130,7 +130,7 @@ namespace DevRating.Domain
 
                 var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Count()));
 
-                if (_database.Entities().Ratings().ContainsRatingOf(victim))
+                if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(victim))
                 {
                     _database.Entities().Ratings().InsertOperation()
                         .Insert(victim, @new, _database.Entities().Ratings().GetOperation().RatingOf(victim), work);
