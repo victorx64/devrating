@@ -65,9 +65,9 @@ namespace DevRating.Domain
 
         private Author Author(string email)
         {
-            return _database.Entities().Authors().Contains(email)
-                ? _database.Entities().Authors().Author(email)
-                : _database.Entities().Authors().Insert(email);
+            return _database.Entities().Authors().ContainsOperation().Contains(email)
+                ? _database.Entities().Authors().GetOperation().Author(email)
+                : _database.Entities().Authors().InsertOperation().Insert(email);
         }
 
         private Work InsertedWork(string repository, string start, string end, uint additions, Entity author)

@@ -25,7 +25,7 @@ namespace DevRating.ConsoleApp
                     _diffs.Database().Instance().Create();
                 }
 
-                foreach (var author in _diffs.Database().Entities().Authors().TopAuthors())
+                foreach (var author in _diffs.Database().Entities().Authors().GetOperation().Top())
                 {
                     var percentile = _diffs.Formula()
                         .WinProbabilityOfA(author.Rating().Value(), _diffs.Formula().DefaultRating());

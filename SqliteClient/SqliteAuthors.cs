@@ -1,135 +1,41 @@
-using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
-using Microsoft.Data.Sqlite;
 
 namespace DevRating.SqliteClient
 {
     internal sealed class SqliteAuthors : Authors
     {
-        private readonly IDbConnection _connection;
+        private readonly GetAuthorOperation _get;
+        private readonly InsertAuthorOperation _insert;
+        private readonly ContainsAuthorOperation _contains;
 
         public SqliteAuthors(IDbConnection connection)
+            : this(new SqliteGetAuthorOperation(connection),
+                new SqliteInsertAuthorOperation(connection),
+                new SqliteContainsAuthorOperation(connection))
         {
-            _connection = connection;
         }
 
-        public Author Insert(string email)
+        public SqliteAuthors(GetAuthorOperation get, InsertAuthorOperation insert, ContainsAuthorOperation contains)
         {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = @"
-                INSERT INTO Author
-                    (Email)
-                VALUES
-                    (@Email);
-                SELECT last_insert_rowid();";
-
-            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
-
-            return new SqliteAuthor(_connection, command.ExecuteScalar());
+            _get = get;
+            _insert = insert;
+            _contains = contains;
         }
 
-        public bool Contains(string email)
+        public GetAuthorOperation GetOperation()
         {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
-
-            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
-
-            using var reader = command.ExecuteReader();
-
-            return reader.Read();
+            return _get;
         }
 
-        public Author Author(string email)
+        public InsertAuthorOperation InsertOperation()
         {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
-
-            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
-
-            using var reader = command.ExecuteReader();
-
-            reader.Read();
-
-            return new SqliteAuthor(_connection, reader["Id"]);
+            return _insert;
         }
 
-        public Author Author(object id)
+        public ContainsAuthorOperation ContainsOperation()
         {
-            return new SqliteAuthor(_connection, id);
-        }
-
-        public IEnumerable<Author> TopAuthors(string repository)
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = @"
-                SELECT a.Id
-                FROM Author a
-                    INNER JOIN Work w1 ON a.Id = w1.AuthorId
-                    INNER JOIN Rating r1 ON a.Id = r1.AuthorId
-                    LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
-                WHERE r2.Id IS NULL
-                  AND EXISTS(
-                      SELECT AuthorId 
-                      FROM Work w
-                      WHERE w.AuthorId = a.Id 
-                        AND w.Repository = @Repository)
-                ORDER BY r1.Rating DESC";
-
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
-
-            using var reader = command.ExecuteReader();
-
-            var authors = new List<SqliteAuthor>();
-
-            while (reader.Read())
-            {
-                authors.Add(new SqliteAuthor(_connection, reader["Id"]));
-            }
-
-            return authors;
-        }
-
-        public bool Contains(object id)
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT Id FROM Author WHERE Id = @Id";
-
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
-
-            using var reader = command.ExecuteReader();
-
-            return reader.Read();
-        }
-
-        public IEnumerable<Author> TopAuthors()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = @"
-                SELECT a.Id
-                FROM Author a
-                     INNER JOIN Rating r1 ON a.Id = r1.AuthorId
-                     LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
-                WHERE r2.Id IS NULL
-                ORDER BY r1.Rating DESC";
-
-            using var reader = command.ExecuteReader();
-
-            var authors = new List<SqliteAuthor>();
-
-            while (reader.Read())
-            {
-                authors.Add(new SqliteAuthor(_connection, reader["Id"]));
-            }
-
-            return authors;
+            return _contains;
         }
     }
 }
