@@ -1,34 +1,46 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeGetAuthorOperation : GetAuthorOperation
     {
-        private readonly Author _author;
+        private readonly IList<Author> _authors;
 
-        public FakeGetAuthorOperation(Author author)
+        public FakeGetAuthorOperation(IList<Author> authors)
         {
-            _author = author;
+            _authors = authors;
         }
 
         public Author Author(string email)
         {
-            return _author;
+            bool Predicate(Author a)
+            {
+                return a.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return _authors.Single(Predicate);
         }
 
         public Author Author(object id)
         {
-            return _author;
+            bool Predicate(Author a)
+            {
+                return a.Id().Equals(id);
+            }
+
+            return _authors.Single(Predicate);
         }
 
         public IEnumerable<Author> Top()
         {
-            return new[] {_author};
+            return _authors;
         }
 
         public IEnumerable<Author> Top(string repository)
         {
-            return Top();
+            return _authors;
         }
     }
 }

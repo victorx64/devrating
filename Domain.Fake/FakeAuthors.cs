@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeAuthors : Authors
@@ -5,6 +7,14 @@ namespace DevRating.Domain.Fake
         private readonly GetAuthorOperation _get;
         private readonly InsertAuthorOperation _insert;
         private readonly ContainsAuthorOperation _contains;
+
+        public FakeAuthors(IList<Author> authors)
+            : this(
+                new FakeGetAuthorOperation(authors), 
+                new FakeInsertAuthorOperation(authors),
+                new FakeContainsAuthorOperation(authors))
+        {
+        }
 
         public FakeAuthors(GetAuthorOperation get, InsertAuthorOperation insert, ContainsAuthorOperation contains)
         {

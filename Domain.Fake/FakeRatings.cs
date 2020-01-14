@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeRatings : Ratings
@@ -6,6 +8,13 @@ namespace DevRating.Domain.Fake
         private readonly GetRatingOperation _get;
         private readonly ContainsRatingOperation _contains;
 
+        public FakeRatings(IList<Work> works, IList<Author> authors, IList<Rating> ratings)
+            : this(
+                new FakeInsertRatingOperation(works, authors, ratings),
+                new FakeGetRatingOperation(ratings),
+                new FakeContainsRatingOperation(ratings))
+        {
+        }
         public FakeRatings(InsertRatingOperation insert, GetRatingOperation get, ContainsRatingOperation contains)
         {
             _insert = insert;

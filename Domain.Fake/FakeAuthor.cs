@@ -2,9 +2,25 @@ namespace DevRating.Domain.Fake
 {
     public sealed class FakeAuthor : Author
     {
+        private readonly object _id;
+        private readonly string _email;
+        private readonly Rating? _rating;
+
+        public FakeAuthor(object id, string email)
+            : this(id, email, null)
+        {
+        }
+
+        public FakeAuthor(object id, string email, Rating rating)
+        {
+            _id = id;
+            _email = email;
+            _rating = rating;
+        }
+
         public object Id()
         {
-            throw new System.NotImplementedException();
+            return _id;
         }
 
         public string ToJson()
@@ -14,17 +30,17 @@ namespace DevRating.Domain.Fake
 
         public string Email()
         {
-            throw new System.NotImplementedException();
+            return _email;
         }
 
         public Rating Rating()
         {
-            throw new System.NotImplementedException();
+            return _rating;
         }
 
         public bool HasRating()
         {
-            throw new System.NotImplementedException();
+            return _rating != null;
         }
     }
 }

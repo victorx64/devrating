@@ -1,33 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeInsertWorkOperation : InsertWorkOperation
     {
-        private readonly Work _work;
+        private readonly IList<Work> _works;
+        private readonly IList<Author> _authors;
+        private readonly IList<Rating> _ratings;
 
-        public FakeInsertWorkOperation(Work work)
+        public FakeInsertWorkOperation(IList<Work> works, IList<Author> authors, IList<Rating> ratings)
         {
-            _work = work;
+            _works = works;
+            _authors = authors;
+            _ratings = ratings;
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions, Entity rating)
         {
-            return _work;
+            var work = new FakeWork(
+                Guid.NewGuid(),
+                additions,
+                Entity(_authors, author.Id()) as Author,
+                Entity(_ratings, rating.Id()) as Rating);
+
+            _works.Add(work);
+
+            return work;
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions)
         {
-            return _work;
+            var work = new FakeWork(
+                Guid.NewGuid(),
+                additions,
+                Entity(_authors, author.Id()) as Author);
+
+            _works.Add(work);
+
+            return work;
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions, Entity rating,
             string link)
         {
-            return _work;
+            var work = new FakeWork(
+                Guid.NewGuid(),
+                additions,
+                Entity(_authors, author.Id()) as Author,
+                Entity(_ratings, rating.Id()) as Rating);
+
+            _works.Add(work);
+
+            return work;
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions, string link)
         {
-            return _work;
+            var work = new FakeWork(
+                Guid.NewGuid(),
+                additions,
+                Entity(_authors, author.Id()) as Author);
+
+            _works.Add(work);
+
+            return work;
+        }
+
+        private Entity Entity(IEnumerable<Entity> entities, object id)
+        {
+            bool Predicate(Entity a)
+            {
+                return a.Id().Equals(id);
+            }
+
+            return entities.Single(Predicate);
         }
     }
 }

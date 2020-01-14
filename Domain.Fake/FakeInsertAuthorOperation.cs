@@ -1,17 +1,24 @@
+using System;
+using System.Collections.Generic;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeInsertAuthorOperation : InsertAuthorOperation
     {
-        private readonly Author _author;
+        private readonly IList<Author> _authors;
 
-        public FakeInsertAuthorOperation(Author author)
+        public FakeInsertAuthorOperation(IList<Author> authors)
         {
-            _author = author;
+            _authors = authors;
         }
 
         public Author Insert(string email)
         {
-            return _author;
+            var author = new FakeAuthor(Guid.NewGuid(), email);
+
+            _authors.Add(author);
+
+            return author;
         }
     }
 }

@@ -1,22 +1,40 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeGetRatingOperation : GetRatingOperation
     {
-        private readonly Rating _rating;
+        private readonly IList<Rating> _ratings;
 
-        public FakeGetRatingOperation(Rating rating)
+        public FakeGetRatingOperation(IList<Rating> ratings)
         {
-            _rating = rating;
+            _ratings = ratings;
         }
 
         public Rating RatingOf(Entity author)
         {
-            return _rating;
+            bool Predicate(Rating a)
+            {
+                return a.Author().Id().Equals(author.Id());
+            }
+
+            return _ratings.Last(Predicate);
         }
 
         public Rating Rating(object id)
         {
-            return _rating;
+            return Entity(_ratings, id) as Rating;
+        }
+
+        private Entity Entity(IEnumerable<Entity> entities, object id)
+        {
+            bool Predicate(Entity a)
+            {
+                return a.Id().Equals(id);
+            }
+
+            return entities.Single(Predicate);
         }
     }
 }

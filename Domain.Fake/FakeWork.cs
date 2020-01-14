@@ -4,9 +4,27 @@ namespace DevRating.Domain.Fake
 {
     public sealed class FakeWork : Work
     {
+        private readonly object _id;
+        private readonly uint _additions;
+        private readonly Author _author;
+        private readonly Rating? _rating;
+
+        public FakeWork(object id, uint additions, Author author)
+            : this(id, additions, author, null)
+        {
+        }
+
+        public FakeWork(object id, uint additions, Author author, Rating rating)
+        {
+            _id = id;
+            _additions = additions;
+            _author = author;
+            _rating = rating;
+        }
+
         public object Id()
         {
-            throw new System.NotImplementedException();
+            return _id;
         }
 
         public string ToJson()
@@ -16,12 +34,12 @@ namespace DevRating.Domain.Fake
 
         public uint Additions()
         {
-            throw new System.NotImplementedException();
+            return _additions;
         }
 
         public Author Author()
         {
-            throw new System.NotImplementedException();
+            return _author;
         }
 
         public IEnumerable<Rating> Ratings()
@@ -31,12 +49,12 @@ namespace DevRating.Domain.Fake
 
         public Rating UsedRating()
         {
-            throw new System.NotImplementedException();
+            return _rating;
         }
 
         public bool HasUsedRating()
         {
-            throw new System.NotImplementedException();
+            return _rating != null;
         }
     }
 }

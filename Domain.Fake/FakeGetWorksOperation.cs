@@ -1,29 +1,41 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeGetWorkOperation : GetWorkOperation
     {
-        private readonly Work _work;
+        private readonly IList<Work> _works;
 
-        public FakeGetWorkOperation(Work work)
+        public FakeGetWorkOperation(IList<Work> works)
         {
-            _work = work;
+            _works = works;
         }
 
         public Work Work(string repository, string start, string end)
         {
-            return _work;
+            throw new NotImplementedException();
         }
 
         public Work Work(object id)
         {
-            return _work;
+            return Entity(_works, id) as Work;
         }
 
         public IEnumerable<Work> Lasts(string repository)
         {
-            return new[] {_work};
+            return _works;
+        }
+
+        private Entity Entity(IEnumerable<Entity> entities, object id)
+        {
+            bool Predicate(Entity a)
+            {
+                return a.Id().Equals(id);
+            }
+
+            return entities.Single(Predicate);
         }
     }
 }

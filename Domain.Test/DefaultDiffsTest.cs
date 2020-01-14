@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DevRating.Domain.Fake;
 using Xunit;
 
@@ -8,6 +9,9 @@ namespace DevRating.Domain.Test
         [Fact]
         public void ReturnsDatabaseFromCtor()
         {
+            var works = new List<Work>();
+            var authors = new List<Author>();
+            var ratings = new List<Rating>();
             var database = new FakeDatabase(
                 new FakeDbInstance(
                     new FakeDbConnection(
@@ -15,32 +19,9 @@ namespace DevRating.Domain.Test
                     )
                 ),
                 new FakeEntities(
-                    new FakeWorks(
-                        new FakeInsertWorkOperation(
-                            new FakeWork()
-                        ),
-                        new FakeGetWorkOperation(
-                            new FakeWork()
-                        ),
-                        new FakeContainsWorkOperation()
-                    ),
-                    new FakeRatings(
-                        new FakeInsertRatingOperation(
-                            new FakeRating()
-                        ),
-                        new FakeGetRatingOperation(
-                            new FakeRating()
-                        ), new FakeContainsRatingOperation()
-                    ),
-                    new FakeAuthors(
-                        new FakeGetAuthorOperation(
-                            new FakeAuthor()
-                        ),
-                        new FakeInsertAuthorOperation(
-                            new FakeAuthor()
-                        ),
-                        new FakeContainsAuthorOperation()
-                    )
+                    new FakeWorks(works, authors, ratings),
+                    new FakeRatings(works, authors, ratings),
+                    new FakeAuthors(authors)
                 )
             );
 
@@ -48,9 +29,12 @@ namespace DevRating.Domain.Test
         }
 
         [Fact]
-        public void ReturnsEntitiesFromCtor()
+        public void ReturnsFormulaFromCtor()
         {
             var formula = new FakeFormula();
+            var works = new List<Work>();
+            var authors = new List<Author>();
+            var ratings = new List<Rating>();
 
             Assert.Equal(formula,
                 new DefaultDiffs(
@@ -61,32 +45,9 @@ namespace DevRating.Domain.Test
                                 )
                             ),
                             new FakeEntities(
-                                new FakeWorks(
-                                    new FakeInsertWorkOperation(
-                                        new FakeWork()
-                                    ),
-                                    new FakeGetWorkOperation(
-                                        new FakeWork()
-                                    ),
-                                    new FakeContainsWorkOperation()
-                                ),
-                                new FakeRatings(
-                                    new FakeInsertRatingOperation(
-                                        new FakeRating()
-                                    ),
-                                    new FakeGetRatingOperation(
-                                        new FakeRating()
-                                    ), new FakeContainsRatingOperation()
-                                ),
-                                new FakeAuthors(
-                                    new FakeGetAuthorOperation(
-                                        new FakeAuthor()
-                                    ),
-                                    new FakeInsertAuthorOperation(
-                                        new FakeAuthor()
-                                    ),
-                                    new FakeContainsAuthorOperation()
-                                )
+                                new FakeWorks(works, authors, ratings),
+                                new FakeRatings(works, authors, ratings),
+                                new FakeAuthors(authors)
                             )
                         ),
                         formula
