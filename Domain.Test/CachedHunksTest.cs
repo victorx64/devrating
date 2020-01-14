@@ -40,7 +40,7 @@ namespace DevRating.Domain.Test
                                     }),
                                 new FakeAdditions(3)),
                         }),
-                    TimeSpan.FromSeconds(2)));
+                    TimeSpan.FromSeconds(1)));
 
             var first = DateTime.Now;
 
