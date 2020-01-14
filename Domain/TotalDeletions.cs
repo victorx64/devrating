@@ -32,7 +32,7 @@ namespace DevRating.Domain
 
         private string DeletionAuthor(Deletion deletion)
         {
-            return deletion.Email();
+            return deletion.Email().ToLowerInvariant();
         }
 
         private string DeletionsAuthor(IGrouping<string, Deletion> grouping)
