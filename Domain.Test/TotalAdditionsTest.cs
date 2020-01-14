@@ -15,7 +15,7 @@ namespace DevRating.Domain.Test
                 new FakeHunk(new EmptyDeletions(), new FakeAdditions(12u)),
             });
 
-            Assert.Equal(new TotalAdditions(hunks).Count(), 10u + 11u + 12u);
+            Assert.Equal(10u + 11u + 12u, new TotalAdditions(hunks).Count());
         }
     }
 }

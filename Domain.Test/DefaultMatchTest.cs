@@ -9,7 +9,7 @@ namespace DevRating.Domain.Test
         {
             var rating = 1d;
 
-            Assert.Equal(new DefaultMatch(rating, 1).ContenderRating(), rating);
+            Assert.Equal(rating, new DefaultMatch(rating, 1).ContenderRating());
         }
 
         [Fact]
@@ -17,7 +17,7 @@ namespace DevRating.Domain.Test
         {
             var count = 2u;
 
-            Assert.Equal(new DefaultMatch(2d, count).Count(), count);
+            Assert.Equal(count, new DefaultMatch(2d, count).Count());
         }
     }
 }

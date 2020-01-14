@@ -9,7 +9,7 @@ namespace DevRating.Domain.Test
         {
             var email = "some email";
 
-            Assert.Equal(new DefaultDeletion(email, 1).Email(), email);
+            Assert.Equal(email, new DefaultDeletion(email, 1).Email());
         }
 
         [Fact]
@@ -17,7 +17,7 @@ namespace DevRating.Domain.Test
         {
             var count = 2u;
 
-            Assert.Equal(new DefaultDeletion("some other email", count).Count(), count);
+            Assert.Equal(count, new DefaultDeletion("some other email", count).Count());
         }
     }
 }
