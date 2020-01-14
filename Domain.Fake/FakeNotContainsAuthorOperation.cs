@@ -1,15 +1,15 @@
 namespace DevRating.Domain.Fake
 {
-    public sealed class FakeContainsAuthorOperation : ContainsAuthorOperation
+    public sealed class FakeNotContainsAuthorOperation : ContainsAuthorOperation
     {
         public bool Contains(string email)
         {
-            return true;
+            return false;
         }
 
         public bool Contains(object id)
         {
-            return true;
+            return false;
         }
     }
 }

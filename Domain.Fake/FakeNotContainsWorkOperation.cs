@@ -1,15 +1,15 @@
 namespace DevRating.Domain.Fake
 {
-    public sealed class FakeContainsWorkOperation : ContainsWorkOperation
+    public sealed class FakeNotContainsWorkOperation : ContainsWorkOperation
     {
         public bool Contains(string repository, string start, string end)
         {
-            return true;
+            return false;
         }
 
         public bool Contains(object id)
         {
-            return true;
+            return false;
         }
     }
 }

@@ -22,14 +22,15 @@ namespace DevRating.Domain.Test
                         new FakeGetWorkOperation(
                             new FakeWork()
                         ),
-                        new FakeContainsWorkOperation(true)),
+                        new FakeContainsWorkOperation()
+                    ),
                     new FakeRatings(
                         new FakeInsertRatingOperation(
                             new FakeRating()
                         ),
                         new FakeGetRatingOperation(
                             new FakeRating()
-                        ), new FakeContainsRatingOperation(true)
+                        ), new FakeContainsRatingOperation()
                     ),
                     new FakeAuthors(
                         new FakeGetAuthorOperation(
@@ -38,7 +39,9 @@ namespace DevRating.Domain.Test
                         new FakeInsertAuthorOperation(
                             new FakeAuthor()
                         ),
-                        new FakeContainsAuthorOperation(true)))
+                        new FakeContainsAuthorOperation()
+                    )
+                )
             );
 
             Assert.Equal(database, new DefaultDiffs(database, new FakeFormula()).Database());
@@ -50,7 +53,8 @@ namespace DevRating.Domain.Test
             var formula = new FakeFormula();
 
             Assert.Equal(formula,
-                new DefaultDiffs(new FakeDatabase(
+                new DefaultDiffs(
+                        new FakeDatabase(
                             new FakeDbInstance(
                                 new FakeDbConnection(
                                     new FakeDbCommand()
@@ -64,14 +68,15 @@ namespace DevRating.Domain.Test
                                     new FakeGetWorkOperation(
                                         new FakeWork()
                                     ),
-                                    new FakeContainsWorkOperation(true)),
+                                    new FakeContainsWorkOperation()
+                                ),
                                 new FakeRatings(
                                     new FakeInsertRatingOperation(
                                         new FakeRating()
                                     ),
                                     new FakeGetRatingOperation(
                                         new FakeRating()
-                                    ), new FakeContainsRatingOperation(true)
+                                    ), new FakeContainsRatingOperation()
                                 ),
                                 new FakeAuthors(
                                     new FakeGetAuthorOperation(
@@ -80,8 +85,11 @@ namespace DevRating.Domain.Test
                                     new FakeInsertAuthorOperation(
                                         new FakeAuthor()
                                     ),
-                                    new FakeContainsAuthorOperation(true)))
-                        ), formula
+                                    new FakeContainsAuthorOperation()
+                                )
+                            )
+                        ),
+                        formula
                     )
                     .Formula()
             );
