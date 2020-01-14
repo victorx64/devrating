@@ -2,7 +2,7 @@ using Xunit;
 
 namespace DevRating.Domain.Test
 {
-    public class DefaultDeletionTest
+    public sealed class DefaultDeletionTest
     {
         [Fact]
         public void ReturnsEmailFromCtor()
