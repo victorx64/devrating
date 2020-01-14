@@ -5,6 +5,10 @@ namespace DevRating.Domain.Fake
         private readonly DbInstance _instance;
         private readonly Entities _entities;
 
+        public FakeDatabase() : this(new FakeDbInstance(), new FakeEntities())
+        {
+        }
+
         public FakeDatabase(DbInstance instance, Entities entities)
         {
             _instance = instance;

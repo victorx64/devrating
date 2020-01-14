@@ -7,6 +7,10 @@ namespace DevRating.Domain.Fake
         private readonly IDbConnection _connection;
         private bool present;
 
+        public FakeDbInstance() : this(new FakeDbConnection())
+        {
+        }
+
         public FakeDbInstance(IDbConnection connection)
         {
             _connection = connection;

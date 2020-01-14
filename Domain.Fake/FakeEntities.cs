@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeEntities : Entities
@@ -6,13 +8,25 @@ namespace DevRating.Domain.Fake
         private readonly Ratings _ratings;
         private readonly Authors _authors;
 
+        public FakeEntities() : this(new List<Work>(), new List<Author>(), new List<Rating>())
+        {
+        }
+
+        public FakeEntities(IList<Work> works, IList<Author> authors, IList<Rating> ratings)
+            : this(
+                new FakeWorks(works, authors, ratings),
+                new FakeRatings(works, authors, ratings),
+                new FakeAuthors(authors))
+        {
+        }
+
         public FakeEntities(Works works, Ratings ratings, Authors authors)
         {
             _works = works;
             _ratings = ratings;
             _authors = authors;
         }
-        
+
         public Works Works()
         {
             return _works;

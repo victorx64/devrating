@@ -9,21 +9,7 @@ namespace DevRating.Domain.Test
         [Fact]
         public void ReturnsDatabaseFromCtor()
         {
-            var works = new List<Work>();
-            var authors = new List<Author>();
-            var ratings = new List<Rating>();
-            var database = new FakeDatabase(
-                new FakeDbInstance(
-                    new FakeDbConnection(
-                        new FakeDbCommand()
-                    )
-                ),
-                new FakeEntities(
-                    new FakeWorks(works, authors, ratings),
-                    new FakeRatings(works, authors, ratings),
-                    new FakeAuthors(authors)
-                )
-            );
+            var database = new FakeDatabase();
 
             Assert.Equal(database, new DefaultDiffs(database, new FakeFormula()).Database());
         }
@@ -32,28 +18,34 @@ namespace DevRating.Domain.Test
         public void ReturnsFormulaFromCtor()
         {
             var formula = new FakeFormula();
-            var works = new List<Work>();
-            var authors = new List<Author>();
-            var ratings = new List<Rating>();
 
             Assert.Equal(formula,
                 new DefaultDiffs(
-                        new FakeDatabase(
-                            new FakeDbInstance(
-                                new FakeDbConnection(
-                                    new FakeDbCommand()
-                                )
-                            ),
-                            new FakeEntities(
-                                new FakeWorks(works, authors, ratings),
-                                new FakeRatings(works, authors, ratings),
-                                new FakeAuthors(authors)
-                            )
-                        ),
+                        new FakeDatabase(),
                         formula
                     )
                     .Formula()
             );
+        }
+
+        [Fact]
+        public void InsertsNewAuthor()
+        {
+            var authors = new List<Author>();
+
+            new DefaultDiffs(
+                    new FakeDatabase(
+                        new FakeDbInstance(),
+                        new FakeEntities(
+                            new List<Work>(),
+                            authors,
+                            new List<Rating>())
+                    ),
+                    new FakeFormula()
+                )
+                .Insert(string.Empty, string.Empty, string.Empty, "new author", 10u, new Deletion[0]);
+
+            Assert.Single(authors);
         }
     }
 }

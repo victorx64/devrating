@@ -6,6 +6,10 @@ namespace DevRating.Domain.Fake
     {
         private readonly IDbCommand _command;
 
+        public FakeDbConnection() : this(new FakeDbCommand())
+        {
+        }
+
         public FakeDbConnection(IDbCommand command)
         {
             _command = command;
