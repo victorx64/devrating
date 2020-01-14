@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using DevRating.Domain.Fake;
 using Xunit;
 
@@ -46,6 +48,70 @@ namespace DevRating.Domain.Test
                 .Insert(string.Empty, string.Empty, string.Empty, "new author", 10u, new Deletion[0]);
 
             Assert.Single(authors);
+        }
+
+        [Fact]
+        public void DoesntInsertAuthorIfExists()
+        {
+            var authors = new List<Author> {new FakeAuthor("existing author")};
+
+            new DefaultDiffs(
+                    new FakeDatabase(
+                        new FakeDbInstance(),
+                        new FakeEntities(
+                            new List<Work>(),
+                            authors,
+                            new List<Rating>())
+                    ),
+                    new FakeFormula()
+                )
+                .Insert(string.Empty, string.Empty, string.Empty, "existing author", 10u, new Deletion[0]);
+
+            Assert.Single(authors);
+        }
+
+        [Fact]
+        public void InsertsNewWorkWithoutUsedRating()
+        {
+            var works = new List<Work>();
+
+            new DefaultDiffs(
+                    new FakeDatabase(
+                        new FakeDbInstance(),
+                        new FakeEntities(
+                            works,
+                            new List<Author>(),
+                            new List<Rating>())
+                    ),
+                    new FakeFormula()
+                )
+                .Insert(string.Empty, string.Empty, string.Empty, "other author", 10u, new Deletion[0]);
+
+            Assert.False(works.Single().HasUsedRating());
+        }
+
+        [Fact]
+        public void InsertsNewWorkWithUsedRating()
+        {
+            var author = new FakeAuthor("the author");
+            var work = new FakeWork(10u, author);
+            var rating = new FakeRating(1500d, work, author);
+            var works = new List<Work> {work};
+
+            new DefaultDiffs(
+                    new FakeDatabase(
+                        new FakeDbInstance(),
+                        new FakeEntities(
+                            works,
+                            new List<Author> {author},
+                            new List<Rating> {rating}
+                        )
+                    ),
+                    new FakeFormula()
+                )
+                .Insert(string.Empty, string.Empty, string.Empty, author.Email(), 1u, new Deletion[0]);
+
+            Assert.Equal(rating, works.Last().UsedRating());
         }
     }
 }

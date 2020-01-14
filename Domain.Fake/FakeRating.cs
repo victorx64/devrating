@@ -1,3 +1,5 @@
+using System;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeRating : Rating
@@ -7,6 +9,16 @@ namespace DevRating.Domain.Fake
         private readonly Work _work;
         private readonly Author _author;
         private readonly Rating? _previous;
+
+        public FakeRating(double value, Work work, Author author)
+            : this(Guid.NewGuid(), value, work, author, null)
+        {
+        }
+
+        public FakeRating(double value, Work work, Author author, Rating? previous)
+            : this(Guid.NewGuid(), value, work, author, previous)
+        {
+        }
 
         public FakeRating(object id, double value, Work work, Author author)
             : this(id, value, work, author, null)
@@ -29,7 +41,7 @@ namespace DevRating.Domain.Fake
 
         public string ToJson()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public double Value()

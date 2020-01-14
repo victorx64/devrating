@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace DevRating.Domain.Fake
@@ -14,7 +13,7 @@ namespace DevRating.Domain.Fake
 
         public Author Insert(string email)
         {
-            var author = new FakeAuthor(Guid.NewGuid(), email);
+            var author = new FakeAuthor(email);
 
             _authors.Add(author);
 

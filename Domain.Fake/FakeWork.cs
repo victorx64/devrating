@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DevRating.Domain.Fake
@@ -8,6 +9,16 @@ namespace DevRating.Domain.Fake
         private readonly uint _additions;
         private readonly Author _author;
         private readonly Rating? _rating;
+
+        public FakeWork(uint additions, Author author)
+            : this(Guid.NewGuid(), additions, author, null)
+        {
+        }
+
+        public FakeWork(uint additions, Author author, Rating? rating)
+            : this(Guid.NewGuid(), additions, author, rating)
+        {
+        }
 
         public FakeWork(object id, uint additions, Author author)
             : this(id, additions, author, null)

@@ -1,3 +1,5 @@
+using System;
+
 namespace DevRating.Domain.Fake
 {
     public sealed class FakeAuthor : Author
@@ -6,8 +8,15 @@ namespace DevRating.Domain.Fake
         private readonly string _email;
         private readonly Rating? _rating;
 
-        public FakeAuthor(object id, string email)
-            : this(id, email, null)
+        public FakeAuthor(string email) : this(Guid.NewGuid(), email)
+        {
+        }
+
+        public FakeAuthor(string email, Rating? rating) : this(Guid.NewGuid(), email, rating)
+        {
+        }
+
+        public FakeAuthor(object id, string email) : this(id, email, null)
         {
         }
 
