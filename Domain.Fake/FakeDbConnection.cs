@@ -1,0 +1,54 @@
+using System.Data;
+
+namespace DevRating.Domain.Fake
+{
+    public sealed class FakeDbConnection : IDbConnection
+    {
+        private readonly IDbCommand _command;
+
+        public FakeDbConnection(IDbCommand command)
+        {
+            _command = command;
+        }
+
+        public void Dispose()
+        {
+            Close();
+        }
+
+        public IDbTransaction BeginTransaction()
+        {
+            return new FakeDbTransaction(this, IsolationLevel.Unspecified);
+        }
+
+        public IDbTransaction BeginTransaction(IsolationLevel il)
+        {
+            return new FakeDbTransaction(this, il);
+        }
+
+        public void ChangeDatabase(string databaseName)
+        {
+            Database = databaseName;
+        }
+
+        public void Close()
+        {
+            State = ConnectionState.Closed;
+        }
+
+        public IDbCommand CreateCommand()
+        {
+            return _command;
+        }
+
+        public void Open()
+        {
+            State = ConnectionState.Open;
+        }
+
+        public string ConnectionString { get; set; } = string.Empty;
+        public int ConnectionTimeout { get; } = 10;
+        public string Database { get; private set; } = string.Empty;
+        public ConnectionState State { get; private set; }
+    }
+}
