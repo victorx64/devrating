@@ -99,29 +99,30 @@ namespace DevRating.Domain.Test
         }
 
         [Fact]
-        public void ReturnsOriginConnectionString()
+        public void ReturnsSetConnectionString()
         {
-            var origin = new FakeDbConnection(new FakeDbCommand()) {ConnectionString = "test"};
-
-            Assert.Equal(origin.ConnectionString, new TransactedDbConnection(origin).ConnectionString);
+            Assert.Equal("test",
+                new TransactedDbConnection(
+                        new FakeDbConnection(
+                            new FakeDbCommand()
+                        )
+                        {
+                            ConnectionString = "test"
+                        })
+                    .ConnectionString);
         }
 
         [Fact]
-        public void SetsOriginConnectionString()
+        public void ReturnsSomeConnectionTimeout()
         {
-            var origin = new FakeDbConnection(new FakeDbCommand()) {ConnectionString = "test"};
-
-            new TransactedDbConnection(origin).ConnectionString = "not test";
-
-            Assert.Equal("not test", origin.ConnectionString);
-        }
-
-        [Fact]
-        public void ReturnsOriginConnectionTimeout()
-        {
-            var origin = new FakeDbConnection(new FakeDbCommand());
-
-            Assert.Equal(origin.ConnectionTimeout, new TransactedDbConnection(origin).ConnectionTimeout);
+            Assert.True(
+                new TransactedDbConnection(
+                        new FakeDbConnection(
+                            new FakeDbCommand()
+                        )
+                    )
+                    .ConnectionTimeout != default
+            );
         }
     }
 }
