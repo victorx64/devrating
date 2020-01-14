@@ -101,15 +101,14 @@ namespace DevRating.Domain.Test
         [Fact]
         public void ReturnsSetConnectionString()
         {
-            Assert.Equal("test",
-                new TransactedDbConnection(
-                        new FakeDbConnection(
-                            new FakeDbCommand()
-                        )
-                        {
-                            ConnectionString = "test"
-                        })
-                    .ConnectionString);
+            var expected = "connection string";
+
+            var connection = new TransactedDbConnection(new FakeDbConnection(new FakeDbCommand()))
+            {
+                ConnectionString = expected
+            };
+
+            Assert.Equal(expected, connection.ConnectionString);
         }
 
         [Fact]
