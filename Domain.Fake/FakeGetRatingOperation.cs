@@ -24,7 +24,7 @@ namespace DevRating.Domain.Fake
 
         public Rating Rating(object id)
         {
-            return Entity(_ratings, id) as Rating;
+            return (Rating) Entity(_ratings, id);
         }
 
         private Entity Entity(IEnumerable<Entity> entities, object id)

@@ -14,7 +14,7 @@ namespace DevRating.Domain.Fake
         {
         }
 
-        public FakeWork(object id, uint additions, Author author, Rating rating)
+        public FakeWork(object id, uint additions, Author author, Rating? rating)
         {
             _id = id;
             _additions = additions;
@@ -49,7 +49,7 @@ namespace DevRating.Domain.Fake
 
         public Rating UsedRating()
         {
-            return _rating;
+            return _rating!;
         }
 
         public bool HasUsedRating()

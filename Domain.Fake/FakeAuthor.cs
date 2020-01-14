@@ -11,7 +11,7 @@ namespace DevRating.Domain.Fake
         {
         }
 
-        public FakeAuthor(object id, string email, Rating rating)
+        public FakeAuthor(object id, string email, Rating? rating)
         {
             _id = id;
             _email = email;
@@ -35,7 +35,7 @@ namespace DevRating.Domain.Fake
 
         public Rating Rating()
         {
-            return _rating;
+            return _rating!;
         }
 
         public bool HasRating()

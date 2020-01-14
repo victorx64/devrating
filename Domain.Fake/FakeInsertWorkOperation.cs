@@ -22,8 +22,8 @@ namespace DevRating.Domain.Fake
             var work = new FakeWork(
                 Guid.NewGuid(),
                 additions,
-                Entity(_authors, author.Id()) as Author,
-                Entity(_ratings, rating.Id()) as Rating);
+                (Author) Entity(_authors, author.Id()),
+                (Rating) Entity(_ratings, rating.Id()));
 
             _works.Add(work);
 
@@ -35,7 +35,7 @@ namespace DevRating.Domain.Fake
             var work = new FakeWork(
                 Guid.NewGuid(),
                 additions,
-                Entity(_authors, author.Id()) as Author);
+                (Author) Entity(_authors, author.Id()));
 
             _works.Add(work);
 
@@ -48,8 +48,8 @@ namespace DevRating.Domain.Fake
             var work = new FakeWork(
                 Guid.NewGuid(),
                 additions,
-                Entity(_authors, author.Id()) as Author,
-                Entity(_ratings, rating.Id()) as Rating);
+                (Author) Entity(_authors, author.Id()),
+                (Rating) Entity(_ratings, rating.Id()));
 
             _works.Add(work);
 
@@ -61,7 +61,7 @@ namespace DevRating.Domain.Fake
             var work = new FakeWork(
                 Guid.NewGuid(),
                 additions,
-                Entity(_authors, author.Id()) as Author);
+                (Author) Entity(_authors, author.Id()));
 
             _works.Add(work);
 

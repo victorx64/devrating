@@ -20,7 +20,7 @@ namespace DevRating.Domain.Fake
 
         public Work Work(object id)
         {
-            return Entity(_works, id) as Work;
+            return (Work) Entity(_works, id);
         }
 
         public IEnumerable<Work> Lasts(string repository)

@@ -13,7 +13,7 @@ namespace DevRating.Domain.Fake
         {
         }
 
-        public FakeRating(object id, double value, Work work, Author author, Rating previous)
+        public FakeRating(object id, double value, Work work, Author author, Rating? previous)
         {
             _id = id;
             _value = value;
@@ -44,7 +44,7 @@ namespace DevRating.Domain.Fake
 
         public Rating PreviousRating()
         {
-            return _previous;
+            return _previous!;
         }
 
         public Work Work()

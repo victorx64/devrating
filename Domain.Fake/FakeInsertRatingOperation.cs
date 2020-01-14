@@ -22,8 +22,8 @@ namespace DevRating.Domain.Fake
             var rating = new FakeRating(
                 Guid.NewGuid(),
                 value,
-                Entity(_works, work.Id()) as Work,
-                Entity(_authors, author.Id()) as Author);
+                (Work) Entity(_works, work.Id()),
+                (Author) Entity(_authors, author.Id()));
 
             _ratings.Add(rating);
 
@@ -35,9 +35,9 @@ namespace DevRating.Domain.Fake
             var rating = new FakeRating(
                 Guid.NewGuid(),
                 value,
-                Entity(_works, work.Id()) as Work,
-                Entity(_authors, author.Id()) as Author,
-                Entity(_ratings, previous.Id()) as Rating);
+                (Work) Entity(_works, work.Id()),
+                (Author) Entity(_authors, author.Id()),
+                (Rating) Entity(_ratings, previous.Id()));
 
             _ratings.Add(rating);
 
