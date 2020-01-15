@@ -12,6 +12,24 @@ namespace DevRating.EloRating.Test
         }
 
         [Fact]
+        public void CalculatesProperWinnerNewRating()
+        {
+            Assert.Equal(1207.2,
+                new EloFormula(30, 400, 1100)
+                    .WinnerNewRating(1200, new[] {new DefaultMatch(1000, 1)}),
+                1);
+        }
+
+        [Fact]
+        public void CalculatesProperLoserNewRating()
+        {
+            Assert.Equal(1177.2,
+                new EloFormula(30, 400, 1100)
+                    .LoserNewRating(1200, new DefaultMatch(1000, 1)),
+                1);
+        }
+
+        [Fact]
         public void ReturnsPositiveRatingAfterManyLoses()
         {
             var formula = new EloFormula(2d, 400d, 1500d);
