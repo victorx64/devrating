@@ -65,12 +65,14 @@ namespace DevRating.Domain
         {
             if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
             {
-                return @params.InsertUsing(_database.Entities().Works().InsertOperation(), author,
+                return @params.InsertionResult(
+                    _database.Entities().Works().InsertOperation(), 
+                    author,
                     _database.Entities().Ratings().GetOperation().RatingOf(author));
             }
             else
             {
-                return @params.InsertUsing(_database.Entities().Works().InsertOperation(), author);
+                return @params.InsertionResult(_database.Entities().Works().InsertOperation(), author);
             }
         }
 

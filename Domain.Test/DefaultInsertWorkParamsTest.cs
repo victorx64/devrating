@@ -14,7 +14,7 @@ namespace DevRating.Domain.Test
             var author = new FakeAuthor("email");
 
             new DefaultInsertWorkParams()
-                .InsertUsing(
+                .InsertionResult(
                     new FakeInsertWorkOperation(
                         works,
                         new List<Author> {author},
@@ -35,7 +35,7 @@ namespace DevRating.Domain.Test
             var works = new List<Work> {work};
             
             new DefaultInsertWorkParams()
-                .InsertUsing(
+                .InsertionResult(
                     new FakeInsertWorkOperation(
                         works,
                         new List<Author> {author},

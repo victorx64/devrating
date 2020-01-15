@@ -19,12 +19,12 @@ namespace DevRating.Domain
             _additions = additions;
         }
 
-        public Work InsertUsing(InsertWorkOperation operation, Entity author)
+        public Work InsertionResult(InsertWorkOperation operation, Entity author)
         {
             return operation.Insert(_repository, _start, _end, author, _additions);
         }
 
-        public Work InsertUsing(InsertWorkOperation operation, Entity author, Entity rating)
+        public Work InsertionResult(InsertWorkOperation operation, Entity author, Entity rating)
         {
             return operation.Insert(_repository, _start, _end, author, _additions, rating);
         }
