@@ -13,6 +13,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v1.0.2
     - name: Build with dotnet
       run:  dotnet build --configuration Release
     - name: Run tests
@@ -20,7 +22,7 @@ jobs:
         dotnet test ./Domain.Test/DevRating.Domain.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
         dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
     - name: Add GPR Source
-      run: nuget sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/victorx64/index.json" -UserName "victorx64" -Password ${{ secrets.GITHUB_TOKEN }}
+      run: nuget sources add -Name "GPR" -Source "https://nuget.pkg.github.com/victorx64/devrating/index.json" -UserName "victorx64" -Password ${{ secrets.GITHUB_TOKEN }}
     - name: Push to GitHub Packages
       run: nuget push Package/*.nupkg -Source "GPR"
     - name: Codecov
