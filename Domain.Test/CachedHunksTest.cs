@@ -16,7 +16,7 @@ namespace DevRating.Domain.Test
                         new FakeDeletions(
                             new[]
                             {
-                                new FakeDeletion("some email", 1),
+                                new DefaultDeletion("some email", 1),
                             }),
                         new FakeAdditions(2)),
                 });
@@ -36,7 +36,7 @@ namespace DevRating.Domain.Test
                                 new FakeDeletions(
                                     new[]
                                     {
-                                        new FakeDeletion("some other email", 2),
+                                        new DefaultDeletion("some other email", 2),
                                     }),
                                 new FakeAdditions(3)),
                         }),
