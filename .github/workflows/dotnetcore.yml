@@ -19,6 +19,10 @@ jobs:
       run: |
         dotnet test ./Domain.Test/DevRating.Domain.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
         dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+    - name: Add GPR Source
+      run: nuget sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/victorx64/index.json" -UserName "victorx64" -Password ${{ secrets.GITHUB_TOKEN }}
+    - name: Push to GitHub Packages
+      run: nuget push Package/*.nupkg -Source "GPR"
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
