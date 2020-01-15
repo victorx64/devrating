@@ -37,7 +37,7 @@ namespace DevRating.EloRating.Test
             var loser = formula.DefaultRating();
             var count = 10u;
 
-            for (var i = 0; i < 100; ++i)
+            for (var i = 0; i < 500; ++i)
             {
                 var w = winner;
                 var l = loser;
