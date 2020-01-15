@@ -7,6 +7,10 @@ namespace DevRating.Domain
         private readonly string _end;
         private readonly uint _additions;
 
+        public DefaultInsertWorkParams() : this(string.Empty, string.Empty, string.Empty, 1)
+        {
+        }
+
         public DefaultInsertWorkParams(string repository, string start, string end, uint additions)
         {
             _repository = repository;
