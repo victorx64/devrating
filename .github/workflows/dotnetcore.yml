@@ -17,8 +17,8 @@ jobs:
       run:  dotnet build --configuration Release
     - name: Run tests
       run: |
-        dotnet test ./Domain.Test/DevRating.Domain.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]*
-        dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.opencover.xml"
+        dotnet test ./Domain.Test/DevRating.Domain.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
+        dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
