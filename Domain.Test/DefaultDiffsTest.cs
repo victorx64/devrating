@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.Domain.Fake;
@@ -45,7 +44,10 @@ namespace DevRating.Domain.Test
                     ),
                     new FakeFormula()
                 )
-                .Insert(string.Empty, string.Empty, string.Empty, "new author", 10u, new Deletion[0]);
+                .Insert(
+                    new DefaultInsertWorkParams(string.Empty, string.Empty, string.Empty, 10u),
+                    "new author",
+                    new Deletion[0]);
 
             Assert.Single(authors);
         }
@@ -65,7 +67,10 @@ namespace DevRating.Domain.Test
                     ),
                     new FakeFormula()
                 )
-                .Insert(string.Empty, string.Empty, string.Empty, "existing author", 10u, new Deletion[0]);
+                .Insert(
+                    new DefaultInsertWorkParams(string.Empty, string.Empty, string.Empty, 10u),
+                    "existing author",
+                    new Deletion[0]);
 
             Assert.Single(authors);
         }
@@ -85,7 +90,10 @@ namespace DevRating.Domain.Test
                     ),
                     new FakeFormula()
                 )
-                .Insert(string.Empty, string.Empty, string.Empty, "other author", 10u, new Deletion[0]);
+                .Insert(
+                    new DefaultInsertWorkParams(string.Empty, string.Empty, string.Empty, 10u),
+                    "other author",
+                    new Deletion[0]);
 
             Assert.False(works.Single().HasUsedRating());
         }
@@ -109,7 +117,10 @@ namespace DevRating.Domain.Test
                     ),
                     new FakeFormula()
                 )
-                .Insert(string.Empty, string.Empty, string.Empty, author.Email(), 1u, new Deletion[0]);
+                .Insert(
+                    new DefaultInsertWorkParams(string.Empty, string.Empty, string.Empty, 1u),
+                    author.Email(),
+                    new Deletion[0]);
 
             Assert.Equal(rating, works.Last().UsedRating());
         }

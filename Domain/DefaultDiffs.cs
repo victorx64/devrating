@@ -25,20 +25,11 @@ namespace DevRating.Domain
             return _formula;
         }
 
-        public void Insert(string repository, string start, string end, string email, uint additions,
-            IEnumerable<Deletion> deletions)
+        public void Insert(InsertWorkParams @params, string email, IEnumerable<Deletion> deletions)
         {
             var author = Author(email);
 
-            InsertNewRatings(email, deletions, author, InsertedWork(repository, start, end, additions, author));
-        }
-
-        public void Insert(string repository, string link, string start, string end, string email, uint additions,
-            IEnumerable<Deletion> deletions)
-        {
-            var author = Author(email);
-
-            InsertNewRatings(email, deletions, author, InsertedWork(repository, link, start, end, additions, author));
+            InsertNewRatings(email, deletions, author, InsertedWork(@params, author));
         }
 
         private void InsertNewRatings(string email, IEnumerable<Deletion> deletions, Entity author, Entity work)
@@ -70,31 +61,16 @@ namespace DevRating.Domain
                 : _database.Entities().Authors().InsertOperation().Insert(email);
         }
 
-        private Work InsertedWork(string repository, string start, string end, uint additions, Entity author)
+        private Work InsertedWork(InsertWorkParams @params, Entity author)
         {
             if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
             {
-                return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
+                return @params.InsertUsing(_database.Entities().Works().InsertOperation(), author,
                     _database.Entities().Ratings().GetOperation().RatingOf(author));
             }
             else
             {
-                return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions);
-            }
-        }
-
-        private Work InsertedWork(string repository, string link, string start, string end, uint additions,
-            Entity author)
-        {
-            if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
-            {
-                return _database.Entities().Works().InsertOperation().Insert(repository, start, end, author, additions,
-                    _database.Entities().Ratings().GetOperation().RatingOf(author), link);
-            }
-            else
-            {
-                return _database.Entities().Works().InsertOperation()
-                    .Insert(repository, start, end, author, additions, link);
+                return @params.InsertUsing(_database.Entities().Works().InsertOperation(), author);
             }
         }
 

@@ -9,7 +9,7 @@ namespace DevRating.LibGit2SharpClient
         private readonly Commit _start;
         private readonly Commit _end;
         private readonly string _key;
-        private readonly Additions _additions;
+        private readonly InsertWorkParams _params;
         private readonly Deletions _deletions;
 
         public LibGit2Diff(string start, string end, IRepository repository)
@@ -36,12 +36,17 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key)
+            : this(start, end, new DefaultInsertWorkParams(key, start.Sha, end.Sha, additions.Count()), deletions, key)
+        {
+        }
+
+        public LibGit2Diff(Commit start, Commit end, InsertWorkParams @params, Deletions deletions, string key)
         {
             _start = start;
             _end = end;
-            _additions = additions;
             _deletions = deletions;
             _key = key;
+            _params = @params;
         }
 
         public Work WorkFrom(Works works)
@@ -56,7 +61,7 @@ namespace DevRating.LibGit2SharpClient
 
         public void AddTo(Diffs diffs)
         {
-            diffs.Insert(_key, _start.Sha, _end.Sha, _end.Author.Email, _additions.Count(), _deletions.Items());
+            diffs.Insert(_params, _end.Author.Email, _deletions.Items());
         }
     }
 }
