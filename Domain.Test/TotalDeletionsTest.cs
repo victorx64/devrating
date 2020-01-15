@@ -24,15 +24,15 @@ namespace DevRating.Domain.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion("first email", 10u),
+                                            new DefaultDeletion("first email", 10u),
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion("second email", 30u),
-                                            new FakeDeletion("third email", 40u),
+                                            new DefaultDeletion("second email", 30u),
+                                            new DefaultDeletion("third email", 40u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -55,15 +55,15 @@ namespace DevRating.Domain.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion("email", 10u),
+                                            new DefaultDeletion("email", 10u),
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion("some email", 30u),
-                                            new FakeDeletion("some other email", 40u),
+                                            new DefaultDeletion("some email", 30u),
+                                            new DefaultDeletion("some other email", 40u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -93,15 +93,15 @@ namespace DevRating.Domain.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion(email, 10u),
+                                            new DefaultDeletion(email, 10u),
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion(email, 30u),
-                                            new FakeDeletion("not the email", 40u),
+                                            new DefaultDeletion(email, 30u),
+                                            new DefaultDeletion("not the email", 40u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -124,14 +124,14 @@ namespace DevRating.Domain.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion("email@domain", 10u),
+                                            new DefaultDeletion("email@domain", 10u), 
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new FakeDeletion("EMAIL@domain", 30u),
+                                            new DefaultDeletion("EMAIL@domain", 30u),
                                         }),
                                     new FakeAdditions(5u)),
                             }

@@ -21,12 +21,13 @@ namespace DevRating.Domain.Test
         [Fact]
         public void BeginsTransaction()
         {
-            Assert.Equal(IsolationLevel.Unspecified,
+            Assert.NotNull(
                 new TransactedDbConnection(
-                        new FakeDbConnection(
-                            new FakeDbCommand()))
-                    .BeginTransaction()
-                    .IsolationLevel);
+                    new FakeDbConnection(
+                        new FakeDbCommand()
+                    )
+                ).BeginTransaction()
+            );
         }
 
         [Fact]
@@ -103,12 +104,10 @@ namespace DevRating.Domain.Test
         {
             var expected = "connection string";
 
-            var connection = new TransactedDbConnection(new FakeDbConnection(new FakeDbCommand()))
+            Assert.Equal(expected, new TransactedDbConnection(new FakeDbConnection(new FakeDbCommand()))
             {
                 ConnectionString = expected
-            };
-
-            Assert.Equal(expected, connection.ConnectionString);
+            }.ConnectionString);
         }
 
         [Fact]
@@ -116,11 +115,10 @@ namespace DevRating.Domain.Test
         {
             Assert.True(
                 new TransactedDbConnection(
-                        new FakeDbConnection(
-                            new FakeDbCommand()
-                        )
+                    new FakeDbConnection(
+                        new FakeDbCommand()
                     )
-                    .ConnectionTimeout != default
+                ).ConnectionTimeout != default
             );
         }
     }

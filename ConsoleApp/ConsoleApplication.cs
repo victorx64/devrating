@@ -28,9 +28,12 @@ namespace DevRating.ConsoleApp
                 foreach (var author in _diffs.Database().Entities().Authors().GetOperation().Top())
                 {
                     var percentile = _diffs.Formula()
-                        .WinProbabilityOfA(author.Rating().Value(), _diffs.Formula().DefaultRating());
+                        .WinProbabilityOfA(
+                            _diffs.Database().Entities().Ratings().GetOperation().RatingOf(author).Value(),
+                            _diffs.Formula().DefaultRating());
 
-                    Console.WriteLine($"{author.Email()} {author.Rating().Value():F2} ({percentile:P} percentile)");
+                    Console.WriteLine(
+                        $"{author.Email()} {_diffs.Database().Entities().Ratings().GetOperation().RatingOf(author).Value():F2} ({percentile:P} percentile)");
                 }
             }
             finally
