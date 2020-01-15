@@ -8,7 +8,7 @@ namespace DevRating.EloRating.Test
         [Fact]
         public void ReturnsDefaultRating()
         {
-            Assert.Equal(10, new EloFormula(1, 1, 10).DefaultRating());
+            Assert.True(new EloFormula().DefaultRating() > 0);
         }
 
         [Fact]
