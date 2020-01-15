@@ -1,4 +1,4 @@
-![](https://github.com/victorx64/devratingservice/workflows/dotnetcore/badge.svg)
+![](https://github.com/victorx64/devratingservice/workflows/build/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
 [![codecov](https://codecov.io/gh/victorx64/devrating/branch/master/graph/badge.svg)](https://codecov.io/gh/victorx64/devrating)
 
