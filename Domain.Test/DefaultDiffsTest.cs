@@ -366,5 +366,46 @@ namespace DevRating.Domain.Test
                 ratings.Single(RatingOfAuthor).Value()
             );
         }
+
+        [Fact]
+        public void InsertsOldAuthorNewRatingWhenDeleteOneNewVictim()
+        {
+            var author = new FakeAuthor("old author");
+            var victim = "single new victim";
+            var work = new FakeWork(10u, author);
+            var rating = new FakeRating(1500d, work, author);
+            var ratings = new List<Rating> {rating};
+            var formula = new FakeFormula(10, 1);
+            var deletion = new DefaultDeletion(victim, 2);
+
+            new DefaultDiffs(
+                    new FakeDatabase(
+                        new FakeDbInstance(),
+                        new FakeEntities(
+                            new List<Work> {work},
+                            new List<Author> {author},
+                            ratings
+                        )
+                    ),
+                    formula
+                )
+                .Insert(new DefaultInsertWorkParams(), author.Email(), new[] {deletion});
+
+            bool RatingOfAuthor(Rating r)
+            {
+                return r.Author().Email().Equals(author.Email());
+            }
+
+            Assert.Equal(
+                formula.WinnerNewRating(
+                    rating.Value(),
+                    new[]
+                    {
+                        new DefaultMatch(formula.DefaultRating(), deletion.Count())
+                    }
+                ),
+                ratings.Last(RatingOfAuthor).Value()
+            );
+        }
     }
 }
