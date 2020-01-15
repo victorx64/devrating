@@ -9,18 +9,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+    
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.2
+    
     - name: Build with dotnet
       run:  dotnet build --configuration Release
+    
     - name: Run tests
       run: |
-        dotnet test Domain.Test/DevRating.Domain.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults /p:Exclude=[*.Fake]*
-        dotnet test EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+        dotnet test ./Domain.Test/DevRating.Domain.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
+        dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=opencover /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+    
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
@@ -28,5 +33,12 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./TestResults/coverage.opencover.xml
         fail_ci_if_error: true
+    
     - name: Push to NuGet
       run: dotnet nuget push Package\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org --skip-duplicate
+    
+    - name: Add GPR Source	
+      run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/victorx64/index.json -Username victorx64 -Password ${{ secrets.GITHUB_TOKEN }}	
+    
+    - name: Push to GitHub Packages	
+      run: nuget push Package\*.nupkg -Source "GPR" -SkipDuplicate
