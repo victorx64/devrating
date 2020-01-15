@@ -40,7 +40,7 @@ namespace DevRating.Domain.Fake
 
         public string ToJson()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public uint Additions()
@@ -55,7 +55,7 @@ namespace DevRating.Domain.Fake
 
         public IEnumerable<Rating> Ratings()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Rating UsedRating()

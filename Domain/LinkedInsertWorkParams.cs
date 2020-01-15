@@ -8,6 +8,11 @@ namespace DevRating.Domain
         private readonly string _end;
         private readonly uint _additions;
 
+        public LinkedInsertWorkParams(string link)
+            : this(link, string.Empty, string.Empty, string.Empty, 1)
+        {
+        }
+
         public LinkedInsertWorkParams(string link, string repository, string start, string end, uint additions)
         {
             _link = link;
