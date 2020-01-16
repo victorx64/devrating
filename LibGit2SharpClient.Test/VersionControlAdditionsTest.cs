@@ -75,6 +75,28 @@ index fa22e17..1a7c229 100644
         }
 
         [Fact]
+        public void ParsesZeroAdditions()
+        {
+            Assert.Equal(0u, new VersionControlAdditions(@"
+commit 20faa6bd73e1147f18c666dfa3f822a6d5d93681
+Author: Erik Baauw <hide@email.com>
+Date:   Fri Apr 5 18:12:34 2019 +0200
+
+    Update Accessory.js (#658)
+
+    Throw an error when trying to add more than 99 bridged accessories to a bridge.
+
+diff --git a/lib/Accessory.js b/lib/Accessory.js
+index 5633fb0..fa22e17 100644
+--- a/lib/Accessory.js
++++ b/lib/Accessory.js
+@@ -18,2 +19,0 @@ var bufferShim = require('buffer-shims');
+-const MAX_ACCESSORIES = 99; // Maximum number of bridged accessories per bridge.
+-"
+            ).Count());
+        }
+
+        [Fact]
         public void ThrowsExceptionOnContextualLine()
         {
             Assert.Throws<ContextLineEncounteredException>(
