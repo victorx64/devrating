@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization;
 
 namespace DevRating.VersionControl
 {
@@ -16,11 +15,6 @@ namespace DevRating.VersionControl
         }
 
         public ContextLineEncounteredException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        private ContextLineEncounteredException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }
