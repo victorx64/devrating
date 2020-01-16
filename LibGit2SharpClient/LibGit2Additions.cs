@@ -14,15 +14,26 @@ namespace DevRating.LibGit2SharpClient
 
         public uint Count()
         {
+            var dangerous = false;
             var additions = 0u;
 
             foreach (var line in _patch.Split('\n'))
             {
                 if (line.StartsWith("@@ "))
                 {
-                    var parts = line.Split(' ');
-
-                    additions += AdditionsCount(parts[2]);
+                    additions += AdditionsCount(line.Split(' ')[2]);
+                    dangerous = true;
+                }
+                else if (dangerous)
+                {
+                    if (line.StartsWith("+") || line.StartsWith("-"))
+                    {
+                        dangerous = false;
+                    }
+                    else
+                    {
+                        throw new EncounteredNonContextualLineException();
+                    }
                 }
             }
 

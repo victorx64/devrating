@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.Domain.Test", "Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.EloRating.Test", "EloRating.Test\DevRating.EloRating.Test.csproj", "{A3FCA573-5C04-44FE-8D5C-7FAA220A4BCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.LibGit2SharpClient.Test", "LibGit2SharpClient.Test\DevRating.LibGit2SharpClient.Test.csproj", "{BF8062AB-C59D-48DA-B4B0-ADF425F9A495}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{A3FCA573-5C04-44FE-8D5C-7FAA220A4BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3FCA573-5C04-44FE-8D5C-7FAA220A4BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3FCA573-5C04-44FE-8D5C-7FAA220A4BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF8062AB-C59D-48DA-B4B0-ADF425F9A495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF8062AB-C59D-48DA-B4B0-ADF425F9A495}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF8062AB-C59D-48DA-B4B0-ADF425F9A495}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF8062AB-C59D-48DA-B4B0-ADF425F9A495}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
