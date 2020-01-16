@@ -12,9 +12,9 @@ namespace DevRating.LibGit2SharpClient
             _collection = collection;
         }
 
-        public Blame HunkForLine(int line)
+        public Blame HunkForLine(uint line)
         {
-            return new LibGit2Blame(_collection.HunkForLine(line));
+            return new LibGit2Blame(_collection.HunkForLine((int) line));
         }
     }
 }

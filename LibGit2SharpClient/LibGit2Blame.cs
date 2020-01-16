@@ -11,13 +11,13 @@ namespace DevRating.LibGit2SharpClient
         {
             _hunk = hunk;
         }
-        
+
         public string AuthorEmail()
         {
             return _hunk.FinalCommit.Author.Email;
         }
 
-        public uint FinalStartLineNumber()
+        public uint StartLineNumber()
         {
             return (uint) _hunk.FinalStartLineNumber;
         }
@@ -25,6 +25,11 @@ namespace DevRating.LibGit2SharpClient
         public uint LineCount()
         {
             return (uint) _hunk.LineCount;
+        }
+
+        public bool ContainsLine(uint line)
+        {
+            return _hunk.ContainsLine((int) line);
         }
     }
 }

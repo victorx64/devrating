@@ -47,7 +47,7 @@ namespace DevRating.VersionControl
 
             for (var i = index; i < index + count; i += increment)
             {
-                var blame = _blames.HunkForLine((int) i);
+                var blame = _blames.HunkForLine(i);
 
                 increment = BlameHunkLastLineIndex(blame, index + count) - i;
 
@@ -57,7 +57,7 @@ namespace DevRating.VersionControl
 
         private uint BlameHunkLastLineIndex(Blame blame, uint limit)
         {
-            return Math.Min(blame.FinalStartLineNumber() + blame.LineCount(), limit);
+            return Math.Min(blame.StartLineNumber() + blame.LineCount(), limit);
         }
 
         private IReadOnlyList<string> HeaderParts(string header)
