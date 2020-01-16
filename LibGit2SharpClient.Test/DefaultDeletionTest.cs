@@ -1,6 +1,7 @@
+using DevRating.Domain;
 using Xunit;
 
-namespace DevRating.Domain.Test
+namespace DevRating.VersionControl.Test
 {
     public sealed class DefaultDeletionTest
     {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using DevRating.Domain;
 
-namespace DevRating.Domain.Fake
+namespace DevRating.VersionControl.Fake
 {
     public sealed class FakeDeletions : Deletions
     {

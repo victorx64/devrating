@@ -1,13 +1,12 @@
 using System;
-using DevRating.Domain;
 
-namespace DevRating.LibGit2SharpClient
+namespace DevRating.VersionControl
 {
-    public sealed class LibGit2Additions : Additions
+    public sealed class VersionControlAdditions : Additions
     {
         private readonly string _patch;
 
-        public LibGit2Additions(string patch)
+        public VersionControlAdditions(string patch)
         {
             _patch = patch;
         }
@@ -32,7 +31,7 @@ namespace DevRating.LibGit2SharpClient
                     }
                     else
                     {
-                        throw new EncounteredNonContextualLineException();
+                        throw new ContextLineEncounteredException();
                     }
                 }
             }

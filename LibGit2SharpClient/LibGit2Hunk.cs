@@ -1,4 +1,4 @@
-using DevRating.Domain;
+using DevRating.VersionControl;
 using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
@@ -9,7 +9,7 @@ namespace DevRating.LibGit2SharpClient
         private readonly Additions _additions;
 
         public LibGit2Hunk(string patch, BlameHunkCollection blames)
-            : this(new LibGit2Deletions(patch, blames), new LibGit2Additions(patch))
+            : this(new VersionControlDeletions(patch, new LibGit2Blames(blames)), new VersionControlAdditions(patch))
         {
         }
 

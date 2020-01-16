@@ -1,5 +1,6 @@
 using System.Linq;
 using DevRating.Domain;
+using DevRating.VersionControl;
 using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient

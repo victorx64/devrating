@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DevRating.Domain.Fake
+namespace DevRating.VersionControl.Fake
 {
     public sealed class FakeHunks : Hunks
     {

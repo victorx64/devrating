@@ -1,13 +1,13 @@
 ﻿using Xunit;
 
-namespace DevRating.LibGit2SharpClient.Test
+namespace DevRating.VersionControl.Test
 {
-    public sealed class LibGit2AdditionsTest
+    public sealed class VersionControlAdditionsTest
     {
         [Fact]
         public void CountsOneHunkAdditions()
         {
-            Assert.Equal(2u, new LibGit2Additions(@"
+            Assert.Equal(2u, new VersionControlAdditions(@"
 commit 20faa6bd73e1147f18c666dfa3f822a6d5d93681
 Author: Erik Baauw <hide@email.com>
 Date:   Fri Apr 5 18:12:34 2019 +0200
@@ -29,7 +29,7 @@ index 5633fb0..fa22e17 100644
         [Fact]
         public void SummarizesTwoHunkAdditions()
         {
-            Assert.Equal(7u, new LibGit2Additions(@"
+            Assert.Equal(7u, new VersionControlAdditions(@"
 commit 20faa6bd73e1147f18c666dfa3f822a6d5d93681
 Author: Erik Baauw <hide@email.com>
 Date:   Fri Apr 5 18:12:34 2019 +0200
@@ -57,7 +57,7 @@ index 5633fb0..fa22e17 100644
         [Fact]
         public void ParsesSingleLineAddition()
         {
-            Assert.Equal(1u, new LibGit2Additions(@"
+            Assert.Equal(1u, new VersionControlAdditions(@"
 commit f7baa1ac03b27ff719fcdfd5ae32ef6c6f377053
 Author: Tian Zhang <hide@email.com>
 Date:   Fri Apr 5 17:50:30 2019 -0700
@@ -77,10 +77,10 @@ index fa22e17..1a7c229 100644
         [Fact]
         public void ThrowsExceptionOnContextualLine()
         {
-            Assert.Throws(typeof(EncounteredNonContextualLineException),
+            Assert.Throws<ContextLineEncounteredException>(
                 delegate
                 {
-                    return new LibGit2Additions(@"
+                    return new VersionControlAdditions(@"
 commit f7baa1ac03b27ff719fcdfd5ae32ef6c6f377053
 Author: Tian Zhang <hide@email.com>
 Date:   Fri Apr 5 17:50:30 2019 -0700

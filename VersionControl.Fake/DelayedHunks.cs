@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DevRating.Domain.Fake
+namespace DevRating.VersionControl.Fake
 {
     public sealed class DelayedHunks : Hunks
     {

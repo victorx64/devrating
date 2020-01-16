@@ -1,4 +1,4 @@
-namespace DevRating.Domain.Fake
+namespace DevRating.VersionControl.Fake
 {
     public sealed class FakeHunk : Hunk
     {

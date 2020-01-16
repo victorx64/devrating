@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using DevRating.Domain;
 
-namespace DevRating.Domain
+namespace DevRating.VersionControl
 {
     public sealed class EmptyDeletions : Deletions
     {

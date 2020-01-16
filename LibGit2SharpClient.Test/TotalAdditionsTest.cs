@@ -1,7 +1,7 @@
-using DevRating.Domain.Fake;
+using DevRating.VersionControl.Fake;
 using Xunit;
 
-namespace DevRating.Domain.Test
+namespace DevRating.VersionControl.Test
 {
     public sealed class TotalAdditionsTest
     {

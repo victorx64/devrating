@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LibGit2SharpClient\DevRating.LibGit2SharpClient.csproj" />
+      <ProjectReference Include="..\VersionControl.Fake\DevRating.VersionControl.Fake.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace DevRating.Domain
+namespace DevRating.VersionControl
 {
     public sealed class TotalAdditions : Additions
     {
