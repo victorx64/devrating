@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DevRating.Domain;
+using DevRating.VersionControl;
 using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
 {
-    internal sealed class LibGit2Hunks : Hunks
+    public sealed class LibGit2Hunks : Hunks
     {
         private readonly Commit _start;
         private readonly Commit _end;
@@ -46,7 +46,7 @@ namespace DevRating.LibGit2SharpClient
             foreach (var difference in differences.Where(IsCreation))
             {
                 yield return Task.FromResult((Hunk) new LibGit2Hunk(new EmptyDeletions(),
-                    new LibGit2Additions(difference.Patch)));
+                    new VersionControlAdditions(difference.Patch)));
             }
         }
 

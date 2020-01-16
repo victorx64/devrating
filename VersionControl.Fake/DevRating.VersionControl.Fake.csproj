@@ -8,11 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.Data.Sqlite" Version="3.0.1" />
+      <ProjectReference Include="..\VersionControl\DevRating.VersionControl.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,9 @@
 using System;
-using DevRating.Domain.Fake;
+using DevRating.Domain;
+using DevRating.VersionControl.Fake;
 using Xunit;
 
-namespace DevRating.Domain.Test
+namespace DevRating.VersionControl.Test
 {
     public class CachedHunksTest
     {

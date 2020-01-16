@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace DevRating.Domain.Test
+namespace DevRating.VersionControl.Test
 {
     public sealed class EmptyDeletionTest
     {

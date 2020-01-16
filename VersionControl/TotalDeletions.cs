@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.Domain;
 
-namespace DevRating.Domain
+namespace DevRating.VersionControl
 {
     public sealed class TotalDeletions : Deletions
     {

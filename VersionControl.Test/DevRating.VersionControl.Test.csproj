@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EloRating\DevRating.EloRating.csproj" />
+      <ProjectReference Include="..\VersionControl.Fake\DevRating.VersionControl.Fake.csproj" />
     </ItemGroup>
 
 </Project>

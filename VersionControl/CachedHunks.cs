@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DevRating.Domain
+namespace DevRating.VersionControl
 {
     public sealed class CachedHunks : Hunks
     {

@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using DevRating.Domain;
-using LibGit2Sharp;
 
-namespace DevRating.LibGit2SharpClient
+namespace DevRating.VersionControl
 {
-    internal sealed class LibGit2Deletions : Deletions
+    public sealed class VersionControlDeletions : Deletions
     {
         private readonly string _patch;
-        private readonly BlameHunkCollection _blames;
+        private readonly Blames _blames;
 
-        public LibGit2Deletions(string patch, BlameHunkCollection blames)
+        public VersionControlDeletions(string patch, Blames blames)
         {
             _patch = patch;
             _blames = blames;
@@ -48,17 +47,17 @@ namespace DevRating.LibGit2SharpClient
 
             for (var i = index; i < index + count; i += increment)
             {
-                var blame = _blames.HunkForLine((int) i);
+                var blame = _blames.HunkForLine(i);
 
                 increment = BlameHunkLastLineIndex(blame, index + count) - i;
 
-                yield return new DefaultDeletion(blame.FinalCommit.Author.Email, increment);
+                yield return new DefaultDeletion(blame.AuthorEmail(), increment);
             }
         }
 
-        private uint BlameHunkLastLineIndex(BlameHunk blame, uint limit)
+        private uint BlameHunkLastLineIndex(Blame blame, uint limit)
         {
-            return Math.Min((uint) (blame.FinalStartLineNumber + blame.LineCount), limit);
+            return Math.Min(blame.StartLineNumber() + blame.LineCount(), limit);
         }
 
         private IReadOnlyList<string> HeaderParts(string header)
