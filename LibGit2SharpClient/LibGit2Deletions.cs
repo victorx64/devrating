@@ -5,7 +5,7 @@ using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
 {
-    internal sealed class LibGit2Deletions : Deletions
+    public sealed class LibGit2Deletions : Deletions
     {
         private readonly string _patch;
         private readonly BlameHunkCollection _blames;

@@ -3,7 +3,7 @@ using DevRating.Domain;
 
 namespace DevRating.LibGit2SharpClient
 {
-    internal sealed class LibGit2Additions : Additions
+    public sealed class LibGit2Additions : Additions
     {
         private readonly string _patch;
 

@@ -6,7 +6,7 @@ using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
 {
-    internal sealed class LibGit2Hunks : Hunks
+    public sealed class LibGit2Hunks : Hunks
     {
         private readonly Commit _start;
         private readonly Commit _end;

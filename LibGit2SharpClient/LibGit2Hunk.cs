@@ -3,7 +3,7 @@ using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
 {
-    internal sealed class LibGit2Hunk : Hunk
+    public sealed class LibGit2Hunk : Hunk
     {
         private readonly Deletions _deletions;
         private readonly Additions _additions;
