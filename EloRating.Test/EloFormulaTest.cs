@@ -50,6 +50,46 @@ namespace DevRating.EloRating.Test
         }
 
         [Fact]
+        public void DoesntChangeRatingSum()
+        {
+            var formula = new EloFormula(2d, 400d, 1500d);
+            var winner = formula.DefaultRating();
+            var loser = formula.DefaultRating();
+            var count = 500u;
+
+            var w = winner;
+            var l = loser;
+
+            winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, count)});
+            loser = formula.LoserNewRating(l, new DefaultMatch(w, count));
+
+            Assert.Equal(w + l, winner + loser, 5);
+        }
+
+        [Fact]
+        public void DoesntChangeRatingSumOfThree()
+        {
+            var formula = new EloFormula(2d, 400d, 1500d);
+            var first = formula.DefaultRating();
+            var second = formula.DefaultRating();
+            var three = formula.DefaultRating();
+
+            var f = first;
+            var s = second;
+            var t = three;
+
+            first = formula.WinnerNewRating(f, new[]
+            {
+                new DefaultMatch(s, 110),
+                new DefaultMatch(t, 19),
+            });
+            second = formula.LoserNewRating(s, new DefaultMatch(f, 110));
+            three = formula.LoserNewRating(t, new DefaultMatch(f, 19));
+
+            Assert.Equal(f + s + t, first + second + three, 5);
+        }
+
+        [Fact]
         public void CalculatesProperWinProbabilityOfWinner()
         {
             Assert.Equal(0.09d, new EloFormula(1d, 400d, 1200d).WinProbabilityOfA(1400, 1800), 2);
