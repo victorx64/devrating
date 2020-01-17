@@ -29,40 +29,38 @@ namespace DevRating.EloRating
 
         public double WinnerNewRating(double current, IEnumerable<Match> matches)
         {
-            foreach (var match in matches)
+            double WinnerExtraPointsForMatch(Match m)
             {
-                var loser = match.ContenderRating();
-
-                for (var i = 0; i < match.Count(); ++i)
-                {
-                    var points = ExtraPointsOfA(current, loser);
-
-                    current += points;
-                    loser -= points;
-                }
+                return WinnerExtraPoints(current, m.ContenderRating(), m.Count());
             }
 
-            return current;
+            return current + matches.Sum(WinnerExtraPointsForMatch);
         }
 
         public double LoserNewRating(double current, Match match)
         {
-            var winner = match.ContenderRating();
-
-            for (var i = 0; i < match.Count(); ++i)
-            {
-                var points = ExtraPointsOfA(winner, current);
-
-                winner += points;
-                current -= points;
-            }
-
-            return current;
+            return current - WinnerExtraPoints(match.ContenderRating(), current, match.Count());
         }
 
-        private double ExtraPointsOfA(double a, double b)
+        private double WinnerExtraPoints(double winner, double loser, uint count)
         {
-            return _k * (1d - WinProbabilityOfA(a, b));
+            var summary = 0d;
+
+            for (var i = 0; i < count; ++i)
+            {
+                var extra = WinnerExtraPoints(winner, loser);
+
+                summary += extra;
+                winner += extra;
+                loser -= extra;
+            }
+
+            return summary;
+        }
+
+        private double WinnerExtraPoints(double winner, double loser)
+        {
+            return _k * (1d - WinProbabilityOfA(winner, loser));
         }
 
         public double WinProbabilityOfA(double a, double b)
