@@ -50,6 +50,70 @@ namespace DevRating.EloRating.Test
         }
 
         [Fact]
+        public void ReturnsSameWinnerRatingWithIterationsAndSingleCall()
+        {
+            var formula = new EloFormula();
+            var initialW = 1400d;
+            var initialL = 1234d;
+            var iterations = 500u;
+
+            double WinnerRatingAfterIterations()
+            {
+                var one = 1u;
+                var winner = initialW;
+                var loser = initialL;
+
+                for (var i = 0; i < iterations; ++i)
+                {
+                    var w = winner;
+                    var l = loser;
+
+                    winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
+                    loser = formula.LoserNewRating(l, new DefaultMatch(w, one));
+                }
+
+                return winner;
+            }
+
+            Assert.Equal(
+                formula.WinnerNewRating(initialW, new[] {new DefaultMatch(initialL, iterations)}),
+                WinnerRatingAfterIterations(),
+                6);
+        }
+
+        [Fact]
+        public void ReturnsSameLoserRatingWithIterationsAndSingleCall()
+        {
+            var formula = new EloFormula();
+            var initialW = 1400d;
+            var initialL = 1234d;
+            var iterations = 500u;
+
+            double LoserRatingAfterIterations()
+            {
+                var one = 1u;
+                var winner = initialW;
+                var loser = initialL;
+
+                for (var i = 0; i < iterations; ++i)
+                {
+                    var w = winner;
+                    var l = loser;
+
+                    winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
+                    loser = formula.LoserNewRating(l, new DefaultMatch(w, one));
+                }
+
+                return loser;
+            }
+
+            Assert.Equal(
+                formula.LoserNewRating(initialL, new DefaultMatch(initialW, iterations)),
+                LoserRatingAfterIterations(),
+                6);
+        }
+
+        [Fact]
         public void DoesntChangeRatingSum()
         {
             var formula = new EloFormula(2d, 400d, 1500d);
