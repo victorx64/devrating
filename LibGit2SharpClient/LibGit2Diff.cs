@@ -7,10 +7,7 @@ namespace DevRating.LibGit2SharpClient
 {
     public sealed class LibGit2Diff : Domain.Diff
     {
-        private readonly Commit _start;
-        private readonly Commit _end;
-        private readonly string _key;
-        private readonly InsertWorkParams _params;
+        private readonly DiffFingerprint _fingerprint;
 
         public LibGit2Diff(string start, string end, IRepository repository)
             : this(repository.Lookup<Commit>(start),
@@ -36,33 +33,18 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key)
-            : this(start, end,
-                new DefaultDiffs(key, start.Sha, end.Sha, additions.Count(), end.Author.Email,
-                    deletions), key)
+            : this(new DefaultDiffFingerprint(key, start.Sha, end.Sha, additions.Count(), end.Author.Email, deletions))
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, InsertWorkParams @params, string key)
+        public LibGit2Diff(DiffFingerprint fingerprint)
         {
-            _start = start;
-            _end = end;
-            _key = key;
-            _params = @params;
+            _fingerprint = fingerprint;
         }
 
-        public Work WorkFrom(Works works)
+        public DiffFingerprint Fingerprint()
         {
-            return works.GetOperation().Work(_key, _start.Sha, _end.Sha);
-        }
-
-        public bool PresentIn(Works works)
-        {
-            return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
-        }
-
-        public void AddTo(Entities entities, Formula formula)
-        {
-            _params.InsertionResult(entities, formula);
+            return _fingerprint;
         }
     }
 }

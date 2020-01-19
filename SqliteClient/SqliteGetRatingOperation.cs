@@ -25,9 +25,12 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
-            reader.Read();
+            if (reader.Read())
+            {
+                return new SqliteRating(_connection, reader["Id"]);
+            }
 
-            return new SqliteRating(_connection, reader["Id"]);
+            return new NullRating();
         }
 
         public Rating Rating(object id)
