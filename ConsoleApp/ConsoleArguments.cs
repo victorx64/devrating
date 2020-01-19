@@ -37,16 +37,16 @@ namespace DevRating.ConsoleApp
 
         private void Show()
         {
-            using var repository = new Repository(_args[3]);
+            using var repository = new Repository(_args[1]);
 
-            _application.PrintToConsole(new LibGit2Diff(_args[1], _args[2], repository));
+            _application.PrintToConsole(new LibGit2Diff(_args[2], _args[3], repository));
         }
 
         private void Add()
         {
-            using var repository = new Repository(_args[3]);
+            using var repository = new Repository(_args[1]);
 
-            _application.Save(new LibGit2Diff(_args[1], _args[2], repository));
+            _application.Save(new LibGit2Diff(_args[2], _args[3], repository));
         }
 
         private void PrintUsage()
