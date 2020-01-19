@@ -53,11 +53,6 @@ namespace DevRating.Domain.Fake
             return _author;
         }
 
-        public IEnumerable<Rating> Ratings()
-        {
-            throw new NotImplementedException();
-        }
-
         public Rating UsedRating()
         {
             return _rating!;

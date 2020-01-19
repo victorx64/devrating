@@ -27,6 +27,11 @@ namespace DevRating.Domain.Fake
             return (Rating) Entity(_ratings, id);
         }
 
+        public IEnumerable<Rating> RatingsOf(Entity work)
+        {
+            throw new System.NotImplementedException();
+        }
+
         private Entity Entity(IEnumerable<Entity> entities, object id)
         {
             bool Predicate(Entity a)

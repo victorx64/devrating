@@ -128,7 +128,7 @@ namespace DevRating.ConsoleApp
         {
             Console.WriteLine("Rating updates");
 
-            foreach (var rating in work.Ratings())
+            foreach (var rating in _diffs.Database().Entities().Ratings().GetOperation().RatingsOf(work))
             {
                 var percentile = _diffs.Formula().WinProbabilityOfA(rating.Value(), _diffs.Formula().DefaultRating());
 

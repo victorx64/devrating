@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Data;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
@@ -54,26 +53,6 @@ namespace DevRating.SqliteClient
             reader.Read();
 
             return new SqliteAuthor(_connection, reader["AuthorId"]);
-        }
-
-        public IEnumerable<Rating> Ratings()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT Id FROM Rating WHERE WorkId = @Id";
-
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
-
-            using var reader = command.ExecuteReader();
-
-            var ratings = new List<Rating>();
-
-            while (reader.Read())
-            {
-                ratings.Add(new SqliteRating(_connection, reader["Id"]));
-            }
-
-            return ratings;
         }
 
         public Rating UsedRating()
