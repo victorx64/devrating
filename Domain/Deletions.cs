@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using DevRating.Domain;
 
-namespace DevRating.VersionControl
+namespace DevRating.Domain
 {
     public interface Deletions
     {

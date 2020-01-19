@@ -4,125 +4,127 @@ using System.Linq;
 
 namespace DevRating.Domain
 {
-    public sealed class DefaultDiffs : Diffs
+    public sealed class DefaultDiffs : InsertWorkParams
     {
-        private readonly Database _database;
-        private readonly Formula _formula;
+        private readonly string _repository;
+        private readonly string _start;
+        private readonly string _end;
+        private readonly uint _additions;
+        private readonly string _email;
+        private readonly Deletions _deletions;
 
-        public DefaultDiffs(Database database, Formula formula)
+        public DefaultDiffs(string repository, string start, string end, uint additions, string email,
+            Deletions deletions)
         {
-            _database = database;
-            _formula = formula;
+            _repository = repository;
+            _start = start;
+            _end = end;
+            _additions = additions;
+            _email = email;
+            _deletions = deletions;
         }
 
-        public Database Database()
+        public void InsertionResult(Entities entities, Formula formula)
         {
-            return _database;
+            var author = Author(entities, _email);
+
+            InsertNewRatings(entities, formula, author, InsertedWork(entities, author));
         }
 
-        public Formula Formula()
+        private void InsertNewRatings(Entities entities, Formula formula, Entity author, Entity work)
         {
-            return _formula;
-        }
-
-        public void Insert(InsertWorkParams @params, string email, IEnumerable<Deletion> deletions)
-        {
-            var author = Author(email);
-
-            InsertNewRatings(email, deletions, author, InsertedWork(@params, author));
-        }
-
-        private void InsertNewRatings(string email, IEnumerable<Deletion> deletions, Entity author, Entity work)
-        {
-            var victims = Victims(email, deletions);
+            var victims = Victims();
 
             if (victims.Any())
             {
-                InsertAuthorNewRating(author, victims, work);
+                InsertAuthorNewRating(entities, formula, author, victims, work);
 
-                InsertVictimsNewRatings(victims, work, RatingOf(author));
+                InsertVictimsNewRatings(entities, formula, victims, work, RatingOf(entities, formula, author));
             }
         }
 
-        private IList<Deletion> Victims(string email, IEnumerable<Deletion> deletions)
+        private IList<Deletion> Victims()
         {
             bool NotSelfDeletion(Deletion deletion)
             {
-                return !deletion.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
+                return !deletion.Email().Equals(_email, StringComparison.OrdinalIgnoreCase);
             }
 
-            return deletions.Where(NotSelfDeletion).ToList();
+            return _deletions.Items().Where(NotSelfDeletion).ToList();
         }
 
-        private Author Author(string email)
+        private Author Author(Entities entities, string email)
         {
-            return _database.Entities().Authors().ContainsOperation().Contains(email)
-                ? _database.Entities().Authors().GetOperation().Author(email)
-                : _database.Entities().Authors().InsertOperation().Insert(email);
+            return entities.Authors().ContainsOperation().Contains(email)
+                ? entities.Authors().GetOperation().Author(email)
+                : entities.Authors().InsertOperation().Insert(email);
         }
 
-        private Work InsertedWork(InsertWorkParams @params, Entity author)
+        private Work InsertedWork(Entities entities, Entity author)
         {
-            if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
+            if (entities.Ratings().ContainsOperation().ContainsRatingOf(author))
             {
-                return @params.InsertionResult(
-                    _database.Entities().Works().InsertOperation(), 
-                    author,
-                    _database.Entities().Ratings().GetOperation().RatingOf(author));
+                return entities.Works().InsertOperation().Insert(_repository, _start, _end, author, _additions,
+                    entities.Ratings().GetOperation().RatingOf(author), new NullDbParameter());
             }
             else
             {
-                return @params.InsertionResult(_database.Entities().Works().InsertOperation(), author);
+                return entities.Works().InsertOperation()
+                    .Insert(_repository, _start, _end, author, _additions, new NullDbEntity(), new NullDbParameter());
             }
         }
 
-        private double RatingOf(Entity author)
+        private double RatingOf(Entities entities, Formula formula, Entity author)
         {
-            return _database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author)
-                ? _database.Entities().Ratings().GetOperation().RatingOf(author).Value()
-                : _formula.DefaultRating();
+            return entities.Ratings().ContainsOperation().ContainsRatingOf(author)
+                ? entities.Ratings().GetOperation().RatingOf(author).Value()
+                : formula.DefaultRating();
         }
 
-        private void InsertAuthorNewRating(Entity author, IEnumerable<Deletion> victims, Entity work)
+        private void InsertAuthorNewRating(Entities entities, Formula formula, Entity author,
+            IEnumerable<Deletion> victims, Entity work)
         {
-            var @new = _formula.WinnerNewRating(RatingOf(author), victims.Select(Match));
+            var @new = formula.WinnerNewRating(RatingOf(entities, formula, author),
+                victims.Select(deletion =>
+                    new DefaultMatch(RatingOf(entities, formula, Author(entities, deletion.Email())),
+                        deletion.Count())));
 
-            if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author))
+            if (entities.Ratings().ContainsOperation().ContainsRatingOf(author))
             {
-                _database.Entities().Ratings().InsertOperation()
-                    .Insert(author, @new, _database.Entities().Ratings().GetOperation().RatingOf(author), work);
+                entities.Ratings().InsertOperation()
+                    .Insert(@new, new NullDbParameter(), entities.Ratings().GetOperation().RatingOf(author), work,
+                        author);
             }
             else
             {
-                _database.Entities().Ratings().InsertOperation().Insert(author, @new, work);
+                entities.Ratings().InsertOperation()
+                    .Insert(@new, new NullDbParameter(), new NullDbEntity(), work, author);
             }
         }
 
-        private void InsertVictimsNewRatings(IEnumerable<Deletion> victims, Entity work, double rating)
+        private void InsertVictimsNewRatings(Entities entities, Formula formula, IEnumerable<Deletion> victims,
+            Entity work, double rating)
         {
             foreach (var deletion in victims)
             {
-                var victim = Author(deletion.Email());
+                var victim = Author(entities, deletion.Email());
 
-                var current = RatingOf(victim);
+                var current = RatingOf(entities, formula, victim);
 
-                var @new = _formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Count()));
+                var @new = formula.LoserNewRating(current, new DefaultMatch(rating, deletion.Count()));
 
-                if (_database.Entities().Ratings().ContainsOperation().ContainsRatingOf(victim))
+                if (entities.Ratings().ContainsOperation().ContainsRatingOf(victim))
                 {
-                    _database.Entities().Ratings().InsertOperation()
-                        .Insert(victim, @new, _database.Entities().Ratings().GetOperation().RatingOf(victim), work);
+                    entities.Ratings().InsertOperation()
+                        .Insert(@new, new NullDbParameter(), entities.Ratings().GetOperation().RatingOf(victim), work,
+                            victim);
                 }
                 else
                 {
-                    _database.Entities().Ratings().InsertOperation().Insert(victim, @new, work);
+                    entities.Ratings().InsertOperation()
+                        .Insert(@new, new NullDbParameter(), new NullDbEntity(), work, victim);
                 }
             }
-        }
-
-        private Match Match(Deletion deletion)
-        {
-            return new DefaultMatch(RatingOf(Author(deletion.Email())), deletion.Count());
         }
     }
 }

@@ -31,6 +31,7 @@ namespace DevRating.SqliteClient
                     Id               integer
                         primary key autoincrement,
                     Rating           real    not null,
+                    Deletions        integer,
                     PreviousRatingId integer
                         references Rating on delete cascade,
                     WorkId           integer not null

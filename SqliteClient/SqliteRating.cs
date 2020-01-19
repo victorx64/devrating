@@ -40,6 +40,34 @@ namespace DevRating.SqliteClient
             return new SqliteRating(_connection, reader["PreviousRatingId"]);
         }
 
+        public bool HasDeletions()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            return reader.Read();
+        }
+
+        public uint Deletions()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return (uint) (long) reader["Deletions"];
+        }
+
         public bool HasPreviousRating()
         {
             using var command = _connection.CreateCommand();
