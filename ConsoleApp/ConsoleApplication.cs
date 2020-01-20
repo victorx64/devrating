@@ -58,12 +58,12 @@ namespace DevRating.ConsoleApp
                     _database.Instance().Create();
                 }
 
-                if (diff.Fingerprint().PresentIn(_database.Entities().Works()))
+                if (diff.PresentIn(_database.Entities().Works()))
                 {
                     throw new Exception("The diff is already added.");
                 }
 
-                diff.Fingerprint().AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
+                diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
 
                 transaction.Commit();
             }
@@ -92,15 +92,15 @@ namespace DevRating.ConsoleApp
                     _database.Instance().Create();
                 }
 
-                if (!diff.Fingerprint().PresentIn(_database.Entities().Works()))
+                if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    diff.Fingerprint().AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
+                    diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
 
                     Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(diff.Fingerprint().From(_database.Entities().Works()));
+                PrintWorkToConsole(diff.From(_database.Entities().Works()));
             }
             finally
             {

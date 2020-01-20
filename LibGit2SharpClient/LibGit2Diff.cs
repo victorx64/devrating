@@ -2,12 +2,13 @@ using System.Linq;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
+using Diff = DevRating.Domain.Diff;
 
 namespace DevRating.LibGit2SharpClient
 {
-    public sealed class LibGit2Diff : Domain.Diff
+    public sealed class LibGit2Diff : Diff
     {
-        private readonly DiffFingerprint _fingerprint;
+        private readonly Diff _origin;
 
         public LibGit2Diff(string start, string end, IRepository repository)
             : this(repository.Lookup<Commit>(start),
@@ -33,18 +34,28 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key)
-            : this(new DefaultDiffFingerprint(key, start.Sha, end.Sha, additions.Count(), end.Author.Email, deletions))
+            : this(new DefaultDiff(key, start.Sha, end.Sha, additions.Count(), end.Author.Email, deletions))
         {
         }
 
-        public LibGit2Diff(DiffFingerprint fingerprint)
+        public LibGit2Diff(Diff origin)
         {
-            _fingerprint = fingerprint;
+            _origin = origin;
         }
 
-        public DiffFingerprint Fingerprint()
+        public Work From(Works works)
         {
-            return _fingerprint;
+            return _origin.From(works);
+        }
+
+        public bool PresentIn(Works works)
+        {
+            return _origin.PresentIn(works);
+        }
+
+        public void AddTo(EntitiesFactory factory)
+        {
+            _origin.AddTo(factory);
         }
     }
 }

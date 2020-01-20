@@ -1,6 +1,6 @@
 namespace DevRating.Domain
 {
-    public sealed class DefaultDiffFingerprint : DiffFingerprint
+    public sealed class DefaultDiff : Diff
     {
         private readonly string _repository;
         private readonly string _start;
@@ -9,7 +9,7 @@ namespace DevRating.Domain
         private readonly string _email;
         private readonly Deletions _deletions;
 
-        public DefaultDiffFingerprint(string repository, string start, string end, uint additions, string email,
+        public DefaultDiff(string repository, string start, string end, uint additions, string email,
             Deletions deletions)
         {
             _repository = repository;
