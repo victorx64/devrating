@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 
 namespace DevRating.VersionControl

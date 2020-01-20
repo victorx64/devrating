@@ -1,5 +1,5 @@
 using System;
-using DevRating.Domain;
+using DevRating.DefaultObject;
 using DevRating.VersionControl.Fake;
 using Xunit;
 

@@ -2,13 +2,6 @@ namespace DevRating.Domain
 {
     public interface InsertRatingOperation
     {
-        Rating Insert(Entity author,
-            double value,
-            Entity work);
-
-        Rating Insert(Entity author,
-            double value,
-            Entity previous,
-            Entity work);
+        Rating Insert(double value, ObjectEnvelope deletions, Entity previous, Entity work, Entity author);
     }
 }

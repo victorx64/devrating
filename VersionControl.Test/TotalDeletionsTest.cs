@@ -1,4 +1,5 @@
 using System.Linq;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 using DevRating.VersionControl.Fake;
 using Xunit;

@@ -1,4 +1,4 @@
-﻿using DevRating.Domain;
+﻿using DevRating.DefaultObject;
 using DevRating.EloRating;
 using DevRating.SqliteClient;
 using Microsoft.Data.Sqlite;
@@ -12,19 +12,15 @@ namespace DevRating.ConsoleApp
             new ConsoleArguments
             (
                 args,
-                new ConsoleApplication
-                (
-                    new DefaultDiffs
+                new ConsoleApplication(
+                    new SqliteDatabase
                     (
-                        new SqliteDatabase
+                        new TransactedDbConnection
                         (
-                            new TransactedDbConnection
-                            (
-                                new SqliteConnection("Data Source=devrating.db")
-                            )
-                        ),
-                        new EloFormula()
-                    )
+                            new SqliteConnection("Data Source=devrating.db")
+                        )
+                    ),
+                    new EloFormula()
                 )
             ).Run();
         }

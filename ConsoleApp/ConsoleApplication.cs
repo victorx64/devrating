@@ -1,67 +1,70 @@
 using System;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 
 namespace DevRating.ConsoleApp
 {
     internal sealed class ConsoleApplication : Application
     {
-        private readonly Diffs _diffs;
+        private readonly Database _database;
+        private readonly Formula _formula;
 
-        public ConsoleApplication(Diffs diffs)
+        public ConsoleApplication(Database database, Formula formula)
         {
-            _diffs = diffs;
+            _database = database;
+            _formula = formula;
         }
 
         public void Top()
         {
-            _diffs.Database().Instance().Connection().Open();
+            _database.Instance().Connection().Open();
 
-            using var transaction = _diffs.Database().Instance().Connection().BeginTransaction();
+            using var transaction = _database.Instance().Connection().BeginTransaction();
 
             try
             {
-                if (!_diffs.Database().Instance().Present())
+                if (!_database.Instance().Present())
                 {
-                    _diffs.Database().Instance().Create();
+                    _database.Instance().Create();
                 }
 
-                foreach (var author in _diffs.Database().Entities().Authors().GetOperation().Top())
+                foreach (var author in _database.Entities().Authors().GetOperation().Top())
                 {
-                    var percentile = _diffs.Formula()
+                    var percentile = _formula
                         .WinProbabilityOfA(
-                            _diffs.Database().Entities().Ratings().GetOperation().RatingOf(author).Value(),
-                            _diffs.Formula().DefaultRating());
+                            _database.Entities().Ratings().GetOperation().RatingOf(author).Value(),
+                            _formula.DefaultRating());
 
                     Console.WriteLine(
-                        $"{author.Email()} {_diffs.Database().Entities().Ratings().GetOperation().RatingOf(author).Value():F2} ({percentile:P} percentile)");
+                        $"{author.Email()} {_database.Entities().Ratings().GetOperation().RatingOf(author).Value():F2} ({percentile:P} percentile)");
                 }
             }
             finally
             {
                 transaction.Rollback();
-                _diffs.Database().Instance().Connection().Close();
+                _database.Instance().Connection().Close();
             }
         }
 
         public void Save(Diff diff)
         {
-            _diffs.Database().Instance().Connection().Open();
+            _database.Instance().Connection().Open();
 
-            using var transaction = _diffs.Database().Instance().Connection().BeginTransaction();
+            using var transaction = _database.Instance().Connection().BeginTransaction();
 
             try
             {
-                if (!_diffs.Database().Instance().Present())
+                if (!_database.Instance().Present())
                 {
-                    _diffs.Database().Instance().Create();
+                    _database.Instance().Create();
                 }
 
-                if (diff.PresentIn(_diffs.Database().Entities().Works()))
+                if (diff.PresentIn(_database.Entities().Works()))
                 {
                     throw new Exception("The diff is already added.");
                 }
 
-                diff.AddTo(_diffs);
+                diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
 
                 transaction.Commit();
             }
@@ -73,37 +76,37 @@ namespace DevRating.ConsoleApp
             }
             finally
             {
-                _diffs.Database().Instance().Connection().Close();
+                _database.Instance().Connection().Close();
             }
         }
 
         public void PrintToConsole(Diff diff)
         {
-            _diffs.Database().Instance().Connection().Open();
+            _database.Instance().Connection().Open();
 
-            using var transaction = _diffs.Database().Instance().Connection().BeginTransaction();
+            using var transaction = _database.Instance().Connection().BeginTransaction();
 
             try
             {
-                if (!_diffs.Database().Instance().Present())
+                if (!_database.Instance().Present())
                 {
-                    _diffs.Database().Instance().Create();
+                    _database.Instance().Create();
                 }
 
-                if (!diff.PresentIn(_diffs.Database().Entities().Works()))
+                if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    diff.AddTo(_diffs);
+                    diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
 
                     Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     Console.WriteLine();
                 }
 
-                PrintWorkToConsole(diff.WorkFrom(_diffs.Database().Entities().Works()));
+                PrintWorkToConsole(diff.From(_database.Entities().Works()));
             }
             finally
             {
                 transaction.Rollback();
-                _diffs.Database().Instance().Connection().Close();
+                _database.Instance().Connection().Close();
             }
         }
 
@@ -111,9 +114,9 @@ namespace DevRating.ConsoleApp
         {
             var rating = work.HasUsedRating()
                 ? work.UsedRating().Value()
-                : _diffs.Formula().DefaultRating();
+                : _formula.DefaultRating();
 
-            var percentile = _diffs.Formula().WinProbabilityOfA(rating, _diffs.Formula().DefaultRating());
+            var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
             Console.WriteLine(work.Author().Email());
             Console.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
@@ -124,20 +127,24 @@ namespace DevRating.ConsoleApp
             PrintWorkRatingsToConsole(work);
         }
 
-        private void PrintWorkRatingsToConsole(Work work)
+        private void PrintWorkRatingsToConsole(Entity work)
         {
             Console.WriteLine("Rating updates");
 
-            foreach (var rating in work.Ratings())
+            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work))
             {
-                var percentile = _diffs.Formula().WinProbabilityOfA(rating.Value(), _diffs.Formula().DefaultRating());
+                var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
 
                 var previous = rating.HasPreviousRating()
                     ? rating.PreviousRating().Value()
-                    : _diffs.Formula().DefaultRating();
+                    : _formula.DefaultRating();
+
+                var information = rating.HasDeletions()
+                    ? $"lost {rating.Deletions()} lines"
+                    : "the performer";
 
                 Console.WriteLine(
-                    $"{rating.Author().Email()} {previous:F2} -> {rating.Value():F2} ({percentile:P} percentile)");
+                    $"{rating.Author().Email()} {previous:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }

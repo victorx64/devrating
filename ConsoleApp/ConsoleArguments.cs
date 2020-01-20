@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DevRating.DefaultObject;
 using DevRating.LibGit2SharpClient;
 using LibGit2Sharp;
 
@@ -37,16 +39,27 @@ namespace DevRating.ConsoleApp
 
         private void Show()
         {
-            using var repository = new Repository(_args[3]);
+            using var repository = new Repository(_args[1]);
 
-            _application.PrintToConsole(new LibGit2Diff(_args[1], _args[2], repository));
+            _application.PrintToConsole(Diff(repository));
         }
 
         private void Add()
         {
-            using var repository = new Repository(_args[3]);
+            using var repository = new Repository(_args[1]);
 
-            _application.Save(new LibGit2Diff(_args[1], _args[2], repository));
+            _application.Save(Diff(repository));
+        }
+
+        private LibGit2Diff Diff(IRepository repository)
+        {
+            return new LibGit2Diff(
+                _args[2],
+                _args[3],
+                repository,
+                repository.Network.Remotes.First().Url,
+                new NullObjectEnvelope()
+            );
         }
 
         private void PrintUsage()

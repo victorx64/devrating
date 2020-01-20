@@ -1,56 +1,46 @@
-using System.Linq;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
+using Diff = DevRating.Domain.Diff;
 
 namespace DevRating.LibGit2SharpClient
 {
-    public sealed class LibGit2Diff : Domain.Diff
+    public sealed class LibGit2Diff : Diff
     {
         private readonly Commit _start;
         private readonly Commit _end;
-        private readonly string _key;
-        private readonly InsertWorkParams _params;
+        private readonly Additions _additions;
         private readonly Deletions _deletions;
+        private readonly string _key;
+        private readonly ObjectEnvelope _link;
 
-        public LibGit2Diff(string start, string end, IRepository repository)
-            : this(repository.Lookup<Commit>(start),
-                repository.Lookup<Commit>(end),
-                repository,
-                repository.Network.Remotes.First().Url)
+        public LibGit2Diff(string start, string end, IRepository repository, string key, ObjectEnvelope link)
+            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key, link)
         {
         }
 
-        public LibGit2Diff(string start, string end, IRepository repository, string key)
-            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key)
+        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, ObjectEnvelope link)
+            : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key)
-            : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key)
+        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, ObjectEnvelope link)
+            : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key)
-            : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key)
-        {
-        }
-
-        public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key)
-            : this(start, end, new DefaultInsertWorkParams(key, start.Sha, end.Sha, additions.Count()), deletions, key)
-        {
-        }
-
-        public LibGit2Diff(Commit start, Commit end, InsertWorkParams @params, Deletions deletions, string key)
+        public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key,
+            ObjectEnvelope link)
         {
             _start = start;
             _end = end;
+            _additions = additions;
             _deletions = deletions;
             _key = key;
-            _params = @params;
+            _link = link;
         }
 
-        public Work WorkFrom(Works works)
+        public Work From(Works works)
         {
             return works.GetOperation().Work(_key, _start.Sha, _end.Sha);
         }
@@ -60,9 +50,11 @@ namespace DevRating.LibGit2SharpClient
             return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
         }
 
-        public void AddTo(Diffs diffs)
+        public void AddTo(EntitiesFactory factory)
         {
-            diffs.Insert(_params, _end.Author.Email, _deletions.Items());
+            var work = factory.InsertedWork(_key, _start.Sha, _end.Sha, _end.Author.Email, _additions.Count(), _link);
+
+            factory.InsertRatings(_end.Author.Email, _deletions.Items(), work);
         }
     }
 }
