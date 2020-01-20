@@ -3,7 +3,7 @@ using DevRating.Domain;
 
 namespace DevRating.VersionControl
 {
-    public sealed class NullDbParameter : DbParameter
+    public sealed class NullObjectEnvelope : ObjectEnvelope
     {
         public object Value()
         {

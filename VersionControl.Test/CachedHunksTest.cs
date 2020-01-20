@@ -17,7 +17,7 @@ namespace DevRating.VersionControl.Test
                         new FakeDeletions(
                             new[]
                             {
-                                new DefaultDeletion("some email", 1),
+                                new VersionControlDeletion("some email", 1),
                             }),
                         new FakeAdditions(2)),
                 });
@@ -37,7 +37,7 @@ namespace DevRating.VersionControl.Test
                                 new FakeDeletions(
                                     new[]
                                     {
-                                        new DefaultDeletion("some other email", 2),
+                                        new VersionControlDeletion("some other email", 2),
                                     }),
                                 new FakeAdditions(3)),
                         }),

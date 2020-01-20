@@ -12,25 +12,25 @@ namespace DevRating.LibGit2SharpClient
         private readonly Additions _additions;
         private readonly Deletions _deletions;
         private readonly string _key;
-        private readonly DbParameter _link;
+        private readonly ObjectEnvelope _link;
 
-        public LibGit2Diff(string start, string end, IRepository repository, string key, DbParameter link)
+        public LibGit2Diff(string start, string end, IRepository repository, string key, ObjectEnvelope link)
             : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, DbParameter link)
+        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, ObjectEnvelope link)
             : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, DbParameter link)
+        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, ObjectEnvelope link)
             : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key, link)
         {
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key,
-            DbParameter link)
+            ObjectEnvelope link)
         {
             _start = start;
             _end = end;

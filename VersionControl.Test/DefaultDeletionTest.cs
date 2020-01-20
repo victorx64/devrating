@@ -10,7 +10,7 @@ namespace DevRating.VersionControl.Test
         {
             var email = "some email";
 
-            Assert.Equal(email, new DefaultDeletion(email, 1).Email());
+            Assert.Equal(email, new VersionControlDeletion(email, 1).Email());
         }
 
         [Fact]
@@ -18,7 +18,7 @@ namespace DevRating.VersionControl.Test
         {
             var count = 2u;
 
-            Assert.Equal(count, new DefaultDeletion("some other email", count).Count());
+            Assert.Equal(count, new VersionControlDeletion("some other email", count).Count());
         }
     }
 }

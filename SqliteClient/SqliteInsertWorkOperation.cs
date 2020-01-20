@@ -14,7 +14,7 @@ namespace DevRating.SqliteClient
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions,
-            Entity rating, DbParameter link)
+            Entity rating, ObjectEnvelope link)
         {
             using var command = _connection.CreateCommand();
 

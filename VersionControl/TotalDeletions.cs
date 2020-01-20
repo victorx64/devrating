@@ -23,7 +23,7 @@ namespace DevRating.VersionControl
 
         private Deletion Deletion(IGrouping<string, Deletion> grouping)
         {
-            return new DefaultDeletion(DeletionsAuthor(grouping), DeletionsCountsSum(grouping));
+            return new VersionControlDeletion(DeletionsAuthor(grouping), DeletionsCountsSum(grouping));
         }
 
         private IEnumerable<Deletion> HunkDeletions(Hunk hunk)

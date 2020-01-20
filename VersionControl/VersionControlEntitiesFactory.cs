@@ -5,19 +5,19 @@ using DevRating.Domain;
 
 namespace DevRating.VersionControl
 {
-    public sealed class DefaultEntitiesFactory : EntitiesFactory
+    public sealed class VersionControlEntitiesFactory : EntitiesFactory
     {
         private readonly Entities _entities;
         private readonly Formula _formula;
 
-        public DefaultEntitiesFactory(Entities entities, Formula formula)
+        public VersionControlEntitiesFactory(Entities entities, Formula formula)
         {
             _entities = entities;
             _formula = formula;
         }
 
         public Work InsertedWork(string repository, string start, string end, string email, uint additions,
-            DbParameter link)
+            ObjectEnvelope link)
         {
             var author = Author(email);
 
@@ -47,7 +47,7 @@ namespace DevRating.VersionControl
 
             _entities.Ratings().InsertOperation().Insert(
                 _formula.WinnerNewRating(winner.Value(), matches),
-                new NullDbParameter(),
+                new NullObjectEnvelope(),
                 winner,
                 work,
                 author
@@ -78,15 +78,15 @@ namespace DevRating.VersionControl
                 _entities.Ratings().InsertOperation().Insert(
                     _formula.LoserNewRating(
                         current.Value(),
-                        new DefaultMatch(winner.Value(), deletion.Count())
+                        new VersionControlMatch(winner.Value(), deletion.Count())
                     ),
-                    new DefaultDbParameter(deletion.Count()),
+                    new VersionControlObjectEnvelope(deletion.Count()),
                     current,
                     work,
                     victim
                 );
 
-                matches.Add(new DefaultMatch(current.Value(), deletion.Count()));
+                matches.Add(new VersionControlMatch(current.Value(), deletion.Count()));
             }
 
             return matches;

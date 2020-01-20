@@ -3,7 +3,7 @@ using DevRating.Domain;
 
 namespace DevRating.VersionControl
 {
-    public sealed class NullDbEntity : Entity
+    public sealed class NullEntity : Entity
     {
         public object Id()
         {

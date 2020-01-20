@@ -13,7 +13,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Rating Insert(double value, DbParameter deletions, Entity previous, Entity work, Entity author)
+        public Rating Insert(double value, ObjectEnvelope deletions, Entity previous, Entity work, Entity author)
         {
             using var command = _connection.CreateCommand();
 

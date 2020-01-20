@@ -1,6 +1,6 @@
 namespace DevRating.Domain
 {
-    public interface DbParameter
+    public interface ObjectEnvelope
     {
         object Value();
     }

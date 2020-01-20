@@ -51,7 +51,7 @@ namespace DevRating.VersionControl
 
                 increment = BlameHunkLastLineIndex(blame, index + count) - i;
 
-                yield return new DefaultDeletion(blame.AuthorEmail(), increment);
+                yield return new VersionControlDeletion(blame.AuthorEmail(), increment);
             }
         }
 
