@@ -1,4 +1,3 @@
-using System.Linq;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
@@ -13,37 +12,32 @@ namespace DevRating.LibGit2SharpClient
         private readonly Additions _additions;
         private readonly Deletions _deletions;
         private readonly string _key;
+        private readonly DbParameter _link;
 
-        public LibGit2Diff(string start, string end, IRepository repository)
-            : this(repository.Lookup<Commit>(start),
-                repository.Lookup<Commit>(end),
-                repository,
-                repository.Network.Remotes.First().Url)
+        public LibGit2Diff(string start, string end, IRepository repository, string key, DbParameter link)
+            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key, link)
         {
         }
 
-        public LibGit2Diff(string start, string end, IRepository repository, string key)
-            : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key)
+        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, DbParameter link)
+            : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key)
-            : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key)
+        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, DbParameter link)
+            : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key)
-            : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key)
-        {
-        }
-
-        public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key)
+        public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key,
+            DbParameter link)
         {
             _start = start;
             _end = end;
             _additions = additions;
             _deletions = deletions;
             _key = key;
+            _link = link;
         }
 
         public Work From(Works works)
@@ -58,7 +52,7 @@ namespace DevRating.LibGit2SharpClient
 
         public void AddTo(EntitiesFactory factory)
         {
-            var work = factory.InsertedWork(_key, _start.Sha, _end.Sha, _end.Author.Email, _additions.Count());
+            var work = factory.InsertedWork(_key, _start.Sha, _end.Sha, _end.Author.Email, _additions.Count(), _link);
 
             factory.InsertRatings(_end.Author.Email, _deletions.Items(), work);
         }

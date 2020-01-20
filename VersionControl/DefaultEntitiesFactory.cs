@@ -16,12 +16,13 @@ namespace DevRating.VersionControl
             _formula = formula;
         }
 
-        public Work InsertedWork(string repository, string start, string end, string email, uint additions)
+        public Work InsertedWork(string repository, string start, string end, string email, uint additions,
+            DbParameter link)
         {
             var author = Author(email);
 
             return _entities.Works().InsertOperation().Insert(repository, start, end, author, additions,
-                RatingOf(author), new NullDbParameter());
+                RatingOf(author), link);
         }
 
         public void InsertRatings(string email, IEnumerable<Deletion> deletions, Entity work)
