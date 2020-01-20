@@ -2,45 +2,39 @@ namespace DevRating.Domain
 {
     public sealed class DefaultDiffFingerprint : DiffFingerprint
     {
-        private readonly AuthorFactory _authors;
-        private readonly WorkFactory _works;
-        private readonly RatingFactory _ratings;
+        private readonly string _repository;
+        private readonly string _start;
+        private readonly string _end;
+        private readonly uint _additions;
+        private readonly string _email;
+        private readonly Deletions _deletions;
 
         public DefaultDiffFingerprint(string repository, string start, string end, uint additions, string email,
             Deletions deletions)
-            : this(repository, start, end, additions, email, new DefaultAuthorFactory(email), deletions)
         {
+            _repository = repository;
+            _start = start;
+            _end = end;
+            _additions = additions;
+            _email = email;
+            _deletions = deletions;
         }
 
-        public DefaultDiffFingerprint(string repository, string start, string end, uint additions, string email,
-            AuthorFactory authors, Deletions deletions)
-            : this(authors, new DefaultWorkFactory(repository, start, end, additions),
-                new DefaultRatingFactory(deletions, email, authors))
+        public Work From(Works works)
         {
-        }
-
-        public DefaultDiffFingerprint(AuthorFactory authors, WorkFactory works, RatingFactory ratings)
-        {
-            _authors = authors;
-            _works = works;
-            _ratings = ratings;
-        }
-
-        public Work WorkFrom(Works works)
-        {
-            return _works.WorkFrom(works);
+            return works.GetOperation().Work(_repository, _start, _end);
         }
 
         public bool PresentIn(Works works)
         {
-            return _works.PresentIn(works);
+            return works.ContainsOperation().Contains(_repository, _start, _end);
         }
 
-        public void AddTo(Entities entities, Formula formula)
+        public void AddTo(EntitiesFactory factory)
         {
-            var author = _authors.Author(entities);
-
-            _ratings.InsertNewRatings(entities, formula, author, _works.InsertedWork(entities, author));
+            var work = factory.InsertedWork(_repository, _start, _end, _email, _additions);
+            
+            factory.InsertRatings(_email, _deletions, work);
         }
     }
 }

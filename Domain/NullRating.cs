@@ -2,8 +2,15 @@ using System;
 
 namespace DevRating.Domain
 {
-    public sealed class NullRating : Rating    
+    public sealed class NullRating : Rating
     {
+        private readonly double _value;
+
+        public NullRating(double value)
+        {
+            _value = value;
+        }
+        
         public object Id()
         {
             return DBNull.Value;
@@ -16,7 +23,7 @@ namespace DevRating.Domain
 
         public double Value()
         {
-            throw new NotImplementedException();
+            return _value;
         }
 
         public bool HasPreviousRating()

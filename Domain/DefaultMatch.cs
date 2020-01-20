@@ -10,7 +10,7 @@ namespace DevRating.Domain
             _rating = rating;
             _count = count;
         }
-        
+
         public double ContenderRating()
         {
             return _rating;
