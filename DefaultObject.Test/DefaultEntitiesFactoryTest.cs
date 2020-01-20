@@ -145,6 +145,27 @@ namespace DevRating.DefaultObject.Test
         }
 
         [Fact]
+        public void DoesntInsertsNewAuthorNewRatingWhenHeDeletedHimself()
+        {
+            var ratings = new List<Rating>();
+            var author = new FakeAuthor("author");
+            var formula = new FakeFormula(10, 1);
+            var deletion = new DefaultDeletion("AUTHOR", 2);
+
+            new DefaultEntitiesFactory(
+                    new FakeEntities(
+                        new List<Work>(),
+                        new List<Author>(),
+                        ratings
+                    ),
+                    formula
+                )
+                .InsertRatings(author.Email(), new[] {deletion}, new FakeWork(0u, author));
+
+            Assert.Empty(ratings);
+        }
+
+        [Fact]
         public void InsertsNewVictimNewRating()
         {
             var ratings = new List<Rating>();
