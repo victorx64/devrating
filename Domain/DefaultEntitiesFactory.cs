@@ -23,7 +23,7 @@ namespace DevRating.Domain
                 RatingOf(author), new NullDbParameter());
         }
 
-        public void InsertRatings(string email, Deletions deletions, Entity work)
+        public void InsertRatings(string email, IEnumerable<Deletion> deletions, Entity work)
         {
             var items = NonSelfDeletions(email, deletions);
 
@@ -52,14 +52,14 @@ namespace DevRating.Domain
             );
         }
 
-        private IList<Deletion> NonSelfDeletions(string email, Deletions deletions)
+        private IList<Deletion> NonSelfDeletions(string email, IEnumerable<Deletion> deletions)
         {
             bool NonSelfDeletion(Deletion d)
             {
                 return !d.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
             }
 
-            return deletions.Items().Where(NonSelfDeletion).ToList();
+            return deletions.Where(NonSelfDeletion).ToList();
         }
 
         private IEnumerable<Match> MatchesWithInsertedLosers(IEnumerable<Deletion> deletions, Entity work,

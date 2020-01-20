@@ -8,7 +8,11 @@ namespace DevRating.LibGit2SharpClient
 {
     public sealed class LibGit2Diff : Diff
     {
-        private readonly Diff _origin;
+        private readonly Commit _start;
+        private readonly Commit _end;
+        private readonly Additions _additions;
+        private readonly Deletions _deletions;
+        private readonly string _key;
 
         public LibGit2Diff(string start, string end, IRepository repository)
             : this(repository.Lookup<Commit>(start),
@@ -34,28 +38,29 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key)
-            : this(new DefaultDiff(key, start.Sha, end.Sha, additions.Count(), end.Author.Email, deletions))
         {
-        }
-
-        public LibGit2Diff(Diff origin)
-        {
-            _origin = origin;
+            _start = start;
+            _end = end;
+            _additions = additions;
+            _deletions = deletions;
+            _key = key;
         }
 
         public Work From(Works works)
         {
-            return _origin.From(works);
+            return works.GetOperation().Work(_key, _start.Sha, _end.Sha);
         }
 
         public bool PresentIn(Works works)
         {
-            return _origin.PresentIn(works);
+            return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
         }
 
         public void AddTo(EntitiesFactory factory)
         {
-            _origin.AddTo(factory);
+            var work = factory.InsertedWork(_key, _start.Sha, _end.Sha, _end.Author.Email, _additions.Count());
+
+            factory.InsertRatings(_end.Author.Email, _deletions.Items(), work);
         }
     }
 }
