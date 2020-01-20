@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.VersionControl.Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.VersionControl.Test", "VersionControl.Test\DevRating.VersionControl.Test.csproj", "{BF8062AB-C59D-48DA-B4B0-ADF425F9A495}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevRating.EloRating.Fake", "EloRating.Fake\DevRating.EloRating.Fake.csproj", "{498414F3-73C3-4B67-8620-9CB93936390F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{53DE7FC2-1BB4-465D-982E-C2A047E16403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53DE7FC2-1BB4-465D-982E-C2A047E16403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53DE7FC2-1BB4-465D-982E-C2A047E16403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{498414F3-73C3-4B67-8620-9CB93936390F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{498414F3-73C3-4B67-8620-9CB93936390F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{498414F3-73C3-4B67-8620-9CB93936390F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{498414F3-73C3-4B67-8620-9CB93936390F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

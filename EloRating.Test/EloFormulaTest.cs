@@ -1,4 +1,5 @@
 ﻿using DevRating.Domain;
+using DevRating.EloRating.Fake;
 using Xunit;
 
 namespace DevRating.EloRating.Test
@@ -16,7 +17,7 @@ namespace DevRating.EloRating.Test
         {
             Assert.Equal(1207.2,
                 new EloFormula(30, 400, 1100)
-                    .WinnerNewRating(1200, new[] {new DefaultMatch(1000, 1)}),
+                    .WinnerNewRating(1200, new[] {new FakeMatch(1000, 1)}),
                 1);
         }
 
@@ -25,7 +26,7 @@ namespace DevRating.EloRating.Test
         {
             Assert.Equal(1177.2,
                 new EloFormula(30, 400, 1100)
-                    .LoserNewRating(1200, new DefaultMatch(1000, 1)),
+                    .LoserNewRating(1200, new FakeMatch(1000, 1)),
                 1);
         }
 
@@ -42,8 +43,8 @@ namespace DevRating.EloRating.Test
                 var w = winner;
                 var l = loser;
 
-                winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, count)});
-                loser = formula.LoserNewRating(l, new DefaultMatch(w, count));
+                winner = formula.WinnerNewRating(w, new[] {new FakeMatch(l, count)});
+                loser = formula.LoserNewRating(l, new FakeMatch(w, count));
             }
 
             Assert.True(loser > 0);
@@ -68,15 +69,15 @@ namespace DevRating.EloRating.Test
                     var w = winner;
                     var l = loser;
 
-                    winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
-                    loser = formula.LoserNewRating(l, new DefaultMatch(w, one));
+                    winner = formula.WinnerNewRating(w, new[] {new FakeMatch(l, one)});
+                    loser = formula.LoserNewRating(l, new FakeMatch(w, one));
                 }
 
                 return winner;
             }
 
             Assert.Equal(
-                formula.WinnerNewRating(initialW, new[] {new DefaultMatch(initialL, iterations)}),
+                formula.WinnerNewRating(initialW, new[] {new FakeMatch(initialL, iterations)}),
                 WinnerRatingAfterIterations(),
                 6);
         }
@@ -100,15 +101,15 @@ namespace DevRating.EloRating.Test
                     var w = winner;
                     var l = loser;
 
-                    winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
-                    loser = formula.LoserNewRating(l, new DefaultMatch(w, one));
+                    winner = formula.WinnerNewRating(w, new[] {new FakeMatch(l, one)});
+                    loser = formula.LoserNewRating(l, new FakeMatch(w, one));
                 }
 
                 return loser;
             }
 
             Assert.Equal(
-                formula.LoserNewRating(initialL, new DefaultMatch(initialW, iterations)),
+                formula.LoserNewRating(initialL, new FakeMatch(initialW, iterations)),
                 LoserRatingAfterIterations(),
                 6);
         }
@@ -124,8 +125,8 @@ namespace DevRating.EloRating.Test
             var w = winner;
             var l = loser;
 
-            winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, count)});
-            loser = formula.LoserNewRating(l, new DefaultMatch(w, count));
+            winner = formula.WinnerNewRating(w, new[] {new FakeMatch(l, count)});
+            loser = formula.LoserNewRating(l, new FakeMatch(w, count));
 
             Assert.Equal(w + l, winner + loser, 5);
         }
@@ -144,11 +145,11 @@ namespace DevRating.EloRating.Test
 
             first = formula.WinnerNewRating(f, new[]
             {
-                new DefaultMatch(s, 110),
-                new DefaultMatch(t, 19),
+                new FakeMatch(s, 110),
+                new FakeMatch(t, 19),
             });
-            second = formula.LoserNewRating(s, new DefaultMatch(f, 110));
-            three = formula.LoserNewRating(t, new DefaultMatch(f, 19));
+            second = formula.LoserNewRating(s, new FakeMatch(f, 110));
+            three = formula.LoserNewRating(t, new FakeMatch(f, 19));
 
             Assert.Equal(f + s + t, first + second + three, 5);
         }

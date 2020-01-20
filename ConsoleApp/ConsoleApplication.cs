@@ -1,5 +1,6 @@
 using System;
 using DevRating.Domain;
+using DevRating.VersionControl;
 
 namespace DevRating.ConsoleApp
 {

@@ -1,11 +1,13 @@
-namespace DevRating.Domain
+using DevRating.Domain;
+
+namespace DevRating.EloRating.Fake
 {
-    public sealed class DefaultMatch : Match
+    public sealed class FakeMatch : Match
     {
         private readonly double _rating;
         private readonly uint _count;
 
-        public DefaultMatch(double rating, uint count)
+        public FakeMatch(double rating, uint count)
         {
             _rating = rating;
             _count = count;

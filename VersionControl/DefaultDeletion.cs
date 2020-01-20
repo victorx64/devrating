@@ -1,4 +1,6 @@
-namespace DevRating.Domain
+using DevRating.Domain;
+
+namespace DevRating.VersionControl
 {
     public sealed class DefaultDeletion : Deletion
     {

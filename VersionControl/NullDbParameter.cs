@@ -1,6 +1,7 @@
 using System;
+using DevRating.Domain;
 
-namespace DevRating.Domain
+namespace DevRating.VersionControl
 {
     public sealed class NullDbParameter : DbParameter
     {
