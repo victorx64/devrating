@@ -5,10 +5,6 @@ namespace DevRating.VersionControl
 {
     public sealed class EmptyDeletions : Deletions
     {
-        public EmptyDeletions()
-        {
-        }
-
         public IEnumerable<Deletion> Items()
         {
             return new Deletion[0];

@@ -1,6 +1,6 @@
 using System;
+using DevRating.DefaultObject;
 using DevRating.Domain;
-using DevRating.VersionControl;
 
 namespace DevRating.ConsoleApp
 {
@@ -64,7 +64,7 @@ namespace DevRating.ConsoleApp
                     throw new Exception("The diff is already added.");
                 }
 
-                diff.AddTo(new VersionControlEntitiesFactory(_database.Entities(), _formula));
+                diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
 
                 transaction.Commit();
             }
@@ -95,7 +95,7 @@ namespace DevRating.ConsoleApp
 
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    diff.AddTo(new VersionControlEntitiesFactory(_database.Entities(), _formula));
+                    diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
 
                     Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     Console.WriteLine();

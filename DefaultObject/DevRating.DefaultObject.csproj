@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DefaultObject\DevRating.DefaultObject.csproj" />
+      <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
     </ItemGroup>
 
 </Project>

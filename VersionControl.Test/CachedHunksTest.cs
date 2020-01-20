@@ -1,5 +1,5 @@
 using System;
-using DevRating.Domain;
+using DevRating.DefaultObject;
 using DevRating.VersionControl.Fake;
 using Xunit;
 
@@ -17,7 +17,7 @@ namespace DevRating.VersionControl.Test
                         new FakeDeletions(
                             new[]
                             {
-                                new VersionControlDeletion("some email", 1),
+                                new DefaultDeletion("some email", 1),
                             }),
                         new FakeAdditions(2)),
                 });
@@ -37,7 +37,7 @@ namespace DevRating.VersionControl.Test
                                 new FakeDeletions(
                                     new[]
                                     {
-                                        new VersionControlDeletion("some other email", 2),
+                                        new DefaultDeletion("some other email", 2),
                                     }),
                                 new FakeAdditions(3)),
                         }),

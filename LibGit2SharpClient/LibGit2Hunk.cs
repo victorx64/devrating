@@ -1,4 +1,3 @@
-using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.DefaultObject;
 using DevRating.LibGit2SharpClient;
-using DevRating.VersionControl;
 using LibGit2Sharp;
 
 namespace DevRating.ConsoleApp

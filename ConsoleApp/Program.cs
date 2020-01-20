@@ -1,4 +1,4 @@
-﻿using DevRating.Domain;
+﻿using DevRating.DefaultObject;
 using DevRating.EloRating;
 using DevRating.SqliteClient;
 using Microsoft.Data.Sqlite;

@@ -1,5 +1,4 @@
-﻿using DevRating.Domain;
-using DevRating.EloRating.Fake;
+﻿using DevRating.EloRating.Fake;
 using Xunit;
 
 namespace DevRating.EloRating.Test

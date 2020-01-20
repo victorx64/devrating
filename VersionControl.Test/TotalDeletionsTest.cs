@@ -1,4 +1,5 @@
 using System.Linq;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 using DevRating.VersionControl.Fake;
 using Xunit;
@@ -25,15 +26,15 @@ namespace DevRating.VersionControl.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion("first email", 10u),
+                                            new DefaultDeletion("first email", 10u),
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion("second email", 30u),
-                                            new VersionControlDeletion("third email", 40u),
+                                            new DefaultDeletion("second email", 30u),
+                                            new DefaultDeletion("third email", 40u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -56,15 +57,15 @@ namespace DevRating.VersionControl.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion("email", 10u),
+                                            new DefaultDeletion("email", 10u),
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion("some email", 30u),
-                                            new VersionControlDeletion("some other email", 40u),
+                                            new DefaultDeletion("some email", 30u),
+                                            new DefaultDeletion("some other email", 40u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -94,15 +95,15 @@ namespace DevRating.VersionControl.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion(email, 10u),
+                                            new DefaultDeletion(email, 10u),
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion(email, 30u),
-                                            new VersionControlDeletion("not the email", 40u),
+                                            new DefaultDeletion(email, 30u),
+                                            new DefaultDeletion("not the email", 40u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -125,14 +126,14 @@ namespace DevRating.VersionControl.Test
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion("email@domain", 10u), 
+                                            new DefaultDeletion("email@domain", 10u), 
                                         }),
                                     new FakeAdditions(2u)),
                                 new FakeHunk(
                                     new FakeDeletions(
                                         new[]
                                         {
-                                            new VersionControlDeletion("EMAIL@domain", 30u),
+                                            new DefaultDeletion("EMAIL@domain", 30u),
                                         }),
                                     new FakeAdditions(5u)),
                             }

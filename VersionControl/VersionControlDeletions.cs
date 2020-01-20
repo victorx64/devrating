@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 
 namespace DevRating.VersionControl
@@ -51,7 +52,7 @@ namespace DevRating.VersionControl
 
                 increment = BlameHunkLastLineIndex(blame, index + count) - i;
 
-                yield return new VersionControlDeletion(blame.AuthorEmail(), increment);
+                yield return new DefaultDeletion(blame.AuthorEmail(), increment);
             }
         }
 

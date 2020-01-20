@@ -23,7 +23,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
       <ProjectReference Include="..\EloRating\DevRating.EloRating.csproj" />
       <ProjectReference Include="..\LibGit2SharpClient\DevRating.LibGit2SharpClient.csproj" />
       <ProjectReference Include="..\SqliteClient\DevRating.SqliteClient.csproj" />

@@ -1,5 +1,3 @@
-using DevRating.Domain;
-
 namespace DevRating.VersionControl.Fake
 {
     public sealed class FakeHunk : Hunk

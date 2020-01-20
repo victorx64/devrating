@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 
 namespace DevRating.VersionControl
@@ -23,7 +24,7 @@ namespace DevRating.VersionControl
 
         private Deletion Deletion(IGrouping<string, Deletion> grouping)
         {
-            return new VersionControlDeletion(DeletionsAuthor(grouping), DeletionsCountsSum(grouping));
+            return new DefaultDeletion(DeletionsAuthor(grouping), DeletionsCountsSum(grouping));
         }
 
         private IEnumerable<Deletion> HunkDeletions(Hunk hunk)
