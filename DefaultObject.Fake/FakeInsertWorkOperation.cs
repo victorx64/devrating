@@ -8,14 +8,10 @@ namespace DevRating.DefaultObject.Fake
     public sealed class FakeInsertWorkOperation : InsertWorkOperation
     {
         private readonly IList<Work> _works;
-        private readonly IList<Author> _authors;
-        private readonly IList<Rating> _ratings;
 
-        public FakeInsertWorkOperation(IList<Work> works, IList<Author> authors, IList<Rating> ratings)
+        public FakeInsertWorkOperation(IList<Work> works)
         {
             _works = works;
-            _authors = authors;
-            _ratings = ratings;
         }
 
         public Work Insert(string repository, string start, string end, Entity author, uint additions, Entity rating,
