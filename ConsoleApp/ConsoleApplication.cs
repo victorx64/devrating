@@ -127,7 +127,7 @@ namespace DevRating.ConsoleApp
             PrintWorkRatingsToConsole(work);
         }
 
-        private void PrintWorkRatingsToConsole(Work work)
+        private void PrintWorkRatingsToConsole(Entity work)
         {
             Console.WriteLine("Rating updates");
 
@@ -139,8 +139,12 @@ namespace DevRating.ConsoleApp
                     ? rating.PreviousRating().Value()
                     : _formula.DefaultRating();
 
+                var deletions = rating.HasDeletions()
+                    ? rating.Deletions()
+                    : 0u;
+
                 Console.WriteLine(
-                    $"{rating.Author().Email()} {previous:F2} -> {rating.Value():F2} ({percentile:P} percentile)");
+                    $"{rating.Author().Email()} {previous:F2} (lost {deletions} lines) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }
