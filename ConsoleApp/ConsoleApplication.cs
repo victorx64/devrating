@@ -139,12 +139,12 @@ namespace DevRating.ConsoleApp
                     ? rating.PreviousRating().Value()
                     : _formula.DefaultRating();
 
-                var deletions = rating.HasDeletions()
-                    ? rating.Deletions()
-                    : 0u;
+                var information = rating.HasDeletions()
+                    ? $"lost {rating.Deletions()} lines"
+                    : "the performer";
 
                 Console.WriteLine(
-                    $"{rating.Author().Email()} {previous:F2} (lost {deletions} lines) -> {rating.Value():F2} ({percentile:P} percentile)");
+                    $"{rating.Author().Email()} {previous:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }
