@@ -2,7 +2,7 @@ namespace DevRating.Domain
 {
     public interface InsertWorkOperation
     {
-        Work Insert(string repository, string start, string end, Entity author, uint additions,
-            Entity rating, ObjectEnvelope link);
+        Work Insert(string repository, string start, string end, Id author, uint additions,
+            Id rating, Envelope link);
     }
 }

@@ -26,13 +26,13 @@ namespace DevRating.SqliteClient
             return reader.Read();
         }
 
-        public bool Contains(object id)
+        public bool Contains(Id id)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText = "SELECT Id FROM Author WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = id.Value()});
 
             using var reader = command.ExecuteReader();
 

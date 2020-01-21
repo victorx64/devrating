@@ -1,4 +1,5 @@
 using System.Data;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
@@ -26,7 +27,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
 
-            return new SqliteAuthor(_connection, command.ExecuteScalar());
+            return new SqliteAuthor(_connection, new DefaultId(command.ExecuteScalar()));
         }
     }
 }

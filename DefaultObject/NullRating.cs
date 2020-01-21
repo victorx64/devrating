@@ -16,9 +16,9 @@ namespace DevRating.DefaultObject
             _value = value;
         }
 
-        public object Id()
+        public Id Id()
         {
-            return DBNull.Value;
+            return new DefaultId(DBNull.Value);
         }
 
         public string ToJson()

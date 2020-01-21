@@ -7,15 +7,15 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteAuthor : Author
     {
         private readonly IDbConnection _connection;
-        private readonly object _id;
+        private readonly Id _id;
 
-        public SqliteAuthor(IDbConnection connection, object id)
+        public SqliteAuthor(IDbConnection connection, Id id)
         {
             _connection = connection;
             _id = id;
         }
 
-        public object Id()
+        public Id Id()
         {
             return _id;
         }
@@ -31,7 +31,7 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT Email FROM Author WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 

@@ -2,11 +2,11 @@ using DevRating.Domain;
 
 namespace DevRating.DefaultObject
 {
-    public sealed class DefaultObjectEnvelope : ObjectEnvelope
+    public sealed class DefaultId : Id
     {
         private readonly object _value;
 
-        public DefaultObjectEnvelope(object value)
+        public DefaultId(object value)
         {
             _value = value;
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
@@ -26,10 +27,10 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteAuthor(_connection, reader["Id"]);
+            return new SqliteAuthor(_connection, new DefaultId(reader["Id"]));
         }
 
-        public Author Author(object id)
+        public Author Author(Id id)
         {
             return new SqliteAuthor(_connection, id);
         }
@@ -60,7 +61,7 @@ namespace DevRating.SqliteClient
 
             while (reader.Read())
             {
-                authors.Add(new SqliteAuthor(_connection, reader["Id"]));
+                authors.Add(new SqliteAuthor(_connection, new DefaultId(reader["Id"])));
             }
 
             return authors;
@@ -84,7 +85,7 @@ namespace DevRating.SqliteClient
 
             while (reader.Read())
             {
-                authors.Add(new SqliteAuthor(_connection, reader["Id"]));
+                authors.Add(new SqliteAuthor(_connection, new DefaultId(reader["Id"])));
             }
 
             return authors;

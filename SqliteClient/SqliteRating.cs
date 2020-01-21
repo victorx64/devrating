@@ -1,4 +1,5 @@
 using System.Data;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
@@ -7,15 +8,15 @@ namespace DevRating.SqliteClient
     internal sealed class SqliteRating : Rating
     {
         private readonly IDbConnection _connection;
-        private readonly object _id;
+        private readonly Id _id;
 
-        public SqliteRating(IDbConnection connection, object id)
+        public SqliteRating(IDbConnection connection, Id id)
         {
             _connection = connection;
             _id = id;
         }
 
-        public object Id()
+        public Id Id()
         {
             return _id;
         }
@@ -31,13 +32,13 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 
             reader.Read();
 
-            return new SqliteRating(_connection, reader["PreviousRatingId"]);
+            return new SqliteRating(_connection, new DefaultId(reader["PreviousRatingId"]));
         }
 
         public bool HasDeletions()
@@ -46,7 +47,7 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id AND Deletions IS NOT NULL";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 
@@ -59,7 +60,7 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id AND Deletions IS NOT NULL";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 
@@ -74,7 +75,7 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id AND PreviousRatingId IS NOT NULL";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 
@@ -87,13 +88,13 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT WorkId FROM Rating WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 
             reader.Read();
 
-            return new SqliteWork(_connection, reader["WorkId"]);
+            return new SqliteWork(_connection, new DefaultId(reader["WorkId"]));
         }
 
         public Author Author()
@@ -102,13 +103,13 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT AuthorId FROM Rating WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 
             reader.Read();
 
-            return new SqliteAuthor(_connection, reader["AuthorId"]);
+            return new SqliteAuthor(_connection, new DefaultId(reader["AuthorId"]));
         }
 
         public double Value()
@@ -117,7 +118,7 @@ namespace DevRating.SqliteClient
 
             command.CommandText = "SELECT Rating FROM Rating WHERE Id = @Id";
 
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id});
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             using var reader = command.ExecuteReader();
 

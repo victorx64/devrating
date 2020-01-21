@@ -1,6 +1,6 @@
 namespace DevRating.Domain
 {
-    public interface ObjectEnvelope
+    public interface Envelope
     {
         object Value();
     }

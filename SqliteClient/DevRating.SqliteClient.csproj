@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\DevRating.Domain.csproj" />
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="3.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Data.Sqlite" Version="3.0.1" />
+      <ProjectReference Include="..\DefaultObject\DevRating.DefaultObject.csproj" />
     </ItemGroup>
 
 </Project>

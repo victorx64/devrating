@@ -3,7 +3,7 @@ using DevRating.Domain;
 
 namespace DevRating.DefaultObject
 {
-    public sealed class NullObjectEnvelope : ObjectEnvelope
+    public sealed class EmptyEnvelope : Envelope
     {
         public object Value()
         {
