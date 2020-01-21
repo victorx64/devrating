@@ -23,7 +23,7 @@ namespace DevRating.DefaultObject
 
         public string ToJson()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public double Value()
@@ -31,34 +31,24 @@ namespace DevRating.DefaultObject
             return _value;
         }
 
-        public bool HasPreviousRating()
-        {
-            throw new NotImplementedException();
-        }
-
         public Rating PreviousRating()
         {
-            throw new NotImplementedException();
-        }
-
-        public bool HasDeletions()
-        {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Envelope<uint> Deletions()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Work Work()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Author Author()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }
