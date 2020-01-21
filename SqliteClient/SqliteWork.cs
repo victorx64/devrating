@@ -60,7 +60,7 @@ namespace DevRating.SqliteClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT UsedRatingId FROM Work WHERE Id = @Id AND UsedRatingId IS NOT NULL";
+            command.CommandText = "SELECT UsedRatingId FROM Work WHERE Id = @Id";
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
@@ -69,19 +69,6 @@ namespace DevRating.SqliteClient
             reader.Read();
 
             return new SqliteRating(_connection, new DefaultId(reader["UsedRatingId"]));
-        }
-
-        public bool HasUsedRating()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT UsedRatingId FROM Work WHERE Id = @Id AND UsedRatingId IS NOT NULL";
-
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
-
-            using var reader = command.ExecuteReader();
-
-            return reader.Read();
         }
     }
 }
