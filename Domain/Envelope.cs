@@ -1,7 +1,8 @@
 namespace DevRating.Domain
 {
-    public interface Envelope
+    public interface Envelope<out T>
     {
-        object Value();
+        T Value();
+        bool Filled();
     }
 }

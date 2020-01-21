@@ -1,7 +1,6 @@
 namespace DevRating.Domain
 {
-    public interface Id : Envelope
+    public interface Id : Envelope<object>
     {
-        bool Present();
     }
 }

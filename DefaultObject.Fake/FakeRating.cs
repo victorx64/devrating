@@ -10,19 +10,19 @@ namespace DevRating.DefaultObject.Fake
         private readonly Work _work;
         private readonly Author _author;
         private readonly Rating _previous;
-        private readonly Envelope _deletions;
+        private readonly Envelope<uint> _deletions;
 
         public FakeRating(double value, Work work, Author author)
-            : this(value, work, author, new NullRating(), new DefaultEnvelope())
+            : this(value, work, author, new NullRating(), new EmptyEnvelope<uint>())
         {
         }
 
-        public FakeRating(double value, Work work, Author author, Rating previous, Envelope deletions)
+        public FakeRating(double value, Work work, Author author, Rating previous, Envelope<uint> deletions)
             : this(new DefaultId(Guid.NewGuid()), value, work, author, previous, deletions)
         {
         }
 
-        public FakeRating(Id id, double value, Work work, Author author, Rating previous, Envelope deletions)
+        public FakeRating(Id id, double value, Work work, Author author, Rating previous, Envelope<uint> deletions)
         {
             _id = id;
             _value = value;
@@ -52,14 +52,9 @@ namespace DevRating.DefaultObject.Fake
             return _previous;
         }
 
-        public bool HasDeletions()
+        public Envelope<uint> Deletions()
         {
-            return !_deletions.Value().Equals(DBNull.Value);
-        }
-
-        public uint Deletions()
-        {
-            return (uint) _deletions.Value();
+            return _deletions;
         }
 
         public Work Work()

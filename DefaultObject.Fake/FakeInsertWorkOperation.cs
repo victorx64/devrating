@@ -19,7 +19,7 @@ namespace DevRating.DefaultObject.Fake
         }
 
         public Work Insert(string repository, string start, string end, Id author, uint additions, Id rating,
-            Envelope link)
+            Envelope<string> link)
         {
             var work = new FakeWork(
                 new DefaultId(Guid.NewGuid()),
@@ -35,7 +35,7 @@ namespace DevRating.DefaultObject.Fake
 
         private Rating Rating(Id id)
         {
-            if (!id.Present())
+            if (!id.Filled())
             {
                 return new NullRating();
             }

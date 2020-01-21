@@ -46,7 +46,7 @@ namespace DevRating.DefaultObject
             throw new NotImplementedException();
         }
 
-        public uint Deletions()
+        public Envelope<uint> Deletions()
         {
             throw new NotImplementedException();
         }

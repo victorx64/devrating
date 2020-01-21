@@ -8,21 +8,29 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void ReturnsValueFromCtor()
         {
-            var rating = 1d;
+            var id = Guid.NewGuid();
 
-            Assert.Equal(rating, new DefaultId(rating).Value());
+            Assert.Equal(id, new DefaultId(id).Value());
         }
 
         [Fact]
-        public void ReturnsNullValueByDefault()
+        public void IsFilledWithValueFromCtor()
         {
-            Assert.Equal(DBNull.Value, new DefaultEnvelope().Value());
+            var id = Guid.NewGuid();
+
+            Assert.True(new DefaultId(id).Filled());
         }
 
         [Fact]
-        public void IsNotPresentByDefault()
+        public void ReturnsDbNullValueByDefault()
         {
-            Assert.False(new DefaultId().Present());
+            Assert.Equal(DBNull.Value, new DefaultId().Value());
+        }
+
+        [Fact]
+        public void IsNotFilledByDefault()
+        {
+            Assert.False(new DefaultId().Filled());
         }
     }
 }

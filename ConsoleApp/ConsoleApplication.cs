@@ -114,7 +114,7 @@ namespace DevRating.ConsoleApp
         {
             var usedRating = work.UsedRating();
 
-            var rating = usedRating.Id().Present()
+            var rating = usedRating.Id().Filled()
                 ? usedRating.Value()
                 : _formula.DefaultRating();
 
@@ -139,12 +139,14 @@ namespace DevRating.ConsoleApp
 
                 var previous = rating.PreviousRating();
 
-                var before = previous.Id().Present()
+                var before = previous.Id().Filled()
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                var information = rating.HasDeletions()
-                    ? $"lost {rating.Deletions()} lines"
+                var deletions = rating.Deletions();
+
+                var information = deletions.Filled()
+                    ? $"lost {deletions.Value()} lines"
                     : "the performer";
 
                 Console.WriteLine(

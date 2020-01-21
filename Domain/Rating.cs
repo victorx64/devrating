@@ -4,8 +4,7 @@ namespace DevRating.Domain
     {
         double Value();
         Rating PreviousRating();
-        bool HasDeletions();
-        uint Deletions();
+        Envelope<uint> Deletions();
         Work Work();
         Author Author();
     }

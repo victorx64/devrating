@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -23,7 +24,7 @@ namespace DevRating.SqliteClient
 
         public string ToJson()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Rating PreviousRating()
@@ -41,24 +42,11 @@ namespace DevRating.SqliteClient
             return new SqliteRating(_connection, new DefaultId(reader["PreviousRatingId"]));
         }
 
-        public bool HasDeletions()
+        public Envelope<uint> Deletions()
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id AND Deletions IS NOT NULL";
-
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
-
-            using var reader = command.ExecuteReader();
-
-            return reader.Read();
-        }
-
-        public uint Deletions()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id AND Deletions IS NOT NULL";
+            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id AND Deletions";
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
@@ -66,20 +54,11 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return (uint) (long) reader["Deletions"];
-        }
+            var result = reader["Deletions"];
 
-        public bool HasPreviousRating()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT PreviousRatingId FROM Rating WHERE Id = @Id AND PreviousRatingId IS NOT NULL";
-
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
-
-            using var reader = command.ExecuteReader();
-
-            return reader.Read();
+            return result.Equals(DBNull.Value)
+                ? (Envelope<uint>) new EmptyEnvelope<uint>()
+                : new FilledEnvelope<uint>((uint) (long) result);
         }
 
         public Work Work()

@@ -16,14 +16,14 @@ namespace DevRating.DefaultObject
             _value = value;
         }
 
+        public bool Filled()
+        {
+            return !_value.Equals(DBNull.Value);
+        }
+
         public object Value()
         {
             return _value;
-        }
-
-        public bool Present()
-        {
-            return !_value.Equals(DBNull.Value);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace DevRating.DefaultObject.Test
                     "end",
                     "new author",
                     0u,
-                    new DefaultEnvelope()
+                    new EmptyEnvelope<string>()
                 );
 
             Assert.Single(authors);
@@ -52,7 +52,7 @@ namespace DevRating.DefaultObject.Test
                     "end",
                     "existing author",
                     0u,
-                    new DefaultEnvelope()
+                    new EmptyEnvelope<string>()
                 );
 
             Assert.Single(authors);
@@ -76,10 +76,10 @@ namespace DevRating.DefaultObject.Test
                     "end",
                     "other author",
                     0u,
-                    new DefaultEnvelope()
+                    new EmptyEnvelope<string>()
                 );
 
-            Assert.False(works.Single().UsedRating().Id().Present());
+            Assert.False(works.Single().UsedRating().Id().Filled());
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace DevRating.DefaultObject.Test
                     "end",
                     author.Email(),
                     0u,
-                    new DefaultEnvelope()
+                    new EmptyEnvelope<string>()
                 );
 
             Assert.Equal(rating, works.Last().UsedRating());

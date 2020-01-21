@@ -17,7 +17,7 @@ namespace DevRating.DefaultObject
         }
 
         public Work InsertedWork(string repository, string start, string end, string email, uint additions,
-            Envelope link)
+            Envelope<string> link)
         {
             var author = Author(email);
 
@@ -47,7 +47,7 @@ namespace DevRating.DefaultObject
 
             _entities.Ratings().InsertOperation().Insert(
                 _formula.WinnerNewRating(winner.Value(), matches),
-                new DefaultEnvelope(),
+                new EmptyEnvelope<uint>(),
                 winner.Id(),
                 work,
                 author.Id()
@@ -79,7 +79,7 @@ namespace DevRating.DefaultObject
                         current.Value(),
                         new DefaultMatch(winner.Value(), deletion.Count())
                     ),
-                    new DefaultId(deletion.Count()),
+                    new FilledEnvelope<uint>(deletion.Count()), 
                     current.Id(),
                     work,
                     victim.Id()
