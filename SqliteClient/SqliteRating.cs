@@ -46,7 +46,7 @@ namespace DevRating.SqliteClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id AND Deletions";
+            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
