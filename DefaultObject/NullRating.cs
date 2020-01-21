@@ -16,14 +16,14 @@ namespace DevRating.DefaultObject
             _value = value;
         }
 
-        public object Id()
+        public Id Id()
         {
-            return DBNull.Value;
+            return new DefaultId();
         }
 
         public string ToJson()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public double Value()
@@ -31,34 +31,24 @@ namespace DevRating.DefaultObject
             return _value;
         }
 
-        public bool HasPreviousRating()
-        {
-            throw new NotImplementedException();
-        }
-
         public Rating PreviousRating()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
-        public bool HasDeletions()
+        public Envelope<uint> Deletions()
         {
-            throw new NotImplementedException();
-        }
-
-        public uint Deletions()
-        {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Work Work()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Author Author()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

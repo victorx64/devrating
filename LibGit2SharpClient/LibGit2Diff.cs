@@ -12,25 +12,25 @@ namespace DevRating.LibGit2SharpClient
         private readonly Additions _additions;
         private readonly Deletions _deletions;
         private readonly string _key;
-        private readonly ObjectEnvelope _link;
+        private readonly Envelope<string> _link;
 
-        public LibGit2Diff(string start, string end, IRepository repository, string key, ObjectEnvelope link)
+        public LibGit2Diff(string start, string end, IRepository repository, string key, Envelope<string> link)
             : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, ObjectEnvelope link)
+        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, Envelope<string> link)
             : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, ObjectEnvelope link)
+        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, Envelope<string> link)
             : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key, link)
         {
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key,
-            ObjectEnvelope link)
+            Envelope<string> link)
         {
             _start = start;
             _end = end;
@@ -50,11 +50,11 @@ namespace DevRating.LibGit2SharpClient
             return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
         }
 
-        public void AddTo(EntitiesFactory factory)
+        public void AddTo(EntityFactory factory)
         {
             var work = factory.InsertedWork(_key, _start.Sha, _end.Sha, _end.Author.Email, _additions.Count(), _link);
 
-            factory.InsertRatings(_end.Author.Email, _deletions.Items(), work);
+            factory.InsertRatings(_end.Author.Email, _deletions.Items(), work.Id());
         }
     }
 }

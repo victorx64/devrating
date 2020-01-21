@@ -13,34 +13,29 @@ namespace DevRating.DefaultObject.Fake
             _ratings = ratings;
         }
 
-        public Rating RatingOf(Entity author)
+        public Rating RatingOf(Id author)
         {
             bool Predicate(Rating a)
             {
-                return a.Author().Id().Equals(author.Id());
+                return a.Author().Id().Value().Equals(author.Value());
             }
 
             return _ratings.Last(Predicate);
         }
 
-        public Rating Rating(object id)
-        {
-            return (Rating) Entity(_ratings, id);
-        }
-
-        public IEnumerable<Rating> RatingsOf(Entity work)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private Entity Entity(IEnumerable<Entity> entities, object id)
+        public Rating Rating(Id id)
         {
             bool Predicate(Entity a)
             {
-                return a.Id().Equals(id);
+                return a.Id().Value().Equals(id.Value());
             }
 
-            return entities.Single(Predicate);
+            return _ratings.Single(Predicate);
+        }
+
+        public IEnumerable<Rating> RatingsOf(Id work)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

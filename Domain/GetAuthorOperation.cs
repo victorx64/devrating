@@ -5,7 +5,7 @@ namespace DevRating.Domain
     public interface GetAuthorOperation
     {
         Author Author(string email);
-        Author Author(object id);
+        Author Author(Id id);
         IEnumerable<Author> Top();
         IEnumerable<Author> Top(string repository);
     }

@@ -32,11 +32,11 @@ namespace DevRating.ConsoleApp
                 {
                     var percentile = _formula
                         .WinProbabilityOfA(
-                            _database.Entities().Ratings().GetOperation().RatingOf(author).Value(),
+                            _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value(),
                             _formula.DefaultRating());
 
                     Console.WriteLine(
-                        $"{author.Email()} {_database.Entities().Ratings().GetOperation().RatingOf(author).Value():F2} ({percentile:P} percentile)");
+                        $"{author.Email()} {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} ({percentile:P} percentile)");
                 }
             }
             finally
@@ -64,7 +64,7 @@ namespace DevRating.ConsoleApp
                     throw new Exception("The diff is already added.");
                 }
 
-                diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
+                diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
 
                 transaction.Commit();
             }
@@ -95,7 +95,7 @@ namespace DevRating.ConsoleApp
 
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    diff.AddTo(new DefaultEntitiesFactory(_database.Entities(), _formula));
+                    diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
 
                     Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     Console.WriteLine();
@@ -112,8 +112,10 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkToConsole(Work work)
         {
-            var rating = work.HasUsedRating()
-                ? work.UsedRating().Value()
+            var usedRating = work.UsedRating();
+
+            var rating = usedRating.Id().Filled()
+                ? usedRating.Value()
                 : _formula.DefaultRating();
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
@@ -124,10 +126,10 @@ namespace DevRating.ConsoleApp
                 $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
             Console.WriteLine();
 
-            PrintWorkRatingsToConsole(work);
+            PrintWorkRatingsToConsole(work.Id());
         }
 
-        private void PrintWorkRatingsToConsole(Entity work)
+        private void PrintWorkRatingsToConsole(Id work)
         {
             Console.WriteLine("Rating updates");
 
@@ -135,16 +137,20 @@ namespace DevRating.ConsoleApp
             {
                 var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
 
-                var previous = rating.HasPreviousRating()
-                    ? rating.PreviousRating().Value()
+                var previous = rating.PreviousRating();
+
+                var before = previous.Id().Filled()
+                    ? previous.Value()
                     : _formula.DefaultRating();
 
-                var information = rating.HasDeletions()
-                    ? $"lost {rating.Deletions()} lines"
+                var deletions = rating.Deletions();
+
+                var information = deletions.Filled()
+                    ? $"lost {deletions.Value()} lines"
                     : "the performer";
 
                 Console.WriteLine(
-                    $"{rating.Author().Email()} {previous:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
+                    $"{rating.Author().Email()} {before:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }

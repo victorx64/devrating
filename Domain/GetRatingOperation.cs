@@ -4,8 +4,8 @@ namespace DevRating.Domain
 {
     public interface GetRatingOperation
     {
-        Rating RatingOf(Entity author);
-        Rating Rating(object id);
-        IEnumerable<Rating> RatingsOf(Entity work);
+        Rating RatingOf(Id author);
+        Rating Rating(Id id);
+        IEnumerable<Rating> RatingsOf(Id work);
     }
 }

@@ -8,7 +8,7 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void ReturnsNullId()
         {
-            Assert.Equal(DBNull.Value, new NullRating().Id());
+            Assert.Equal(DBNull.Value, new NullRating().Id().Value());
         }
 
         [Fact]
@@ -18,60 +18,38 @@ namespace DevRating.DefaultObject.Test
         }
 
         [Fact]
-        public void DoesntImplementToJson()
+        public void DoesntSupportToJson()
         {
-            Assert.Throws<NotImplementedException>(new NullRating().ToJson);
+            Assert.Throws<NotSupportedException>(new NullRating().ToJson);
         }
 
         [Fact]
-        public void DoesntImplementHasPreviousRating()
+        public void DoesntSupportPreviousRating()
         {
-            object TestCode()
-            {
-                return new NullRating().HasPreviousRating();
-            }
-
-            Assert.Throws<NotImplementedException>(TestCode);
+            Assert.Throws<NotSupportedException>(new NullRating().PreviousRating);
         }
 
         [Fact]
-        public void DoesntImplementPreviousRating()
-        {
-            Assert.Throws<NotImplementedException>(new NullRating().PreviousRating);
-        }
-
-        [Fact]
-        public void DoesntImplementHasDeletions()
-        {
-            object TestCode()
-            {
-                return new NullRating().HasDeletions();
-            }
-
-            Assert.Throws<NotImplementedException>(TestCode);
-        }
-
-        [Fact]
-        public void DoesntImplementDeletions()
+        public void DoesntSupportDeletions()
         {
             object TestCode()
             {
                 return new NullRating().Deletions();
             }
 
-            Assert.Throws<NotImplementedException>(TestCode);
+            Assert.Throws<NotSupportedException>(TestCode);
         }
 
         [Fact]
-        public void DoesntImplementWork()
+        public void DoesntSupportWork()
         {
-            Assert.Throws<NotImplementedException>(new NullRating().Work);
+            Assert.Throws<NotSupportedException>(new NullRating().Work);
         }
 
         [Fact]
-        public void DoesntImplementAuthor()
+        public void DoesntSupportAuthor()
         {
-            Assert.Throws<NotImplementedException>(new NullRating().Author);
+            Assert.Throws<NotSupportedException>(new NullRating().Author);
         }
     }
 }

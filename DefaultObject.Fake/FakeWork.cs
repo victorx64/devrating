@@ -5,30 +5,30 @@ namespace DevRating.DefaultObject.Fake
 {
     public sealed class FakeWork : Work
     {
-        private readonly object _id;
+        private readonly Id _id;
         private readonly uint _additions;
         private readonly Author _author;
-        private readonly Rating _base;
+        private readonly Rating _rating;
 
         public FakeWork(uint additions, Author author)
             : this(additions, author, new NullRating())
         {
         }
 
-        public FakeWork(uint additions, Author author, Rating @base)
-            : this(Guid.NewGuid(), additions, author, @base)
+        public FakeWork(uint additions, Author author, Rating rating)
+            : this(new DefaultId(Guid.NewGuid()), additions, author, rating)
         {
         }
 
-        public FakeWork(object id, uint additions, Author author, Rating @base)
+        public FakeWork(Id id, uint additions, Author author, Rating rating)
         {
             _id = id;
             _additions = additions;
             _author = author;
-            _base = @base;
+            _rating = rating;
         }
 
-        public object Id()
+        public Id Id()
         {
             return _id;
         }
@@ -50,12 +50,7 @@ namespace DevRating.DefaultObject.Fake
 
         public Rating UsedRating()
         {
-            return _base;
-        }
-
-        public bool HasUsedRating()
-        {
-            return _base.Id() != DBNull.Value;
+            return _rating;
         }
     }
 }

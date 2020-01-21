@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using DevRating.DefaultObject;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
@@ -33,10 +34,10 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            return new SqliteWork(_connection, reader["Id"]);
+            return new SqliteWork(_connection, new DefaultId(reader["Id"]));
         }
 
-        public Work Work(object id)
+        public Work Work(Id id)
         {
             return new SqliteWork(_connection, id);
         }
@@ -60,7 +61,7 @@ namespace DevRating.SqliteClient
 
             while (reader.Read())
             {
-                works.Add(new SqliteWork(_connection, reader["Id"]));
+                works.Add(new SqliteWork(_connection, new DefaultId(reader["Id"])));
             }
 
             return works;

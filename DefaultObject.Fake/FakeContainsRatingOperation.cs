@@ -13,21 +13,21 @@ namespace DevRating.DefaultObject.Fake
             _ratings = ratings;
         }
 
-        public bool ContainsRatingOf(Entity author)
+        public bool ContainsRatingOf(Id author)
         {
             bool RatingOfAuthor(Rating r)
             {
-                return r.Author().Id().Equals(author.Id());
+                return r.Author().Id().Value().Equals(author.Value());
             }
 
             return _ratings.Any(RatingOfAuthor);
         }
 
-        public bool Contains(object id)
+        public bool Contains(Id id)
         {
             bool Rating(Rating r)
             {
-                return r.Id().Equals(id);
+                return r.Id().Value().Equals(id.Value());
             }
 
             return _ratings.Any(Rating);

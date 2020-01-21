@@ -5,27 +5,27 @@ using DevRating.Domain;
 
 namespace DevRating.DefaultObject
 {
-    public sealed class DefaultEntitiesFactory : EntitiesFactory
+    public sealed class DefaultEntityFactory : EntityFactory
     {
         private readonly Entities _entities;
         private readonly Formula _formula;
 
-        public DefaultEntitiesFactory(Entities entities, Formula formula)
+        public DefaultEntityFactory(Entities entities, Formula formula)
         {
             _entities = entities;
             _formula = formula;
         }
 
         public Work InsertedWork(string repository, string start, string end, string email, uint additions,
-            ObjectEnvelope link)
+            Envelope<string> link)
         {
             var author = Author(email);
 
-            return _entities.Works().InsertOperation().Insert(repository, start, end, author, additions,
-                RatingOf(author), link);
+            return _entities.Works().InsertOperation().Insert(repository, start, end, author.Id(), additions,
+                RatingOf(author.Id()).Id(), link);
         }
 
-        public void InsertRatings(string email, IEnumerable<Deletion> deletions, Entity work)
+        public void InsertRatings(string email, IEnumerable<Deletion> deletions, Id work)
         {
             var items = NonSelfDeletions(email, deletions);
 
@@ -37,20 +37,20 @@ namespace DevRating.DefaultObject
             InsertRatings(email, work, items);
         }
 
-        private void InsertRatings(string email, Entity work, IEnumerable<Deletion> deletions)
+        private void InsertRatings(string email, Id work, IEnumerable<Deletion> deletions)
         {
             var author = Author(email);
 
-            var winner = RatingOf(author);
+            var winner = RatingOf(author.Id());
 
             var matches = MatchesWithInsertedLosers(deletions, work, winner);
 
             _entities.Ratings().InsertOperation().Insert(
                 _formula.WinnerNewRating(winner.Value(), matches),
-                new NullObjectEnvelope(),
-                winner,
+                new EmptyEnvelope<uint>(),
+                winner.Id(),
                 work,
-                author
+                author.Id()
             );
         }
 
@@ -64,8 +64,7 @@ namespace DevRating.DefaultObject
             return deletions.Where(NonSelfDeletion).ToList();
         }
 
-        private IEnumerable<Match> MatchesWithInsertedLosers(IEnumerable<Deletion> deletions, Entity work,
-            Rating winner)
+        private IEnumerable<Match> MatchesWithInsertedLosers(IEnumerable<Deletion> deletions, Id work, Rating winner)
         {
             var matches = new List<Match>();
 
@@ -73,17 +72,17 @@ namespace DevRating.DefaultObject
             {
                 var victim = Author(deletion.Email());
 
-                var current = RatingOf(victim);
+                var current = RatingOf(victim.Id());
 
                 _entities.Ratings().InsertOperation().Insert(
                     _formula.LoserNewRating(
                         current.Value(),
                         new DefaultMatch(winner.Value(), deletion.Count())
                     ),
-                    new DefaultObjectEnvelope(deletion.Count()),
-                    current,
+                    new FilledEnvelope<uint>(deletion.Count()), 
+                    current.Id(),
                     work,
-                    victim
+                    victim.Id()
                 );
 
                 matches.Add(new DefaultMatch(current.Value(), deletion.Count()));
@@ -92,7 +91,7 @@ namespace DevRating.DefaultObject
             return matches;
         }
 
-        private Rating RatingOf(Entity author)
+        private Rating RatingOf(Id author)
         {
             return _entities.Ratings().ContainsOperation().ContainsRatingOf(author)
                 ? _entities.Ratings().GetOperation().RatingOf(author)

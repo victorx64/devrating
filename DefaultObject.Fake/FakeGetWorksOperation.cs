@@ -19,24 +19,19 @@ namespace DevRating.DefaultObject.Fake
             throw new NotImplementedException();
         }
 
-        public Work Work(object id)
+        public Work Work(Id id)
         {
-            return (Work) Entity(_works, id);
+            bool Predicate(Entity a)
+            {
+                return a.Id().Value().Equals(id.Value());
+            }
+
+            return _works.Single(Predicate);
         }
 
         public IEnumerable<Work> Lasts(string repository)
         {
             return _works;
-        }
-
-        private Entity Entity(IEnumerable<Entity> entities, object id)
-        {
-            bool Predicate(Entity a)
-            {
-                return a.Id().Equals(id);
-            }
-
-            return entities.Single(Predicate);
         }
     }
 }

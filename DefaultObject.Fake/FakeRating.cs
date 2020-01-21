@@ -5,24 +5,24 @@ namespace DevRating.DefaultObject.Fake
 {
     public sealed class FakeRating : Rating
     {
-        private readonly object _id;
+        private readonly Id _id;
         private readonly double _value;
         private readonly Work _work;
         private readonly Author _author;
         private readonly Rating _previous;
-        private readonly ObjectEnvelope _deletions;
+        private readonly Envelope<uint> _deletions;
 
         public FakeRating(double value, Work work, Author author)
-            : this(value, work, author, new NullRating(), new NullObjectEnvelope())
+            : this(value, work, author, new NullRating(), new EmptyEnvelope<uint>())
         {
         }
 
-        public FakeRating(double value, Work work, Author author, Rating previous, ObjectEnvelope deletions)
-            : this(Guid.NewGuid(), value, work, author, previous, deletions)
+        public FakeRating(double value, Work work, Author author, Rating previous, Envelope<uint> deletions)
+            : this(new DefaultId(Guid.NewGuid()), value, work, author, previous, deletions)
         {
         }
 
-        public FakeRating(object id, double value, Work work, Author author, Rating previous, ObjectEnvelope deletions)
+        public FakeRating(Id id, double value, Work work, Author author, Rating previous, Envelope<uint> deletions)
         {
             _id = id;
             _value = value;
@@ -32,7 +32,7 @@ namespace DevRating.DefaultObject.Fake
             _deletions = deletions;
         }
 
-        public object Id()
+        public Id Id()
         {
             return _id;
         }
@@ -47,24 +47,14 @@ namespace DevRating.DefaultObject.Fake
             return _value;
         }
 
-        public bool HasPreviousRating()
-        {
-            return _previous.Id() != DBNull.Value;
-        }
-
         public Rating PreviousRating()
         {
             return _previous;
         }
 
-        public bool HasDeletions()
+        public Envelope<uint> Deletions()
         {
-            return _deletions.Value() != DBNull.Value;
-        }
-
-        public uint Deletions()
-        {
-            return (uint) _deletions.Value();
+            return _deletions;
         }
 
         public Work Work()

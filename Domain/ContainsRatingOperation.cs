@@ -2,7 +2,7 @@ namespace DevRating.Domain
 {
     public interface ContainsRatingOperation
     {
-        bool ContainsRatingOf(Entity author);
-        bool Contains(object id);
+        bool ContainsRatingOf(Id author);
+        bool Contains(Id id);
     }
 }

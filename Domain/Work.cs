@@ -5,6 +5,5 @@ namespace DevRating.Domain
         uint Additions();
         Author Author();
         Rating UsedRating();
-        bool HasUsedRating();
     }
 }
