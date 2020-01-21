@@ -15,8 +15,8 @@ namespace DevRating.DefaultObject.Fake
 
         public FakeEntities(IList<Work> works, IList<Author> authors, IList<Rating> ratings)
             : this(
-                new FakeWorks(works),
-                new FakeRatings(ratings),
+                new FakeWorks(ratings, works, authors),
+                new FakeRatings(ratings, works, authors),
                 new FakeAuthors(authors)
             )
         {

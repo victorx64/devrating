@@ -24,11 +24,11 @@ namespace DevRating.DefaultObject.Fake
             return _authors.Single(Predicate);
         }
 
-        public Author Author(object id)
+        public Author Author(Id id)
         {
             bool Predicate(Author a)
             {
-                return a.Id().Equals(id);
+                return a.Id().Value().Equals(id.Value());
             }
 
             return _authors.Single(Predicate);

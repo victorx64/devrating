@@ -14,7 +14,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Rating Insert(double value, Envelope deletions, Id rating, Id work, Id author)
+        public Rating Insert(double value, Envelope deletions, Id previous, Id work, Id author)
         {
             using var command = _connection.CreateCommand();
 
@@ -34,7 +34,7 @@ namespace DevRating.SqliteClient
                 SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Rating", SqliteType.Real) {Value = value});
-            command.Parameters.Add(new SqliteParameter("@PreviousRatingId", SqliteType.Integer) {Value = rating.Value()});
+            command.Parameters.Add(new SqliteParameter("@PreviousRatingId", SqliteType.Integer) {Value = previous.Value()});
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Value()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Value()});
             command.Parameters.Add(new SqliteParameter("@Deletions", SqliteType.Integer) {Value = deletions.Value()});

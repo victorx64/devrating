@@ -9,13 +9,14 @@ namespace DevRating.DefaultObject.Fake
         private readonly GetRatingOperation _get;
         private readonly ContainsRatingOperation _contains;
 
-        public FakeRatings(IList<Rating> ratings)
+        public FakeRatings(IList<Rating> ratings, IList<Work> works, IList<Author> authors)
             : this(
-                new FakeInsertRatingOperation(ratings),
+                new FakeInsertRatingOperation(ratings, works, authors),
                 new FakeGetRatingOperation(ratings),
                 new FakeContainsRatingOperation(ratings))
         {
         }
+
         public FakeRatings(InsertRatingOperation insert, GetRatingOperation get, ContainsRatingOperation contains)
         {
             _insert = insert;

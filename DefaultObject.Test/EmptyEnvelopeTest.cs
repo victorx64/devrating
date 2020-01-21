@@ -3,12 +3,12 @@ using Xunit;
 
 namespace DevRating.DefaultObject.Test
 {
-    public sealed class NullObjectEnvelopeTest
+    public sealed class EmptyEnvelopeTest
     {
         [Fact]
         public void ReturnsNullValue()
         {
-            Assert.Equal(DBNull.Value, new NullObjectEnvelope().Value());
+            Assert.Equal(DBNull.Value, new EmptyEnvelope().Value());
         }
     }
 }

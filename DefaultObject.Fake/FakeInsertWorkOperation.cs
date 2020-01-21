@@ -8,25 +8,54 @@ namespace DevRating.DefaultObject.Fake
     public sealed class FakeInsertWorkOperation : InsertWorkOperation
     {
         private readonly IList<Work> _works;
+        private readonly IList<Rating> _ratings;
+        private readonly IList<Author> _authors;
 
-        public FakeInsertWorkOperation(IList<Work> works)
+        public FakeInsertWorkOperation(IList<Work> works, IList<Rating> ratings, IList<Author> authors)
         {
             _works = works;
+            _ratings = ratings;
+            _authors = authors;
         }
 
-        public Work Insert(string repository, string start, string end, Entity author, uint additions, Entity rating,
-            ObjectEnvelope link)
+        public Work Insert(string repository, string start, string end, Id author, uint additions, Id rating,
+            Envelope link)
         {
             var work = new FakeWork(
-                Guid.NewGuid(),
+                new DefaultId(Guid.NewGuid()),
                 additions,
-                (Author) author,
-                (Rating) rating
+                Author(author),
+                Rating(rating)
             );
 
             _works.Add(work);
 
             return work;
+        }
+
+        private Rating Rating(Id id)
+        {
+            if (id.Value().Equals(DBNull.Value))
+            {
+                return new NullRating();
+            }
+
+            bool Predicate(Entity e)
+            {
+                return e.Id().Value().Equals(id.Value());
+            }
+
+            return _ratings.Single(Predicate);
+        }
+
+        private Author Author(Id id)
+        {
+            bool Predicate(Entity e)
+            {
+                return e.Id().Value().Equals(id.Value());
+            }
+
+            return _authors.Single(Predicate);
         }
     }
 }

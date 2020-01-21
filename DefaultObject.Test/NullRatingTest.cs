@@ -8,7 +8,7 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void ReturnsNullId()
         {
-            Assert.Equal(DBNull.Value, new NullRating().Id());
+            Assert.Equal(DBNull.Value, new NullRating().Id().Value());
         }
 
         [Fact]

@@ -9,9 +9,9 @@ namespace DevRating.DefaultObject.Fake
         private readonly GetWorkOperation _get;
         private readonly ContainsWorkOperation _contains;
 
-        public FakeWorks(IList<Work> works)
+        public FakeWorks(IList<Rating> ratings, IList<Work> works, IList<Author> authors)
             : this(
-                new FakeInsertWorkOperation(works),
+                new FakeInsertWorkOperation(works, ratings, authors),
                 new FakeGetWorkOperation(works),
                 new FakeContainsWorkOperation(works))
         {
