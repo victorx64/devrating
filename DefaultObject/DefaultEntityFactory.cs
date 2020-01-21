@@ -47,7 +47,7 @@ namespace DevRating.DefaultObject
 
             _entities.Ratings().InsertOperation().Insert(
                 _formula.WinnerNewRating(winner.Value(), matches),
-                new EmptyEnvelope(),
+                new DefaultEnvelope(),
                 winner.Id(),
                 work,
                 author.Id()

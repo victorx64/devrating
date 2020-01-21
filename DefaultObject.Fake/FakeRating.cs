@@ -13,7 +13,7 @@ namespace DevRating.DefaultObject.Fake
         private readonly Envelope _deletions;
 
         public FakeRating(double value, Work work, Author author)
-            : this(value, work, author, new NullRating(), new EmptyEnvelope())
+            : this(value, work, author, new NullRating(), new DefaultEnvelope())
         {
         }
 
@@ -45,11 +45,6 @@ namespace DevRating.DefaultObject.Fake
         public double Value()
         {
             return _value;
-        }
-
-        public bool HasPreviousRating()
-        {
-            return !_previous.Id().Value().Equals(DBNull.Value);
         }
 
         public Rating PreviousRating()

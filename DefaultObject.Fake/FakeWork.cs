@@ -52,10 +52,5 @@ namespace DevRating.DefaultObject.Fake
         {
             return _rating;
         }
-
-        public bool HasUsedRating()
-        {
-            return !_rating.Id().Value().Equals(DBNull.Value);
-        }
     }
 }

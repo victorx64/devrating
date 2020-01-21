@@ -112,8 +112,10 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkToConsole(Work work)
         {
-            var rating = work.HasUsedRating()
-                ? work.UsedRating().Value()
+            var usedRating = work.UsedRating();
+
+            var rating = usedRating.Id().Present()
+                ? usedRating.Value()
                 : _formula.DefaultRating();
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
@@ -135,8 +137,10 @@ namespace DevRating.ConsoleApp
             {
                 var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
 
-                var previous = rating.HasPreviousRating()
-                    ? rating.PreviousRating().Value()
+                var previous = rating.PreviousRating();
+
+                var before = previous.Id().Present()
+                    ? previous.Value()
                     : _formula.DefaultRating();
 
                 var information = rating.HasDeletions()
@@ -144,7 +148,7 @@ namespace DevRating.ConsoleApp
                     : "the performer";
 
                 Console.WriteLine(
-                    $"{rating.Author().Email()} {previous:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
+                    $"{rating.Author().Email()} {before:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }

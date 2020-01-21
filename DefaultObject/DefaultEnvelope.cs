@@ -3,15 +3,15 @@ using DevRating.Domain;
 
 namespace DevRating.DefaultObject
 {
-    public sealed class DefaultId : Id
+    public sealed class DefaultEnvelope : Envelope
     {
         private readonly object _value;
 
-        public DefaultId() : this(DBNull.Value)
+        public DefaultEnvelope() : this(DBNull.Value)
         {
         }
 
-        public DefaultId(object value)
+        public DefaultEnvelope(object value)
         {
             _value = value;
         }
@@ -19,11 +19,6 @@ namespace DevRating.DefaultObject
         public object Value()
         {
             return _value;
-        }
-
-        public bool Present()
-        {
-            return !_value.Equals(DBNull.Value);
         }
     }
 }

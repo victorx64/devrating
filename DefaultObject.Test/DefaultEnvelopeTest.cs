@@ -3,26 +3,18 @@ using Xunit;
 
 namespace DevRating.DefaultObject.Test
 {
-    public sealed class DefaultIdTest
+    public sealed class DefaultEnvelopeTest
     {
         [Fact]
         public void ReturnsValueFromCtor()
         {
-            var rating = 1d;
-
-            Assert.Equal(rating, new DefaultId(rating).Value());
+            Assert.Equal(123123, new DefaultEnvelope(123123).Value());
         }
 
         [Fact]
         public void ReturnsNullValueByDefault()
         {
             Assert.Equal(DBNull.Value, new DefaultEnvelope().Value());
-        }
-
-        [Fact]
-        public void IsNotPresentByDefault()
-        {
-            Assert.False(new DefaultId().Present());
         }
     }
 }

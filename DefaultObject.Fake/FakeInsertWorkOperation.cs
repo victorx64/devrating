@@ -35,7 +35,7 @@ namespace DevRating.DefaultObject.Fake
 
         private Rating Rating(Id id)
         {
-            if (id.Value().Equals(DBNull.Value))
+            if (!id.Present())
             {
                 return new NullRating();
             }
