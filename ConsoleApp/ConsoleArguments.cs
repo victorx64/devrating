@@ -58,7 +58,7 @@ namespace DevRating.ConsoleApp
                 _args[3],
                 repository,
                 repository.Network.Remotes.First().Url,
-                new EmptyEnvelope<string>()
+                new DefaultEnvelope()
             );
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -15,7 +16,7 @@ namespace DevRating.SqliteClient
         }
 
         public Work Insert(string repository, string start, string end, Id author, uint additions, Id rating,
-            Envelope<string> link)
+            Envelope link)
         {
             using var command = _connection.CreateCommand();
 

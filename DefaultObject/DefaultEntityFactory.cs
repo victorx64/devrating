@@ -17,12 +17,12 @@ namespace DevRating.DefaultObject
         }
 
         public Work InsertedWork(string repository, string start, string end, string email, uint additions,
-            Envelope<string> link)
+            Envelope link)
         {
             var author = Author(email);
 
             return _entities.Works().InsertOperation().Insert(repository, start, end, author.Id(), additions,
-                RatingOf(author.Id()).Id(), link);
+                _entities.Ratings().GetOperation().RatingOf(author.Id()).Id(), link);
         }
 
         public void InsertRatings(string email, IEnumerable<Deletion> deletions, Id work)
@@ -41,13 +41,15 @@ namespace DevRating.DefaultObject
         {
             var author = Author(email);
 
-            var winner = RatingOf(author.Id());
+            var winner = _entities.Ratings().GetOperation().RatingOf(author.Id());
 
-            var matches = MatchesWithInsertedLosers(deletions, work, winner);
+            var value = winner.Id().Filled() ? winner.Value() : _formula.DefaultRating();
+
+            var matches = MatchesWithInsertedLosers(deletions, work, value);
 
             _entities.Ratings().InsertOperation().Insert(
-                _formula.WinnerNewRating(winner.Value(), matches),
-                new EmptyEnvelope<uint>(),
+                _formula.WinnerNewRating(value, matches),
+                new DefaultEnvelope(),
                 winner.Id(),
                 work,
                 author.Id()
@@ -64,7 +66,7 @@ namespace DevRating.DefaultObject
             return deletions.Where(NonSelfDeletion).ToList();
         }
 
-        private IEnumerable<Match> MatchesWithInsertedLosers(IEnumerable<Deletion> deletions, Id work, Rating winner)
+        private IEnumerable<Match> MatchesWithInsertedLosers(IEnumerable<Deletion> deletions, Id work, double winner)
         {
             var matches = new List<Match>();
 
@@ -72,30 +74,22 @@ namespace DevRating.DefaultObject
             {
                 var victim = Author(deletion.Email());
 
-                var current = RatingOf(victim.Id());
+                var current = _entities.Ratings().GetOperation().RatingOf(victim.Id());
+
+                var value = current.Id().Filled() ? current.Value() : _formula.DefaultRating();
 
                 _entities.Ratings().InsertOperation().Insert(
-                    _formula.LoserNewRating(
-                        current.Value(),
-                        new DefaultMatch(winner.Value(), deletion.Count())
-                    ),
-                    new FilledEnvelope<uint>(deletion.Count()), 
+                    _formula.LoserNewRating(value, new DefaultMatch(winner, deletion.Count())),
+                    new DefaultEnvelope(deletion.Count()),
                     current.Id(),
                     work,
                     victim.Id()
                 );
 
-                matches.Add(new DefaultMatch(current.Value(), deletion.Count()));
+                matches.Add(new DefaultMatch(value, deletion.Count()));
             }
 
             return matches;
-        }
-
-        private Rating RatingOf(Id author)
-        {
-            return _entities.Ratings().ContainsOperation().ContainsRatingOf(author)
-                ? _entities.Ratings().GetOperation().RatingOf(author)
-                : new NullRating(_formula.DefaultRating());
         }
 
         private Author Author(string email)

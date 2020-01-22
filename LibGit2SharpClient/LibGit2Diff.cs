@@ -1,3 +1,4 @@
+using System;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
@@ -12,25 +13,25 @@ namespace DevRating.LibGit2SharpClient
         private readonly Additions _additions;
         private readonly Deletions _deletions;
         private readonly string _key;
-        private readonly Envelope<string> _link;
+        private readonly Envelope _link;
 
-        public LibGit2Diff(string start, string end, IRepository repository, string key, Envelope<string> link)
+        public LibGit2Diff(string start, string end, IRepository repository, string key, Envelope link)
             : this(repository.Lookup<Commit>(start), repository.Lookup<Commit>(end), repository, key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, Envelope<string> link)
+        public LibGit2Diff(Commit start, Commit end, IRepository repository, string key, Envelope link)
             : this(start, end, new CachedHunks(new LibGit2Hunks(start, end, repository)), key, link)
         {
         }
 
-        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, Envelope<string> link)
+        public LibGit2Diff(Commit start, Commit end, Hunks hunks, string key, Envelope link)
             : this(start, end, new TotalAdditions(hunks), new TotalDeletions(hunks), key, link)
         {
         }
 
         public LibGit2Diff(Commit start, Commit end, Additions additions, Deletions deletions, string key,
-            Envelope<string> link)
+            Envelope link)
         {
             _start = start;
             _end = end;

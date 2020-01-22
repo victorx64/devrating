@@ -42,7 +42,7 @@ namespace DevRating.SqliteClient
             return new SqliteRating(_connection, new DefaultId(reader["PreviousRatingId"]));
         }
 
-        public Envelope<uint> Deletions()
+        public Envelope Deletions()
         {
             using var command = _connection.CreateCommand();
 
@@ -57,8 +57,8 @@ namespace DevRating.SqliteClient
             var result = reader["Deletions"];
 
             return result.Equals(DBNull.Value)
-                ? (Envelope<uint>) new EmptyEnvelope<uint>()
-                : new FilledEnvelope<uint>((uint) (long) result);
+                ? new DefaultEnvelope(DBNull.Value)
+                : new DefaultEnvelope((uint) (long) result);
         }
 
         public Work Work()

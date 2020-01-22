@@ -20,6 +20,11 @@ namespace DevRating.DefaultObject.Fake
                 return a.Author().Id().Value().Equals(author.Value());
             }
 
+            if (!_ratings.Any(Predicate))
+            {
+                return new NullRating();
+            }
+
             return _ratings.Last(Predicate);
         }
 
@@ -28,6 +33,11 @@ namespace DevRating.DefaultObject.Fake
             bool Predicate(Entity a)
             {
                 return a.Id().Value().Equals(id.Value());
+            }
+
+            if (!_ratings.Any(Predicate))
+            {
+                return new NullRating();
             }
 
             return _ratings.Single(Predicate);

@@ -1,6 +1,8 @@
 namespace DevRating.Domain
 {
-    public interface Id : Envelope<object>
+    public interface Id
     {
+        object Value();
+        bool Filled();
     }
 }

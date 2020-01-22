@@ -1,7 +1,7 @@
 using System;
 using DevRating.Domain;
 
-namespace DevRating.DefaultObject
+namespace DevRating.DefaultObject.Fake
 {
     public sealed class NullRating : Rating
     {
@@ -36,7 +36,7 @@ namespace DevRating.DefaultObject
             throw new NotSupportedException();
         }
 
-        public Envelope<uint> Deletions()
+        public Envelope Deletions()
         {
             throw new NotSupportedException();
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -14,7 +15,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Rating Insert(double value, Envelope<uint> deletions, Id previous, Id work, Id author)
+        public Rating Insert(double value, Envelope deletions, Id previous, Id work, Id author)
         {
             using var command = _connection.CreateCommand();
 
