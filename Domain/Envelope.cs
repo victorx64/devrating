@@ -1,8 +1,10 @@
+using System;
+
 namespace DevRating.Domain
 {
-    public interface Envelope<out T>
+    public interface Envelope
     {
-        T Value();
+        IConvertible Value();
         bool Filled();
     }
 }

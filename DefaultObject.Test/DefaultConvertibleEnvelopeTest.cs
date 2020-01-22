@@ -7,25 +7,25 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void IsNotFilledByDefault()
         {
-            Assert.False(new DefaultConvertibleEnvelope().Filled());
+            Assert.False(new DefaultEnvelope().Filled());
         }
         
         [Fact]
         public void ReturnsDbNullValueByDefault()
         {
-            Assert.Equal(System.DBNull.Value, new DefaultConvertibleEnvelope().Value());
+            Assert.Equal(System.DBNull.Value, new DefaultEnvelope().Value());
         }
         
         [Fact]
         public void IsFilledWhenCreatedWithParam()
         {
-            Assert.True(new DefaultConvertibleEnvelope("some data").Filled());
+            Assert.True(new DefaultEnvelope("some data").Filled());
         }
         
         [Fact]
         public void ReturnsValueWhenCreatedWithParam()
         {
-            Assert.Equal("some other data", new DefaultConvertibleEnvelope("some other data").Value());
+            Assert.Equal("some other data", new DefaultEnvelope("some other data").Value());
         }
     }
 }

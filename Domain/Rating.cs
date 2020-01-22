@@ -6,7 +6,7 @@ namespace DevRating.Domain
     {
         double Value();
         Rating PreviousRating();
-        Envelope<IConvertible> Deletions();
+        Envelope Deletions();
         Work Work();
         Author Author();
     }

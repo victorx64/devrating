@@ -3,15 +3,15 @@ using DevRating.Domain;
 
 namespace DevRating.DefaultObject
 {
-    public sealed class DefaultConvertibleEnvelope : Envelope<IConvertible>
+    public sealed class DefaultEnvelope : Envelope
     {
         private readonly IConvertible _value;
 
-        public DefaultConvertibleEnvelope() : this(DBNull.Value)
+        public DefaultEnvelope() : this(DBNull.Value)
         {
         }
 
-        public DefaultConvertibleEnvelope(IConvertible value)
+        public DefaultEnvelope(IConvertible value)
         {
             _value = value;
         }
