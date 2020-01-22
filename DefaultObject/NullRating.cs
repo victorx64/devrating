@@ -36,7 +36,7 @@ namespace DevRating.DefaultObject
             throw new NotSupportedException();
         }
 
-        public Envelope<uint> Deletions()
+        public Envelope<IConvertible> Deletions()
         {
             throw new NotSupportedException();
         }

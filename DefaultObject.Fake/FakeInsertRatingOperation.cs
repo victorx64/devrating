@@ -18,7 +18,7 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public Rating Insert(double value, Envelope<uint> deletions, Id previous, Id work, Id author)
+        public Rating Insert(double value, Envelope<IConvertible> deletions, Id previous, Id work, Id author)
         {
             var rating = new FakeRating(
                 new DefaultId(Guid.NewGuid()),
