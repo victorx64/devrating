@@ -1,7 +1,7 @@
 using System;
 using DevRating.Domain;
 
-namespace DevRating.DefaultObject
+namespace DevRating.DefaultObject.Fake
 {
     public sealed class NullRating : Rating
     {

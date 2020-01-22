@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using DevRating.DefaultObject;
@@ -26,9 +27,7 @@ namespace DevRating.SqliteClient
 
             using var reader = command.ExecuteReader();
 
-            reader.Read();
-
-            return new SqliteRating(_connection, new DefaultId(reader["Id"]));
+            return new SqliteRating(_connection, new DefaultId(reader.Read() ? reader["Id"] : DBNull.Value));
         }
 
         public Rating Rating(Id id)
