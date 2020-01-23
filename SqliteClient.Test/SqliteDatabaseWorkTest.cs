@@ -1,3 +1,4 @@
+using System;
 using DevRating.DefaultObject;
 using Microsoft.Data.Sqlite;
 using Xunit;
@@ -107,6 +108,34 @@ namespace DevRating.SqliteClient.Test
                         previous.Id(),
                         new DefaultEnvelope()
                     ).UsedRating().Id()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void DoesntImplementToJson()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                Assert.Throws<NotImplementedException>(
+                    database.Entities().Works().InsertOperation().Insert(
+                        "repo",
+                        "startCommit",
+                        "endCommit",
+                        database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                        2u,
+                        new DefaultId(),
+                        new DefaultEnvelope()
+                    ).ToJson
                 );
             }
             finally

@@ -32,5 +32,42 @@ namespace DevRating.DefaultObject.Test
         {
             Assert.False(new DefaultId().Filled());
         }
+
+        [Fact]
+        public void IsEqualToOtherIdWithTheSameValue()
+        {
+            Assert.True(new DefaultId("the same text").Equals(new DefaultId("the same text")));
+        }
+
+        [Fact]
+        public void IsNotEqualToOtherIdWithOtherValue()
+        {
+            Assert.False(new DefaultId("text").Equals(new DefaultId("not the same text")));
+        }
+
+        [Fact]
+        public void ImplementsEquityOperator()
+        {
+            Assert.True(new DefaultId("the same text") == (new DefaultId("the same text")));
+        }
+
+        [Fact]
+        public void ImplementsNotEquityOperator()
+        {
+            Assert.True(new DefaultId("text") != new DefaultId("not the same text"));
+        }
+
+        [Fact]
+        public void ReturnsTheSameHashForSameValues()
+        {
+            Assert.Equal(new DefaultId("the same text").GetHashCode(), new DefaultId("the same text").GetHashCode());
+        }
+
+        [Fact]
+        public void ChecksEquityWithObject()
+        {
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            Assert.False(new DefaultId("the same text").Equals(Guid.NewGuid()));
+        }
     }
 }
