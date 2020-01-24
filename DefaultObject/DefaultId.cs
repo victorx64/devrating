@@ -25,5 +25,32 @@ namespace DevRating.DefaultObject
         {
             return _value;
         }
+
+        public bool Equals(Id other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return _value.Equals(other.Value());
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is DefaultId other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
+
+        public static bool operator ==(DefaultId? left, DefaultId? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(DefaultId? left, DefaultId? right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

@@ -13,10 +13,8 @@ namespace DevRating.ConsoleApp
             (
                 args,
                 new ConsoleApplication(
-                    new SqliteDatabase
-                    (
-                        new TransactedDbConnection
-                        (
+                    new SqliteDatabase(
+                        new TransactedDbConnection(
                             new SqliteConnection("Data Source=devrating.db")
                         )
                     ),

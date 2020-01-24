@@ -54,11 +54,7 @@ namespace DevRating.SqliteClient
 
             reader.Read();
 
-            var result = reader["Deletions"];
-
-            return result.Equals(DBNull.Value)
-                ? new DefaultEnvelope(DBNull.Value)
-                : new DefaultEnvelope((uint) (long) result);
+            return new DefaultEnvelope((IConvertible) reader["Deletions"]);
         }
 
         public Work Work()
