@@ -50,11 +50,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            using var reader = command.ExecuteReader();
-
-            reader.Read();
-
-            return new DefaultEnvelope((IConvertible) reader["Deletions"]);
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
         }
 
         public Work Work()
