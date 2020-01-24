@@ -46,6 +46,12 @@ namespace DevRating.DefaultObject.Test
         }
 
         [Fact]
+        public void IsNotEqualToNull()
+        {
+            Assert.False(new DefaultId("random text").Equals(null!));
+        }
+
+        [Fact]
         public void ImplementsEquityOperator()
         {
             Assert.True(new DefaultId("the same text") == (new DefaultId("the same text")));
