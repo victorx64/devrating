@@ -5,6 +5,17 @@
         <LangVersion>8</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <PackageOutputPath>../Package</PackageOutputPath>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Authors>Victor Semenov</Authors>
+        <Title>DevRating.VersionControl</Title>
+        <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>Version Control System types</Description>
+        <Copyright>Copyright © Victor Semenov 2020</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
