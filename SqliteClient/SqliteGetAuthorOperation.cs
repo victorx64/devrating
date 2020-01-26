@@ -44,9 +44,16 @@ namespace DevRating.SqliteClient
                 FROM Author a
                          INNER JOIN Rating r1 ON a.Id = r1.AuthorId
                          LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
-                         INNER JOIN Work w ON r1.WorkId = w.Id
                 WHERE r2.Id IS NULL
-                  AND w.Repository = @Repository
+                  AND (EXISTS(SELECT AuthorId
+                              FROM Work w1
+                              WHERE w1.AuthorId = a.Id
+                                AND w1.Repository = @Repository)
+                    OR EXISTS(SELECT r3.AuthorId
+                              FROM Rating r3
+                                       INNER JOIN WORK w2 ON r3.WorkId = w2.Id
+                              WHERE r3.AuthorId = a.Id
+                                AND w2.Repository = @Repository))
                 ORDER BY r1.Rating DESC";
 
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
