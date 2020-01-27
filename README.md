@@ -2,8 +2,7 @@
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
 [![codecov](https://codecov.io/gh/victorx64/devrating/branch/master/graph/badge.svg)](https://codecov.io/gh/victorx64/devrating)
 
-**Dev Rating** is a command-line tool that evaluates rewards and a rating of 
-developers based on git diff. 
+**Dev Rating** is a command-line tool that ranks developers by the stability of their code. 
 
 Read [how it works](docs/how-it-works.md). Read the 
 [white paper](docs/white-paper.md) (in [russian](docs/white-paper-ru.md)).
