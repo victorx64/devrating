@@ -30,7 +30,6 @@ jobs:
         sonarOrganisation: victorx64
         verbose: "true"
         openCoverPaths: "./TestResults/coverage.opencover.xml"
-        coverageExclusions: "**/*.Fake/*"
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
