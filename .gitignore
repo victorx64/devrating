@@ -354,3 +354,4 @@ MigrationBackup/
 #Idea
 /.idea/
 /.vscode/
+/.sonarqube/
