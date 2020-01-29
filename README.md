@@ -1,6 +1,14 @@
 ![](https://github.com/victorx64/devrating/workflows/build/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
 [![codecov](https://codecov.io/gh/victorx64/devrating/branch/master/graph/badge.svg)](https://codecov.io/gh/victorx64/devrating)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=alert_status)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=bugs)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=sqale_index)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=code_smells)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 
 **Dev Rating** is a command-line tool that ranks developers by the stability of their code. 
 
