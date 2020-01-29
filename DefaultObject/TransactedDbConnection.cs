@@ -29,7 +29,7 @@ namespace DevRating.DefaultObject
 
         public void ChangeDatabase(string databaseName)
         {
-            _origin.ChangeDatabase(name);
+            _origin.ChangeDatabase(databaseName);
         }
 
         public void Close()
