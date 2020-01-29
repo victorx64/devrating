@@ -61,7 +61,7 @@ namespace DevRating.ConsoleApp
 
                 if (diff.PresentIn(_database.Entities().Works()))
                 {
-                    throw new Exception("The diff is already added.");
+                    throw new InvalidOperationException("The diff is already added.");
                 }
 
                 diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
