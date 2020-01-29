@@ -16,27 +16,20 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
-
-    - name: Build with dotnet
-      run:  dotnet build --configuration Release
-
-    - name: Run tests
-      run: |
-        dotnet test ./DefaultObject.Test/DevRating.DefaultObject.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
-        dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-        dotnet test ./SqliteClient.Test/DevRating.SqliteClient.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-        dotnet test ./VersionControl.Test/DevRating.VersionControl.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
-
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v1.1
+    - name: dotnet-sonarscanner
+      uses: Secbyte/dotnet-sonarscanner@v1.2
+      with:
+        buildCommand: dotnet build
+        testCommand: |
+          dotnet test ./DefaultObject.Test/DevRating.DefaultObject.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
+          dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+          dotnet test ./SqliteClient.Test/DevRating.SqliteClient.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+          dotnet test ./VersionControl.Test/DevRating.VersionControl.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
+        projectKey: victorx64_devrating
+        projectName: devrating
+        sonarOrganisation: victorx64
+        verbose: "true"
+        openCoverPaths: "./TestResults/coverage.opencover.xml"
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Codecov
-      uses: codecov/codecov-action@v1.0.5
-      with:
-        name: devrating
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./TestResults/coverage.opencover.xml
-        fail_ci_if_error: true
