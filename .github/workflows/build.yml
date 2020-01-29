@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: dotnet-sonarscanner
-      uses: Secbyte/dotnet-sonarscanner@1.2
+      uses: Secbyte/dotnet-sonarscanner@v1.2
       with:
         buildCommand: dotnet build
         testCommand: dotnet test /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=\"opencover,json\" -m:1
