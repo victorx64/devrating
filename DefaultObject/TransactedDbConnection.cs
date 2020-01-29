@@ -27,7 +27,7 @@ namespace DevRating.DefaultObject
             return _transaction = _origin.BeginTransaction(il);
         }
 
-        public void ChangeDatabase(string name)
+        public void ChangeDatabase(string databaseName)
         {
             _origin.ChangeDatabase(name);
         }
