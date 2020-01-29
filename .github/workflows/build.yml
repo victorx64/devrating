@@ -15,10 +15,6 @@ jobs:
       with:
         dotnet-version: 3.1.101
 
-    - name: Setup NuGet.exe for use with actions
-      if: github.ref == 'refs/heads/master'
-      uses: NuGet/setup-nuget@v1.0.2
-
     - name: Build with dotnet
       run:  dotnet build --configuration Release
 
@@ -42,15 +38,3 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./TestResults/coverage.opencover.xml
         fail_ci_if_error: true
-
-    - name: Push to NuGet
-      if: github.ref == 'refs/heads/master'
-      run: dotnet nuget push Package\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org --skip-duplicate
-
-    - name: Add GPR Source
-      if: github.ref == 'refs/heads/master'
-      run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/victorx64/index.json -Username victorx64 -Password ${{ secrets.GITHUB_TOKEN }}	
-
-    - name: Push to GitHub Packages
-      if: github.ref == 'refs/heads/master'
-      run: nuget push Package\*.nupkg -Source "GPR" -SkipDuplicate
