@@ -1,5 +1,3 @@
-using System;
-
 namespace DevRating.Domain
 {
     public interface InsertRatingOperation
