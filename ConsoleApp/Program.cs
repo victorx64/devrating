@@ -14,40 +14,31 @@ namespace DevRating.ConsoleApp
         private static void Main(string[] args)
         {
             var console = new SystemConsole();
-            
+            var organization = "Current organization";
+
             if (!args.Any())
             {
                 PrintUsage(console);
             }
             else if (args[0].Equals("show", StringComparison.OrdinalIgnoreCase))
             {
-                Show(console, args[1], args[2], args[3]);
+                using var repository = new Repository(args[1]);
+
+                Application().PrintTo(console, Diff(organization, args[2], args[3], repository));
             }
             else if (args[0].Equals("add", StringComparison.OrdinalIgnoreCase))
             {
-                Add(args[1], args[2], args[3]);
+                using var repository = new Repository(args[1]);
+
+                Application().Save(Diff(organization, args[2], args[3], repository));
             }
             else if (args[0].Equals("top", StringComparison.OrdinalIgnoreCase))
             {
-                Top(console);
+                Application().Top(console, organization);
             }
         }
 
-        private static void Show(Console console, string path, string start, string end)
-        {
-            using var repository = new Repository(path);
-
-            Application().PrintTo(console, Diff(start, end, repository));
-        }
-
-        private static void Add(string path, string start, string end)
-        {
-            using var repository = new Repository(path);
-
-            Application().Save(Diff(start, end, repository));
-        }
-
-        private static LibGit2Diff Diff(string start, string end, IRepository repository)
+        private static LibGit2Diff Diff(string organization, string start, string end, IRepository repository)
         {
             return new LibGit2Diff(
                 start,
@@ -55,13 +46,8 @@ namespace DevRating.ConsoleApp
                 repository,
                 repository.Network.Remotes.First().Url,
                 new DefaultEnvelope(),
-                "Current organization"
+                organization
             );
-        }
-
-        private static void Top(Console console)
-        {
-            Application().Top(console, "Current organization");
         }
 
         private static ConsoleApplication Application()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.Domain;
@@ -15,7 +16,14 @@ namespace DevRating.DefaultObject.Fake
 
         public Work Work(string repository, string start, string end)
         {
-            return _works.Last();
+            bool Predicate(Work work)
+            {
+                return work.Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
+                       work.Start().Equals(start, StringComparison.OrdinalIgnoreCase) &&
+                       work.End().Equals(end, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return _works.Single(Predicate);
         }
 
         public Work Work(Id id)
