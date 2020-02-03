@@ -8,13 +8,13 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>2.0.0</PackageVersion>
+        <PackageVersion>2.1.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.DefaultObject</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Description>Default objects </Description>
+        <Description>Default objects of Dev Rating</Description>
         <Copyright>Copyright © Victor Semenov 2020</Copyright>
     </PropertyGroup>
 
