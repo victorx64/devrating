@@ -34,12 +34,12 @@ namespace DevRating.DefaultObject.Fake
             return _authors.Single(Predicate);
         }
 
-        public IEnumerable<Author> Top()
+        public IEnumerable<Author> TopOfOrganization(string organization)
         {
             return _authors;
         }
 
-        public IEnumerable<Author> Top(string repository)
+        public IEnumerable<Author> TopOfRepository(string repository)
         {
             return _authors;
         }

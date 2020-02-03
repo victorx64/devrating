@@ -6,7 +6,7 @@ namespace DevRating.Domain
     {
         Author Author(string email);
         Author Author(Id id);
-        IEnumerable<Author> Top();
-        IEnumerable<Author> Top(string repository);
+        IEnumerable<Author> TopOfOrganization(string organization);
+        IEnumerable<Author> TopOfRepository(string repository);
     }
 }

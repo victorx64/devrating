@@ -18,7 +18,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 Assert.True(
                     database.Entities().Ratings().ContainsOperation().Contains(
@@ -56,7 +56,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -92,7 +92,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -118,7 +118,7 @@ namespace DevRating.SqliteClient.Test
             }
         }
 
-        [Fact(Skip = "Enable the test when the bug is fixed")] // TODO fix the bug
+        [Fact(Skip = "Enable the test when the bug is fixed")] // "organization" fix the bug
         public void ReturnsUnfilledRatingIfNotFoundById()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
@@ -147,7 +147,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -202,7 +202,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var work = database.Entities().Works().InsertOperation().Insert(
                     "repo",

@@ -11,17 +11,19 @@ namespace DevRating.ConsoleApp
     {
         private readonly string[] _args;
         private readonly Application _application;
+        private readonly string _organization;
         private readonly IDictionary<string, Action> _actions;
 
-        public ConsoleArguments(string[] args, Application application)
+        public ConsoleArguments(string[] args, Application application, string organization)
         {
             _args = args;
             _application = application;
+            _organization = organization;
             _actions = new Dictionary<string, Action>
             {
                 {"show", Show},
                 {"add", Add},
-                {"top", application.Top}
+                {"top", Top}
             };
         }
 
@@ -51,6 +53,11 @@ namespace DevRating.ConsoleApp
             _application.Save(Diff(repository));
         }
 
+        private void Top()
+        {
+            _application.Top(_organization);
+        }
+
         private LibGit2Diff Diff(IRepository repository)
         {
             return new LibGit2Diff(
@@ -58,7 +65,8 @@ namespace DevRating.ConsoleApp
                 _args[3],
                 repository,
                 repository.Network.Remotes.First().Url,
-                new DefaultEnvelope()
+                new DefaultEnvelope(),
+                _organization
             );
         }
 

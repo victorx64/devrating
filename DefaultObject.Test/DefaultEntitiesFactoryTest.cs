@@ -21,8 +21,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork(
-                    "repository",
+                .InsertedWork("organization", "repository",
                     "start",
                     "end",
                     "new author",
@@ -36,7 +35,7 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void DoesntInsertAuthorIfExists()
         {
-            var authors = new List<Author> {new FakeAuthor("existing author")};
+            var authors = new List<Author> {new FakeAuthor("organization", "existing author")};
 
             new DefaultEntityFactory(
                     new FakeEntities(
@@ -46,8 +45,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork(
-                    "repository",
+                .InsertedWork("organization", "repository",
                     "start",
                     "end",
                     "existing author",
@@ -70,8 +68,7 @@ namespace DevRating.DefaultObject.Test
                         new List<Rating>()),
                     new FakeFormula()
                 )
-                .InsertedWork(
-                    "repository",
+                .InsertedWork("organization", "repository",
                     "start",
                     "end",
                     "other author",
@@ -85,7 +82,7 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsNewWorkWithUsedRating()
         {
-            var author = new FakeAuthor("the author");
+            var author = new FakeAuthor("organization", "the author");
             var work = new FakeWork(10u, author);
             var rating = new FakeRating(1500d, work, author);
             var works = new List<Work> {work};
@@ -98,8 +95,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork(
-                    "repository",
+                .InsertedWork("organization", "repository",
                     "start",
                     "end",
                     author.Email(),
@@ -114,7 +110,7 @@ namespace DevRating.DefaultObject.Test
         public void InsertsNewAuthorNewRatingWhenDeleteOneNewVictim()
         {
             var ratings = new List<Rating>();
-            var author = new FakeAuthor("author");
+            var author = new FakeAuthor("organization", "author");
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion("single victim", 2);
             var newWork = new FakeWork(0u, author);
@@ -127,7 +123,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion}, newWork.Id());
 
             bool RatingOfAuthor(Rating r)
             {
@@ -150,7 +146,7 @@ namespace DevRating.DefaultObject.Test
         public void DoesntInsertsNewAuthorNewRatingWhenHeDeletedHimself()
         {
             var ratings = new List<Rating>();
-            var author = new FakeAuthor("author");
+            var author = new FakeAuthor("organization", "author");
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion("AUTHOR", 2);
 
@@ -162,7 +158,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion}, new FakeWork(0u, author).Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion}, new FakeWork(0u, author).Id());
 
             Assert.Empty(ratings);
         }
@@ -171,7 +167,7 @@ namespace DevRating.DefaultObject.Test
         public void InsertsNewVictimNewRating()
         {
             var ratings = new List<Rating>();
-            var author = new FakeAuthor("author");
+            var author = new FakeAuthor("organization", "author");
             var formula = new FakeFormula(10, 1);
             var victim = "single victim";
             var deletion = new DefaultDeletion(victim, 2);
@@ -185,7 +181,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion}, newWork.Id());
 
             bool RatingOfVictim(Rating r)
             {
@@ -204,7 +200,7 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsNewAuthorNewRatingWhenDeleteManyNewVictims()
         {
-            var author = new FakeAuthor("author");
+            var author = new FakeAuthor("organization", "author");
             var victim1 = "first victim";
             var victim2 = "second victim";
             var ratings = new List<Rating>();
@@ -221,7 +217,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion1, deletion2}, work.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion1, deletion2}, work.Id());
 
             bool RatingOfAuthor(Rating r)
             {
@@ -244,8 +240,8 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsNewAuthorNewRatingWhenDeleteOneOldVictim()
         {
-            var author = new FakeAuthor("new author");
-            var victim = new FakeAuthor("old single victim");
+            var author = new FakeAuthor("organization", "new author");
+            var victim = new FakeAuthor("organization", "old single victim");
             var work = new FakeWork(3, victim);
             var newWork = new FakeWork(0u, author);
             var ratings = new List<Rating>
@@ -264,7 +260,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion}, newWork.Id());
 
             bool RatingOfAuthor(Rating r)
             {
@@ -286,8 +282,8 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsOldVictimNewRating()
         {
-            var author = new FakeAuthor("new author");
-            var victim = new FakeAuthor("old single victim");
+            var author = new FakeAuthor("organization", "new author");
+            var victim = new FakeAuthor("organization", "old single victim");
             var work = new FakeWork(3, victim);
             var newWork = new FakeWork(0u, author);
             var ratings = new List<Rating>
@@ -303,7 +299,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion}, newWork.Id());
 
             bool RatingOfVictim(Rating r)
             {
@@ -322,9 +318,9 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsNewAuthorNewRatingWhenDeleteManyOldVictims()
         {
-            var author = new FakeAuthor("new author");
-            var victim1 = new FakeAuthor("old first victim");
-            var victim2 = new FakeAuthor("old second victim");
+            var author = new FakeAuthor("organization", "new author");
+            var victim1 = new FakeAuthor("organization", "old first victim");
+            var victim2 = new FakeAuthor("organization", "old second victim");
             var work1 = new FakeWork(3, victim1);
             var work2 = new FakeWork(4, victim2);
             var newWork = new FakeWork(0u, author);
@@ -346,7 +342,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion1, deletion2}, newWork.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion1, deletion2}, newWork.Id());
 
             bool RatingOfAuthor(Rating r)
             {
@@ -369,7 +365,7 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsOldAuthorNewRatingWhenDeleteOneNewVictim()
         {
-            var author = new FakeAuthor("old author");
+            var author = new FakeAuthor("organization", "old author");
             var victim = "single new victim";
             var work = new FakeWork(10u, author);
             var rating = new FakeRating(1500d, work, author);
@@ -386,7 +382,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings("organization", author.Email(), new[] {deletion}, newWork.Id());
 
             bool RatingOfAuthor(Rating r)
             {

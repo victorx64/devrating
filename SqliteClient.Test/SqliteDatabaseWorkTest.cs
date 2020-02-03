@@ -25,7 +25,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
                         additions,
                         new DefaultId(),
                         new DefaultEnvelope()
@@ -48,7 +48,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 Assert.Equal(
                     author.Id(),
@@ -79,7 +79,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var previous = database.Entities().Ratings().InsertOperation().Insert(
                     3423,
@@ -131,7 +131,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
                         2u,
                         new DefaultId(),
                         new DefaultEnvelope()

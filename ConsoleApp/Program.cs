@@ -19,7 +19,8 @@ namespace DevRating.ConsoleApp
                         )
                     ),
                     new EloFormula()
-                )
+                ),
+                "Current organization"
             ).Run();
         }
     }

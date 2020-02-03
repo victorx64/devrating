@@ -22,8 +22,10 @@ namespace DevRating.SqliteClient
                 (
                     Id    integer
                         primary key autoincrement,
-                    Email nvarchar(50) not null
-                        unique
+                    Organization nvarchar(50) not null,
+                    Email nvarchar(50) not null,
+                    constraint UK_Author_Email_Organization
+                        unique (Email, Organization)
                 );
 
                 create table Rating

@@ -35,7 +35,34 @@ namespace DevRating.SqliteClient
             return new SqliteAuthor(_connection, id);
         }
 
-        public IEnumerable<Author> Top(string repository)
+        public IEnumerable<Author> TopOfOrganization(string organization)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT a.Id
+                FROM Author a
+                         INNER JOIN Rating r1 ON a.Id = r1.AuthorId
+                         LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
+                WHERE a.Organization = @Organization
+                  AND r2.Id IS NULL
+                ORDER BY r1.Rating DESC";
+
+            command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
+
+            using var reader = command.ExecuteReader();
+
+            var authors = new List<SqliteAuthor>();
+
+            while (reader.Read())
+            {
+                authors.Add(new SqliteAuthor(_connection, new DefaultId(reader["Id"])));
+            }
+
+            return authors;
+        }
+
+        public IEnumerable<Author> TopOfRepository(string repository)
         {
             using var command = _connection.CreateCommand();
 

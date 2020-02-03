@@ -16,16 +16,16 @@ namespace DevRating.DefaultObject
             _formula = formula;
         }
 
-        public Work InsertedWork(string repository, string start, string end, string email, uint additions,
+        public Work InsertedWork(string organization, string repository, string start, string end, string email, uint additions,
             Envelope link)
         {
-            var author = Author(email);
+            var author = Author(organization, email);
 
             return _entities.Works().InsertOperation().Insert(repository, start, end, author.Id(), additions,
                 _entities.Ratings().GetOperation().RatingOf(author.Id()).Id(), link);
         }
 
-        public void InsertRatings(string email, IEnumerable<Deletion> deletions, Id work)
+        public void InsertRatings(string organization, string email, IEnumerable<Deletion> deletions, Id work)
         {
             var items = NonSelfDeletions(email, deletions);
 
@@ -34,18 +34,18 @@ namespace DevRating.DefaultObject
                 return;
             }
 
-            InsertRatings(email, work, items);
+            InsertRatings(organization, email, work, items);
         }
 
-        private void InsertRatings(string email, Id work, IEnumerable<Deletion> deletions)
+        private void InsertRatings(string organization, string email, Id work, IEnumerable<Deletion> deletions)
         {
-            var author = Author(email);
+            var author = Author(organization, email);
 
             var winner = _entities.Ratings().GetOperation().RatingOf(author.Id());
 
             var value = winner.Id().Filled() ? winner.Value() : _formula.DefaultRating();
 
-            var matches = MatchesWithInsertedLosers(deletions, work, value);
+            var matches = MatchesWithInsertedLosers(organization, deletions, work, value);
 
             _entities.Ratings().InsertOperation().Insert(
                 _formula.WinnerNewRating(value, matches),
@@ -66,13 +66,13 @@ namespace DevRating.DefaultObject
             return deletions.Where(NonSelfDeletion).ToList();
         }
 
-        private IEnumerable<Match> MatchesWithInsertedLosers(IEnumerable<Deletion> deletions, Id work, double winner)
+        private IEnumerable<Match> MatchesWithInsertedLosers(string organization, IEnumerable<Deletion> deletions, Id work, double winner)
         {
             var matches = new List<Match>();
 
             foreach (var deletion in deletions)
             {
-                var victim = Author(deletion.Email());
+                var victim = Author(organization, deletion.Email());
 
                 var current = _entities.Ratings().GetOperation().RatingOf(victim.Id());
 
@@ -92,11 +92,11 @@ namespace DevRating.DefaultObject
             return matches;
         }
 
-        private Author Author(string email)
+        private Author Author(string organization, string email)
         {
             return _entities.Authors().ContainsOperation().Contains(email)
                 ? _entities.Authors().GetOperation().Author(email)
-                : _entities.Authors().InsertOperation().Insert(email);
+                : _entities.Authors().InsertOperation().Insert(organization, email);
         }
     }
 }

@@ -18,7 +18,8 @@ namespace DevRating.SqliteClient.Test
             {
                 var email = "email";
 
-                Assert.Equal(email, database.Entities().Authors().InsertOperation().Insert(email).Email());
+                Assert.Equal(email,
+                    database.Entities().Authors().InsertOperation().Insert("organization", email).Email());
             }
             finally
             {
@@ -36,7 +37,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                Assert.Throws<NotImplementedException>(database.Entities().Authors().InsertOperation().Insert("email")
+                Assert.Throws<NotImplementedException>(database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email")
                     .ToJson);
             }
             finally
