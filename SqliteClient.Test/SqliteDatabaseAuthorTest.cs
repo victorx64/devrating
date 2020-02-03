@@ -7,6 +7,28 @@ namespace DevRating.SqliteClient.Test
     public sealed class SqliteDatabaseAuthorTest
     {
         [Fact]
+        public void ReturnsValidOrganization()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var email = "email";
+                var organization = "organization";
+
+                Assert.Equal(organization,
+                    database.Entities().Authors().InsertOperation().Insert(organization, email).Organization());
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void ReturnsValidEmail()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
@@ -17,9 +39,10 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var email = "email";
+                var organization = "organization";
 
                 Assert.Equal(email,
-                    database.Entities().Authors().InsertOperation().Insert("organization", email).Email());
+                    database.Entities().Authors().InsertOperation().Insert(organization, email).Email());
             }
             finally
             {
