@@ -6,7 +6,7 @@ namespace DevRating.DefaultObject.Fake
     public sealed class FakeDbInstance : DbInstance
     {
         private readonly IDbConnection _connection;
-        private bool present;
+        private bool _present;
 
         public FakeDbInstance() : this(new FakeDbConnection())
         {
@@ -19,12 +19,12 @@ namespace DevRating.DefaultObject.Fake
 
         public void Create()
         {
-            present = true;
+            _present = true;
         }
 
         public bool Present()
         {
-            return present;
+            return _present;
         }
 
         public IDbConnection Connection()

@@ -4,7 +4,7 @@ using DevRating.Domain;
 
 namespace DevRating.ConsoleApp
 {
-    internal sealed class ConsoleApplication : Application
+    public sealed class ConsoleApplication : Application
     {
         private readonly Database _database;
         private readonly Formula _formula;
@@ -15,7 +15,7 @@ namespace DevRating.ConsoleApp
             _formula = formula;
         }
 
-        public void Top(string organization)
+        public void Top(Console console, string organization)
         {
             _database.Instance().Connection().Open();
 
@@ -35,7 +35,7 @@ namespace DevRating.ConsoleApp
                             _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value(),
                             _formula.DefaultRating());
 
-                    Console.WriteLine(
+                    console.WriteLine(
                         $"{author.Email()} {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} ({percentile:P} percentile)");
                 }
             }
@@ -80,7 +80,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void PrintToConsole(Diff diff)
+        public void PrintTo(Console console, Diff diff)
         {
             _database.Instance().Connection().Open();
 
@@ -97,11 +97,11 @@ namespace DevRating.ConsoleApp
                 {
                     diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
 
-                    Console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
-                    Console.WriteLine();
+                    console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
+                    console.WriteLine();
                 }
 
-                PrintWorkToConsole(diff.From(_database.Entities().Works()));
+                PrintWorkToConsole(console, diff.From(_database.Entities().Works()));
             }
             finally
             {
@@ -110,7 +110,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        private void PrintWorkToConsole(Work work)
+        private void PrintWorkToConsole(Console console, Work work)
         {
             var usedRating = work.UsedRating();
 
@@ -120,18 +120,18 @@ namespace DevRating.ConsoleApp
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
-            Console.WriteLine(work.Author().Email());
-            Console.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
-            Console.WriteLine(
+            console.WriteLine(work.Author().Email());
+            console.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
+            console.WriteLine(
                 $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
-            Console.WriteLine();
+            console.WriteLine();
 
-            PrintWorkRatingsToConsole(work.Id());
+            PrintWorkRatingsToConsole(console, work.Id());
         }
 
-        private void PrintWorkRatingsToConsole(Id work)
+        private void PrintWorkRatingsToConsole(Console console, Id work)
         {
-            Console.WriteLine("Rating updates");
+            console.WriteLine("Rating updates");
 
             foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work))
             {
@@ -149,7 +149,7 @@ namespace DevRating.ConsoleApp
                     ? $"lost {deletions.Value()} lines"
                     : "the performer";
 
-                Console.WriteLine(
+                console.WriteLine(
                     $"{rating.Author().Email()} {before:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }

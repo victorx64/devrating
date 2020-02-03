@@ -62,8 +62,13 @@ namespace DevRating.LibGit2SharpClient
                 _end.Author.Email,
                 _deletions.Items(),
                 factory.InsertedWork(
-                    _organization, _key, _start.Sha, _end.Sha, _end.Author.Email,
-                    _additions.Count(), _link
+                    _organization,
+                    _key,
+                    _start.Sha,
+                    _end.Sha,
+                    _end.Author.Email,
+                    _additions.Count(),
+                    _link
                 ).Id()
             );
         }

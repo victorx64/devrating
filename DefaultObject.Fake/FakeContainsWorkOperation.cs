@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.Domain;
@@ -16,7 +15,7 @@ namespace DevRating.DefaultObject.Fake
 
         public bool Contains(string repository, string start, string end)
         {
-            throw new NotImplementedException();
+            return _works.Any();
         }
 
         public bool Contains(Id id)

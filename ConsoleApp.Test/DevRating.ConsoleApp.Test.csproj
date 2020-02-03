@@ -19,8 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DefaultObject\DevRating.DefaultObject.csproj" />
-      <ProjectReference Include="..\EloRating\DevRating.EloRating.csproj" />
+        <ProjectReference Include="..\ConsoleApp.Fake\DevRating.ConsoleApp.Fake.csproj" />
+        <ProjectReference Include="..\DefaultObject.Fake\DevRating.DefaultObject.Fake.csproj" />
     </ItemGroup>
 
 </Project>
