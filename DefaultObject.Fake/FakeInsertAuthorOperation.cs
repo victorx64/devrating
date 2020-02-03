@@ -12,9 +12,9 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public Author Insert(string email)
+        public Author Insert(string organization, string email)
         {
-            var author = new FakeAuthor(email);
+            var author = new FakeAuthor(organization, email);
 
             _authors.Add(author);
 

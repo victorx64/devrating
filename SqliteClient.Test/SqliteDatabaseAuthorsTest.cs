@@ -18,7 +18,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 Assert.True(database.Entities().Authors().ContainsOperation()
-                    .Contains(database.Entities().Authors().InsertOperation().Insert("email").Id()));
+                    .Contains(database.Entities().Authors().InsertOperation().Insert("organization", "email").Id()));
             }
             finally
             {
@@ -27,7 +27,7 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
-        public void ChecksInsertedAuthorByEmail()
+        public void ChecksInsertedAuthorByOrgAndEmail()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -36,8 +36,10 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                Assert.True(database.Entities().Authors().ContainsOperation()
-                    .Contains(database.Entities().Authors().InsertOperation().Insert("email").Email()));
+                var organization = "organization";
+
+                Assert.True(database.Entities().Authors().ContainsOperation().Contains(organization,
+                    database.Entities().Authors().InsertOperation().Insert(organization, "email").Email()));
             }
             finally
             {
@@ -46,7 +48,7 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
-        public void ReturnsInsertedAuthorByEmail()
+        public void ReturnsInsertedAuthorByOrgAndEmail()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -55,9 +57,12 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var organization = "organization";
 
-                Assert.Equal(author.Id(), database.Entities().Authors().GetOperation().Author(author.Email()).Id());
+                var author = database.Entities().Authors().InsertOperation().Insert(organization, "email");
+
+                Assert.Equal(author.Id(),
+                    database.Entities().Authors().GetOperation().Author(organization, author.Email()).Id());
             }
             finally
             {
@@ -75,7 +80,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 Assert.Equal(author.Id(), database.Entities().Authors().GetOperation().Author(author.Id()).Id());
             }
@@ -86,7 +91,7 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
-        public void ReturnsGlobalTopAuthors()
+        public void ReturnsOrganizationTopAuthors()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -95,10 +100,13 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author1 = database.Entities().Authors().InsertOperation().Insert("email1");
-                var author2 = database.Entities().Authors().InsertOperation().Insert("email2");
+                var organization = "organization";
 
-                var work = database.Entities().Works().InsertOperation().Insert(
+                var author1 = database.Entities().Authors().InsertOperation().Insert(organization, "email1");
+                var author2 = database.Entities().Authors().InsertOperation().Insert(organization, "email2");
+                var author3 = database.Entities().Authors().InsertOperation().Insert("ANOTHER organization", "email3");
+
+                var work1 = database.Entities().Works().InsertOperation().Insert(
                     "repo",
                     "start",
                     "end",
@@ -112,7 +120,7 @@ namespace DevRating.SqliteClient.Test
                     100,
                     new DefaultEnvelope(),
                     new DefaultId(),
-                    work.Id(),
+                    work1.Id(),
                     author1.Id()
                 );
 
@@ -120,11 +128,30 @@ namespace DevRating.SqliteClient.Test
                     50,
                     new DefaultEnvelope(),
                     new DefaultId(),
-                    work.Id(),
+                    work1.Id(),
                     author2.Id()
                 );
 
-                Assert.Equal(author1.Id(), database.Entities().Authors().GetOperation().Top().First().Id());
+                var work2 = database.Entities().Works().InsertOperation().Insert(
+                    "other repo",
+                    "other start",
+                    "other end",
+                    author3.Id(),
+                    1u,
+                    new DefaultId(),
+                    new DefaultEnvelope()
+                );
+
+                database.Entities().Ratings().InsertOperation().Insert(
+                    150,
+                    new DefaultEnvelope(),
+                    new DefaultId(),
+                    work2.Id(),
+                    author3.Id()
+                );
+
+                Assert.Equal(author1.Id(),
+                    database.Entities().Authors().GetOperation().TopOfOrganization(organization).First().Id());
             }
             finally
             {
@@ -142,9 +169,10 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author1 = database.Entities().Authors().InsertOperation().Insert("email1");
-                var author2 = database.Entities().Authors().InsertOperation().Insert("email2");
-                var author3 = database.Entities().Authors().InsertOperation().Insert("email3");
+                var organization = "organization";
+                var author1 = database.Entities().Authors().InsertOperation().Insert(organization, "email1");
+                var author2 = database.Entities().Authors().InsertOperation().Insert(organization, "email2");
+                var author3 = database.Entities().Authors().InsertOperation().Insert(organization, "email3");
 
                 var repository = "first repo";
 
@@ -192,7 +220,7 @@ namespace DevRating.SqliteClient.Test
                     author3.Id()
                 );
 
-                Assert.Equal(2, database.Entities().Authors().GetOperation().Top(repository).Count());
+                Assert.Equal(2, database.Entities().Authors().GetOperation().TopOfRepository(repository).Count());
             }
             finally
             {

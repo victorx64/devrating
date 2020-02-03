@@ -17,7 +17,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var value = 1100d;
 
@@ -56,7 +56,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var value = 1100d;
 
@@ -95,7 +95,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var work = database.Entities().Works().InsertOperation().Insert(
                     "repo",
@@ -134,7 +134,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var deletions = new DefaultEnvelope(123123L);
 
@@ -173,7 +173,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 var previous = database.Entities().Ratings().InsertOperation().Insert(
                     12d,
@@ -226,7 +226,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
 
                 Assert.Throws<NotImplementedException>(database.Entities().Ratings().InsertOperation().Insert(
                         12d,

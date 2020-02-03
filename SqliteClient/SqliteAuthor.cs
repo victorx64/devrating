@@ -39,5 +39,20 @@ namespace DevRating.SqliteClient
 
             return (string) reader["Email"];
         }
+
+        public string Organization()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Organization FROM Author WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+
+            return (string) reader["Organization"];
+        }
     }
 }

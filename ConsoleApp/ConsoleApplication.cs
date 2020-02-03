@@ -15,7 +15,7 @@ namespace DevRating.ConsoleApp
             _formula = formula;
         }
 
-        public void Top()
+        public void Top(string organization)
         {
             _database.Instance().Connection().Open();
 
@@ -28,7 +28,7 @@ namespace DevRating.ConsoleApp
                     _database.Instance().Create();
                 }
 
-                foreach (var author in _database.Entities().Authors().GetOperation().Top())
+                foreach (var author in _database.Entities().Authors().GetOperation().TopOfOrganization(organization))
                 {
                     var percentile = _formula
                         .WinProbabilityOfA(

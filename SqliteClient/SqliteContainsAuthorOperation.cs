@@ -13,7 +13,7 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public bool Contains(string email)
+        public bool Contains(string organization, string email)
         {
             using var command = _connection.CreateCommand();
 

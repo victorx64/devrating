@@ -14,11 +14,12 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public bool Contains(string email)
+        public bool Contains(string organization, string email)
         {
             bool Predicate(Author a)
             {
-                return a.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
+                return a.Organization().Equals(organization, StringComparison.OrdinalIgnoreCase) &&
+                       a.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
             }
 
             return _authors.Any(Predicate);

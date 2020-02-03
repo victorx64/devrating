@@ -22,7 +22,7 @@ namespace DevRating.SqliteClient.Test
                             "repo",
                             "startCommit",
                             "endCommit",
-                            database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                            database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
                             1u,
                             new DefaultId(),
                             new DefaultEnvelope()
@@ -50,7 +50,7 @@ namespace DevRating.SqliteClient.Test
                     "repo",
                     "startCommit",
                     "endCommit",
-                    database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                    database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
                     1u,
                     new DefaultId(),
                     new DefaultEnvelope()
@@ -82,7 +82,7 @@ namespace DevRating.SqliteClient.Test
                     "repo",
                     "startCommit",
                     "endCommit",
-                    database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                    database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
                     1u,
                     new DefaultId(),
                     new DefaultEnvelope()
@@ -111,7 +111,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        database.Entities().Authors().InsertOperation().Insert("email").Id(),
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
                         1u,
                         new DefaultId(),
                         new DefaultEnvelope()
@@ -143,7 +143,7 @@ namespace DevRating.SqliteClient.Test
                     "repo",
                     "start1",
                     "end1",
-                    database.Entities().Authors().InsertOperation().Insert("author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert("organization", "author").Id(),
                     1u,
                     new DefaultId(),
                     new DefaultEnvelope()
@@ -153,7 +153,7 @@ namespace DevRating.SqliteClient.Test
                     "repo",
                     "start2",
                     "end2",
-                    database.Entities().Authors().InsertOperation().Insert("other author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert("organization", "other author").Id(),
                     2u,
                     new DefaultId(),
                     new DefaultEnvelope()
@@ -184,7 +184,7 @@ namespace DevRating.SqliteClient.Test
                     "repo",
                     "start1",
                     "end1",
-                    database.Entities().Authors().InsertOperation().Insert("author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert("organization", "author").Id(),
                     1u,
                     new DefaultId(),
                     new DefaultEnvelope()
@@ -194,7 +194,7 @@ namespace DevRating.SqliteClient.Test
                     "repo",
                     "start2",
                     "end2",
-                    database.Entities().Authors().InsertOperation().Insert("other author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert("organization", "other author").Id(),
                     2u,
                     new DefaultId(),
                     new DefaultEnvelope()

@@ -7,15 +7,17 @@ namespace DevRating.DefaultObject.Fake
     {
         private readonly Id _id;
         private readonly string _email;
+        private readonly string _organization;
 
-        public FakeAuthor(string email) : this(new DefaultId(Guid.NewGuid()), email)
+        public FakeAuthor(string organization, string email) : this(new DefaultId(Guid.NewGuid()), email, organization)
         {
         }
 
-        public FakeAuthor(Id id, string email)
+        public FakeAuthor(Id id, string email, string organization)
         {
             _id = id;
             _email = email;
+            _organization = organization;
         }
 
         public Id Id()
@@ -31,6 +33,11 @@ namespace DevRating.DefaultObject.Fake
         public string Email()
         {
             return _email;
+        }
+
+        public string Organization()
+        {
+            return _organization;
         }
     }
 }
