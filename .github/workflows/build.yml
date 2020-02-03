@@ -22,9 +22,6 @@ jobs:
 
     - name: Begin SonarScan
       run: artifacts/dotnet-sonarscanner begin /k:"victorx64_devrating" /o:"victorx64" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="./TestResults/coverage.opencover.xml"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Build with dotnet
       run:  dotnet build
@@ -39,3 +36,5 @@ jobs:
 
     - name: End SonarScan
       run: artifacts/dotnet-sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
