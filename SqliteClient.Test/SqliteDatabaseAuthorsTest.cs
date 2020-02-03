@@ -169,9 +169,10 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author1 = database.Entities().Authors().InsertOperation().Insert("organization", "email1");
-                var author2 = database.Entities().Authors().InsertOperation().Insert("organization", "email2");
-                var author3 = database.Entities().Authors().InsertOperation().Insert("organization", "email3");
+                var organization = "organization";
+                var author1 = database.Entities().Authors().InsertOperation().Insert(organization, "email1");
+                var author2 = database.Entities().Authors().InsertOperation().Insert(organization, "email2");
+                var author3 = database.Entities().Authors().InsertOperation().Insert(organization, "email3");
 
                 var repository = "first repo";
 

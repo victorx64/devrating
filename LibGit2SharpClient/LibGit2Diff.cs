@@ -57,10 +57,15 @@ namespace DevRating.LibGit2SharpClient
 
         public void AddTo(EntityFactory factory)
         {
-            var work = factory.InsertedWork(_organization, _key, _start.Sha, _end.Sha, _end.Author.Email,
-                _additions.Count(), _link);
-
-            factory.InsertRatings(_organization, _end.Author.Email, _deletions.Items(), work.Id());
+            factory.InsertRatings(
+                _organization,
+                _end.Author.Email,
+                _deletions.Items(),
+                factory.InsertedWork(
+                    _organization, _key, _start.Sha, _end.Sha, _end.Author.Email,
+                    _additions.Count(), _link
+                ).Id()
+            );
         }
     }
 }
