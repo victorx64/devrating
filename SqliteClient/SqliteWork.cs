@@ -70,5 +70,38 @@ namespace DevRating.SqliteClient
 
             return new SqliteRating(_connection, new DefaultId(reader["UsedRatingId"]));
         }
+
+        public string Repository()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Repository FROM Work WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return (string) command.ExecuteScalar();
+        }
+
+        public string Start()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT StartCommit FROM Work WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return (string) command.ExecuteScalar();
+        }
+
+        public string End()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT EndCommit FROM Work WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return (string) command.ExecuteScalar();
+        }
     }
 }

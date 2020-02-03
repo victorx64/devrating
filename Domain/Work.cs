@@ -5,5 +5,8 @@ namespace DevRating.Domain
         uint Additions();
         Author Author();
         Rating UsedRating();
+        string Repository();
+        string Start();
+        string End();
     }
 }

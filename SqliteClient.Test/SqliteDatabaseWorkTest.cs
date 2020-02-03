@@ -39,6 +39,99 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
+        public void ReturnsValidRepository()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var repository = "repo";
+
+                Assert.Equal(
+                    repository,
+                    database.Entities().Works().InsertOperation().Insert(
+                        repository,
+                        "startCommit",
+                        "endCommit",
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                        1u,
+                        new DefaultId(),
+                        new DefaultEnvelope()
+                    ).Repository()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void ReturnsValidStartCommit()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var start = "startCommit";
+
+                Assert.Equal(
+                    start,
+                    database.Entities().Works().InsertOperation().Insert(
+                        "repo",
+                        start,
+                        "endCommit",
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                        1u,
+                        new DefaultId(),
+                        new DefaultEnvelope()
+                    ).Start()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void ReturnsValidEndCommit()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var end = "endCommit";
+
+                Assert.Equal(
+                    end,
+                    database.Entities().Works().InsertOperation().Insert(
+                        "repo",
+                        "startCommit",
+                        end,
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                        1u,
+                        new DefaultId(),
+                        new DefaultEnvelope()
+                    ).End()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void ReturnsValidAuthor()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));

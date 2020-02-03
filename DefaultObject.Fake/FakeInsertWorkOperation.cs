@@ -25,7 +25,10 @@ namespace DevRating.DefaultObject.Fake
                 new DefaultId(Guid.NewGuid()),
                 additions,
                 Author(author),
-                Rating(rating)
+                Rating(rating),
+                repository,
+                start,
+                end
             );
 
             _works.Add(work);
