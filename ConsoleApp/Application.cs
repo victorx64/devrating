@@ -4,8 +4,8 @@ namespace DevRating.ConsoleApp
 {
     internal interface Application
     {
-        void Top(string organization);
+        void Top(Console console, string organization);
         void Save(Diff diff);
-        void PrintToConsole(Diff diff);
+        void PrintTo(Console console, Diff diff);
     }
 }

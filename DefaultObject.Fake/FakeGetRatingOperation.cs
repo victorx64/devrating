@@ -45,7 +45,12 @@ namespace DevRating.DefaultObject.Fake
 
         public IEnumerable<Rating> RatingsOf(Id work)
         {
-            throw new System.NotImplementedException();
+            bool Predicate(Rating rating)
+            {
+                return rating.Work().Id().Equals(work);
+            }
+
+            return _ratings.Where(Predicate);
         }
     }
 }
