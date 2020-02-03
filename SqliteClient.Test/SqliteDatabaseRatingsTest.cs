@@ -118,7 +118,7 @@ namespace DevRating.SqliteClient.Test
             }
         }
 
-        [Fact(Skip = "Enable the test when the bug is fixed")] // "organization" fix the bug
+        [Fact(Skip = "Enable the test when the bug is fixed")] // TODO fix the bug
         public void ReturnsUnfilledRatingIfNotFoundById()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
