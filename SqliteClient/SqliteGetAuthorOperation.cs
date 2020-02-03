@@ -97,29 +97,5 @@ namespace DevRating.SqliteClient
 
             return authors;
         }
-
-        public IEnumerable<Author> Top()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = @"
-                SELECT a.Id
-                FROM Author a
-                     INNER JOIN Rating r1 ON a.Id = r1.AuthorId
-                     LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
-                WHERE r2.Id IS NULL
-                ORDER BY r1.Rating DESC";
-
-            using var reader = command.ExecuteReader();
-
-            var authors = new List<SqliteAuthor>();
-
-            while (reader.Read())
-            {
-                authors.Add(new SqliteAuthor(_connection, new DefaultId(reader["Id"])));
-            }
-
-            return authors;
-        }
     }
 }
