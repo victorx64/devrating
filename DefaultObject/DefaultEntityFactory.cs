@@ -95,7 +95,7 @@ namespace DevRating.DefaultObject
         private Author Author(string organization, string email)
         {
             return _entities.Authors().ContainsOperation().Contains(organization, email)
-                ? _entities.Authors().GetOperation().Author(email)
+                ? _entities.Authors().GetOperation().Author(organization, email)
                 : _entities.Authors().InsertOperation().Insert(organization, email);
         }
     }

@@ -15,12 +15,13 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Author Author(string email)
+        public Author Author(string organization, string email)
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Id FROM Author WHERE Email = @Email";
+            command.CommandText = "SELECT Id FROM Author WHERE Organization = @Organization AND Email = @Email";
 
+            command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
 
             using var reader = command.ExecuteReader();
