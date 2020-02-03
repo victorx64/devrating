@@ -36,8 +36,10 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                Assert.True(database.Entities().Authors().ContainsOperation()
-                    .Contains(database.Entities().Authors().InsertOperation().Insert("organization", "email").Email()));
+                var organization = "organization";
+
+                Assert.True(database.Entities().Authors().ContainsOperation().Contains(organization,
+                    database.Entities().Authors().InsertOperation().Insert(organization, "email").Email()));
             }
             finally
             {
