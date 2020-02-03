@@ -1,6 +1,6 @@
 namespace DevRating.ConsoleApp
 {
-    internal sealed class SystemConsole : Console
+    public sealed class SystemConsole : Console
     {
         public void WriteLine()
         {
