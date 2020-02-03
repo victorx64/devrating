@@ -16,10 +16,10 @@ namespace DevRating.DefaultObject
             _formula = formula;
         }
 
-        public Work InsertedWork(string organization, string repository, string start, string end, string email, uint additions,
-            Envelope link)
+        public Work InsertedWork(string organization, string repository, string start, string end, string email,
+            uint additions, Envelope link)
         {
-            var author = Author(organization, email);
+            var author = AuthorInOrg(organization, email);
 
             return _entities.Works().InsertOperation().Insert(repository, start, end, author.Id(), additions,
                 _entities.Ratings().GetOperation().RatingOf(author.Id()).Id(), link);
@@ -39,7 +39,7 @@ namespace DevRating.DefaultObject
 
         private void InsertRatings(string organization, string email, Id work, IEnumerable<Deletion> deletions)
         {
-            var author = Author(organization, email);
+            var author = AuthorInOrg(organization, email);
 
             var winner = _entities.Ratings().GetOperation().RatingOf(author.Id());
 
@@ -66,13 +66,14 @@ namespace DevRating.DefaultObject
             return deletions.Where(NonSelfDeletion).ToList();
         }
 
-        private IEnumerable<Match> MatchesWithInsertedLosers(string organization, IEnumerable<Deletion> deletions, Id work, double winner)
+        private IEnumerable<Match> MatchesWithInsertedLosers(string organization, IEnumerable<Deletion> deletions,
+            Id work, double winner)
         {
             var matches = new List<Match>();
 
             foreach (var deletion in deletions)
             {
-                var victim = Author(organization, deletion.Email());
+                var victim = AuthorInOrg(organization, deletion.Email());
 
                 var current = _entities.Ratings().GetOperation().RatingOf(victim.Id());
 
@@ -92,7 +93,7 @@ namespace DevRating.DefaultObject
             return matches;
         }
 
-        private Author Author(string organization, string email)
+        private Author AuthorInOrg(string organization, string email)
         {
             return _entities.Authors().ContainsOperation().Contains(organization, email)
                 ? _entities.Authors().GetOperation().Author(organization, email)
