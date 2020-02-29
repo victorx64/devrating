@@ -218,6 +218,38 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
+        public void ReturnsValidSinceCommit()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var since = "sinceCommit";
+
+                Assert.Equal(
+                    since,
+                    database.Entities().Works().InsertOperation().Insert(
+                        "repo",
+                        "startCommit",
+                        "endCommit",
+                        new DefaultEnvelope(since),
+                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                        1u,
+                        new DefaultId(),
+                        new DefaultEnvelope()
+                    ).Since().Value()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void DoesntImplementToJson()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
