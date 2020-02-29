@@ -16,13 +16,29 @@ namespace DevRating.DefaultObject
             _formula = formula;
         }
 
-        public Work InsertedWork(string organization, string repository, string start, string end, string email,
-            uint additions, Envelope link)
+        public Work InsertedWork(
+            string organization,
+            string repository,
+            string start,
+            string end,
+            Envelope since,
+            string email,
+            uint additions,
+            Envelope link
+        )
         {
             var author = AuthorInOrg(organization, email);
 
-            return _entities.Works().InsertOperation().Insert(repository, start, end, author.Id(), additions,
-                _entities.Ratings().GetOperation().RatingOf(author.Id()).Id(), link);
+            return _entities.Works().InsertOperation().Insert(
+                repository,
+                start,
+                end,
+                since,
+                author.Id(),
+                additions,
+                _entities.Ratings().GetOperation().RatingOf(author.Id()).Id(),
+                link
+            );
         }
 
         public void InsertRatings(string organization, string email, IEnumerable<Deletion> deletions, Id work)
@@ -45,10 +61,9 @@ namespace DevRating.DefaultObject
 
             var value = winner.Id().Filled() ? winner.Value() : _formula.DefaultRating();
 
-            var matches = MatchesWithInsertedLosers(organization, deletions, work, value);
-
             _entities.Ratings().InsertOperation().Insert(
-                _formula.WinnerNewRating(value, matches),
+                _formula.WinnerNewRating(value, MatchesWithInsertedLosers(organization, deletions, work, value)),
+                new DefaultEnvelope(),
                 new DefaultEnvelope(),
                 winner.Id(),
                 work,
@@ -66,8 +81,12 @@ namespace DevRating.DefaultObject
             return deletions.Where(NonSelfDeletion).ToList();
         }
 
-        private IEnumerable<Match> MatchesWithInsertedLosers(string organization, IEnumerable<Deletion> deletions,
-            Id work, double winner)
+        private IEnumerable<Match> MatchesWithInsertedLosers(
+            string organization,
+            IEnumerable<Deletion> deletions,
+            Id work,
+            double winner
+        )
         {
             var matches = new List<Match>();
 
@@ -80,14 +99,15 @@ namespace DevRating.DefaultObject
                 var value = current.Id().Filled() ? current.Value() : _formula.DefaultRating();
 
                 _entities.Ratings().InsertOperation().Insert(
-                    _formula.LoserNewRating(value, new DefaultMatch(winner, deletion.Count())),
-                    new DefaultEnvelope(deletion.Count()),
+                    _formula.LoserNewRating(value, new DefaultMatch(winner, deletion.Counted())),
+                    new DefaultEnvelope(deletion.Counted()),
+                    new DefaultEnvelope(deletion.Ignored()),
                     current.Id(),
                     work,
                     victim.Id()
                 );
 
-                matches.Add(new DefaultMatch(value, deletion.Count()));
+                matches.Add(new DefaultMatch(value, deletion.Counted()));
             }
 
             return matches;

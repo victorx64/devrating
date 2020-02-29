@@ -36,13 +36,23 @@ namespace DevRating.ConsoleApp
             {
                 Application().Top(console, organization);
             }
+            else
+            {
+                PrintUsage(console);
+            }
         }
 
-        private static LibGit2Diff Diff(string organization, string start, string end, IRepository repository)
+        private static LibGit2Diff Diff(
+            string organization,
+            string start,
+            string end,
+            IRepository repository
+        )
         {
             return new LibGit2Diff(
                 start,
                 end,
+                new DefaultEnvelope(),
                 repository,
                 repository.Network.Remotes.First().Url,
                 new DefaultEnvelope(),

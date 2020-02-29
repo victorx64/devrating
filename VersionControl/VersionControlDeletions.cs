@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DevRating.DefaultObject;
 using DevRating.Domain;
 
 namespace DevRating.VersionControl
@@ -48,17 +47,12 @@ namespace DevRating.VersionControl
 
             for (var i = index; i < index + count; i += increment)
             {
-                var blame = _blames.HunkForLine(i);
+                var deletion = _blames.HunkForLine(i).Deletion(i, index + count);
 
-                increment = BlameHunkLastLineIndex(blame, index + count) - i;
+                increment = deletion.Counted() + deletion.Ignored();
 
-                yield return new DefaultDeletion(blame.AuthorEmail(), increment);
+                yield return deletion;
             }
-        }
-
-        private uint BlameHunkLastLineIndex(Blame blame, uint limit)
-        {
-            return Math.Min(blame.StartLineNumber() + blame.LineCount(), limit);
         }
 
         private IReadOnlyList<string> HeaderParts(string header)

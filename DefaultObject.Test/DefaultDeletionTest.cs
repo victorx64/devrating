@@ -13,11 +13,19 @@ namespace DevRating.DefaultObject.Test
         }
 
         [Fact]
-        public void ReturnsCountFromCtor()
+        public void ReturnsCountedNumberFromCtor()
         {
             var count = 2u;
 
-            Assert.Equal(count, new DefaultDeletion("some other email", count).Count());
+            Assert.Equal(count, new DefaultDeletion("some other email", count).Counted());
+        }
+
+        [Fact]
+        public void ReturnsIgnoredNumberFromCtor()
+        {
+            var count = 3u;
+
+            Assert.Equal(count, new DefaultDeletion("another email", 0, count).Ignored());
         }
     }
 }

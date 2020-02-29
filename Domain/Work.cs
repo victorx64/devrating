@@ -8,5 +8,6 @@ namespace DevRating.Domain
         string Repository();
         string Start();
         string End();
+        Envelope Since();
     }
 }

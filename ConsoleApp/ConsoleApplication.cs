@@ -33,10 +33,14 @@ namespace DevRating.ConsoleApp
                     var percentile = _formula
                         .WinProbabilityOfA(
                             _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value(),
-                            _formula.DefaultRating());
+                            _formula.DefaultRating()
+                        );
 
                     console.WriteLine(
-                        $"{author.Email()} {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} ({percentile:P} percentile)");
+                        $"{author.Email()} " +
+                        $"{_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} " +
+                        $"({percentile:P} percentile)"
+                    );
                 }
             }
             finally
@@ -143,14 +147,14 @@ namespace DevRating.ConsoleApp
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                var deletions = rating.Deletions();
+                var deletions = rating.CountedDeletions();
 
                 var information = deletions.Filled()
                     ? $"lost {deletions.Value()} lines"
                     : "the performer";
 
-                console.WriteLine(
-                    $"{rating.Author().Email()} {before:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
+                console.WriteLine($"{rating.Author().Email()} {before:F2} " +
+                                  $"({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }

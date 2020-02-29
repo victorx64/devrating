@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -23,7 +24,7 @@ namespace DevRating.SqliteClient
 
         public string ToJson()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public uint Additions()
@@ -102,6 +103,17 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
             return (string) command.ExecuteScalar();
+        }
+
+        public Envelope Since()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT SinceCommit FROM Work WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
         }
     }
 }

@@ -24,7 +24,11 @@ namespace DevRating.VersionControl
 
         private Deletion Deletion(IGrouping<string, Deletion> grouping)
         {
-            return new DefaultDeletion(DeletionsAuthor(grouping), DeletionsCountsSum(grouping));
+            return new DefaultDeletion(
+                DeletionsAuthor(grouping),
+                DeletionsCountsSum(grouping),
+                IgnoredDeletionsCountsSum(grouping)
+            );
         }
 
         private IEnumerable<Deletion> HunkDeletions(Hunk hunk)
@@ -49,7 +53,17 @@ namespace DevRating.VersionControl
 
         private long DeletionsCount(Deletion deletion)
         {
-            return deletion.Count();
+            return deletion.Counted();
+        }
+
+        private uint IgnoredDeletionsCountsSum(IEnumerable<Deletion> grouping)
+        {
+            return (uint) grouping.Sum(IgnoredDeletionsCount);
+        }
+
+        private long IgnoredDeletionsCount(Deletion deletion)
+        {
+            return deletion.Ignored();
         }
     }
 }

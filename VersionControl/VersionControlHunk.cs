@@ -1,19 +1,16 @@
-using DevRating.VersionControl;
-using LibGit2Sharp;
-
-namespace DevRating.LibGit2SharpClient
+namespace DevRating.VersionControl
 {
-    public sealed class LibGit2Hunk : Hunk
+    public sealed class VersionControlHunk : Hunk
     {
         private readonly Deletions _deletions;
         private readonly Additions _additions;
 
-        public LibGit2Hunk(string patch, BlameHunkCollection blames)
-            : this(new VersionControlDeletions(patch, new LibGit2Blames(blames)), new VersionControlAdditions(patch))
+        public VersionControlHunk(string patch, Blames blames)
+            : this(new VersionControlDeletions(patch, blames), new VersionControlAdditions(patch))
         {
         }
 
-        public LibGit2Hunk(Deletions deletions, Additions additions)
+        public VersionControlHunk(Deletions deletions, Additions additions)
         {
             _deletions = deletions;
             _additions = additions;
