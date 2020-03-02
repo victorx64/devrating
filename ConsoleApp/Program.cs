@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DevRating.DefaultObject;
+using DevRating.Domain;
 using DevRating.EloRating;
 using DevRating.LibGit2SharpClient;
 using DevRating.SqliteClient;
@@ -24,13 +25,30 @@ namespace DevRating.ConsoleApp
             {
                 using var repository = new Repository(args[1]);
 
-                Application().PrintTo(console, Diff(organization, args[2], args[3], repository));
+                Application().PrintTo(
+                    console,
+                    Diff(
+                        organization,
+                        args[2],
+                        args[3],
+                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        repository
+                    )
+                );
             }
             else if (args[0].Equals("add", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
 
-                Application().Save(Diff(organization, args[2], args[3], repository));
+                Application().Save(
+                    Diff(
+                        organization,
+                        args[2],
+                        args[3],
+                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        repository
+                    )
+                );
             }
             else if (args[0].Equals("top", StringComparison.OrdinalIgnoreCase))
             {
@@ -46,13 +64,14 @@ namespace DevRating.ConsoleApp
             string organization,
             string start,
             string end,
+            Envelope since,
             IRepository repository
         )
         {
             return new LibGit2Diff(
                 start,
                 end,
-                new DefaultEnvelope(),
+                since,
                 repository,
                 repository.Network.Remotes.First().Url,
                 new DefaultEnvelope(),

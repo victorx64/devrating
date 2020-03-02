@@ -130,14 +130,21 @@ namespace DevRating.ConsoleApp
                 $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
             console.WriteLine();
 
-            PrintWorkRatingsToConsole(console, work.Id());
+            PrintWorkRatingsToConsole(console, work);
         }
 
-        private void PrintWorkRatingsToConsole(Console console, Id work)
+        private void PrintWorkRatingsToConsole(Console console, Work work)
         {
             console.WriteLine("Rating updates");
 
-            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work))
+            if (work.Since().Filled())
+            {
+                console.WriteLine($"The current major version starts at {work.Since().Value()}");
+                console.WriteLine("Old lines are ignored");
+                console.WriteLine();
+            }
+
+            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()))
             {
                 var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
 
