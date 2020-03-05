@@ -1,5 +1,7 @@
 # Dev Rating: Software Developer Reward System
 
+Viktor Semenov
+
 ## Introduction
 
 Neither the fixed nor the hourly pay of programmers take into account the exact 
