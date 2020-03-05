@@ -15,7 +15,7 @@
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>Elo formula</Description>
-        <Copyright>Copyright © Victor Semenov 2020</Copyright>
+        <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
