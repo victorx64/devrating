@@ -18,7 +18,7 @@
         <TargetFrameworks>netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <Description>Dev Rating is a tool that evaluates a reward of a developer based on git diff</Description>
-        <Copyright>Copyright © Victor Semenov 2020</Copyright>
+        <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
