@@ -36,10 +36,14 @@ namespace DevRating.ConsoleApp
                     var percentile = _formula
                         .WinProbabilityOfA(
                             _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value(),
-                            _formula.DefaultRating());
+                            _formula.DefaultRating()
+                        );
 
                     console.WriteLine(
-                        $"{author.Email()} {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} ({percentile:P} percentile)");
+                        $"{author.Email()} " +
+                        $"{_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} " +
+                        $"({percentile:P} percentile)"
+                    );
                 }
             }
             finally
@@ -129,14 +133,21 @@ namespace DevRating.ConsoleApp
                 $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
             console.WriteLine();
 
-            PrintWorkRatingsToConsole(console, work.Id());
+            PrintWorkRatingsToConsole(console, work);
         }
 
-        private void PrintWorkRatingsToConsole(Console console, Id work)
+        private void PrintWorkRatingsToConsole(Console console, Work work)
         {
             console.WriteLine("Rating updates");
 
-            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work))
+            if (work.Since().Filled())
+            {
+                console.WriteLine($"The current major version starts at {work.Since().Value()}");
+                console.WriteLine("Old lines are ignored");
+                console.WriteLine();
+            }
+
+            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()))
             {
                 var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
 
@@ -146,14 +157,14 @@ namespace DevRating.ConsoleApp
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                var deletions = rating.Deletions();
+                var deletions = rating.CountedDeletions();
 
                 var information = deletions.Filled()
                     ? $"lost {deletions.Value()} lines"
                     : "the performer";
 
-                console.WriteLine(
-                    $"{rating.Author().Email()} {before:F2} ({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
+                console.WriteLine($"{rating.Author().Email()} {before:F2} " +
+                                  $"({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }
     }

@@ -1,6 +1,10 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using DevRating.DefaultObject;
+using DevRating.Domain;
+
 namespace DevRating.VersionControl.Fake
 {
     public sealed class FakeBlame : Blame
@@ -16,24 +20,18 @@ namespace DevRating.VersionControl.Fake
             _count = count;
         }
 
-        public string AuthorEmail()
-        {
-            return _email;
-        }
-
-        public uint StartLineNumber()
-        {
-            return _start;
-        }
-
-        public uint LineCount()
-        {
-            return _count;
-        }
-
         public bool ContainsLine(uint line)
         {
-            return StartLineNumber() <= line && line < StartLineNumber() + LineCount();
+            return _start <= line && line < _start + _count;
+        }
+
+        public Deletion Deletion(uint i, uint limit)
+        {
+            return new DefaultDeletion(
+                _email,
+                Math.Min(_start + _count, limit) - i,
+                0
+            );
         }
     }
 }

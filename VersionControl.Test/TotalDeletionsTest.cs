@@ -16,7 +16,7 @@ namespace DevRating.VersionControl.Test
         {
             long Count(Deletion arg)
             {
-                return arg.Count();
+                return arg.Counted();
             }
 
             Assert.Equal(
@@ -106,7 +106,7 @@ namespace DevRating.VersionControl.Test
                                         new[]
                                         {
                                             new DefaultDeletion(email, 30u),
-                                            new DefaultDeletion("not the email", 40u),
+                                            new DefaultDeletion("not the email", 22u),
                                         }),
                                     new FakeAdditions(5u)),
                             }
@@ -114,7 +114,7 @@ namespace DevRating.VersionControl.Test
                     )
                     .Items()
                     .Single(DeletionWithTheEmail)
-                    .Count());
+                    .Counted());
         }
 
         [Fact]

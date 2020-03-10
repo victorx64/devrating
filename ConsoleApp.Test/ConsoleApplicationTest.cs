@@ -58,20 +58,22 @@ namespace DevRating.ConsoleApp.Test
             var authors = new List<Author>();
             var works = new List<Work>();
             var ratings = new List<Rating>();
-            var database = new FakeDatabase(
-                new FakeDbInstance(),
-                new FakeEntities(
-                    new FakeWorks(ratings, works, authors),
-                    new FakeRatings(ratings, works, authors),
-                    new FakeAuthors(authors)
-                )
-            );
 
-            new ConsoleApplication(database, new EloFormula()).Save(
+            new ConsoleApplication(
+                new FakeDatabase(
+                    new FakeDbInstance(),
+                    new FakeEntities(
+                        new FakeWorks(ratings, works, authors),
+                        new FakeRatings(ratings, works, authors),
+                        new FakeAuthors(authors)
+                    )
+                ), new EloFormula()
+            ).Save(
                 new FakeDiff(
                     "key",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     "author",
                     "org",
                     10u,
@@ -92,19 +94,11 @@ namespace DevRating.ConsoleApp.Test
             var authors = new List<Author>();
             var works = new List<Work>();
             var ratings = new List<Rating>();
-            var database = new FakeDatabase(
-                new FakeDbInstance(),
-                new FakeEntities(
-                    new FakeWorks(ratings, works, authors),
-                    new FakeRatings(ratings, works, authors),
-                    new FakeAuthors(authors)
-                )
-            );
-
             var diff = new FakeDiff(
                 "key",
                 "start",
                 "end",
+                new DefaultEnvelope(),
                 "author",
                 "org",
                 10u,
@@ -115,7 +109,16 @@ namespace DevRating.ConsoleApp.Test
                 }
             );
 
-            var application = new ConsoleApplication(database, new EloFormula());
+            var application = new ConsoleApplication(
+                new FakeDatabase(
+                    new FakeDbInstance(),
+                    new FakeEntities(
+                        new FakeWorks(ratings, works, authors),
+                        new FakeRatings(ratings, works, authors),
+                        new FakeAuthors(authors)
+                    )
+                ), new EloFormula()
+            );
 
             application.Save(diff);
 
@@ -133,22 +136,25 @@ namespace DevRating.ConsoleApp.Test
             var authors = new List<Author>();
             var works = new List<Work>();
             var ratings = new List<Rating>();
-            var database = new FakeDatabase(
-                new FakeDbInstance(),
-                new FakeEntities(
-                    new FakeWorks(ratings, works, authors),
-                    new FakeRatings(ratings, works, authors),
-                    new FakeAuthors(authors)
-                )
-            );
             var lines = new List<string>();
 
-            new ConsoleApplication(database, new EloFormula()).PrintTo(
+            new ConsoleApplication(
+                new FakeDatabase(
+                    new FakeDbInstance(),
+                    new FakeEntities(
+                        new FakeWorks(ratings, works, authors),
+                        new FakeRatings(ratings, works, authors),
+                        new FakeAuthors(authors)
+                    )
+                ),
+                new EloFormula()
+            ).PrintTo(
                 new FakeConsole(lines),
                 new FakeDiff(
                     "key",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     "author",
                     "org",
                     10u,

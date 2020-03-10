@@ -24,9 +24,12 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork("organization", "repository",
+                .InsertedWork(
+                    "organization",
+                    "repository",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     "new author",
                     0u,
                     new DefaultEnvelope()
@@ -49,9 +52,12 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork(organization, "repository",
+                .InsertedWork(
+                    organization,
+                    "repository",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     "existing author",
                     0u,
                     new DefaultEnvelope()
@@ -73,9 +79,12 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork("ANOTHER organization", "repository",
+                .InsertedWork(
+                    "ANOTHER organization",
+                    "repository",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     "existing author",
                     0u,
                     new DefaultEnvelope()
@@ -96,9 +105,12 @@ namespace DevRating.DefaultObject.Test
                         new List<Rating>()),
                     new FakeFormula()
                 )
-                .InsertedWork("organization", "repository",
+                .InsertedWork(
+                    "organization", 
+                    "repository",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     "other author",
                     0u,
                     new DefaultEnvelope()
@@ -124,9 +136,12 @@ namespace DevRating.DefaultObject.Test
                     ),
                     new FakeFormula()
                 )
-                .InsertedWork(organization, "repository",
+                .InsertedWork(
+                    organization, 
+                    "repository",
                     "start",
                     "end",
+                    new DefaultEnvelope(),
                     author.Email(),
                     0u,
                     new DefaultEnvelope()
@@ -165,7 +180,7 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion.Count())
+                        new DefaultMatch(formula.DefaultRating(), deletion.Counted())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -223,7 +238,7 @@ namespace DevRating.DefaultObject.Test
             Assert.Equal(
                 formula.LoserNewRating(
                     formula.DefaultRating(),
-                    new DefaultMatch(formula.DefaultRating(), deletion.Count())
+                    new DefaultMatch(formula.DefaultRating(), deletion.Counted())
                 ),
                 ratings.Single(RatingOfVictim).Value()
             );
@@ -234,12 +249,10 @@ namespace DevRating.DefaultObject.Test
         {
             var organization = "organization";
             var author = new FakeAuthor(organization, "author");
-            var victim1 = "first victim";
-            var victim2 = "second victim";
             var ratings = new List<Rating>();
             var formula = new FakeFormula(10, 1);
-            var deletion1 = new DefaultDeletion(victim1, 2);
-            var deletion2 = new DefaultDeletion(victim2, 3);
+            var deletion1 = new DefaultDeletion("first victim", 2);
+            var deletion2 = new DefaultDeletion("second victim", 3);
             var work = new FakeWork(0u, author);
 
             new DefaultEntityFactory(
@@ -262,8 +275,8 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion1.Count()),
-                        new DefaultMatch(formula.DefaultRating(), deletion2.Count())
+                        new DefaultMatch(formula.DefaultRating(), deletion1.Counted()),
+                        new DefaultMatch(formula.DefaultRating(), deletion2.Counted())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -306,7 +319,7 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion.Count())
+                        new DefaultMatch(formula.DefaultRating(), deletion.Counted())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -343,7 +356,7 @@ namespace DevRating.DefaultObject.Test
             Assert.Equal(
                 formula.LoserNewRating(
                     formula.DefaultRating(),
-                    new DefaultMatch(formula.DefaultRating(), deletion.Count())
+                    new DefaultMatch(formula.DefaultRating(), deletion.Counted())
                 ),
                 ratings.Last(RatingOfVictim).Value()
             );
@@ -389,8 +402,8 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion1.Count()),
-                        new DefaultMatch(formula.DefaultRating(), deletion2.Count())
+                        new DefaultMatch(formula.DefaultRating(), deletion1.Counted()),
+                        new DefaultMatch(formula.DefaultRating(), deletion2.Counted())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -430,7 +443,7 @@ namespace DevRating.DefaultObject.Test
                     rating.Value(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion.Count())
+                        new DefaultMatch(formula.DefaultRating(), deletion.Counted())
                     }
                 ),
                 ratings.Last(RatingOfAuthor).Value()

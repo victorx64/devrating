@@ -39,7 +39,12 @@ namespace DevRating.DefaultObject.Fake
             throw new NotSupportedException();
         }
 
-        public Envelope Deletions()
+        public Envelope CountedDeletions()
+        {
+            throw new NotSupportedException();
+        }
+
+        public Envelope IgnoredDeletions()
         {
             throw new NotSupportedException();
         }

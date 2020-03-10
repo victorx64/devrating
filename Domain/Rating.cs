@@ -7,7 +7,8 @@ namespace DevRating.Domain
     {
         double Value();
         Rating PreviousRating();
-        Envelope Deletions();
+        Envelope CountedDeletions();
+        Envelope IgnoredDeletions();
         Work Work();
         Author Author();
     }

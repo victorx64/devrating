@@ -45,11 +45,22 @@ namespace DevRating.SqliteClient
             return new SqliteRating(_connection, new DefaultId(reader["PreviousRatingId"]));
         }
 
-        public Envelope Deletions()
+        public Envelope CountedDeletions()
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Deletions FROM Rating WHERE Id = @Id";
+            command.CommandText = "SELECT CountedDeletions FROM Rating WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
+        }
+
+        public Envelope IgnoredDeletions()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT IgnoredDeletions FROM Rating WHERE Id = @Id";
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 

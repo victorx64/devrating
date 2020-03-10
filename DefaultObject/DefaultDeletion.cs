@@ -8,12 +8,19 @@ namespace DevRating.DefaultObject
     public sealed class DefaultDeletion : Deletion
     {
         private readonly string _email;
-        private readonly uint _count;
+        private readonly uint _counted;
+        private readonly uint _ignored;
 
-        public DefaultDeletion(string email, uint count)
+        public DefaultDeletion(string email, uint counted)
+            : this(email, counted, 0)
+        {
+        }
+
+        public DefaultDeletion(string email, uint counted, uint ignored)
         {
             _email = email;
-            _count = count;
+            _counted = counted;
+            _ignored = ignored;
         }
 
         public string Email()
@@ -21,9 +28,14 @@ namespace DevRating.DefaultObject
             return _email;
         }
 
-        public uint Count()
+        public uint Counted()
         {
-            return _count;
+            return _counted;
+        }
+
+        public uint Ignored()
+        {
+            return _ignored;
         }
     }
 }

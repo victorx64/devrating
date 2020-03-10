@@ -23,10 +23,10 @@ namespace DevRating.SqliteClient
             command.CommandText = @"
                 create table Author
                 (
-                    Id    integer
+                    Id               integer
                         primary key autoincrement,
-                    Organization nvarchar(50) not null,
-                    Email nvarchar(50) not null,
+                    Organization     nvarchar(50) not null,
+                    Email            nvarchar(50) not null,
                     constraint UK_Author_Email_Organization
                         unique (Email, Organization)
                 );
@@ -36,7 +36,8 @@ namespace DevRating.SqliteClient
                     Id               integer
                         primary key autoincrement,
                     Rating           real    not null,
-                    Deletions        integer,
+                    CountedDeletions integer,
+                    IgnoredDeletions integer,
                     PreviousRatingId integer
                         references Rating on delete cascade,
                     WorkId           integer not null
@@ -57,6 +58,7 @@ namespace DevRating.SqliteClient
                     Link         nvarchar,
                     StartCommit  nvarchar(50) not null,
                     EndCommit    nvarchar(50) not null,
+                    SinceCommit  nvarchar(50),
                     AuthorId     integer      not null
                         references Author on delete cascade,
                     Additions    integer      not null,

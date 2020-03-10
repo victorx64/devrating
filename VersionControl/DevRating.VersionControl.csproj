@@ -8,7 +8,7 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.1.0</PackageVersion>
+        <PackageVersion>2.1.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.VersionControl</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
@@ -19,7 +19,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DefaultObject\DevRating.DefaultObject.csproj" />
+        <PackageReference Include="semver" Version="2.0.6"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DefaultObject\DevRating.DefaultObject.csproj"/>
     </ItemGroup>
 
 </Project>

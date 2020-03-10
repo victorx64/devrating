@@ -21,8 +21,16 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public Work Insert(string repository, string start, string end, Id author, uint additions, Id rating,
-            Envelope link)
+        public Work Insert(
+            string repository,
+            string start,
+            string end,
+            Envelope since,
+            Id author,
+            uint additions,
+            Id rating,
+            Envelope link
+        )
         {
             var work = new FakeWork(
                 new DefaultId(Guid.NewGuid()),
@@ -31,7 +39,8 @@ namespace DevRating.DefaultObject.Fake
                 Rating(rating),
                 repository,
                 start,
-                end
+                end,
+                since
             );
 
             _works.Add(work);

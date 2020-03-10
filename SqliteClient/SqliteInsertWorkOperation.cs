@@ -17,8 +17,16 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Work Insert(string repository, string start, string end, Id author, uint additions, Id rating,
-            Envelope link)
+        public Work Insert(
+            string repository,
+            string start,
+            string end,
+            Envelope since,
+            Id author,
+            uint additions,
+            Id rating,
+            Envelope link
+        )
         {
             using var command = _connection.CreateCommand();
 
@@ -28,6 +36,7 @@ namespace DevRating.SqliteClient
                     ,Link
                     ,StartCommit
                     ,EndCommit
+                    ,SinceCommit
                     ,AuthorId
                     ,Additions
                     ,UsedRatingId)
@@ -36,6 +45,7 @@ namespace DevRating.SqliteClient
                     ,@Link
                     ,@StartCommit
                     ,@EndCommit
+                    ,@SinceCommit
                     ,@AuthorId
                     ,@Additions
                     ,@UsedRatingId);
@@ -45,6 +55,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@Link", SqliteType.Text) {Value = link.Value()});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
+            command.Parameters.Add(new SqliteParameter("@SinceCommit", SqliteType.Text, 50) {Value = since.Value()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Value()});
             command.Parameters.Add(new SqliteParameter("@Additions", SqliteType.Integer) {Value = additions});
             command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) {Value = rating.Value()});
