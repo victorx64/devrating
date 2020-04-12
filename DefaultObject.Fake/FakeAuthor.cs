@@ -42,5 +42,10 @@ namespace DevRating.DefaultObject.Fake
         {
             return _organization;
         }
+
+        public DateTimeOffset CreatedAt()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
