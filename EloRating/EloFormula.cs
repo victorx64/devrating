@@ -14,7 +14,7 @@ namespace DevRating.EloRating
         private readonly double _n;
         private readonly double _default;
 
-        public EloFormula() : this(2d, 400d, 1500d)
+        public EloFormula() : this(1d, 400d, 1500d)
         {
         }
 
