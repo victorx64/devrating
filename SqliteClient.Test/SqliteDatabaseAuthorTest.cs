@@ -23,7 +23,7 @@ namespace DevRating.SqliteClient.Test
                 var organization = "organization";
 
                 Assert.Equal(organization,
-                    database.Entities().Authors().InsertOperation().Insert(organization, email).Organization());
+                    database.Entities().Authors().InsertOperation().Insert(organization, email, DateTimeOffset.UtcNow).Organization());
             }
             finally
             {
@@ -45,7 +45,7 @@ namespace DevRating.SqliteClient.Test
                 var organization = "organization";
 
                 Assert.Equal(email,
-                    database.Entities().Authors().InsertOperation().Insert(organization, email).Email());
+                    database.Entities().Authors().InsertOperation().Insert(organization, email, DateTimeOffset.UtcNow).Email());
             }
             finally
             {
@@ -64,7 +64,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 Assert.Throws<NotImplementedException>(database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email")
+                    .Insert("organization", "email", DateTimeOffset.UtcNow)
                     .ToJson);
             }
             finally

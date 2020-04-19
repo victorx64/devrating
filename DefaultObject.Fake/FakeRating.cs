@@ -15,18 +15,44 @@ namespace DevRating.DefaultObject.Fake
         private readonly Rating _previous;
         private readonly Envelope _deletions;
         private readonly Envelope _ignored;
+        private readonly DateTimeOffset _createdAt;
 
         public FakeRating(double value, Work work, Author author)
-            : this(value, work, author, new NullRating(), new DefaultEnvelope(), new DefaultEnvelope())
+            : this(
+                value,
+                work,
+                author,
+                new NullRating(),
+                new DefaultEnvelope(),
+                new DefaultEnvelope(),
+                DateTimeOffset.UtcNow
+            )
         {
         }
 
-        public FakeRating(double value, Work work, Author author, Rating previous, Envelope deletions, Envelope ignored)
-            : this(new DefaultId(Guid.NewGuid()), value, work, author, previous, deletions, ignored)
+        public FakeRating(
+            double value,
+            Work work,
+            Author author,
+            Rating previous,
+            Envelope deletions,
+            Envelope ignored,
+            DateTimeOffset createdAt
+        )
+            : this(new DefaultId(Guid.NewGuid()), value, work, author, previous, deletions, ignored, createdAt)
         {
         }
 
-        public FakeRating(Id id, double value, Work work, Author author, Rating previous, Envelope deletions, Envelope ignored)
+        public FakeRating(
+            Id id,
+            double value,
+            Work work,
+            Author author,
+            Rating previous,
+            Envelope deletions,
+            Envelope ignored,
+            DateTimeOffset createdAt
+        )
         {
             _id = id;
             _value = value;
@@ -35,6 +61,7 @@ namespace DevRating.DefaultObject.Fake
             _previous = previous;
             _deletions = deletions;
             _ignored = ignored;
+            _createdAt = createdAt;
         }
 
         public Id Id()

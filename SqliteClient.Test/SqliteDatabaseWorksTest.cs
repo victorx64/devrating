@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using DevRating.DefaultObject;
 using Microsoft.Data.Sqlite;
@@ -26,10 +27,15 @@ namespace DevRating.SqliteClient.Test
                             "startCommit",
                             "endCommit",
                             new DefaultEnvelope(),
-                            database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                            database.Entities().Authors().InsertOperation().Insert(
+                                "organization",
+                                "email",
+                                DateTimeOffset.UtcNow
+                            ).Id(),
                             1u,
                             new DefaultId(),
-                            new DefaultEnvelope()
+                            new DefaultEnvelope(),
+                            DateTimeOffset.UtcNow
                         ).Id()
                     )
                 );
@@ -55,10 +61,15 @@ namespace DevRating.SqliteClient.Test
                     "startCommit",
                     "endCommit",
                     new DefaultEnvelope(),
-                    database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "email",
+                        DateTimeOffset.UtcNow
+                    ).Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.True(database.Entities().Works().ContainsOperation().Contains(
@@ -88,10 +99,15 @@ namespace DevRating.SqliteClient.Test
                     "startCommit",
                     "endCommit",
                     new DefaultEnvelope(),
-                    database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "email",
+                        DateTimeOffset.UtcNow
+                    ).Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(work.Id(), database.Entities().Works().GetOperation().Work(work.Id()).Id());
@@ -118,10 +134,15 @@ namespace DevRating.SqliteClient.Test
                         "startCommit",
                         "endCommit",
                         new DefaultEnvelope(),
-                        database.Entities().Authors().InsertOperation().Insert("organization", "email").Id(),
+                        database.Entities().Authors().InsertOperation().Insert(
+                            "organization",
+                            "email",
+                            DateTimeOffset.UtcNow
+                        ).Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope()
+                        new DefaultEnvelope(),
+                        DateTimeOffset.UtcNow
                     ).Id(),
                     database.Entities().Works().GetOperation().Work(
                         "repo",
@@ -151,10 +172,15 @@ namespace DevRating.SqliteClient.Test
                     "start1",
                     "end1",
                     new DefaultEnvelope(),
-                    database.Entities().Authors().InsertOperation().Insert("organization", "author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "author",
+                        DateTimeOffset.UtcNow
+                    ).Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 var last = database.Entities().Works().InsertOperation().Insert(
@@ -162,10 +188,15 @@ namespace DevRating.SqliteClient.Test
                     "start2",
                     "end2",
                     new DefaultEnvelope(),
-                    database.Entities().Authors().InsertOperation().Insert("organization", "other author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "other author",
+                        DateTimeOffset.UtcNow
+                    ).Id(),
                     2u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(
@@ -194,10 +225,14 @@ namespace DevRating.SqliteClient.Test
                     "start1",
                     "end1",
                     new DefaultEnvelope(),
-                    database.Entities().Authors().InsertOperation().Insert("organization", "author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "author",
+                        DateTimeOffset.UtcNow).Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Works().InsertOperation().Insert(
@@ -205,10 +240,14 @@ namespace DevRating.SqliteClient.Test
                     "start2",
                     "end2",
                     new DefaultEnvelope(),
-                    database.Entities().Authors().InsertOperation().Insert("organization", "other author").Id(),
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "other author",
+                        DateTimeOffset.UtcNow).Id(),
                     2u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(

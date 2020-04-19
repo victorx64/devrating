@@ -16,9 +16,18 @@ namespace DevRating.DefaultObject.Fake
         private readonly string _start;
         private readonly string _end;
         private readonly Envelope _since;
+        private readonly DateTimeOffset _createdAt;
 
         public FakeWork(uint additions, Author author)
-            : this(additions, author, "repository", "startCommit", "endCommit", new DefaultEnvelope("sinceCommit"))
+            : this(
+                additions,
+                author,
+                "repository",
+                "startCommit",
+                "endCommit",
+                new DefaultEnvelope("sinceCommit"),
+                DateTimeOffset.UtcNow
+            )
         {
         }
 
@@ -28,7 +37,8 @@ namespace DevRating.DefaultObject.Fake
             string repository,
             string start,
             string end,
-            Envelope since
+            Envelope since,
+            DateTimeOffset createdAt
         )
             : this(
                 additions,
@@ -37,7 +47,8 @@ namespace DevRating.DefaultObject.Fake
                 repository,
                 start,
                 end,
-                since
+                since,
+                createdAt
             )
         {
         }
@@ -49,7 +60,8 @@ namespace DevRating.DefaultObject.Fake
             string repository,
             string start,
             string end,
-            Envelope since
+            Envelope since,
+            DateTimeOffset createdAt
         )
             : this(
                 new DefaultId(Guid.NewGuid()),
@@ -59,7 +71,8 @@ namespace DevRating.DefaultObject.Fake
                 repository,
                 start,
                 end,
-                since
+                since,
+                createdAt
             )
         {
         }
@@ -72,7 +85,8 @@ namespace DevRating.DefaultObject.Fake
             string repository,
             string start,
             string end,
-            Envelope since
+            Envelope since,
+            DateTimeOffset createdAt
         )
         {
             _id = id;
@@ -83,6 +97,7 @@ namespace DevRating.DefaultObject.Fake
             _start = start;
             _end = end;
             _since = since;
+            _createdAt = createdAt;
         }
 
         public Id Id()
@@ -132,7 +147,7 @@ namespace DevRating.DefaultObject.Fake
 
         public DateTimeOffset CreatedAt()
         {
-            throw new NotImplementedException();
+            return _createdAt;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace DevRating.ConsoleApp
                     throw new InvalidOperationException("The diff is already added.");
                 }
 
-                diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
+                diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula), DateTimeOffset.UtcNow);
 
                 transaction.Commit();
             }
@@ -102,7 +102,7 @@ namespace DevRating.ConsoleApp
 
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
+                    diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula), DateTimeOffset.UtcNow);
 
                     console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
                     console.WriteLine();

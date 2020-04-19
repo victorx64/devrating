@@ -21,7 +21,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 Assert.True(
                     database.Entities().Ratings().ContainsOperation().Contains(
@@ -38,9 +38,11 @@ namespace DevRating.SqliteClient.Test
                                 author.Id(),
                                 1u,
                                 new DefaultId(),
-                                new DefaultEnvelope()
+                                new DefaultEnvelope(),
+                                DateTimeOffset.UtcNow
                             ).Id(),
-                            author.Id()
+                            author.Id(),
+                            DateTimeOffset.UtcNow
                         ).Id()
                     )
                 );
@@ -61,7 +63,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -76,9 +78,11 @@ namespace DevRating.SqliteClient.Test
                         author.Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope()
+                        new DefaultEnvelope(),
+                        DateTimeOffset.UtcNow
                     ).Id(),
-                    author.Id()
+                    author.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.True(database.Entities().Ratings().ContainsOperation().ContainsRatingOf(author.Id()));
@@ -99,7 +103,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -114,9 +118,11 @@ namespace DevRating.SqliteClient.Test
                         author.Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope()
+                        new DefaultEnvelope(),
+                        DateTimeOffset.UtcNow
                     ).Id(),
-                    author.Id()
+                    author.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(rating.Id(), database.Entities().Ratings().GetOperation().Rating(rating.Id()).Id());
@@ -156,7 +162,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -171,9 +177,11 @@ namespace DevRating.SqliteClient.Test
                         author.Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope()
+                        new DefaultEnvelope(),
+                        DateTimeOffset.UtcNow
                     ).Id(),
-                    author.Id()
+                    author.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(rating.Id(), database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Id());
@@ -213,7 +221,7 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
+                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 var work = database.Entities().Works().InsertOperation().Insert(
                     "repo",
@@ -223,7 +231,8 @@ namespace DevRating.SqliteClient.Test
                     author.Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
@@ -232,7 +241,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work.Id(),
-                    author.Id()
+                    author.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(rating.Id(),

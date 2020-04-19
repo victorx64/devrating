@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.DefaultObject.Fake;
@@ -32,8 +33,8 @@ namespace DevRating.DefaultObject.Test
                     new DefaultEnvelope(),
                     "new author",
                     0u,
-                    new DefaultEnvelope()
-                );
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow);
 
             Assert.Single(authors);
         }
@@ -60,7 +61,8 @@ namespace DevRating.DefaultObject.Test
                     new DefaultEnvelope(),
                     "existing author",
                     0u,
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
             Assert.Single(authors);
@@ -87,7 +89,8 @@ namespace DevRating.DefaultObject.Test
                     new DefaultEnvelope(),
                     "existing author",
                     0u,
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
             Assert.Equal(2, authors.Count);
@@ -106,15 +109,15 @@ namespace DevRating.DefaultObject.Test
                     new FakeFormula()
                 )
                 .InsertedWork(
-                    "organization", 
+                    "organization",
                     "repository",
                     "start",
                     "end",
                     new DefaultEnvelope(),
                     "other author",
                     0u,
-                    new DefaultEnvelope()
-                );
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow);
 
             Assert.False(works.Single().UsedRating().Id().Filled());
         }
@@ -137,15 +140,15 @@ namespace DevRating.DefaultObject.Test
                     new FakeFormula()
                 )
                 .InsertedWork(
-                    organization, 
+                    organization,
                     "repository",
                     "start",
                     "end",
                     new DefaultEnvelope(),
                     author.Email(),
                     0u,
-                    new DefaultEnvelope()
-                );
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow);
 
             Assert.Equal(rating, works.Last().UsedRating());
         }
@@ -168,7 +171,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfAuthor(Rating r)
             {
@@ -204,7 +207,13 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, new FakeWork(0u, author).Id());
+                .InsertRatings(
+                    organization,
+                    author.Email(),
+                    new[] {deletion},
+                    new FakeWork(0u, author).Id(),
+                    DateTimeOffset.UtcNow
+                );
 
             Assert.Empty(ratings);
         }
@@ -228,7 +237,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfVictim(Rating r)
             {
@@ -263,7 +272,8 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion1, deletion2}, work.Id());
+                .InsertRatings(organization, author.Email(), new[] {deletion1, deletion2}, work.Id(),
+                    DateTimeOffset.UtcNow);
 
             bool RatingOfAuthor(Rating r)
             {
@@ -307,7 +317,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfAuthor(Rating r)
             {
@@ -346,7 +356,7 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfVictim(Rating r)
             {
@@ -390,7 +400,13 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion1, deletion2}, newWork.Id());
+                .InsertRatings(
+                    organization,
+                    author.Email(),
+                    new[] {deletion1, deletion2},
+                    newWork.Id(),
+                    DateTimeOffset.UtcNow
+                );
 
             bool RatingOfAuthor(Rating r)
             {
@@ -431,7 +447,13 @@ namespace DevRating.DefaultObject.Test
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id());
+                .InsertRatings(
+                    organization,
+                    author.Email(),
+                    new[] {deletion},
+                    newWork.Id(),
+                    DateTimeOffset.UtcNow
+                );
 
             bool RatingOfAuthor(Rating r)
             {
