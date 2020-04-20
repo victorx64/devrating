@@ -118,5 +118,16 @@ namespace DevRating.SqliteClient
 
             return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
         }
+
+        public DateTimeOffset CreatedAt()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT CreatedAt FROM Rating WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return (DateTimeOffset) command.ExecuteScalar();
+        }
     }
 }

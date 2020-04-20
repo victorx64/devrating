@@ -27,24 +27,32 @@ namespace DevRating.DefaultObject
             Envelope since,
             string email,
             uint additions,
-            Envelope link
+            Envelope link,
+            DateTimeOffset createdAt
         )
         {
-            var author = AuthorInOrg(organization, email);
+            var author = AuthorInOrg(organization, email, createdAt);
 
             return _entities.Works().InsertOperation().Insert(
                 repository,
                 start,
                 end,
                 since,
-                author.Id(),
+                author,
                 additions,
-                _entities.Ratings().GetOperation().RatingOf(author.Id()).Id(),
-                link
+                _entities.Ratings().GetOperation().RatingOf(author).Id(),
+                link,
+                createdAt
             );
         }
 
-        public void InsertRatings(string organization, string email, IEnumerable<Deletion> deletions, Id work)
+        public void InsertRatings(
+            string organization,
+            string email,
+            IEnumerable<Deletion> deletions,
+            Id work,
+            DateTimeOffset createdAt
+        )
         {
             var items = NonSelfDeletions(email, deletions);
 
@@ -53,24 +61,34 @@ namespace DevRating.DefaultObject
                 return;
             }
 
-            InsertRatings(organization, email, work, items);
+            InsertRatings(organization, email, work, items, createdAt);
         }
 
-        private void InsertRatings(string organization, string email, Id work, IEnumerable<Deletion> deletions)
+        private void InsertRatings(
+            string organization,
+            string email,
+            Id work,
+            IEnumerable<Deletion> deletions,
+            DateTimeOffset createdAt
+        )
         {
-            var author = AuthorInOrg(organization, email);
+            var author = AuthorInOrg(organization, email, createdAt);
 
-            var winner = _entities.Ratings().GetOperation().RatingOf(author.Id());
+            var winner = _entities.Ratings().GetOperation().RatingOf(author);
 
             var value = winner.Id().Filled() ? winner.Value() : _formula.DefaultRating();
 
             _entities.Ratings().InsertOperation().Insert(
-                _formula.WinnerNewRating(value, MatchesWithInsertedLosers(organization, deletions, work, value)),
+                _formula.WinnerNewRating(
+                    value,
+                    MatchesWithInsertedLosers(organization, deletions, work, value, createdAt)
+                ),
                 new DefaultEnvelope(),
                 new DefaultEnvelope(),
                 winner.Id(),
                 work,
-                author.Id()
+                author,
+                createdAt
             );
         }
 
@@ -88,16 +106,17 @@ namespace DevRating.DefaultObject
             string organization,
             IEnumerable<Deletion> deletions,
             Id work,
-            double winner
+            double winner,
+            DateTimeOffset createdAt
         )
         {
             var matches = new List<Match>();
 
             foreach (var deletion in deletions)
             {
-                var victim = AuthorInOrg(organization, deletion.Email());
+                var victim = AuthorInOrg(organization, deletion.Email(), createdAt);
 
-                var current = _entities.Ratings().GetOperation().RatingOf(victim.Id());
+                var current = _entities.Ratings().GetOperation().RatingOf(victim);
 
                 var value = current.Id().Filled() ? current.Value() : _formula.DefaultRating();
 
@@ -107,7 +126,8 @@ namespace DevRating.DefaultObject
                     new DefaultEnvelope(deletion.Ignored()),
                     current.Id(),
                     work,
-                    victim.Id()
+                    victim,
+                    createdAt
                 );
 
                 matches.Add(new DefaultMatch(value, deletion.Counted()));
@@ -116,11 +136,11 @@ namespace DevRating.DefaultObject
             return matches;
         }
 
-        private Author AuthorInOrg(string organization, string email)
+        private Id AuthorInOrg(string organization, string email, DateTimeOffset createdAt)
         {
             return _entities.Authors().ContainsOperation().Contains(organization, email)
-                ? _entities.Authors().GetOperation().Author(organization, email)
-                : _entities.Authors().InsertOperation().Insert(organization, email);
+                ? _entities.Authors().GetOperation().Author(organization, email).Id()
+                : _entities.Authors().InsertOperation().Insert(organization, email, createdAt).Id();
         }
     }
 }

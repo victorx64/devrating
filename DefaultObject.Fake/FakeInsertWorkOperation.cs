@@ -29,7 +29,8 @@ namespace DevRating.DefaultObject.Fake
             Id author,
             uint additions,
             Id rating,
-            Envelope link
+            Envelope link,
+            DateTimeOffset createdAt
         )
         {
             var work = new FakeWork(
@@ -40,7 +41,8 @@ namespace DevRating.DefaultObject.Fake
                 repository,
                 start,
                 end,
-                since
+                since,
+                createdAt
             );
 
             _works.Add(work);

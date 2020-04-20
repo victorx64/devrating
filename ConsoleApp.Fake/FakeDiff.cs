@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -17,6 +18,7 @@ namespace DevRating.ConsoleApp.Fake
         private readonly string _organization;
         private readonly uint _additions;
         private readonly IEnumerable<Deletion> _deletions;
+        private readonly DateTimeOffset _createdAt;
 
         public FakeDiff(
             string key,
@@ -26,7 +28,8 @@ namespace DevRating.ConsoleApp.Fake
             string email,
             string organization,
             uint additions,
-            IEnumerable<Deletion> deletions
+            IEnumerable<Deletion> deletions,
+            DateTimeOffset createdAt
         )
         {
             _key = key;
@@ -37,6 +40,7 @@ namespace DevRating.ConsoleApp.Fake
             _organization = organization;
             _additions = additions;
             _deletions = deletions;
+            _createdAt = createdAt;
         }
 
         public Work From(Works works)
@@ -49,7 +53,7 @@ namespace DevRating.ConsoleApp.Fake
             return works.ContainsOperation().Contains(_key, _start, _end);
         }
 
-        public void AddTo(EntityFactory factory)
+        public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
         {
             factory.InsertRatings(
                 _organization,
@@ -63,8 +67,10 @@ namespace DevRating.ConsoleApp.Fake
                     _since,
                     _email,
                     _additions,
-                    new DefaultEnvelope()
-                ).Id()
+                    new DefaultEnvelope(),
+                    _createdAt
+                ).Id(),
+                _createdAt
             );
         }
     }

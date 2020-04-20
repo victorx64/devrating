@@ -21,7 +21,15 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public Rating Insert(double value, Envelope counted, Envelope ignored, Id previous, Id work, Id author)
+        public Rating Insert(
+            double value,
+            Envelope counted,
+            Envelope ignored,
+            Id previous,
+            Id work,
+            Id author,
+            DateTimeOffset createdAt
+        )
         {
             var rating = new FakeRating(
                 new DefaultId(Guid.NewGuid()),
@@ -30,7 +38,8 @@ namespace DevRating.DefaultObject.Fake
                 Author(author),
                 Rating(previous),
                 counted,
-                ignored
+                ignored,
+                createdAt
             );
 
             _ratings.Add(rating);
@@ -44,7 +53,7 @@ namespace DevRating.DefaultObject.Fake
             {
                 return new NullRating();
             }
-            
+
             bool Predicate(Entity e)
             {
                 return e.Id().Value().Equals(id.Value());

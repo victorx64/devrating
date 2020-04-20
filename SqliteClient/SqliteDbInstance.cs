@@ -25,6 +25,7 @@ namespace DevRating.SqliteClient
                 (
                     Id               integer
                         primary key autoincrement,
+                    CreatedAt        integer      not null,
                     Organization     nvarchar(50) not null,
                     Email            nvarchar(50) not null,
                     constraint UK_Author_Email_Organization
@@ -35,6 +36,7 @@ namespace DevRating.SqliteClient
                 (
                     Id               integer
                         primary key autoincrement,
+                    CreatedAt        integer not null,
                     Rating           real    not null,
                     CountedDeletions integer,
                     IgnoredDeletions integer,
@@ -54,6 +56,7 @@ namespace DevRating.SqliteClient
                 (
                     Id           integer
                         primary key autoincrement,
+                    CreatedAt    integer      not null,
                     Repository   nvarchar     not null,
                     Link         nvarchar,
                     StartCommit  nvarchar(50) not null,

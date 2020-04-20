@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
@@ -111,7 +112,7 @@ namespace DevRating.LibGit2SharpClient
             return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
         }
 
-        public void AddTo(EntityFactory factory)
+        public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
         {
             factory.InsertRatings(
                 _organization,
@@ -125,8 +126,10 @@ namespace DevRating.LibGit2SharpClient
                     _since,
                     _end.Author.Email,
                     _additions.Count(),
-                    _link
-                ).Id()
+                    _link,
+                    createdAt
+                ).Id(),
+                createdAt
             );
         }
     }

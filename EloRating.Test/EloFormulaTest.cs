@@ -71,7 +71,7 @@ namespace DevRating.EloRating.Test
                     var w = winner;
                     var l = loser;
 
-                    winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
+                    winner = formula!.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
                     loser = formula.LoserNewRating(l, new DefaultMatch(w, one));
                 }
 
@@ -103,7 +103,7 @@ namespace DevRating.EloRating.Test
                     var w = winner;
                     var l = loser;
 
-                    winner = formula.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
+                    winner = formula!.WinnerNewRating(w, new[] {new DefaultMatch(l, one)});
                     loser = formula.LoserNewRating(l, new DefaultMatch(w, one));
                 }
 

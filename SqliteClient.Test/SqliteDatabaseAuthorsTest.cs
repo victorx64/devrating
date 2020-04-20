@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using DevRating.DefaultObject;
 using Microsoft.Data.Sqlite;
@@ -21,7 +22,8 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 Assert.True(database.Entities().Authors().ContainsOperation()
-                    .Contains(database.Entities().Authors().InsertOperation().Insert("organization", "email").Id()));
+                    .Contains(database.Entities().Authors().InsertOperation()
+                        .Insert("organization", "email", DateTimeOffset.UtcNow).Id()));
             }
             finally
             {
@@ -42,7 +44,8 @@ namespace DevRating.SqliteClient.Test
                 var organization = "organization";
 
                 Assert.True(database.Entities().Authors().ContainsOperation().Contains(organization,
-                    database.Entities().Authors().InsertOperation().Insert(organization, "email").Email()));
+                    database.Entities().Authors().InsertOperation().Insert(organization, "email", DateTimeOffset.UtcNow)
+                        .Email()));
             }
             finally
             {
@@ -62,7 +65,8 @@ namespace DevRating.SqliteClient.Test
             {
                 var organization = "organization";
 
-                var author = database.Entities().Authors().InsertOperation().Insert(organization, "email");
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "email", DateTimeOffset.UtcNow);
 
                 Assert.Equal(author.Id(),
                     database.Entities().Authors().GetOperation().Author(organization, author.Email()).Id());
@@ -83,7 +87,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email");
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 Assert.Equal(author.Id(), database.Entities().Authors().GetOperation().Author(author.Id()).Id());
             }
@@ -105,9 +110,12 @@ namespace DevRating.SqliteClient.Test
             {
                 var organization = "organization";
 
-                var author1 = database.Entities().Authors().InsertOperation().Insert(organization, "email1");
-                var author2 = database.Entities().Authors().InsertOperation().Insert(organization, "email2");
-                var author3 = database.Entities().Authors().InsertOperation().Insert("ANOTHER organization", "email3");
+                var author1 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "email1", DateTimeOffset.UtcNow);
+                var author2 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "email2", DateTimeOffset.UtcNow);
+                var author3 = database.Entities().Authors().InsertOperation()
+                    .Insert("ANOTHER organization", "email3", DateTimeOffset.UtcNow);
 
                 var work1 = database.Entities().Works().InsertOperation().Insert(
                     "repo",
@@ -117,7 +125,8 @@ namespace DevRating.SqliteClient.Test
                     author1.Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -126,7 +135,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work1.Id(),
-                    author1.Id()
+                    author1.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -135,7 +145,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work1.Id(),
-                    author2.Id()
+                    author2.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
@@ -146,7 +157,8 @@ namespace DevRating.SqliteClient.Test
                     author3.Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -155,7 +167,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work2.Id(),
-                    author3.Id()
+                    author3.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(author1.Id(),
@@ -178,9 +191,12 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var organization = "organization";
-                var author1 = database.Entities().Authors().InsertOperation().Insert(organization, "email1");
-                var author2 = database.Entities().Authors().InsertOperation().Insert(organization, "email2");
-                var author3 = database.Entities().Authors().InsertOperation().Insert(organization, "email3");
+                var author1 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "email1", DateTimeOffset.UtcNow);
+                var author2 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "email2", DateTimeOffset.UtcNow);
+                var author3 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "email3", DateTimeOffset.UtcNow);
 
                 var repository = "first repo";
 
@@ -192,7 +208,8 @@ namespace DevRating.SqliteClient.Test
                     author1.Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -201,7 +218,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work1.Id(),
-                    author1.Id()
+                    author1.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -210,7 +228,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work1.Id(),
-                    author2.Id()
+                    author2.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
@@ -221,7 +240,8 @@ namespace DevRating.SqliteClient.Test
                     author1.Id(),
                     1u,
                     new DefaultId(),
-                    new DefaultEnvelope()
+                    new DefaultEnvelope(),
+                    DateTimeOffset.UtcNow
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -230,7 +250,8 @@ namespace DevRating.SqliteClient.Test
                     new DefaultEnvelope(),
                     new DefaultId(),
                     work2.Id(),
-                    author3.Id()
+                    author3.Id(),
+                    DateTimeOffset.UtcNow
                 );
 
                 Assert.Equal(2, database.Entities().Authors().GetOperation().TopOfRepository(repository).Count());

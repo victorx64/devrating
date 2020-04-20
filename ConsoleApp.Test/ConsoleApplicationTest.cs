@@ -81,7 +81,8 @@ namespace DevRating.ConsoleApp.Test
                     {
                         new DefaultDeletion("victim1", 7u),
                         new DefaultDeletion("victim2", 14u),
-                    }
+                    },
+                    DateTimeOffset.UtcNow
                 )
             );
 
@@ -106,7 +107,8 @@ namespace DevRating.ConsoleApp.Test
                 {
                     new DefaultDeletion("victim1", 7u),
                     new DefaultDeletion("victim2", 14u),
-                }
+                },
+                DateTimeOffset.UtcNow
             );
 
             var application = new ConsoleApplication(
@@ -124,7 +126,7 @@ namespace DevRating.ConsoleApp.Test
 
             void TestCode()
             {
-                application.Save(diff);
+                application!.Save(diff!);
             }
 
             Assert.Throws<InvalidOperationException>(TestCode);
@@ -162,7 +164,8 @@ namespace DevRating.ConsoleApp.Test
                     {
                         new DefaultDeletion("victim1", 7u),
                         new DefaultDeletion("victim2", 14u),
-                    }
+                    },
+                    DateTimeOffset.UtcNow
                 )
             );
 
