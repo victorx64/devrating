@@ -175,7 +175,7 @@ namespace DevRating.DefaultObject.Test
 
             bool RatingOfAuthor(Rating r)
             {
-                return r.Author().Email().Equals(author.Email());
+                return r.Author().Email().Equals(author!.Email());
             }
 
             Assert.Equal(
@@ -277,7 +277,7 @@ namespace DevRating.DefaultObject.Test
 
             bool RatingOfAuthor(Rating r)
             {
-                return r.Author().Email().Equals(author.Email());
+                return r.Author().Email().Equals(author!.Email());
             }
 
             Assert.Equal(
@@ -321,7 +321,7 @@ namespace DevRating.DefaultObject.Test
 
             bool RatingOfAuthor(Rating r)
             {
-                return r.Author().Email().Equals(author.Email());
+                return r.Author().Email().Equals(author!.Email());
             }
 
             Assert.Equal(
@@ -360,7 +360,7 @@ namespace DevRating.DefaultObject.Test
 
             bool RatingOfVictim(Rating r)
             {
-                return r.Author().Email().Equals(victim.Email());
+                return r.Author().Email().Equals(victim!.Email());
             }
 
             Assert.Equal(
@@ -410,7 +410,7 @@ namespace DevRating.DefaultObject.Test
 
             bool RatingOfAuthor(Rating r)
             {
-                return r.Author().Email().Equals(author.Email());
+                return r.Author().Email().Equals(author!.Email());
             }
 
             Assert.Equal(
@@ -457,7 +457,7 @@ namespace DevRating.DefaultObject.Test
 
             bool RatingOfAuthor(Rating r)
             {
-                return r.Author().Email().Equals(author.Email());
+                return r.Author().Email().Equals(author!.Email());
             }
 
             Assert.Equal(

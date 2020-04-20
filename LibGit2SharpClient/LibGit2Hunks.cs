@@ -60,7 +60,7 @@ namespace DevRating.LibGit2SharpClient
                 Hunk Function()
                 {
                     return new VersionControlHunk(
-                        difference.Patch,
+                        difference!.Patch,
                         new LibGit2Blames(
                             _repository.Blame(difference.OldPath, _options),
                             (Commit) _options.StoppingAt

@@ -143,7 +143,7 @@ namespace DevRating.ConsoleApp
             if (work.Since().Filled())
             {
                 console.WriteLine($"The current major version starts at {work.Since().Value()}");
-                console.WriteLine("Old lines are ignored");
+                console.WriteLine("Older lines are ignored");
                 console.WriteLine();
             }
 

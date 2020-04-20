@@ -126,7 +126,7 @@ namespace DevRating.ConsoleApp.Test
 
             void TestCode()
             {
-                application.Save(diff);
+                application!.Save(diff!);
             }
 
             Assert.Throws<InvalidOperationException>(TestCode);

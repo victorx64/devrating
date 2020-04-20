@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using DevRating.DefaultObject;
@@ -45,18 +46,19 @@ namespace DevRating.SqliteClient
             return new SqliteWork(_connection, id);
         }
 
-        public IEnumerable<Work> Lasts(string repository)
+        public IEnumerable<Work> Lasts(string repository, DateTimeOffset after)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
                 SELECT w.Id
                 FROM Work w
-                WHERE w.Repository = @Repository
+                WHERE w.Repository = @Repository AND w.CreatedAt >= @After
                 ORDER BY w.Id DESC
-                LIMIT 10";
+                LIMIT 100";
 
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
+            command.Parameters.Add(new SqliteParameter("@After", SqliteType.Integer) {Value = after});
 
             using var reader = command.ExecuteReader();
 
