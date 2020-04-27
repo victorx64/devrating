@@ -3,8 +3,8 @@
 
 namespace DevRating.Domain
 {
-    public interface Entity : JsonObject
+    public interface JsonObject
     {
-        Id Id();
+        string ToJson();
     }
 }

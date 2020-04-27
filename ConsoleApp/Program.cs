@@ -24,6 +24,20 @@ namespace DevRating.ConsoleApp
             {
                 PrintUsage(console);
             }
+            else if (args[0].Equals("json", StringComparison.OrdinalIgnoreCase))
+            {
+                using var repository = new Repository(args[1]);
+
+                console.WriteLine(
+                    Diff(
+                        organization,
+                        args[2],
+                        args[3],
+                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        repository
+                    ).ToJson()
+                );
+            }
             else if (args[0].Equals("show", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
