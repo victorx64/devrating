@@ -24,17 +24,19 @@ namespace DevRating.ConsoleApp
             {
                 PrintUsage(console);
             }
-            else if (args[0].Equals("json", StringComparison.OrdinalIgnoreCase))
+            else if (args[0].Equals("serialize", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
 
                 console.WriteLine(
-                    Diff(
-                        organization,
+                    new LibGit2Diff(
                         args[2],
                         args[3],
                         new LibGit2LastMajorUpdateTag(repository).Sha(),
-                        repository
+                        repository,
+                        args[4],
+                        new DefaultEnvelope(args[5]),
+                        args[6]
                     ).ToJson()
                 );
             }
