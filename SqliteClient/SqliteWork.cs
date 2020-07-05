@@ -3,6 +3,7 @@
 
 using System;
 using System.Data;
+using System.Globalization;
 using DevRating.DefaultObject;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
@@ -123,11 +124,11 @@ namespace DevRating.SqliteClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT CreatedAt FROM Rating WHERE Id = @Id";
+            command.CommandText = "SELECT CreatedAt FROM Work WHERE Id = @Id";
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (DateTimeOffset) command.ExecuteScalar();
+            return DateTimeOffset.Parse(command.ExecuteScalar().ToString(), CultureInfo.InvariantCulture);
         }
     }
 }
