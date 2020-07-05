@@ -10,6 +10,6 @@ namespace DevRating.Domain
     {
         Work Work(string repository, string start, string end);
         Work Work(Id id);
-        IEnumerable<Work> Lasts(string repository, DateTimeOffset after);
+        IEnumerable<Work> Last(string repository, DateTimeOffset after);
     }
 }

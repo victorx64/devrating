@@ -3,6 +3,7 @@
 
 using System;
 using System.Data;
+using System.Globalization;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
 
@@ -67,7 +68,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (DateTimeOffset) command.ExecuteScalar();
+            return DateTimeOffset.Parse(command.ExecuteScalar().ToString(), CultureInfo.InvariantCulture);
         }
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.Domain;
@@ -51,6 +52,17 @@ namespace DevRating.DefaultObject.Fake
             bool Predicate(Rating rating)
             {
                 return rating.Work().Id().Equals(work);
+            }
+
+            return _ratings.Where(Predicate);
+        }
+
+        public IEnumerable<Rating> Last(Id author, DateTimeOffset after)
+        {
+            bool Predicate(Rating rating)
+            {
+                return rating.Author().Id().Equals(author) &&
+                    rating.CreatedAt() >= after;
             }
 
             return _ratings.Where(Predicate);

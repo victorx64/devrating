@@ -203,7 +203,7 @@ namespace DevRating.SqliteClient.Test
 
                 Assert.Equal(
                     last.Id(),
-                    database.Entities().Works().GetOperation().Lasts("repo", createdAt).First().Id()
+                    database.Entities().Works().GetOperation().Last("repo", createdAt).First().Id()
                 );
             }
             finally
@@ -256,7 +256,7 @@ namespace DevRating.SqliteClient.Test
 
                 Assert.Equal(
                     first.Id(),
-                    database.Entities().Works().GetOperation().Lasts("repo", createdAt).Last().Id()
+                    database.Entities().Works().GetOperation().Last("repo", createdAt).Last().Id()
                 );
             }
             finally
@@ -308,7 +308,7 @@ namespace DevRating.SqliteClient.Test
                         new DefaultEnvelope(),
                         createdAt
                     ).Id(),
-                    database.Entities().Works().GetOperation().Lasts("repo", createdAt).Last().Id()
+                    database.Entities().Works().GetOperation().Last("repo", createdAt).Last().Id()
                 );
             }
             finally
