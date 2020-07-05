@@ -39,7 +39,7 @@ namespace DevRating.DefaultObject.Fake
             return _works.Single(Predicate);
         }
 
-        public IEnumerable<Work> Lasts(string repository, DateTimeOffset after)
+        public IEnumerable<Work> Last(string repository, DateTimeOffset after)
         {
             return _works;
         }

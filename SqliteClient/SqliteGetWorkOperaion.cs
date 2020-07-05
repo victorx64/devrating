@@ -46,7 +46,7 @@ namespace DevRating.SqliteClient
             return new SqliteWork(_connection, id);
         }
 
-        public IEnumerable<Work> Lasts(string repository, DateTimeOffset after)
+        public IEnumerable<Work> Last(string repository, DateTimeOffset after)
         {
             using var command = _connection.CreateCommand();
 
