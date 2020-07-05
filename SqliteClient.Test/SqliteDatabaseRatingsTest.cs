@@ -21,7 +21,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 Assert.True(
                     database.Entities().Ratings().ContainsOperation().Contains(
@@ -63,7 +64,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -103,7 +105,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -162,7 +165,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -221,7 +225,8 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var author = database.Entities().Authors().InsertOperation().Insert("organization", "email", DateTimeOffset.UtcNow);
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
 
                 var work = database.Entities().Works().InsertOperation().Insert(
                     "repo",
@@ -265,6 +270,81 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 Assert.Empty(database.Entities().Ratings().GetOperation().RatingsOf(new DefaultId(Guid.NewGuid())));
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void ReturnsLastInsertedRatingsOfAuthor()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var author = database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+
+                var repository = "repo";
+                var date = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+                var work1 = database.Entities().Works().InsertOperation().Insert(
+                    repository,
+                    "startCommit1",
+                    "endCommit1",
+                    new DefaultEnvelope(),
+                    author.Id(),
+                    1u,
+                    new DefaultId(),
+                    new DefaultEnvelope(),
+                    date
+                );
+
+                var rating1 = database.Entities().Ratings().InsertOperation().Insert(
+                    1100d,
+                    new DefaultEnvelope(),
+                    new DefaultEnvelope(),
+                    new DefaultId(),
+                    work1.Id(),
+                    author.Id(),
+                    work1.CreatedAt() + TimeSpan.FromHours(1)
+                );
+
+                var work2 = database.Entities().Works().InsertOperation().Insert(
+                    repository,
+                    "startCommit2",
+                    "endCommit2",
+                    new DefaultEnvelope(),
+                    author.Id(),
+                    1u,
+                    new DefaultId(),
+                    new DefaultEnvelope(),
+                    work1.CreatedAt() + TimeSpan.FromHours(0.5)
+                );
+
+                var rating2 = database.Entities().Ratings().InsertOperation().Insert(
+                    1200d,
+                    new DefaultEnvelope(),
+                    new DefaultEnvelope(),
+                    new DefaultId(),
+                    work2.Id(),
+                    author.Id(),
+                    rating1.CreatedAt() + TimeSpan.FromHours(0.5)
+                );
+
+                Assert.Equal(
+                    rating2.Id(),
+                    database.Entities().Ratings().GetOperation().Last(
+                            author.Id(),
+                            rating2.CreatedAt()
+                        )
+                        .Single().Id()
+                );
             }
             finally
             {
