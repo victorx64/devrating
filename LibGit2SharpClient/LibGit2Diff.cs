@@ -139,6 +139,11 @@ namespace DevRating.LibGit2SharpClient
             );
         }
 
+        public bool FullyCloned()
+        {
+            return _start != null && _end != null;
+        }
+
         private class Dto
         {
             public string Author { get; set; } = string.Empty;
