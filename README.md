@@ -1,5 +1,6 @@
 ![](https://github.com/victorx64/devrating/workflows/build/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
+[![Hits-of-Code](https://hitsofcode.com/github/victorx64/devrating)](https://hitsofcode.com/view/github/victorx64/devrating)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=coverage)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=alert_status)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
