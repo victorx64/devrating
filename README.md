@@ -39,17 +39,18 @@ $ devrating
 It should be clear what to do. If not, ask us in
 our [Telegram chat](https://t.me/devratingchat).
 
-## Update the rating
+## Print a reward for a work
 
-The rating is needed to properly evaluate a reward of a developer for a work.
-The rating is stored in the `devrating.db` file in a working directory.
-Update the rating by committing the work between commits:
+First, update the rating:
 
 ```
 $ devrating add <path-to-repo> <commit> <commit>
 ```
 
-## Print a reward
+The rating is needed to properly evaluate a reward of a developer for a work.
+The rating is stored in the `devrating.db` file in a working directory.
+
+Then, print the reward: 
 
 ```
 $ devrating show <path-to-repo> <commit> <commit>
