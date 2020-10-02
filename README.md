@@ -64,6 +64,12 @@ $ devrating top
 
 # How it works
 
+> The metric you chose, especially the lines of code removed part, is essential 
+for someone to establish your "level" as a coder. 
+I think that is an excellent measure.
+
+<p align="right">— prof David West, <i>author of Object Thinking</i></p>
+
 ## TL;DR
 
 Every single line deletion gives rating points to an author and lowers points 
