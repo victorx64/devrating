@@ -17,8 +17,8 @@ code between commits and evaluates a reward for the changes.
 Read the [white paper](docs/white-paper.md) 
 (или [по-русски](docs/white-paper-ru.md)).
 
-Also, check [Dev Rating](https://github.com/marketplace/dev-rating) app for 
-GitHub that automatically analyzes pull requests. 
+Also, check the [GitHub Action](https://github.com/victorx64/devrating-gh-action)
+that evaluates rewards for the pull requests. 
 
 # Usage
 
