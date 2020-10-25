@@ -19,7 +19,7 @@ namespace DevRating.ConsoleApp.Test
         {
             var lines = new List<string>();
 
-            new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeConsole(lines), "organization");
+            new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeOutput(lines), "organization");
 
             Assert.Empty(lines);
         }
@@ -47,7 +47,7 @@ namespace DevRating.ConsoleApp.Test
 
             var lines = new List<string>();
 
-            new ConsoleApplication(database, new EloFormula()).Top(new FakeConsole(lines), organization);
+            new ConsoleApplication(database, new EloFormula()).Top(new FakeOutput(lines), organization);
 
             Assert.Equal(authors.Count, lines.Count);
         }
@@ -151,7 +151,7 @@ namespace DevRating.ConsoleApp.Test
                 ),
                 new EloFormula()
             ).PrintTo(
-                new FakeConsole(lines),
+                new FakeOutput(lines),
                 new FakeDiff(
                     "key",
                     "start",
@@ -170,6 +170,47 @@ namespace DevRating.ConsoleApp.Test
             );
 
             Assert.Equal(7 + ratings.Count, lines.Count);
+        }
+
+        [Fact]
+        public void ShowsMajorUpdateRef()
+        {
+            var authors = new List<Author>();
+            var works = new List<Work>();
+            var ratings = new List<Rating>();
+            var lines = new List<string>();
+            var tag = "MAJOR UPDATE REF";
+
+            new ConsoleApplication(
+                new FakeDatabase(
+                    new FakeDbInstance(),
+                    new FakeEntities(
+                        new FakeWorks(ratings, works, authors),
+                        new FakeRatings(ratings, works, authors),
+                        new FakeAuthors(authors)
+                    )
+                ),
+                new EloFormula()
+            ).PrintTo(
+                new FakeOutput(lines),
+                new FakeDiff(
+                    "key",
+                    "start",
+                    "end",
+                    new DefaultEnvelope(tag),
+                    "author",
+                    "org",
+                    10u,
+                    new[]
+                    {
+                        new DefaultDeletion("victim1", 7u),
+                        new DefaultDeletion("victim2", 14u),
+                    },
+                    DateTimeOffset.UtcNow
+                )
+            );
+
+            Assert.Contains(lines, l => l.Contains(tag));
         }
     }
 }

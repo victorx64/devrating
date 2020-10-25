@@ -33,8 +33,10 @@ namespace DevRating.LibGit2SharpClient
             Envelope link,
             string organization)
             : this(
-                repository.Lookup<Commit>(start),
-                repository.Lookup<Commit>(end),
+                repository.Lookup<Commit>(start)
+                    ?? throw new ArgumentNullException($"Start commit `{start}` not found."),
+                repository.Lookup<Commit>(end)
+                    ?? throw new ArgumentNullException($"End commit `{end}` not found."),
                 since,
                 repository,
                 key,

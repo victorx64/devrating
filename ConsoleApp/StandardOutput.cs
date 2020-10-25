@@ -3,7 +3,7 @@
 
 namespace DevRating.ConsoleApp
 {
-    public sealed class SystemConsole : Console
+    public sealed class StandardOutput : Output
     {
         public void WriteLine()
         {

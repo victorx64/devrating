@@ -18,7 +18,7 @@ namespace DevRating.ConsoleApp
             _formula = formula;
         }
 
-        public void Top(Console console, string organization)
+        public void Top(Output output, string organization)
         {
             _database.Instance().Connection().Open();
 
@@ -39,7 +39,7 @@ namespace DevRating.ConsoleApp
                             _formula.DefaultRating()
                         );
 
-                    console.WriteLine(
+                    output.WriteLine(
                         $"{author.Email()} " +
                         $"{_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} " +
                         $"({percentile:P} percentile)"
@@ -87,7 +87,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void PrintTo(Console console, Diff diff)
+        public void PrintTo(Output output, Diff diff)
         {
             _database.Instance().Connection().Open();
 
@@ -104,11 +104,11 @@ namespace DevRating.ConsoleApp
                 {
                     diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula), DateTimeOffset.UtcNow);
 
-                    console.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
-                    console.WriteLine();
+                    output.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
+                    output.WriteLine();
                 }
 
-                PrintWorkToConsole(console, diff.From(_database.Entities().Works()));
+                PrintWorkToConsole(output, diff.From(_database.Entities().Works()));
             }
             finally
             {
@@ -117,7 +117,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        private void PrintWorkToConsole(Console console, Work work)
+        private void PrintWorkToConsole(Output output, Work work)
         {
             var usedRating = work.UsedRating();
 
@@ -127,24 +127,24 @@ namespace DevRating.ConsoleApp
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
-            console.WriteLine(work.Author().Email());
-            console.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
-            console.WriteLine(
+            output.WriteLine(work.Author().Email());
+            output.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
+            output.WriteLine(
                 $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
-            console.WriteLine();
+            output.WriteLine();
 
-            PrintWorkRatingsToConsole(console, work);
+            PrintWorkRatingsToConsole(output, work);
         }
 
-        private void PrintWorkRatingsToConsole(Console console, Work work)
+        private void PrintWorkRatingsToConsole(Output output, Work work)
         {
-            console.WriteLine("Rating updates");
+            output.WriteLine("Rating updates");
 
             if (work.Since().Filled())
             {
-                console.WriteLine($"The current major version starts at {work.Since().Value()}");
-                console.WriteLine("Older lines are ignored");
-                console.WriteLine();
+                output.WriteLine($"The current major version starts at {work.Since().Value()}");
+                output.WriteLine("Older lines are ignored");
+                output.WriteLine();
             }
 
             foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()))
@@ -163,7 +163,7 @@ namespace DevRating.ConsoleApp
                     ? $"lost {deletions.Value()} lines"
                     : "the performer";
 
-                console.WriteLine($"{rating.Author().Email()} {before:F2} " +
+                output.WriteLine($"{rating.Author().Email()} {before:F2} " +
                                   $"({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
             }
         }

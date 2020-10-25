@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace DevRating.ConsoleApp.Fake
 {
-    public sealed class FakeConsole : Console
+    public sealed class FakeOutput : Output
     {
         private readonly IList<string> _lines;
 
-        public FakeConsole(IList<string> lines)
+        public FakeOutput(IList<string> lines)
         {
             _lines = lines;
         }
