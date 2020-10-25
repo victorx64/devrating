@@ -3,7 +3,7 @@
 
 namespace DevRating.ConsoleApp
 {
-    public interface Console
+    public interface Output
     {
         void WriteLine();
         void WriteLine(string value);

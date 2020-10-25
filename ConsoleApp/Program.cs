@@ -17,18 +17,18 @@ namespace DevRating.ConsoleApp
     {
         private static void Main(string[] args)
         {
-            var console = new SystemConsole();
+            var output = new StandardOutput();
             var organization = "Current organization";
 
             if (!args.Any())
             {
-                PrintUsage(console);
+                PrintUsage(output);
             }
             else if (args[0].Equals("serialize", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
 
-                console.WriteLine(
+                output.WriteLine(
                     new LibGit2Diff(
                         args[2],
                         args[3],
@@ -45,7 +45,7 @@ namespace DevRating.ConsoleApp
                 using var repository = new Repository(args[1]);
 
                 Application().PrintTo(
-                    console,
+                    output,
                     Diff(
                         organization,
                         args[2],
@@ -71,11 +71,11 @@ namespace DevRating.ConsoleApp
             }
             else if (args[0].Equals("top", StringComparison.OrdinalIgnoreCase))
             {
-                Application().Top(console, organization);
+                Application().Top(output, organization);
             }
             else
             {
-                PrintUsage(console);
+                PrintUsage(output);
             }
         }
 
@@ -110,22 +110,22 @@ namespace DevRating.ConsoleApp
             );
         }
 
-        private static void PrintUsage(Console console)
+        private static void PrintUsage(Output output)
         {
-            console.WriteLine("Dev Rating evaluates developers rating and rewards based on git diff.");
-            console.WriteLine();
-            console.WriteLine("Usage:");
-            console.WriteLine("  devrating top");
-            console.WriteLine("  devrating show <path> <before> <after>");
-            console.WriteLine("  devrating add <path> <before> <after>");
-            console.WriteLine();
-            console.WriteLine("Description:");
-            console.WriteLine("  top        Print the rating");
-            console.WriteLine("  show       Print a reward for the work between commits");
-            console.WriteLine("  add        Update the rating by committing the work between commits");
-            console.WriteLine("  <path>     Path to a local repository. E.g. '~/repos/devrating'");
-            console.WriteLine("  <before>   Sha of the parent commit of the first commit of the work");
-            console.WriteLine("  <after>    Sha of the last commit of the work");
+            output.WriteLine("Dev Rating evaluates developers rating and rewards based on git diff.");
+            output.WriteLine();
+            output.WriteLine("Usage:");
+            output.WriteLine("  devrating top");
+            output.WriteLine("  devrating show <path> <before> <after>");
+            output.WriteLine("  devrating add <path> <before> <after>");
+            output.WriteLine();
+            output.WriteLine("Description:");
+            output.WriteLine("  top        Print the rating");
+            output.WriteLine("  show       Print a reward for the work between commits");
+            output.WriteLine("  add        Update the rating by committing the work between commits");
+            output.WriteLine("  <path>     Path to a local repository. E.g. '~/repos/devrating'");
+            output.WriteLine("  <before>   Sha of the parent commit of the first commit of the work");
+            output.WriteLine("  <after>    Sha of the last commit of the work");
         }
     }
 }

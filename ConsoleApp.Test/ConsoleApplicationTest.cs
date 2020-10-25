@@ -19,7 +19,7 @@ namespace DevRating.ConsoleApp.Test
         {
             var lines = new List<string>();
 
-            new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeConsole(lines), "organization");
+            new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeOutput(lines), "organization");
 
             Assert.Empty(lines);
         }
@@ -47,7 +47,7 @@ namespace DevRating.ConsoleApp.Test
 
             var lines = new List<string>();
 
-            new ConsoleApplication(database, new EloFormula()).Top(new FakeConsole(lines), organization);
+            new ConsoleApplication(database, new EloFormula()).Top(new FakeOutput(lines), organization);
 
             Assert.Equal(authors.Count, lines.Count);
         }
@@ -151,7 +151,7 @@ namespace DevRating.ConsoleApp.Test
                 ),
                 new EloFormula()
             ).PrintTo(
-                new FakeConsole(lines),
+                new FakeOutput(lines),
                 new FakeDiff(
                     "key",
                     "start",
