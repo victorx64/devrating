@@ -1,5 +1,6 @@
 ![](https://github.com/victorx64/devrating/workflows/build/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/DevRating.ConsoleApp.svg)](https://www.nuget.org/packages/DevRating.ConsoleApp/)
+[![Hits-of-Code](https://hitsofcode.com/github/victorx64/devrating)](https://hitsofcode.com/view/github/victorx64/devrating)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=coverage)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=alert_status)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
@@ -16,8 +17,8 @@ code between commits and evaluates a reward for the changes.
 Read the [white paper](docs/white-paper.md) 
 (или [по-русски](docs/white-paper-ru.md)).
 
-Also, check [Dev Rating](https://github.com/marketplace/dev-rating) app for 
-GitHub that automatically analyzes pull requests. 
+Also, check the [GitHub Action](https://github.com/victorx64/devrating-gh-action)
+that evaluates rewards for the pull requests. 
 
 # Usage
 
@@ -38,17 +39,18 @@ $ devrating
 It should be clear what to do. If not, ask us in
 our [Telegram chat](https://t.me/devratingchat).
 
-## Update the rating
+## Print a reward for a work
 
-The rating is needed to properly evaluate a reward of a developer for a work.
-The rating is stored in the `devrating.db` file in a working directory.
-Update the rating by committing the work between commits:
+First, update the rating:
 
 ```
 $ devrating add <path-to-repo> <commit> <commit>
 ```
 
-## Print a reward
+The rating is needed to properly evaluate a reward of a developer for a work.
+The rating is stored in the `devrating.db` file in a working directory.
+
+Then, print the reward: 
 
 ```
 $ devrating show <path-to-repo> <commit> <commit>
@@ -61,6 +63,12 @@ $ devrating top
 ```
 
 # How it works
+
+> The metric you chose, especially the lines of code removed part, is essential 
+for someone to establish your "level" as a coder. 
+I think that is an excellent measure.
+
+<p align="right">— prof David West, <i>author of Object Thinking</i></p>
 
 ## TL;DR
 
