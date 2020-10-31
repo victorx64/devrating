@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace DevRating.VersionControl.Fake
 {
-    public sealed class FakeHunks : Hunks
+    public sealed class FakePatches : Patches
     {
-        private readonly IEnumerable<Hunk> _items;
+        private readonly IEnumerable<FilePatch> _items;
 
-        public FakeHunks(IEnumerable<Hunk> items)
+        public FakePatches(IEnumerable<FilePatch> items)
         {
             _items = items;
         }
 
-        public IEnumerable<Hunk> Items()
+        public IEnumerable<FilePatch> Items()
         {
             return _items;
         }

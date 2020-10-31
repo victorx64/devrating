@@ -10,9 +10,9 @@ namespace DevRating.VersionControl
     public sealed class VersionControlDeletions : Deletions
     {
         private readonly string _patch;
-        private readonly Blames _blames;
+        private readonly AFileBlames _blames;
 
-        public VersionControlDeletions(string patch, Blames blames)
+        public VersionControlDeletions(string patch, AFileBlames blames)
         {
             _patch = patch;
             _blames = blames;
@@ -22,7 +22,7 @@ namespace DevRating.VersionControl
         {
             var deletions = new List<Deletion>();
 
-            foreach (var header in DeletionHeaders())
+            foreach (var header in HunkHeaders())
             {
                 deletions.AddRange(HunkDeletions(header));
             }
@@ -30,7 +30,7 @@ namespace DevRating.VersionControl
             return deletions;
         }
 
-        private IEnumerable<string> DeletionHeaders()
+        private IEnumerable<string> HunkHeaders()
         {
             foreach (var line in _patch.Split('\n'))
             {
@@ -50,7 +50,7 @@ namespace DevRating.VersionControl
 
             for (var i = index; i < index + count; i += increment)
             {
-                var deletion = _blames.HunkForLine(i).Deletion(i, index + count);
+                var deletion = _blames.AtLine(i).SubDeletion(i, index + count);
 
                 increment = deletion.Counted() + deletion.Ignored();
 

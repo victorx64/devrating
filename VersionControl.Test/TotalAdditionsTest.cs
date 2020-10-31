@@ -13,12 +13,12 @@ namespace DevRating.VersionControl.Test
         {
             Assert.Equal(10u + 11u + 12u,
                 new TotalAdditions(
-                    new FakeHunks(
+                    new FakePatches(
                         new[]
                         {
-                            new FakeHunk(new EmptyDeletions(), new FakeAdditions(10u)),
-                            new FakeHunk(new EmptyDeletions(), new FakeAdditions(11u)),
-                            new FakeHunk(new EmptyDeletions(), new FakeAdditions(12u)),
+                            new FakeFilePatch(new EmptyDeletions(), new FakeAdditions(10u)),
+                            new FakeFilePatch(new EmptyDeletions(), new FakeAdditions(11u)),
+                            new FakeFilePatch(new EmptyDeletions(), new FakeAdditions(12u)),
                         }
                     )
                 ).Count()

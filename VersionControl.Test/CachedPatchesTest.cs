@@ -8,15 +8,15 @@ using Xunit;
 
 namespace DevRating.VersionControl.Test
 {
-    public class CachedHunksTest
+    public class CachedPatchesTest
     {
         [Fact]
         public void ReturnsOriginItems()
         {
-            var origin = new FakeHunks(
+            var origin = new FakePatches(
                 new[]
                 {
-                    new FakeHunk(
+                    new FakeFilePatch(
                         new FakeDeletions(
                             new[]
                             {
@@ -25,18 +25,18 @@ namespace DevRating.VersionControl.Test
                         new FakeAdditions(2)),
                 });
 
-            Assert.Equal(new CachedHunks(origin).Items(), origin.Items());
+            Assert.Equal(new CachedPatches(origin).Items(), origin.Items());
         }
 
         [Fact]
         public void ReturnsItemsFasterASecondTime()
         {
-            var cached = new CachedHunks(
-                new DelayedHunks(
-                    new FakeHunks(
+            var cached = new CachedPatches(
+                new DelayedPatches(
+                    new FakePatches(
                         new[]
                         {
-                            new FakeHunk(
+                            new FakeFilePatch(
                                 new FakeDeletions(
                                     new[]
                                     {

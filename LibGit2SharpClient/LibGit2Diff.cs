@@ -34,9 +34,9 @@ namespace DevRating.LibGit2SharpClient
             string organization)
             : this(
                 repository.Lookup<Commit>(start)
-                    ?? throw new ArgumentNullException($"Start commit `{start}` not found."),
+                    ?? throw new ArgumentNullException(nameof(start), $"Start commit `{start}` not found."),
                 repository.Lookup<Commit>(end)
-                    ?? throw new ArgumentNullException($"End commit `{end}` not found."),
+                    ?? throw new ArgumentNullException(nameof(end), $"End commit `{end}` not found."),
                 since,
                 repository,
                 key,
@@ -59,7 +59,7 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new CachedHunks(new LibGit2Hunks(start, end, since, repository)),
+                new CachedPatches(new LibGit2Patches(start, end, since, repository)),
                 key,
                 link,
                 organization
@@ -71,7 +71,7 @@ namespace DevRating.LibGit2SharpClient
             Commit start,
             Commit end,
             Envelope since,
-            Hunks hunks,
+            Patches patches,
             string key,
             Envelope link,
             string organization
@@ -80,8 +80,8 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new TotalAdditions(hunks),
-                new TotalDeletions(hunks),
+                new TotalAdditions(patches),
+                new TotalDeletions(patches),
                 key,
                 link,
                 organization

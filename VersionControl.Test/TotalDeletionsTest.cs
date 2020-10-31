@@ -22,17 +22,17 @@ namespace DevRating.VersionControl.Test
             Assert.Equal(
                 10u + 30u + 40u,
                 new TotalDeletions(
-                        new FakeHunks(
+                        new FakePatches(
                             new[]
                             {
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
                                             new DefaultDeletion("first email", 10u),
                                         }),
                                     new FakeAdditions(2u)),
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
@@ -53,17 +53,17 @@ namespace DevRating.VersionControl.Test
             Assert.Equal(
                 3,
                 new TotalDeletions(
-                        new FakeHunks(
+                        new FakePatches(
                             new[]
                             {
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
                                             new DefaultDeletion("email", 10u),
                                         }),
                                     new FakeAdditions(2u)),
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
@@ -91,17 +91,17 @@ namespace DevRating.VersionControl.Test
             Assert.Equal(
                 10u + 30u,
                 new TotalDeletions(
-                        new FakeHunks(
+                        new FakePatches(
                             new[]
                             {
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
                                             new DefaultDeletion(email, 10u),
                                         }),
                                     new FakeAdditions(2u)),
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
@@ -122,17 +122,17 @@ namespace DevRating.VersionControl.Test
         {
             Assert.Single(
                 new TotalDeletions(
-                        new FakeHunks(
+                        new FakePatches(
                             new[]
                             {
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {
                                             new DefaultDeletion("email@domain", 10u), 
                                         }),
                                     new FakeAdditions(2u)),
-                                new FakeHunk(
+                                new FakeFilePatch(
                                     new FakeDeletions(
                                         new[]
                                         {

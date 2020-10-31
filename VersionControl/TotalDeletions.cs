@@ -10,16 +10,16 @@ namespace DevRating.VersionControl
 {
     public sealed class TotalDeletions : Deletions
     {
-        private readonly Hunks _hunks;
+        private readonly Patches _patches;
 
-        public TotalDeletions(Hunks hunks)
+        public TotalDeletions(Patches patches)
         {
-            _hunks = hunks;
+            _patches = patches;
         }
 
         public IEnumerable<Deletion> Items()
         {
-            return _hunks.Items()
+            return _patches.Items()
                 .SelectMany(HunkDeletions)
                 .GroupBy(DeletionAuthor)
                 .Select(Deletion);
@@ -34,7 +34,7 @@ namespace DevRating.VersionControl
             );
         }
 
-        private IEnumerable<Deletion> HunkDeletions(Hunk hunk)
+        private IEnumerable<Deletion> HunkDeletions(FilePatch hunk)
         {
             return hunk.Deletions().Items();
         }

@@ -18,16 +18,11 @@ namespace DevRating.LibGit2SharpClient
             _hunk = hunk;
         }
 
-        public bool ContainsLine(uint line)
-        {
-            return _hunk.ContainsLine((int) line);
-        }
-
-        public Deletion Deletion(uint i, uint limit)
+        public Deletion SubDeletion(uint from, uint to)
         {
             return new DefaultDeletion(
                 _hunk.FinalCommit.Author.Email,
-                Math.Min((uint) _hunk.FinalStartLineNumber + (uint) _hunk.LineCount, limit) - i,
+                Math.Min((uint) _hunk.FinalStartLineNumber + (uint) _hunk.LineCount, to) - from,
                 0
             );
         }

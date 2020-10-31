@@ -7,22 +7,22 @@ namespace DevRating.VersionControl
 {
     public sealed class TotalAdditions : Additions
     {
-        private readonly Hunks _hunks;
+        private readonly Patches _patches;
 
-        public TotalAdditions(Hunks hunks)
+        public TotalAdditions(Patches patches)
         {
-            _hunks = hunks;
+            _patches = patches;
         }
 
         public uint Count()
         {
-            return (uint) _hunks.Items()
-                .Sum(HunkAdditions);
+            return (uint) _patches.Items()
+                .Sum(PatchAdditions);
         }
 
-        private long HunkAdditions(Hunk hunk)
+        private long PatchAdditions(FilePatch patch)
         {
-            return hunk.Additions().Count();
+            return patch.Additions().Count();
         }
     }
 }

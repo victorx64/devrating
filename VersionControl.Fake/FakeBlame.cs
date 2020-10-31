@@ -20,16 +20,11 @@ namespace DevRating.VersionControl.Fake
             _count = count;
         }
 
-        public bool ContainsLine(uint line)
-        {
-            return _start <= line && line < _start + _count;
-        }
-
-        public Deletion Deletion(uint i, uint limit)
+        public Deletion SubDeletion(uint from, uint limit)
         {
             return new DefaultDeletion(
                 _email,
-                Math.Min(_start + _count, limit) - i,
+                Math.Min(_start + _count, limit) - from,
                 0
             );
         }

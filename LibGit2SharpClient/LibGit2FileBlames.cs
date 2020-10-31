@@ -6,24 +6,24 @@ using LibGit2Sharp;
 
 namespace DevRating.LibGit2SharpClient
 {
-    public sealed class LibGit2Blames : Blames
+    public sealed class LibGit2FileBlames : AFileBlames
     {
         private readonly BlameHunkCollection _collection;
         private readonly Commit _since;
 
-        public LibGit2Blames(BlameHunkCollection collection, Commit since)
+        public LibGit2FileBlames(BlameHunkCollection collection, Commit since)
         {
             _collection = collection;
             _since = since;
         }
 
-        public Blame HunkForLine(uint line)
+        public Blame AtLine(uint line)
         {
-            var hunk = _collection.HunkForLine((int) line);
+            var blame = _collection.HunkForLine((int) line);
 
-            return hunk.FinalCommit.Equals(_since)
-                ? (Blame) new IgnoredLibGit2Blame(hunk)
-                : (Blame) new CountedLibGit2Blame(hunk);
+            return blame.FinalCommit.Equals(_since)
+                ? (Blame) new IgnoredLibGit2Blame(blame)
+                : (Blame) new CountedLibGit2Blame(blame);
         }
     }
 }

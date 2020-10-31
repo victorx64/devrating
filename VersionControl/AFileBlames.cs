@@ -3,9 +3,8 @@
 
 namespace DevRating.VersionControl
 {
-    public interface Hunk
+    public interface AFileBlames
     {
-        Deletions Deletions();
-        Additions Additions();
+        Blame AtLine(uint line);
     }
 }

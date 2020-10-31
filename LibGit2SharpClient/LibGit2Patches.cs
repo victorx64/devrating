@@ -12,14 +12,14 @@ using CompareOptions = LibGit2Sharp.CompareOptions;
 
 namespace DevRating.LibGit2SharpClient
 {
-    public sealed class LibGit2Hunks : Hunks
+    public sealed class LibGit2Patches : Patches
     {
         private readonly Commit _start;
         private readonly Commit _end;
         private readonly BlameOptions _options;
         private readonly IRepository _repository;
 
-        public LibGit2Hunks(Commit start, Commit end, Envelope since, IRepository repository)
+        public LibGit2Patches(Commit start, Commit end, Envelope since, IRepository repository)
             : this(
                 start,
                 end,
@@ -35,7 +35,7 @@ namespace DevRating.LibGit2SharpClient
         {
         }
 
-        public LibGit2Hunks(Commit start, Commit end, BlameOptions options, IRepository repository)
+        public LibGit2Patches(Commit start, Commit end, BlameOptions options, IRepository repository)
         {
             _start = start;
             _end = end;
@@ -43,27 +43,27 @@ namespace DevRating.LibGit2SharpClient
             _repository = repository;
         }
 
-        public IEnumerable<Hunk> Items()
+        public IEnumerable<FilePatch> Items()
         {
             return Task.WhenAll(ItemTasks())
                 .GetAwaiter()
                 .GetResult();
         }
 
-        private IEnumerable<Task<Hunk>> ItemTasks()
+        private IEnumerable<Task<FilePatch>> ItemTasks()
         {
             var differences = _repository.Diff.Compare<Patch>(_start.Tree, _end.Tree,
-                new CompareOptions {ContextLines = 0});
+                new CompareOptions { ContextLines = 0 });
 
             foreach (var difference in differences.Where(IsModification))
             {
-                Hunk Function()
+                FilePatch Function()
                 {
-                    return new VersionControlHunk(
+                    return new VersionControlFilePatch(
                         difference!.Patch,
-                        new LibGit2Blames(
+                        new LibGit2FileBlames(
                             _repository.Blame(difference.OldPath, _options),
-                            (Commit) _options.StoppingAt
+                            (Commit)_options.StoppingAt
                         )
                     );
                 }
@@ -73,8 +73,12 @@ namespace DevRating.LibGit2SharpClient
 
             foreach (var difference in differences.Where(IsCreation))
             {
-                yield return Task.FromResult((Hunk) new VersionControlHunk(new EmptyDeletions(),
-                    new VersionControlAdditions(difference.Patch)));
+                yield return Task.FromResult(
+                    (FilePatch)new VersionControlFilePatch(
+                        new EmptyDeletions(),
+                        new VersionControlAdditions(difference.Patch)
+                    )
+                );
             }
         }
 

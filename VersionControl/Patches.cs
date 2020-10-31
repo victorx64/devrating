@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace DevRating.VersionControl
 {
-    public interface Hunks
+    public interface Patches
     {
-        IEnumerable<Hunk> Items();
+        IEnumerable<FilePatch> Items();
     }
 }
