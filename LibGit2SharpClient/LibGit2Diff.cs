@@ -55,7 +55,7 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new CachedPatches(new LibGit2Patches(start, end, since, repository)),
+                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
                 organization
