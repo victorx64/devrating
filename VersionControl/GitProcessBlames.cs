@@ -11,26 +11,32 @@ namespace DevRating.VersionControl
     public sealed class GitProcessBlames : AFileBlames
     {
         private readonly string _path;
-        private readonly string _since;
+        private readonly string _filename;
+        private readonly string _stop;
+        private readonly string _start;
         private IEnumerable<Blame>? _blames = null;
 
-        public GitProcessBlames(string path, string since)
+        public GitProcessBlames(string path, string filename, string start, string stop)
         {
             _path = path;
-            _since = since;
+            _filename = filename;
+            _start = start;
+            _stop = stop;
         }
 
         public Blame AtLine(uint line)
         {
-            return (_blames ??= BlameHunks(GitBlameOutput()))
-                .Single(b => b.ContainsLine(line));
+            _blames ??= BlameHunks(GitBlameOutput());
+
+            return _blames.Single(b => b.ContainsLine(line));
         }
 
         private string[] GitBlameOutput()
         {
             var process = Process.Start(
-                new ProcessStartInfo("git", $"blame -t -e {_since} -- \"{_path}\"")
+                new ProcessStartInfo("git", $"blame -t -e {_stop}..{_start} -- \"{_filename}\"")
                 {
+                    WorkingDirectory = _path,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true
@@ -61,15 +67,17 @@ namespace DevRating.VersionControl
             var current = lines[0];
             var accum = 1u;
 
+            Debug.Assert(string.IsNullOrEmpty(lines.Last()), $"The last line expected to be empty. Actual: `{lines.Last()}`");
+
             for (uint i = 1; i < lines.Length; i++)
             {
                 var line = lines[i];
-
-                if (!EqualShas(line, current))
+                
+                if (i == lines.Length - 1 || !EqualShas(line, current))
                 {
-                    yield return EqualShas(line, _since)
-                        ? (Blame)new IgnoredBlame(Email(line), i - accum, accum)
-                        : (Blame)new CountedBlame(Email(line), i - accum, accum);
+                    yield return BeforeTheSince(current, _stop)
+                        ? (Blame)new IgnoredBlame(Email(current), i - accum, accum)
+                        : (Blame)new CountedBlame(Email(current), i - accum, accum);
 
                     current = line;
                     accum = 1u;
@@ -79,6 +87,11 @@ namespace DevRating.VersionControl
                     accum++;
                 }
             }
+        }
+
+        private bool BeforeTheSince(string line, string since)
+        {
+            return !string.IsNullOrEmpty(since) && EqualShas(line, since);
         }
 
         private bool EqualShas(string a, string b)
