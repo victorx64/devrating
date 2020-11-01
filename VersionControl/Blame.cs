@@ -7,6 +7,7 @@ namespace DevRating.VersionControl
 {
     public interface Blame
     {
+        bool ContainsLine(uint line);
         Deletion SubDeletion(uint from, uint to);
     }
 }

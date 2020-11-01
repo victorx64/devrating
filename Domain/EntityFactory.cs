@@ -8,7 +8,8 @@ namespace DevRating.Domain
 {
     public interface EntityFactory
     {
-        Work InsertedWork(string organization,
+        Work InsertedWork(
+            string organization,
             string repository,
             string start,
             string end,
@@ -16,7 +17,8 @@ namespace DevRating.Domain
             string email,
             uint additions,
             Envelope link, 
-            DateTimeOffset createdAt);
+            DateTimeOffset createdAt
+        );
 
         void InsertRatings(
             string organization,

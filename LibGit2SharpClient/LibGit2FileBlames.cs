@@ -19,11 +19,11 @@ namespace DevRating.LibGit2SharpClient
 
         public Blame AtLine(uint line)
         {
-            var blame = _collection.HunkForLine((int) line);
+            var blame = _collection.HunkForLine((int)line);
 
             return blame.FinalCommit.Equals(_since)
-                ? (Blame) new IgnoredLibGit2Blame(blame)
-                : (Blame) new CountedLibGit2Blame(blame);
+                ? (Blame)new IgnoredBlame(blame.FinalCommit.Author.Email, (uint)blame.FinalStartLineNumber, (uint)blame.LineCount)
+                : (Blame)new CountedBlame(blame.FinalCommit.Author.Email, (uint)blame.FinalStartLineNumber, (uint)blame.LineCount);
         }
     }
 }

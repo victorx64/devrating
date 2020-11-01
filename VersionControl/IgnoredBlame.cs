@@ -1,0 +1,33 @@
+// Copyright (c) 2019-present Viktor Semenov
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using DevRating.DefaultObject;
+using DevRating.Domain;
+
+namespace DevRating.VersionControl
+{
+    public sealed class IgnoredBlame : Blame
+    {
+        private readonly string _email;
+        private readonly uint _count;
+        private readonly uint _start;
+
+        public IgnoredBlame(string email, uint start, uint count)
+        {
+            _email = email;
+            _start = start;
+            _count = count;
+        }
+
+        public bool ContainsLine(uint line)
+        {
+            return _start <= line && line < _start + _count;
+        }
+
+        public Deletion SubDeletion(uint from, uint to)
+        {
+            return new DefaultDeletion(_email, 0, Math.Min(_start + _count, to) - from);
+        }
+    }
+}
