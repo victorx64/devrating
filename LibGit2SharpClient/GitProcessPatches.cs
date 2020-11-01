@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
+using Semver;
 using CompareOptions = LibGit2Sharp.CompareOptions;
 
 namespace DevRating.LibGit2SharpClient
@@ -17,13 +18,20 @@ namespace DevRating.LibGit2SharpClient
         private readonly Commit _end;
         private readonly Envelope _since;
         private readonly IRepository _repository;
+        private readonly SemVersion _version;
 
         public GitProcessPatches(Commit start, Commit end, Envelope since, IRepository repository)
+        : this (start, end, since, repository, new GitProcessVersion().Version())
+        {
+        }
+
+        public GitProcessPatches(Commit start, Commit end, Envelope since, IRepository repository, SemVersion version)
         {
             _start = start;
             _end = end;
             _repository = repository;
             _since = since;
+            _version = version;
         }
 
         public IEnumerable<FilePatch> Items()
@@ -48,7 +56,8 @@ namespace DevRating.LibGit2SharpClient
                             _repository.Info.WorkingDirectory ?? _repository.Info.Path,
                             difference.OldPath,
                             _start.Sha,
-                            _since
+                            _since,
+                            _version
                         )
                     );
                 }

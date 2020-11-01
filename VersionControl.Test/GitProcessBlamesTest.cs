@@ -1,10 +1,25 @@
+using System;
 using DevRating.VersionControl.Fake;
+using Semver;
 using Xunit;
 
 namespace DevRating.VersionControl.Test
 {
     public sealed class GitProcessBlamesTest
     {
+        [Fact]
+        public void FailsIfVersionIsNot2()
+        {
+            Assert.Throws<NotSupportedException>(
+                () =>
+                new GitProcessBlames(
+                    new FakeProcess(""),
+                    new SemVersion(1)
+                )
+                .AtLine(0)
+            );
+        }
+
         [Fact]
         public void CombinesLinesWithSameRevision()
         {
@@ -16,7 +31,8 @@ namespace DevRating.VersionControl.Test
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  4) sv1
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
-)
+),
+                new SemVersion(2)
             );
 
             Assert.Equal(
@@ -39,7 +55,8 @@ namespace DevRating.VersionControl.Test
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  4) sv1
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
-)
+),
+                    new SemVersion(2)
                 )
                 .AtLine(0)
                 .SubDeletion(0, 1000)
@@ -60,7 +77,8 @@ namespace DevRating.VersionControl.Test
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  4) sv1
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
-)
+),
+                    new SemVersion(2)
                 )
                 .AtLine(0)
                 .SubDeletion(0, 1000)
@@ -81,7 +99,8 @@ namespace DevRating.VersionControl.Test
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  4) sv1
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
-)
+),
+                    new SemVersion(2)
                 )
                 .AtLine(2)
                 .SubDeletion(0, 1000)
@@ -102,7 +121,8 @@ namespace DevRating.VersionControl.Test
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  4) sv1
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
-)
+),
+                    new SemVersion(2)
                 )
                 .AtLine(2)
                 .SubDeletion(0, 1000)
@@ -119,7 +139,8 @@ namespace DevRating.VersionControl.Test
                     new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
 "
-)
+),
+                    new SemVersion(2)
                 )
                 .AtLine(0)
                 .SubDeletion(0, 1000)
@@ -131,9 +152,10 @@ namespace DevRating.VersionControl.Test
         public void ExpectsEmptyLineLast()
         {
             Assert.Throws<System.InvalidOperationException>(
-                () => 
+                () =>
                 new GitProcessBlames(
-                    new FakeProcess("661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1")
+                    new FakeProcess("661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1"),
+                    new SemVersion(2)
                 )
                 .AtLine(0)
             );
@@ -148,7 +170,8 @@ namespace DevRating.VersionControl.Test
                     new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
 "
-)
+),
+                    new SemVersion(2)
                 )
                 .AtLine(0)
                 .SubDeletion(0, 1000)

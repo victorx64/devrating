@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.Domain;
+using Semver;
 
 namespace DevRating.VersionControl
 {
@@ -12,24 +13,31 @@ namespace DevRating.VersionControl
     {
         private IEnumerable<Blame>? _blames = null;
         private readonly Process _git;
+        private readonly SemVersion _version;
 
-        public GitProcessBlames(string path, string filename, string start, Envelope stop)
-            : this (path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty)
+        public GitProcessBlames(string path, string filename, string start, Envelope stop, SemVersion version)
+            : this (path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty, version)
         {
         }
 
-        public GitProcessBlames(string path, string filename, string start, string stop)
-            : this (new VersionControlProcess("git", $"blame -t -e {stop}{start} -- \"{filename}\"", path))
+        public GitProcessBlames(string path, string filename, string start, string stop, SemVersion version)
+            : this (new VersionControlProcess("git", $"blame -t -e {stop}{start} -- \"{filename}\"", path), version)
         {
         }
 
-        public GitProcessBlames(Process git)
+        public GitProcessBlames(Process git, SemVersion version)
         {
             _git = git;
+            _version = version;
         }
 
         public Blame AtLine(uint line)
         {
+            if (_version.Major != 2)
+            {
+                throw new NotSupportedException("Required git version is 2.x.x");
+            }
+
             _blames ??= BlameHunks(_git.Output());
 
             bool predicate(Blame b) 
