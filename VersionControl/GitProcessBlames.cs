@@ -35,18 +35,13 @@ namespace DevRating.VersionControl
             bool predicate(Blame b) 
             {
                 return b.ContainsLine(line);
-            };
+            }
 
             return _blames.Single(predicate);
         }
 
         private IEnumerable<Blame> BlameHunks(IList<string> lines)
         {
-            if (!lines.Any())
-            {
-                yield break;
-            }
-
             var current = lines[0];
             var accum = 1u;
 

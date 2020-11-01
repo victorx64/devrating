@@ -114,7 +114,7 @@ namespace DevRating.VersionControl.Test
         public void HandlesSingleLine()
         {
             Assert.Equal(
-                1u,
+                "viktor_semenov@outlook.com",
                 new GitProcessBlames(
                     new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
@@ -123,7 +123,19 @@ namespace DevRating.VersionControl.Test
                 )
                 .AtLine(0)
                 .SubDeletion(0, 1000)
-                .Counted()
+                .Email()
+            );
+        }
+
+        [Fact]
+        public void ExpectsEmptyLineLast()
+        {
+            Assert.Throws<System.InvalidOperationException>(
+                () => 
+                new GitProcessBlames(
+                    new FakeProcess("661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1")
+                )
+                .AtLine(0)
             );
         }
 

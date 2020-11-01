@@ -15,7 +15,7 @@
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <TargetFrameworks>netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <OutputType>Exe</OutputType>
         <Description>Dev Rating is a tool that evaluates a reward of a developer based on git diff</Description>
         <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>
