@@ -48,9 +48,7 @@ namespace DevRating.LibGit2SharpClient
                             _repository.Info.WorkingDirectory ?? _repository.Info.Path,
                             difference.OldPath,
                             _start.Sha,
-                            _since.Filled()
-                                ? _since.Value().ToString()
-                                : string.Empty
+                            _since
                         )
                     );
                 }

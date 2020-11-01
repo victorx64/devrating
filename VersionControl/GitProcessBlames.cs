@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DevRating.Domain;
 
 namespace DevRating.VersionControl
 {
@@ -15,6 +16,11 @@ namespace DevRating.VersionControl
         private readonly string _stop;
         private readonly string _start;
         private IEnumerable<Blame>? _blames = null;
+
+        public GitProcessBlames(string path, string filename, string start, Envelope stop)
+            : this (path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty)
+        {
+        }
 
         public GitProcessBlames(string path, string filename, string start, string stop)
         {
@@ -34,14 +40,15 @@ namespace DevRating.VersionControl
         private string[] GitBlameOutput()
         {
             var process = Process.Start(
-                new ProcessStartInfo("git", $"blame -t -e {_stop}..{_start} -- \"{_filename}\"")
+                new ProcessStartInfo("git", $"blame -t -e {_stop}{_start} -- \"{_filename}\"")
                 {
                     WorkingDirectory = _path,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true
                 }
-            ) ?? throw new Exception("Process.Start() returned null");
+            ) 
+            ?? throw new Exception("Process.Start() returned null");
 
             var output = process.StandardOutput
                 .ReadToEnd()
@@ -67,15 +74,13 @@ namespace DevRating.VersionControl
             var current = lines[0];
             var accum = 1u;
 
-            Debug.Assert(string.IsNullOrEmpty(lines.Last()), $"The last line expected to be empty. Actual: `{lines.Last()}`");
-
             for (uint i = 1; i < lines.Length; i++)
             {
                 var line = lines[i];
                 
                 if (i == lines.Length - 1 || !EqualShas(line, current))
                 {
-                    yield return BeforeTheSince(current, _stop)
+                    yield return OutOfRange(current)
                         ? (Blame)new IgnoredBlame(Email(current), i - accum, accum)
                         : (Blame)new CountedBlame(Email(current), i - accum, accum);
 
@@ -89,9 +94,9 @@ namespace DevRating.VersionControl
             }
         }
 
-        private bool BeforeTheSince(string line, string since)
+        private bool OutOfRange(string line)
         {
-            return !string.IsNullOrEmpty(since) && EqualShas(line, since);
+            return line.StartsWith("^");
         }
 
         private bool EqualShas(string a, string b)
