@@ -34,7 +34,7 @@ namespace DevRating.ConsoleApp
                         organization,
                         args[2],
                         args[3],
-                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        new LibGit2LastMajorUpdateTag(repository, args[2]).Sha(),
                         repository
                     )
                 );
@@ -48,7 +48,7 @@ namespace DevRating.ConsoleApp
                         organization,
                         args[2],
                         args[3],
-                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        new LibGit2LastMajorUpdateTag(repository, args[2]).Sha(),
                         repository
                     )
                 );

@@ -7,6 +7,7 @@ using DevRating.VersionControl;
 using LibGit2Sharp;
 using Semver;
 using Tag = DevRating.VersionControl.Tag;
+using System;
 
 namespace DevRating.LibGit2SharpClient
 {
@@ -14,11 +15,28 @@ namespace DevRating.LibGit2SharpClient
     {
         private readonly Tag _release;
 
-        public LibGit2LastMajorUpdateTag(IRepository repository)
+        public LibGit2LastMajorUpdateTag(IRepository repository, string before)
             : this(
                 new LastMajorUpdateTag(
-                    repository.Tags.Select(
-                        delegate(LibGit2Sharp.Tag t) { return new VersionControlTag(t.PeeledTarget.Sha, t.FriendlyName); }
+                    repository
+                    .Refs
+                    .ReachableFrom(
+                        new [] {
+                            repository.Lookup<Commit>(before)
+                                ?? throw new ArgumentNullException(nameof(before), $"Commit `{before}` not found.")
+                        }
+                    )
+                    .Where(
+                        delegate(Reference r)
+                        {
+                            return r.IsTag;
+                        }
+                    )
+                    .Select(
+                        delegate(Reference r)
+                        {
+                            return new VersionControlTag(r.TargetIdentifier, r.CanonicalName);
+                        }
                     )
                 )
             )
