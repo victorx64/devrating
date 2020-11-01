@@ -48,7 +48,7 @@ namespace DevRating.VersionControl
                     RedirectStandardInput = true
                 }
             ) 
-            ?? throw new Exception("Process.Start() returned null");
+            ?? throw new InvalidOperationException("Process.Start() returned null");
 
             var output = process.StandardOutput
                 .ReadToEnd()
