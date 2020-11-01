@@ -3,17 +3,15 @@ using Xunit;
 
 namespace DevRating.VersionControl.Test
 {
-    public sealed class VersionControlHunkTest
+    public sealed class VersionControlFilePatchTest
     {
         [Fact]
         public void ReturnsDeletions()
         {
             Assert.NotNull(
-                new VersionControlHunk(
-                    "patch", 
-                    new FakeBlames(
-                        new Blame[] { }
-                    )
+                new VersionControlFilePatch(
+                    "patch",
+                    new FakeFileBlames()
                 )
                 .Deletions()
             );
@@ -23,11 +21,9 @@ namespace DevRating.VersionControl.Test
         public void ReturnsAdditions()
         {
             Assert.NotNull(
-                new VersionControlHunk(
-                    "patch", 
-                    new FakeBlames(
-                        new Blame[] { }
-                    )
+                new VersionControlFilePatch(
+                    "patch",
+                    new FakeFileBlames()
                 )
                 .Additions()
             );

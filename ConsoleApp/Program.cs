@@ -24,22 +24,6 @@ namespace DevRating.ConsoleApp
             {
                 PrintUsage(output);
             }
-            else if (args[0].Equals("serialize", StringComparison.OrdinalIgnoreCase))
-            {
-                using var repository = new Repository(args[1]);
-
-                output.WriteLine(
-                    new LibGit2Diff(
-                        args[2],
-                        args[3],
-                        new LibGit2LastMajorUpdateTag(repository).Sha(),
-                        repository,
-                        args[4],
-                        new DefaultEnvelope(args[5]),
-                        args[6]
-                    ).ToJson()
-                );
-            }
             else if (args[0].Equals("show", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
@@ -50,7 +34,7 @@ namespace DevRating.ConsoleApp
                         organization,
                         args[2],
                         args[3],
-                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        new LibGit2LastMajorUpdateTag(repository, args[2]).Sha(),
                         repository
                     )
                 );
@@ -64,7 +48,7 @@ namespace DevRating.ConsoleApp
                         organization,
                         args[2],
                         args[3],
-                        new LibGit2LastMajorUpdateTag(repository).Sha(),
+                        new LibGit2LastMajorUpdateTag(repository, args[2]).Sha(),
                         repository
                     )
                 );

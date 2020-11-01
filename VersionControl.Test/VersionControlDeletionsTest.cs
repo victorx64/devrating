@@ -29,10 +29,10 @@ index 5633fb0..fa22e17 100644
 @@ -18,0 +19,2 @@ var bufferShim = require('buffer-shims');
 +const MAX_ACCESSORIES = 99; // Maximum number of bridged accessories per bridge.
 +",
-                    new FakeBlames(
-                        new[]
+                    new FakeFileBlames(
+                        new []
                         {
-                            new FakeBlame("Victim", 0, 100),
+                            new CountedBlame("Victim", 0u, 100u),
                         }
                     )
                 ).Items());
@@ -58,10 +58,10 @@ index 5633fb0..fa22e17 100644
 @@ -19 +19 @@ var bufferShim = require('buffer-shims');
 -const MAX_ACCESSORIES = 99; // Maximum number of bridged accessories per bridge.
 +const MAX_ACCESSORIES = 149; // Maximum number of bridged accessories per bridge.",
-                    new FakeBlames(
+                    new FakeFileBlames(
                         new[]
                         {
-                            new FakeBlame("Victim", 0, 100),
+                            new CountedBlame("Victim", 0u, 100u),
                         }
                     )
                 ).Items());
@@ -88,11 +88,11 @@ index 59bc854..c709613 100644
 @@ -5 +5 @@
 -  'version': '0.4.38',
 +  'version': '0.4.39',",
-                        new FakeBlames(
+                        new FakeFileBlames(
                             new[]
                             {
-                                new FakeBlame("Victim1", 2, 1),
-                                new FakeBlame("Victim2", 4, 1),
+                                new CountedBlame("Victim1", 2u, 1u),
+                                new CountedBlame("Victim2", 4u, 1u),
                             }
                         )
                     )
@@ -122,10 +122,10 @@ index 59bc854..c709613 100644
 @@ -5 +5 @@
 -  'version': '0.4.38',
 +  'version': '0.4.39',",
-                        new FakeBlames(
+                        new FakeFileBlames(
                             new[]
                             {
-                                new FakeBlame("Victim1", 2, 3),
+                                new CountedBlame("Victim1", 2u, 3u),
                             }
                         )
                     )

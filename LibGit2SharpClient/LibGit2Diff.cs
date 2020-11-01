@@ -2,18 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
-using Newtonsoft.Json;
 using Diff = DevRating.Domain.Diff;
 
 namespace DevRating.LibGit2SharpClient
 {
-    public sealed class LibGit2Diff : Diff, JsonObject
+    public sealed class LibGit2Diff : Diff
     {
         private readonly Commit _start;
         private readonly Commit _end;
@@ -34,9 +30,9 @@ namespace DevRating.LibGit2SharpClient
             string organization)
             : this(
                 repository.Lookup<Commit>(start)
-                    ?? throw new ArgumentNullException($"Start commit `{start}` not found."),
+                    ?? throw new ArgumentNullException(nameof(start), $"Start commit `{start}` not found."),
                 repository.Lookup<Commit>(end)
-                    ?? throw new ArgumentNullException($"End commit `{end}` not found."),
+                    ?? throw new ArgumentNullException(nameof(end), $"End commit `{end}` not found."),
                 since,
                 repository,
                 key,
@@ -59,7 +55,7 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new CachedHunks(new LibGit2Hunks(start, end, since, repository)),
+                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
                 organization
@@ -71,7 +67,7 @@ namespace DevRating.LibGit2SharpClient
             Commit start,
             Commit end,
             Envelope since,
-            Hunks hunks,
+            Patches patches,
             string key,
             Envelope link,
             string organization
@@ -80,8 +76,8 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new TotalAdditions(hunks),
-                new TotalDeletions(hunks),
+                new TotalAdditions(patches),
+                new TotalDeletions(patches),
                 key,
                 link,
                 organization
@@ -138,56 +134,6 @@ namespace DevRating.LibGit2SharpClient
                     createdAt
                 ).Id(),
                 createdAt
-            );
-        }
-
-        public bool FullyCloned()
-        {
-            return _start != null && _end != null;
-        }
-
-        private class Dto
-        {
-            public string Author { get; set; } = string.Empty;
-            public string Start { get; set; } = string.Empty;
-            public string End { get; set; } = string.Empty;
-            public string Organization { get; set; } = string.Empty;
-            public string? Since { get; set; }
-            public string Key { get; set; } = string.Empty;
-            public string? Link { get; set; }
-            public uint Additions { get; set; }
-            public IEnumerable<DeletionDto> Deletions { get; set; } = new DeletionDto[0];
-
-            internal class DeletionDto
-            {
-                public string Email { get; set; } = string.Empty;
-                public uint Counted { get; set; }
-                public uint Ignored { get; set; }
-            }
-        }
-
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(
-                new Dto
-                {
-                    Additions = _additions.Count(),
-                    Deletions = _deletions.Items().Select(deletion =>
-                        new Dto.DeletionDto
-                        {
-                            Counted = deletion.Counted(),
-                            Email = deletion.Email(),
-                            Ignored = deletion.Ignored()
-                        }
-                    ),
-                    End = _end.Sha,
-                    Author = _end.Author.Email,
-                    Key = _key,
-                    Link = _link.Filled() ? _link.Value().ToString(CultureInfo.InvariantCulture) : null,
-                    Organization = _organization,
-                    Since = _since.Filled() ? _since.Value().ToString(CultureInfo.InvariantCulture) : null,
-                    Start = _start.Sha
-                }
             );
         }
     }

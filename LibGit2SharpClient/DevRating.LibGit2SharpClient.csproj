@@ -8,7 +8,7 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>3.4.1</PackageVersion>
+        <PackageVersion>4.0.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.LibGit2SharpClient</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
@@ -20,7 +20,6 @@
 
     <ItemGroup>
       <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     </ItemGroup>
 
     <ItemGroup>

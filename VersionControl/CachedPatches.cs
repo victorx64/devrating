@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 namespace DevRating.VersionControl
 {
-    public sealed class CachedHunks : Hunks
+    public sealed class CachedPatches : Patches
     {
-        private readonly Hunks _origin;
-        private IEnumerable<Hunk>? _items;
+        private readonly Patches _origin;
+        private IEnumerable<FilePatch>? _items;
 
-        public CachedHunks(Hunks origin)
+        public CachedPatches(Patches origin)
         {
             _origin = origin;
         }
 
-        public IEnumerable<Hunk> Items()
+        public IEnumerable<FilePatch> Items()
         {
             lock (_origin)
             {

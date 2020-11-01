@@ -5,15 +5,15 @@ using System;
 using DevRating.DefaultObject;
 using DevRating.Domain;
 
-namespace DevRating.VersionControl.Fake
+namespace DevRating.VersionControl
 {
-    public sealed class FakeBlame : Blame
+    public sealed class CountedBlame : Blame
     {
         private readonly string _email;
-        private readonly uint _start;
         private readonly uint _count;
+        private readonly uint _start;
 
-        public FakeBlame(string email, uint start, uint count)
+        public CountedBlame(string email, uint start, uint count)
         {
             _email = email;
             _start = start;
@@ -25,13 +25,11 @@ namespace DevRating.VersionControl.Fake
             return _start <= line && line < _start + _count;
         }
 
-        public Deletion Deletion(uint i, uint limit)
+        public Deletion SubDeletion(uint from, uint to)
         {
-            return new DefaultDeletion(
-                _email,
-                Math.Min(_start + _count, limit) - i,
-                0
-            );
+            from = Math.Min(Math.Max(_start, from), _start + _count);
+            to = Math.Max(Math.Min(_start + _count, to), _start);
+            return new DefaultDeletion(_email, to - from, 0);
         }
     }
 }

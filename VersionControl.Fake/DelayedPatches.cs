@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace DevRating.VersionControl.Fake
 {
-    public sealed class DelayedHunks : Hunks
+    public sealed class DelayedPatches : Patches
     {
-        private readonly Hunks _origin;
+        private readonly Patches _origin;
         private readonly TimeSpan _delay;
 
-        public DelayedHunks(Hunks origin, TimeSpan delay)
+        public DelayedPatches(Patches origin, TimeSpan delay)
         {
             _origin = origin;
             _delay = delay;
         }
 
-        public IEnumerable<Hunk> Items()
+        public IEnumerable<FilePatch> Items()
         {
             Task.Delay(_delay).ConfigureAwait(false).GetAwaiter().GetResult();
 

@@ -10,6 +10,5 @@ namespace DevRating.Domain
         Work From(Works works);
         bool PresentIn(Works works);
         void AddTo(EntityFactory factory, DateTimeOffset createdAt);
-        bool FullyCloned();
     }
 }
