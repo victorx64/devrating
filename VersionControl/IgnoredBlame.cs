@@ -27,7 +27,9 @@ namespace DevRating.VersionControl
 
         public Deletion SubDeletion(uint from, uint to)
         {
-            return new DefaultDeletion(_email, 0, Math.Min(_start + _count, to) - from);
+            from = Math.Min(Math.Max(_start, from), _start + _count);
+            to = Math.Max(Math.Min(_start + _count, to), _start);
+            return new DefaultDeletion(_email, 0, to - from);
         }
     }
 }

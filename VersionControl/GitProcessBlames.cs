@@ -32,7 +32,12 @@ namespace DevRating.VersionControl
         {
             _blames ??= BlameHunks(_git.Output());
 
-            return _blames.Single(b => b.ContainsLine(line));
+            bool predicate(Blame b) 
+            {
+                return b.ContainsLine(line);
+            };
+
+            return _blames.Single(predicate);
         }
 
         private IEnumerable<Blame> BlameHunks(IList<string> lines)
@@ -47,8 +52,8 @@ namespace DevRating.VersionControl
 
             for (var i = 1; i < lines.Count; i++)
             {
-                var line = lines.ElementAt(i);
-                
+                var line = lines[i];
+
                 if (i == lines.Count - 1 || !EqualShas(line, current))
                 {
                     yield return OutOfRange(current)
