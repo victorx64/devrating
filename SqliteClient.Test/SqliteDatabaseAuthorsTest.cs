@@ -54,6 +54,30 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
+        public void InsertsLongEmail()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var organization = "organization";
+                var email = "longer.than.50.longer.than.50.longer.than.50.longer.than.50.longer.than.50";
+
+                Assert.Equal(
+                    email,
+                    database.Entities().Authors().InsertOperation().Insert(organization, email, DateTimeOffset.UtcNow).Email()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void ReturnsInsertedAuthorByOrgAndEmail()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
