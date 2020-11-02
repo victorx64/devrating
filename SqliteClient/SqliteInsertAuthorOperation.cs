@@ -29,8 +29,8 @@ namespace DevRating.SqliteClient
                     (@Organization, @Email, @CreatedAt);
                 SELECT last_insert_rowid();";
 
-            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text, 50) {Value = email});
-            command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text, 50) {Value = organization});
+            command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
+            command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
             command.Parameters.Add(new SqliteParameter("@CreatedAt", SqliteType.Integer) {Value = createdAt});
 
             return new SqliteAuthor(_connection, new DefaultId(command.ExecuteScalar()));
