@@ -355,3 +355,6 @@ MigrationBackup/
 /.idea/
 /.vscode/
 /.sonarqube/
+
+#Dev Rating
+devrating.db

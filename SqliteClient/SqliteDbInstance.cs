@@ -26,8 +26,8 @@ namespace DevRating.SqliteClient
                     Id               integer
                         primary key autoincrement,
                     CreatedAt        integer      not null,
-                    Organization     nvarchar(50) not null,
-                    Email            nvarchar(50) not null,
+                    Organization     nvarchar     not null,
+                    Email            nvarchar     not null,
                     constraint UK_Author_Email_Organization
                         unique (Email, Organization)
                 );
@@ -99,7 +99,7 @@ namespace DevRating.SqliteClient
                     type ='table' AND 
                     name = @table";
 
-            command.Parameters.Add(new SqliteParameter("@table", SqliteType.Text, 50) {Value = name});
+            command.Parameters.Add(new SqliteParameter("@table", SqliteType.Text) {Value = name});
 
             var reader = command.ExecuteReader();
 

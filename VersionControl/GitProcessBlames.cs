@@ -85,7 +85,7 @@ namespace DevRating.VersionControl
 
         private string Email(string line)
         {
-            return line.Substring(11, line.IndexOf('>') - 11);
+            return line.Substring(line.IndexOf('<') + 1, line.IndexOf('>') - line.IndexOf('<') - 1);
         }
     }
 }
