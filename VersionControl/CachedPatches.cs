@@ -8,6 +8,7 @@ namespace DevRating.VersionControl
     public sealed class CachedPatches : Patches
     {
         private readonly Patches _origin;
+        private readonly object _lock = new object();
         private IEnumerable<FilePatch>? _items;
 
         public CachedPatches(Patches origin)
@@ -17,7 +18,7 @@ namespace DevRating.VersionControl
 
         public IEnumerable<FilePatch> Items()
         {
-            lock (_origin)
+            lock (_lock)
             {
                 return _items ??= _origin.Items();
             }
