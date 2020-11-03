@@ -14,17 +14,17 @@ namespace DevRating.VersionControl
         private readonly IEnumerable<Blame> _blames;
 
         public GitProcessBlames(string path, string filename, string start, Envelope stop, SemVersion version)
-            : this (path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty, version)
+            : this(path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty, version)
         {
         }
 
         public GitProcessBlames(string path, string filename, string start, string stop, SemVersion version)
-            : this (new VersionControlProcess("git", $"blame -t -e {stop}{start} -- \"{filename}\"", path), version)
+            : this(new VersionControlProcess("git", $"blame -t -e {stop}{start} -- \"{filename}\"", path), version)
         {
         }
 
         public GitProcessBlames(Process git, SemVersion version)
-            : this (git.Output(), version)
+            : this(git.Output(), version)
         {
         }
 
@@ -40,12 +40,12 @@ namespace DevRating.VersionControl
 
         public Blame AtLine(uint line)
         {
-            bool predicate(Blame b) 
+            bool predicate(Blame b)
             {
                 return b.ContainsLine(line);
             }
 
-            return _blames.Single(predicate);
+            return _blames.First(predicate);
         }
 
         private IEnumerable<Blame> BlameHunks(IList<string> lines)
@@ -53,15 +53,15 @@ namespace DevRating.VersionControl
             var current = lines[0];
             var accum = 1u;
 
-            for (var i = 1; i < lines.Count; i++)
+            for (var i = 1; i < lines.Count - 1; i++)
             {
                 var line = lines[i];
 
-                if (i == lines.Count - 1 || !EqualShas(line, current))
+                if (!EqualShas(line, current))
                 {
                     yield return OutOfRange(current)
-                        ? (Blame)new IgnoredBlame(Email(current), (uint) i - accum, accum)
-                        : (Blame)new CountedBlame(Email(current), (uint) i - accum, accum);
+                        ? (Blame)new IgnoredBlame(Email(current), (uint)i - accum, accum)
+                        : (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
 
                     current = line;
                     accum = 1u;
@@ -71,22 +71,32 @@ namespace DevRating.VersionControl
                     accum++;
                 }
             }
+
+            if (lines.Count > 2)
+            {
+                var i = lines.Count - 1;
+
+                yield return OutOfRange(current)
+                    ? (Blame)new IgnoredBlame(Email(current), (uint)i - accum, accum)
+                    : (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
+            }
         }
 
         /// https://git-scm.com/docs/git-blame#_specifying_ranges
         private bool OutOfRange(string line)
         {
-            return line.StartsWith("^");
+            return line[0] == '^';
         }
 
         private bool EqualShas(string a, string b)
         {
-            return a.Substring(0, 8).Equals(b.Substring(0, 8), StringComparison.OrdinalIgnoreCase);
+            return a.Substring(0, 8).Equals(b.Substring(0, 8), StringComparison.Ordinal);
         }
 
         private string Email(string line)
         {
-            return line.Substring(line.IndexOf('<') + 1, line.IndexOf('>') - line.IndexOf('<') - 1);
+            var start = line.IndexOf('<');
+            return line.Substring(start + 1, line.IndexOf('>') - start - 1);
         }
     }
 }
