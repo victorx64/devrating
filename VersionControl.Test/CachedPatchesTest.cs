@@ -22,8 +22,10 @@ namespace DevRating.VersionControl.Test
                             {
                                 new DefaultDeletion("some email", 1),
                             }),
-                        new FakeAdditions(2)),
-                });
+                        new FakeAdditions(2)
+                    ),
+                }
+            );
 
             Assert.Equal(new CachedPatches(origin).Items(), origin.Items());
         }
@@ -41,10 +43,14 @@ namespace DevRating.VersionControl.Test
                                     new[]
                                     {
                                         new DefaultDeletion("some other email", 2),
-                                    }),
-                                new FakeAdditions(3)),
+                                    }
+                                ),
+                                new FakeAdditions(3)
+                            ),
                         }),
-                    TimeSpan.FromSeconds(1)));
+                    TimeSpan.FromSeconds(1)
+                )
+            );
 
             var first = DateTime.Now;
 

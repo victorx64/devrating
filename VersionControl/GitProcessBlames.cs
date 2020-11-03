@@ -11,9 +11,7 @@ namespace DevRating.VersionControl
 {
     public sealed class GitProcessBlames : AFileBlames
     {
-        private IEnumerable<Blame>? _blames = null;
-        private readonly Process _git;
-        private readonly SemVersion _version;
+        private readonly IEnumerable<Blame> _blames;
 
         public GitProcessBlames(string path, string filename, string start, Envelope stop, SemVersion version)
             : this (path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty, version)
@@ -26,20 +24,22 @@ namespace DevRating.VersionControl
         }
 
         public GitProcessBlames(Process git, SemVersion version)
+            : this (git.Output(), version)
         {
-            _git = git;
-            _version = version;
         }
 
-        public Blame AtLine(uint line)
+        public GitProcessBlames(IList<string> output, SemVersion version)
         {
-            if (_version.Major != 2)
+            if (version.Major != 2)
             {
                 throw new NotSupportedException("Required git version is 2.x.x");
             }
 
-            _blames ??= BlameHunks(_git.Output());
+            _blames = BlameHunks(output);
+        }
 
+        public Blame AtLine(uint line)
+        {
             bool predicate(Blame b) 
             {
                 return b.ContainsLine(line);
@@ -73,6 +73,7 @@ namespace DevRating.VersionControl
             }
         }
 
+        /// https://git-scm.com/docs/git-blame#_specifying_ranges
         private bool OutOfRange(string line)
         {
             return line.StartsWith("^");
