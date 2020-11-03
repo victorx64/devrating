@@ -72,7 +72,7 @@ namespace DevRating.VersionControl
                 }
             }
 
-            if (lines.Count > 2)
+            if (lines.Count > 1)
             {
                 var i = lines.Count - 1;
 
