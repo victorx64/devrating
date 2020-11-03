@@ -35,7 +35,7 @@ namespace DevRating.VersionControl
                 throw new NotSupportedException("Required git version is 2.x.x");
             }
 
-            _blames = BlameHunks(output);
+            _blames = BlameHunks(output).ToArray();
         }
 
         public Blame AtLine(uint line)
