@@ -19,6 +19,7 @@ namespace DevRating.LibGit2SharpClient
         private readonly string _key;
         private readonly string _organization;
         private readonly Envelope _link;
+        private readonly string _email;
 
         public LibGit2Diff(
             string start,
@@ -43,6 +44,31 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(
+            string email,
+            string start,
+            string end,
+            Envelope since,
+            IRepository repository,
+            string key,
+            Envelope link,
+            string organization)
+            : this(
+                email,
+                repository.Lookup<Commit>(start)
+                    ?? throw new ArgumentNullException(nameof(start), $"Start commit `{start}` not found."),
+                repository.Lookup<Commit>(end)
+                    ?? throw new ArgumentNullException(nameof(end), $"End commit `{end}` not found."),
+                since,
+                repository,
+                key,
+                link,
+                organization
+            )
+        {
+        }
+
+        public LibGit2Diff(
+            string email,
             Commit start,
             Commit end,
             Envelope since,
@@ -52,6 +78,7 @@ namespace DevRating.LibGit2SharpClient
             string organization
         )
             : this(
+                email,
                 start,
                 end,
                 since,
@@ -67,12 +94,36 @@ namespace DevRating.LibGit2SharpClient
             Commit start,
             Commit end,
             Envelope since,
+            IRepository repository,
+            string key,
+            Envelope link,
+            string organization
+        )
+            : this(
+                end.Author.Email,
+                start,
+                end,
+                since,
+                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
+                key,
+                link,
+                organization
+            )
+        {
+        }
+
+        public LibGit2Diff(
+            string email,
+            Commit start,
+            Commit end,
+            Envelope since,
             Patches patches,
             string key,
             Envelope link,
             string organization
         )
             : this(
+                email,
                 start,
                 end,
                 since,
@@ -86,6 +137,7 @@ namespace DevRating.LibGit2SharpClient
         }
 
         public LibGit2Diff(
+            string email,
             Commit start,
             Commit end,
             Envelope since,
@@ -96,6 +148,7 @@ namespace DevRating.LibGit2SharpClient
             string organization
         )
         {
+            _email = email;
             _start = start;
             _end = end;
             _since = since;
@@ -120,7 +173,7 @@ namespace DevRating.LibGit2SharpClient
         {
             factory.InsertRatings(
                 _organization,
-                _end.Author.Email,
+                _email,
                 _deletions.Items(),
                 factory.InsertedWork(
                     _organization,
@@ -128,7 +181,7 @@ namespace DevRating.LibGit2SharpClient
                     _start.Sha,
                     _end.Sha,
                     _since,
-                    _end.Author.Email,
+                    _email,
                     _additions.Count(),
                     _link,
                     createdAt
