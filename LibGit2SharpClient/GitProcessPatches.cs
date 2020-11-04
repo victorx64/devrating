@@ -79,17 +79,17 @@ namespace DevRating.LibGit2SharpClient
         private bool IsModification(PatchEntryChanges changes)
         {
             return !changes.IsBinaryComparison &&
-                   changes.OldMode == Mode.NonExecutableFile &&
-                   changes.Mode == Mode.NonExecutableFile &&
-                   (changes.Status == ChangeKind.Deleted || changes.Status == ChangeKind.Modified);
+                changes.OldMode == Mode.NonExecutableFile &&
+                (changes.Mode == Mode.NonExecutableFile && changes.Status == ChangeKind.Modified || 
+                changes.Mode == Mode.Nonexistent && changes.Status == ChangeKind.Deleted);
         }
 
         private bool IsCreation(PatchEntryChanges changes)
         {
             return !changes.IsBinaryComparison &&
-                   changes.Mode == Mode.NonExecutableFile &&
-                   changes.OldMode == Mode.Nonexistent &&
-                   changes.Status == ChangeKind.Added;
+                changes.Mode == Mode.NonExecutableFile &&
+                changes.OldMode == Mode.Nonexistent &&
+                changes.Status == ChangeKind.Added;
         }
     }
 }

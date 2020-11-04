@@ -19,7 +19,7 @@ namespace DevRating.VersionControl
         }
 
         public GitProcessBlames(string path, string filename, string start, string stop, SemVersion version)
-            : this(new VersionControlProcess("git", $"blame -t -e {stop}{start} -- \"{filename}\"", path), version)
+            : this(new VersionControlProcess("git", $"blame -t -e -l {stop}{start} -- \"{filename}\"", path), version)
         {
         }
 
@@ -90,7 +90,7 @@ namespace DevRating.VersionControl
 
         private bool EqualShas(string a, string b)
         {
-            return a.Substring(0, 8).Equals(b.Substring(0, 8), StringComparison.Ordinal);
+            return a.Substring(0, 40).Equals(b.Substring(0, 40), StringComparison.Ordinal);
         }
 
         private string Email(string line)
