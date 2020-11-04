@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using DevRating.DefaultObject;
 using DevRating.Domain;
 using Semver;
@@ -29,9 +30,9 @@ namespace DevRating.VersionControl
         public GitProcessVersion(string[] fragments)
             : this(
                 new SemVersion(
-                    int.Parse(fragments[0]),
-                    int.Parse(fragments[1]),
-                    int.Parse(fragments[2])
+                    int.Parse(fragments[0], CultureInfo.InvariantCulture),
+                    int.Parse(fragments[1], CultureInfo.InvariantCulture),
+                    int.Parse(fragments[2], CultureInfo.InvariantCulture)
                 )
             )
         {
