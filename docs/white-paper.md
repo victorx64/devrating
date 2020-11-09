@@ -22,16 +22,15 @@ only the final result.
 
 ## Quality of code
 
-A high-quality code is a code that changes easily. The less code you have to 
+A high-quality code is code that changes easily. The less code you have to 
 remove to meet new requirements, the more maintainable is the codebase.
 
 Thus, each removal of the code is an omission of the programmer who wrote this 
-code. The task of the programmer is to minimize possible changes, making the 
-codebase better.
+code. The goal of a programmer is to minimize possible changes, making the 
+codebase easy to update.
 
 Having a history of code changes, we can numerically calculate the quality of 
-the programmer's code. Modifying a line is deleting the old, then adding a new 
-line.
+the programmer's code.
 
 ## Rating system
 
@@ -42,11 +41,8 @@ the rating of the deletor and lower the rating of the author of the deleted line
 in accordance with the Elo formula. If a programmer deletes lines of several 
 authors in a work, we first lower the ratings of the authors of the deleted 
 lines. Then we increase the programmer’s rating by the sum of the changes of the 
-ratings of the authors of the deleted lines.
-
-To reduce the risk of a sharp drop in the rating due to new requirements, the 
-programmer is motivated to work on several functionalities or projects in 
-parallel.
+ratings of the authors of the deleted lines. A line modification is a deletion
+of the old line and creating a new one.
 
 ## Reward
 
@@ -76,9 +72,9 @@ get a reward for it, or create a task with an indication of a difficult section.
 
 ## Conclusion
 
-We got a way to accurately calculate code change rewards. This method motivates 
-programmers to understand the business problems of the customer, constantly 
-improve the code, write tests and not be tied to one functional. Change of 
-programmers will make the project safe from turnover and increase 
-maintainability. The rating allows programmers not to lose their reputation 
-when switching to another project or company.
+We got a way to accurately calculate code change rewards. This method motivates
+programmers to be involved in the business domain, continuously improve the code,
+and increase the code coverage. To reduce the risk of a sharp drop in the rating
+due to new requirements, a programmer is motivated to diversify the
+functionalities he is working on. It makes the project safe from members turnover.
+The rating allows programmers not to lose their reputation when switching projects.
