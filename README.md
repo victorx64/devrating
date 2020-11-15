@@ -13,6 +13,10 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 
+<a href="https://www.yegor256.com/2019/11/03/award-2020.html">
+  <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
+</a>
+
 **Dev Rating** is a command-line tool that counts deleted and added lines of 
 code between commits and evaluates a reward for the changes.
 
