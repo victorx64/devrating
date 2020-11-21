@@ -22,7 +22,7 @@ only the final result.
 
 ## Quality of code
 
-A high-quality code is code that changes easily. The less code you have to 
+High-quality code is code that changes easily. The less code you have to 
 remove to meet new requirements, the more maintainable is the codebase.
 
 Thus, each removal of the code is an omission of the programmer who wrote this 
