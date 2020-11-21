@@ -136,25 +136,6 @@ namespace DevRating.SqliteClient.Test
             }
         }
 
-        [Fact(Skip = "Enable the test when the bug is fixed")] // TODO fix the bug
-        public void ReturnsUnfilledRatingIfNotFoundById()
-        {
-            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
-
-            database.Instance().Connection().Open();
-            database.Instance().Create();
-
-            try
-            {
-                Assert.False(database.Entities().Ratings().GetOperation().Rating(new DefaultId(Guid.NewGuid())).Id()
-                    .Filled());
-            }
-            finally
-            {
-                database.Instance().Connection().Close();
-            }
-        }
-
         [Fact]
         public void ReturnsInsertedRatingByAuthorId()
         {

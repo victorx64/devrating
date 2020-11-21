@@ -139,8 +139,23 @@ namespace DevRating.ConsoleApp.Test
             var works = new List<Work>();
             var ratings = new List<Rating>();
             var lines = new List<string>();
+            var diff = new FakeDiff(
+                "key",
+                "start",
+                "end",
+                new DefaultEnvelope(),
+                "author",
+                "org",
+                10u,
+                new[]
+                {
+                    new DefaultDeletion("victim1", 7u),
+                    new DefaultDeletion("victim2", 14u),
+                },
+                DateTimeOffset.UtcNow
+            );
 
-            new ConsoleApplication(
+            var app = new ConsoleApplication(
                 new FakeDatabase(
                     new FakeDbInstance(),
                     new FakeEntities(
@@ -150,67 +165,15 @@ namespace DevRating.ConsoleApp.Test
                     )
                 ),
                 new EloFormula()
-            ).PrintTo(
-                new FakeOutput(lines),
-                new FakeDiff(
-                    "key",
-                    "start",
-                    "end",
-                    new DefaultEnvelope(),
-                    "author",
-                    "org",
-                    10u,
-                    new[]
-                    {
-                        new DefaultDeletion("victim1", 7u),
-                        new DefaultDeletion("victim2", 14u),
-                    },
-                    DateTimeOffset.UtcNow
-                )
             );
+            
+            app.Save(diff);
 
-            Assert.Equal(7 + ratings.Count, lines.Count);
-        }
+            app.PrintTo(new FakeOutput(lines), diff);
 
-        [Fact]
-        public void ShowsMajorUpdateRef()
-        {
-            var authors = new List<Author>();
-            var works = new List<Work>();
-            var ratings = new List<Rating>();
-            var lines = new List<string>();
-            var tag = "MAJOR UPDATE REF";
+            var reward = 1;
 
-            new ConsoleApplication(
-                new FakeDatabase(
-                    new FakeDbInstance(),
-                    new FakeEntities(
-                        new FakeWorks(ratings, works, authors),
-                        new FakeRatings(ratings, works, authors),
-                        new FakeAuthors(authors)
-                    )
-                ),
-                new EloFormula()
-            ).PrintTo(
-                new FakeOutput(lines),
-                new FakeDiff(
-                    "key",
-                    "start",
-                    "end",
-                    new DefaultEnvelope(tag),
-                    "author",
-                    "org",
-                    10u,
-                    new[]
-                    {
-                        new DefaultDeletion("victim1", 7u),
-                        new DefaultDeletion("victim2", 14u),
-                    },
-                    DateTimeOffset.UtcNow
-                )
-            );
-
-            Assert.Contains(lines, l => l.Contains(tag));
+            Assert.Equal(reward + ratings.Count, lines.Count);
         }
     }
 }

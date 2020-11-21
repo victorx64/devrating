@@ -73,10 +73,5 @@ namespace DevRating.ConsoleApp.Fake
                 _createdAt
             );
         }
-
-        public bool FullyCloned()
-        {
-            return _start != null && _end != null;
-        }
     }
 }

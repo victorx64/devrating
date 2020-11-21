@@ -8,11 +8,10 @@ using DevRating.Domain;
 using DevRating.VersionControl;
 using LibGit2Sharp;
 using Semver;
-using CompareOptions = LibGit2Sharp.CompareOptions;
 
 namespace DevRating.LibGit2SharpClient
 {
-    public sealed class GitProcessPatches : Patches
+    public sealed class LibGit2Patches : Patches
     {
         private readonly Commit _start;
         private readonly Commit _end;
@@ -20,12 +19,12 @@ namespace DevRating.LibGit2SharpClient
         private readonly IRepository _repository;
         private readonly SemVersion _version;
 
-        public GitProcessPatches(Commit start, Commit end, Envelope since, IRepository repository)
+        public LibGit2Patches(Commit start, Commit end, Envelope since, IRepository repository)
         : this (start, end, since, repository, new GitProcessVersion().Version())
         {
         }
 
-        public GitProcessPatches(Commit start, Commit end, Envelope since, IRepository repository, SemVersion version)
+        public LibGit2Patches(Commit start, Commit end, Envelope since, IRepository repository, SemVersion version)
         {
             _start = start;
             _end = end;
@@ -43,8 +42,11 @@ namespace DevRating.LibGit2SharpClient
 
         private IEnumerable<Task<FilePatch>> ItemTasks()
         {
-            var differences = _repository.Diff.Compare<Patch>(_start.Tree, _end.Tree,
-                new CompareOptions { ContextLines = 0 });
+            var differences = _repository.Diff.Compare<Patch>(
+                _start.Tree, 
+                _end.Tree,
+                new CompareOptions { ContextLines = 0 }
+            );
 
             foreach (var difference in differences.Where(IsModification))
             {

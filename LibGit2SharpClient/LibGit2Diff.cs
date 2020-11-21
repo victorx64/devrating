@@ -82,7 +82,7 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
+                new CachedPatches(new LibGit2Patches(start, end, since, repository)),
                 key,
                 link,
                 organization
@@ -100,11 +100,11 @@ namespace DevRating.LibGit2SharpClient
             string organization
         )
             : this(
-                end.Author.Email,
+                new GitProcessMailmap(repository.Info.WorkingDirectory ?? repository.Info.Path).MappedEmail(end.Author.Email),
                 start,
                 end,
                 since,
-                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
+                new CachedPatches(new LibGit2Patches(start, end, since, repository)),
                 key,
                 link,
                 organization

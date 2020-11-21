@@ -41,7 +41,7 @@ namespace DevRating.VersionControl
 
         private string DeletionAuthor(Deletion deletion)
         {
-            return deletion.Email().ToLowerInvariant();
+            return deletion.Email();
         }
 
         private string DeletionsAuthor(IGrouping<string, Deletion> grouping)
