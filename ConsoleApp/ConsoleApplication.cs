@@ -126,9 +126,7 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkRatingsToConsole(Output output, Work work)
         {
-            var ratings =  _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).ToList();
-
-            foreach (var rating in ratings)
+            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).ToList())
             {
                 var previous = rating.PreviousRating();
 

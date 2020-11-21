@@ -116,34 +116,5 @@ namespace DevRating.VersionControl.Test
                     .Single(DeletionWithTheEmail)
                     .Counted());
         }
-
-        [Fact(Skip = "An email case is not our prerogative. We take it as is from 'git' process")]
-        public void IgnoresCaseOfEmailWhenCombining()
-        {
-            Assert.Single(
-                new TotalDeletions(
-                        new FakePatches(
-                            new[]
-                            {
-                                new FakeFilePatch(
-                                    new FakeDeletions(
-                                        new[]
-                                        {
-                                            new DefaultDeletion("email@domain", 10u), 
-                                        }),
-                                    new FakeAdditions(2u)),
-                                new FakeFilePatch(
-                                    new FakeDeletions(
-                                        new[]
-                                        {
-                                            new DefaultDeletion("EMAIL@domain", 30u),
-                                        }),
-                                    new FakeAdditions(5u)),
-                            }
-                        )
-                    )
-                    .Items()
-            );
-        }
     }
 }
