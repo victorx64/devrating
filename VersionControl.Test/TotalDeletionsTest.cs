@@ -117,7 +117,7 @@ namespace DevRating.VersionControl.Test
                     .Counted());
         }
 
-        [Fact]
+        [Fact(Skip = "An email case is not our prerogative. We take it as is from 'git' process")]
         public void IgnoresCaseOfEmailWhenCombining()
         {
             Assert.Single(
