@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.Domain;
 
@@ -33,16 +34,9 @@ namespace DevRating.ConsoleApp
 
                 foreach (var author in _database.Entities().Authors().GetOperation().TopOfOrganization(organization))
                 {
-                    var percentile = _formula
-                        .WinProbabilityOfA(
-                            _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value(),
-                            _formula.DefaultRating()
-                        );
-
                     output.WriteLine(
-                        $"{author.Email()} " +
-                        $"{_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2} " +
-                        $"({percentile:P} percentile)"
+                        $"<{author.Email()}> " +
+                        $"{_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
                     );
                 }
             }
@@ -102,10 +96,8 @@ namespace DevRating.ConsoleApp
 
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula), DateTimeOffset.UtcNow);
-
-                    output.WriteLine("To add these updates run `devrating add <path> <before> <after>`.");
-                    output.WriteLine();
+                    throw new InvalidOperationException("The diff is not present in the database. " + 
+                        "To insert, run `devrating add <path> <commit> <commit>`.");
                 }
 
                 PrintWorkToConsole(output, diff.From(_database.Entities().Works()));
@@ -127,44 +119,24 @@ namespace DevRating.ConsoleApp
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
-            output.WriteLine(work.Author().Email());
-            output.WriteLine($"Added {work.Additions()} lines with {rating} rating ({percentile:P} percentile)");
-            output.WriteLine(
-                $"Reward = {work.Additions()} / (1 - {percentile:F2}) = {work.Additions() / (1d - percentile):F2}");
-            output.WriteLine();
+            output.WriteLine($"<{work.Author().Email()}> reward: {work.Additions() / (1d - percentile):F2}");
 
             PrintWorkRatingsToConsole(output, work);
         }
 
         private void PrintWorkRatingsToConsole(Output output, Work work)
         {
-            output.WriteLine("Rating updates");
+            var ratings =  _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).ToList();
 
-            if (work.Since().Filled())
+            foreach (var rating in ratings)
             {
-                output.WriteLine($"The current major version starts at {work.Since().Value()}");
-                output.WriteLine("Older lines are ignored");
-                output.WriteLine();
-            }
-
-            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()))
-            {
-                var percentile = _formula.WinProbabilityOfA(rating.Value(), _formula.DefaultRating());
-
                 var previous = rating.PreviousRating();
 
                 var before = previous.Id().Filled()
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                var deletions = rating.CountedDeletions();
-
-                var information = deletions.Filled()
-                    ? $"lost {deletions.Value()} lines"
-                    : "the performer";
-
-                output.WriteLine($"{rating.Author().Email()} {before:F2} " +
-                                  $"({information}) -> {rating.Value():F2} ({percentile:P} percentile)");
+                output.WriteLine($"<{rating.Author().Email()}> new rating: {before:F2} -> {rating.Value():F2}");
             }
         }
     }
