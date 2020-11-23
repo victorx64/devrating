@@ -1,10 +1,9 @@
-﻿// Copyright (c) 2019-present Viktor Semenov
+// Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Linq;
 using DevRating.DefaultObject;
-using DevRating.Domain;
 using DevRating.EloRating;
 using DevRating.LibGit2SharpClient;
 using DevRating.SqliteClient;
@@ -27,31 +26,41 @@ namespace DevRating.ConsoleApp
             else if (args[0].Equals("show", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
-
-                Application().PrintTo(
-                    output,
-                    Diff(
-                        organization,
-                        args[2],
-                        args[3],
-                        new LibGit2LastMajorUpdateTag(repository, args[2]).Sha(),
-                        repository
-                    )
+                var before = args.Length == 4 ? args[2] : args[2] + "~";
+                var after = args.Length == 4 ? args[3] : args[2];
+                var diff = new LibGit2Diff(
+                    before,
+                    after,
+                    new LibGit2LastMajorUpdateTag(repository, before).Sha(),
+                    repository,
+                    repository.Network.Remotes.First().Url,
+                    new DefaultEnvelope(),
+                    organization
                 );
+
+                Application().PrintTo(output, diff);
             }
             else if (args[0].Equals("add", StringComparison.OrdinalIgnoreCase))
             {
                 using var repository = new Repository(args[1]);
-
-                Application().Save(
-                    Diff(
-                        organization,
-                        args[2],
-                        args[3],
-                        new LibGit2LastMajorUpdateTag(repository, args[2]).Sha(),
-                        repository
-                    )
+                var before = args.Length == 4 || args.Length == 6 ? args[2] : args[2] + "~";
+                var after = args.Length == 4 || args.Length == 6 ? args[3] : args[2];
+                var link = args.Length == 5 || args.Length == 6 ? new DefaultEnvelope(args.Last()) : new DefaultEnvelope();
+                var diff = new LibGit2Diff(
+                    before,
+                    after,
+                    new LibGit2LastMajorUpdateTag(repository, before).Sha(),
+                    repository,
+                    repository.Network.Remotes.First().Url,
+                    link,
+                    organization
                 );
+
+                var app = Application();
+
+                app.Save(diff);
+
+                app.PrintTo(output, diff);
             }
             else if (args[0].Equals("top", StringComparison.OrdinalIgnoreCase))
             {
@@ -61,25 +70,6 @@ namespace DevRating.ConsoleApp
             {
                 PrintUsage(output);
             }
-        }
-
-        private static LibGit2Diff Diff(
-            string organization,
-            string start,
-            string end,
-            Envelope since,
-            IRepository repository
-        )
-        {
-            return new LibGit2Diff(
-                start,
-                end,
-                since,
-                repository,
-                repository.Network.Remotes.First().Url,
-                new DefaultEnvelope(),
-                organization
-            );
         }
 
         private static ConsoleApplication Application()
@@ -100,16 +90,18 @@ namespace DevRating.ConsoleApp
             output.WriteLine();
             output.WriteLine("Usage:");
             output.WriteLine("  devrating top");
-            output.WriteLine("  devrating show <path> <before> <after>");
-            output.WriteLine("  devrating add <path> <before> <after>");
+            output.WriteLine("  devrating show <path> (<base> <head> | <merge>)");
+            output.WriteLine("  devrating add <path> (<base> <head> | <merge>) [-l <link>]");
             output.WriteLine();
             output.WriteLine("Description:");
-            output.WriteLine("  top        Print the rating");
-            output.WriteLine("  show       Print a reward for the work between commits");
-            output.WriteLine("  add        Update the rating by committing the work between commits");
-            output.WriteLine("  <path>     Path to a local repository. E.g. '~/repos/devrating'");
-            output.WriteLine("  <before>   Sha of the parent commit of the first commit of the work");
-            output.WriteLine("  <after>    Sha of the last commit of the work");
+            output.WriteLine("  top       Print the rating");
+            output.WriteLine("  show      Print a saved reward from the local DB");
+            output.WriteLine("  add       Insert a reward into the local DB");
+            output.WriteLine("  <path>    Path to a local repository. E.g. '~/repos/devrating'");
+            output.WriteLine("  <base>    The parent commit of the first commit of a PR");
+            output.WriteLine("  <head>    The last commit of a PR");
+            output.WriteLine("  <merge>   A merge or squash commit of a merged PR");
+            output.WriteLine("  <link>    A link to a PR, issue or so");
         }
     }
 }

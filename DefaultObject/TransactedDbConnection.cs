@@ -54,11 +54,13 @@ namespace DevRating.DefaultObject
             _origin.Open();
         }
 
+#nullable disable
         public string ConnectionString
         {
             get { return _origin.ConnectionString; }
             set { _origin.ConnectionString = value; }
         }
+#nullable enable
 
         public int ConnectionTimeout
         {

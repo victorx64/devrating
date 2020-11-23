@@ -61,7 +61,7 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@CreatedAt", SqliteType.Integer)
                 {Value = createdAt});
 
-            return new SqliteRating(_connection, new DefaultId(command.ExecuteScalar()));
+            return new SqliteRating(_connection, new DefaultId(command.ExecuteScalar()!));
         }
     }
 }

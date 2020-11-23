@@ -44,11 +44,13 @@ namespace DevRating.DefaultObject.Fake
         {
         }
 
-        public string? CommandText { get; set; }
+#nullable disable
+        public string CommandText { get; set; }
+        public IDataParameterCollection Parameters { get; }
+#nullable enable
         public int CommandTimeout { get; set; }
         public CommandType CommandType { get; set; }
         public IDbConnection? Connection { get; set; }
-        public IDataParameterCollection? Parameters { get; }
         public IDbTransaction? Transaction { get; set; }
         public UpdateRowSource UpdatedRowSource { get; set; }
     }

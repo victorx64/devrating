@@ -39,21 +39,13 @@ namespace DevRating.VersionControl.Test
         [Fact]
         public void CanBeSerializedAndDeserialized()
         {
-            Exception ex = new ContextLineEncounteredException("Message", new Exception("Inner exception."));
+            var source = new ContextLineEncounteredException("Message", new Exception("Inner exception."));
 
-            var exceptionToString = ex.ToString();
-            var bf = new BinaryFormatter();
+            var json = System.Text.Json.JsonSerializer.Serialize<ContextLineEncounteredException>(source);
 
-            using (var ms = new MemoryStream())
-            {
-                bf.Serialize(ms, ex);
+            var dest= System.Text.Json.JsonSerializer.Deserialize<ContextLineEncounteredException>(json);
 
-                ms.Seek(0, 0);
-
-                ex = (ContextLineEncounteredException) bf.Deserialize(ms);
-            }
-
-            Assert.Equal(exceptionToString, ex.ToString());
+            Assert.Equal(source.ToString(), dest!.ToString());
         }
     }
 }

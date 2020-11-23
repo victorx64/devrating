@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>8</LangVersion>
         <Nullable>enable</Nullable>
         <DebugType>full</DebugType>
         <PackAsTool>true</PackAsTool>
@@ -9,13 +8,13 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>2.1.0</PackageVersion>
+        <PackageVersion>2.2.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.ConsoleApp</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <OutputType>Exe</OutputType>
         <Description>Dev Rating is a tool that evaluates a reward of a developer based on git diff</Description>
         <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>

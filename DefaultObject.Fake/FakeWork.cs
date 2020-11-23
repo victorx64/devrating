@@ -16,6 +16,7 @@ namespace DevRating.DefaultObject.Fake
         private readonly string _start;
         private readonly string _end;
         private readonly Envelope _since;
+        private readonly Envelope _link;
         private readonly DateTimeOffset _createdAt;
 
         public FakeWork(uint additions, Author author)
@@ -26,7 +27,8 @@ namespace DevRating.DefaultObject.Fake
                 "startCommit",
                 "endCommit",
                 new DefaultEnvelope("sinceCommit"),
-                DateTimeOffset.UtcNow
+                DateTimeOffset.UtcNow,
+                new DefaultEnvelope("link")
             )
         {
         }
@@ -38,7 +40,8 @@ namespace DevRating.DefaultObject.Fake
             string start,
             string end,
             Envelope since,
-            DateTimeOffset createdAt
+            DateTimeOffset createdAt,
+            Envelope link
         )
             : this(
                 additions,
@@ -48,7 +51,8 @@ namespace DevRating.DefaultObject.Fake
                 start,
                 end,
                 since,
-                createdAt
+                createdAt,
+                link
             )
         {
         }
@@ -61,7 +65,8 @@ namespace DevRating.DefaultObject.Fake
             string start,
             string end,
             Envelope since,
-            DateTimeOffset createdAt
+            DateTimeOffset createdAt,
+            Envelope link
         )
             : this(
                 new DefaultId(Guid.NewGuid()),
@@ -72,7 +77,8 @@ namespace DevRating.DefaultObject.Fake
                 start,
                 end,
                 since,
-                createdAt
+                createdAt,
+                link
             )
         {
         }
@@ -86,7 +92,8 @@ namespace DevRating.DefaultObject.Fake
             string start,
             string end,
             Envelope since,
-            DateTimeOffset createdAt
+            DateTimeOffset createdAt,
+            Envelope link
         )
         {
             _id = id;
@@ -98,6 +105,7 @@ namespace DevRating.DefaultObject.Fake
             _end = end;
             _since = since;
             _createdAt = createdAt;
+            _link = link;
         }
 
         public Id Id()
@@ -148,6 +156,11 @@ namespace DevRating.DefaultObject.Fake
         public DateTimeOffset CreatedAt()
         {
             return _createdAt;
+        }
+
+        public Envelope Link()
+        {
+            return _link;
         }
     }
 }

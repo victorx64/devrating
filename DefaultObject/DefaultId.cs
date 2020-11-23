@@ -29,7 +29,7 @@ namespace DevRating.DefaultObject
             return _value;
         }
 
-        public bool Equals(Id other)
+        public bool Equals(Id? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;

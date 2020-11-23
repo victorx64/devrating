@@ -35,8 +35,7 @@ namespace DevRating.ConsoleApp
                 foreach (var author in _database.Entities().Authors().GetOperation().TopOfOrganization(organization))
                 {
                     output.WriteLine(
-                        $"<{author.Email()}> " +
-                        $"{_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
+                        $"<{author.Email()}> {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
                     );
                 }
             }
@@ -111,6 +110,16 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkToConsole(Output output, Work work)
         {
+            if (work.Link().Filled())
+            {
+                output.WriteLine($"Link: {work.Link().Value()}");
+            }
+
+            if (work.Since().Filled())
+            {
+                output.WriteLine($"Since: {work.Since().Value()}");
+            }
+
             var usedRating = work.UsedRating();
 
             var rating = usedRating.Id().Filled()
@@ -119,14 +128,15 @@ namespace DevRating.ConsoleApp
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
-            output.WriteLine($"<{work.Author().Email()}> reward: {work.Additions() / (1d - percentile):F2}");
+            output.WriteLine($"<{work.Author().Email()}> Added {work.Additions()} lines. " +
+                $"Reward: {work.Additions() / (1d - percentile):F2}");
 
             PrintWorkRatingsToConsole(output, work);
         }
 
         private void PrintWorkRatingsToConsole(Output output, Work work)
         {
-            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).ToList())
+            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).Reverse().ToList())
             {
                 var previous = rating.PreviousRating();
 
@@ -134,7 +144,15 @@ namespace DevRating.ConsoleApp
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                output.WriteLine($"<{rating.Author().Email()}> new rating: {before:F2} -> {rating.Value():F2}");
+                if (rating.CountedDeletions().Filled())
+                {
+                    output.WriteLine($"<{rating.Author().Email()}> Lost {rating.CountedDeletions().Value()} lines. " +
+                        $"New rating: {before:F2} -> {rating.Value():F2}");
+                }
+                else
+                {
+                    output.WriteLine($"<{rating.Author().Email()}> New rating: {before:F2} -> {rating.Value():F2}");
+                }
             }
         }
     }

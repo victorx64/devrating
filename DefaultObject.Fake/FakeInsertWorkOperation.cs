@@ -42,7 +42,8 @@ namespace DevRating.DefaultObject.Fake
                 start,
                 end,
                 since,
-                createdAt
+                createdAt,
+                link
             );
 
             _works.Add(work);
