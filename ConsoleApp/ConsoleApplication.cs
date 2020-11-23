@@ -96,7 +96,7 @@ namespace DevRating.ConsoleApp
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
                     throw new InvalidOperationException("The diff is not present in the database. " + 
-                        "To insert, run `devrating add <path> <commit> <commit>`.");
+                        "To insert, run `devrating add <path> (<base> <head> | <merge>) -l [<link>]`.");
                 }
 
                 PrintWorkToConsole(output, diff.From(_database.Entities().Works()));

@@ -358,3 +358,4 @@ MigrationBackup/
 
 #Dev Rating
 devrating.db
+devrating.db-journal

@@ -290,6 +290,85 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
+        public void ReturnsWhenItWasCreated()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var moment1 = DateTimeOffset.UtcNow;
+                var moment2 = moment1 + TimeSpan.FromDays(1);
+
+                Assert.Equal(
+                    moment2,
+                    database.Entities().Works().InsertOperation().Insert(
+                        "repo",
+                        "startCommit",
+                        "endCommit",
+                        new DefaultEnvelope("sinceCommit"),
+                        database.Entities().Authors().InsertOperation().Insert(
+                            "organization",
+                            "email",
+                            moment1
+                        )
+                        .Id(),
+                        1u,
+                        new DefaultId(),
+                        new DefaultEnvelope(),
+                        moment2
+                    )
+                    .CreatedAt()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void ReturnsValidLink()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var link = new DefaultEnvelope("Link");
+
+                Assert.Equal(
+                    link.Value(),
+                    database.Entities().Works().InsertOperation().Insert(
+                        "repo",
+                        "startCommit",
+                        "endCommit",
+                        new DefaultEnvelope("sinceCommit"),
+                        database.Entities().Authors().InsertOperation().Insert(
+                            "organization",
+                            "email",
+                            DateTimeOffset.UtcNow
+                        )
+                        .Id(),
+                        1u,
+                        new DefaultId(),
+                        link,
+                        DateTimeOffset.UtcNow
+                    )
+                    .Link().Value()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void DoesntImplementToJson()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
