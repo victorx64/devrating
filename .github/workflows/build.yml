@@ -12,13 +12,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 5.0.100
 
     - name: Install SonarScan
-      run: dotnet tool install --tool-path artifacts dotnet-sonarscanner --version 4.8.0
+      run: dotnet tool install --tool-path artifacts dotnet-sonarscanner --version 5.0.4
 
     - name: Begin SonarScan
       run: artifacts/dotnet-sonarscanner begin /k:"victorx64_devrating" /o:"victorx64" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="./TestResults/coverage.opencover.xml"

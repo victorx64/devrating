@@ -53,7 +53,9 @@ namespace DevRating.DefaultObject.Fake
             State = ConnectionState.Open;
         }
 
+#nullable disable
         public string ConnectionString { get; set; } = string.Empty;
+#nullable enable
         public int ConnectionTimeout { get; } = 10;
         public string Database { get; private set; } = string.Empty;
         public ConnectionState State { get; private set; }

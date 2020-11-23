@@ -2,10 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Text.Json;
 using Xunit;
 
 namespace DevRating.VersionControl.Test
@@ -37,23 +34,14 @@ namespace DevRating.VersionControl.Test
         }
 
         [Fact]
-        public void CanBeSerializedAndDeserialized()
+        public void CanBeSerialized()
         {
-            Exception ex = new ContextLineEncounteredException("Message", new Exception("Inner exception."));
-
-            var exceptionToString = ex.ToString();
-            var bf = new BinaryFormatter();
-
-            using (var ms = new MemoryStream())
-            {
-                bf.Serialize(ms, ex);
-
-                ms.Seek(0, 0);
-
-                ex = (ContextLineEncounteredException) bf.Deserialize(ms);
-            }
-
-            Assert.Equal(exceptionToString, ex.ToString());
+            Assert.Contains(
+                "djh0g8973huhf",
+                JsonSerializer.Serialize<ContextLineEncounteredException>(
+                    new ContextLineEncounteredException("Message", new Exception("djh0g8973huhf"))
+                )
+            );
         }
     }
 }

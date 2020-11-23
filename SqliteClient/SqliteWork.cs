@@ -84,7 +84,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (string) command.ExecuteScalar();
+            return (string) command.ExecuteScalar()!;
         }
 
         public string Start()
@@ -95,7 +95,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (string) command.ExecuteScalar();
+            return (string) command.ExecuteScalar()!;
         }
 
         public string End()
@@ -106,7 +106,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (string) command.ExecuteScalar();
+            return (string) command.ExecuteScalar()!;
         }
 
         public Envelope Since()
@@ -117,7 +117,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
         }
 
         public DateTimeOffset CreatedAt()
@@ -128,7 +128,18 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return DateTimeOffset.Parse(command.ExecuteScalar().ToString(), CultureInfo.InvariantCulture);
+            return DateTimeOffset.Parse(command.ExecuteScalar()!.ToString()!, CultureInfo.InvariantCulture);
+        }
+
+        public Envelope Link()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Link FROM Work WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
         }
     }
 }

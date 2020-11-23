@@ -68,7 +68,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return DateTimeOffset.Parse(command.ExecuteScalar().ToString(), CultureInfo.InvariantCulture);
+            return DateTimeOffset.Parse(command.ExecuteScalar()!.ToString()!, CultureInfo.InvariantCulture);
         }
     }
 }

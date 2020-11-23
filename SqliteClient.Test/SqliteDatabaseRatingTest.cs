@@ -311,6 +311,57 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
+        public void ReturnsWhenItWasCreated()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var moment1 = DateTimeOffset.UtcNow;
+                var moment2 = moment1 + TimeSpan.FromDays(1);
+                var moment3 = moment2 + TimeSpan.FromDays(1);
+
+                var author = database.Entities().Authors().InsertOperation().Insert(
+                    "organization",
+                    "email",
+                    moment1
+                );
+
+                Assert.Equal(
+                    moment3,
+                    database.Entities().Ratings().InsertOperation().Insert(
+                        1100d,
+                        new DefaultEnvelope(),
+                        new DefaultEnvelope(),
+                        new DefaultId(),
+                        database.Entities().Works().InsertOperation().Insert(
+                            "repo",
+                            "startCommit",
+                            "endCommit",
+                            new DefaultEnvelope(),
+                            author.Id(),
+                            1u,
+                            new DefaultId(),
+                            new DefaultEnvelope(),
+                            moment2
+                        )
+                        .Id(),
+                        author.Id(),
+                        moment3
+                    )
+                    .CreatedAt()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void DoesntImplementToJson()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));

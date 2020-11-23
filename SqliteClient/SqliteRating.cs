@@ -54,7 +54,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
         }
 
         public Envelope IgnoredDeletions()
@@ -65,7 +65,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar());
+            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
         }
 
         public Work Work()
@@ -106,7 +106,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return DateTimeOffset.Parse(command.ExecuteScalar().ToString(), CultureInfo.InvariantCulture);
+            return DateTimeOffset.Parse(command.ExecuteScalar()!.ToString()!, CultureInfo.InvariantCulture);
         }
 
         public double Value()

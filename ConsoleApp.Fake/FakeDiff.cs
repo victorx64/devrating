@@ -14,11 +14,51 @@ namespace DevRating.ConsoleApp.Fake
         private readonly string _start;
         private readonly string _end;
         private readonly Envelope _since;
+        private readonly Envelope _link;
         private readonly string _email;
         private readonly string _organization;
         private readonly uint _additions;
         private readonly IEnumerable<Deletion> _deletions;
         private readonly DateTimeOffset _createdAt;
+
+        public FakeDiff(Envelope link)
+            : this(
+                "key",
+                "start",
+                "end",
+                new DefaultEnvelope("since this commit"),
+                "author",
+                "org",
+                10u,
+                new[]
+                {
+                    new DefaultDeletion("victim1", 7u),
+                    new DefaultDeletion("victim2", 14u),
+                },
+                DateTimeOffset.UtcNow,
+                link
+            )
+        {
+        }
+
+        public FakeDiff()
+            : this (
+                "key",
+                "start",
+                "end",
+                new DefaultEnvelope("since this commit"),
+                "author",
+                "org",
+                10u,
+                new[]
+                {
+                    new DefaultDeletion("victim1", 7u),
+                    new DefaultDeletion("victim2", 14u),
+                },
+                DateTimeOffset.UtcNow
+            )
+        {
+        }
 
         public FakeDiff(
             string key,
@@ -29,7 +69,33 @@ namespace DevRating.ConsoleApp.Fake
             string organization,
             uint additions,
             IEnumerable<Deletion> deletions,
-            DateTimeOffset createdAt
+            DateTimeOffset createdAt)
+            : this(
+                key,
+                start,
+                end,
+                since,
+                email,
+                organization,
+                additions,
+                deletions,
+                createdAt,
+                new DefaultEnvelope()
+            )
+        {
+        }
+
+        public FakeDiff(
+            string key,
+            string start,
+            string end,
+            Envelope since,
+            string email,
+            string organization,
+            uint additions,
+            IEnumerable<Deletion> deletions,
+            DateTimeOffset createdAt,
+            Envelope link
         )
         {
             _key = key;
@@ -41,6 +107,7 @@ namespace DevRating.ConsoleApp.Fake
             _additions = additions;
             _deletions = deletions;
             _createdAt = createdAt;
+            _link = link;
         }
 
         public Work From(Works works)
@@ -67,9 +134,10 @@ namespace DevRating.ConsoleApp.Fake
                     _since,
                     _email,
                     _additions,
-                    new DefaultEnvelope(),
+                    _link,
                     _createdAt
-                ).Id(),
+                )
+                .Id(),
                 _createdAt
             );
         }

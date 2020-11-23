@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DevRating.ConsoleApp.Fake;
 using DevRating.DefaultObject;
 using DevRating.DefaultObject.Fake;
@@ -25,17 +26,85 @@ namespace DevRating.ConsoleApp.Test
         }
 
         [Fact]
+        public void InitsDbOnCallingTop()
+        {
+            var db = new FakeDatabase();
+
+            new ConsoleApplication(db, new EloFormula()).Top(new FakeOutput(new List<string>()), "organization");
+
+            Assert.True(db.Instance().Present());
+        }
+
+        [Fact]
+        public void InitsDbOnPrinting()
+        {
+            var db = new FakeDatabase();
+            var diff = new FakeDiff(
+                "key",
+                "start",
+                "end",
+                new DefaultEnvelope(),
+                "author",
+                "org",
+                10u,
+                new[]
+                {
+                    new DefaultDeletion("victim1", 7u),
+                    new DefaultDeletion("victim2", 14u),
+                },
+                DateTimeOffset.UtcNow
+            );
+
+            var app = new ConsoleApplication(db, new EloFormula());
+
+            app.Save(diff);
+
+            app.PrintTo(new FakeOutput(new List<string>()), diff);
+
+            Assert.True(db.Instance().Present());
+        }
+
+        [Fact]
+        public void ThrowsOnPrintingUnexistingDiff()
+        {
+            void TestCode()
+            {
+                new ConsoleApplication(new FakeDatabase(), new EloFormula())
+                    .PrintTo(
+                        new FakeOutput(new List<string>()),
+                        new FakeDiff(
+                            "key",
+                            "start",
+                            "end",
+                            new DefaultEnvelope(),
+                            "author",
+                            "org",
+                            10u,
+                            new[]
+                            {
+                                new DefaultDeletion("victim1", 7u),
+                                new DefaultDeletion("victim2", 14u),
+                            },
+                            DateTimeOffset.UtcNow
+                        )
+                    );
+            }
+
+            Assert.Throws<InvalidOperationException>(TestCode);
+        }
+
+        [Fact]
         public void PrintsEveryAuthorOnCallingTop()
         {
             var organization = "organization";
             var author1 = new FakeAuthor(organization, "email1");
             var author2 = new FakeAuthor(organization, "email1");
-            var authors = new List<Author> {author1, author2};
+            var authors = new List<Author> { author1, author2 };
             var work = new FakeWork(1u, author1);
-            var works = new List<Work> {work};
+            var works = new List<Work> { work };
             var rating1 = new FakeRating(100, work, author1);
             var rating2 = new FakeRating(150, work, author2);
-            var ratings = new List<Rating> {rating1, rating2};
+            var ratings = new List<Rating> { rating1, rating2 };
             var database = new FakeDatabase(
                 new FakeDbInstance(),
                 new FakeEntities(
@@ -135,10 +204,13 @@ namespace DevRating.ConsoleApp.Test
         [Fact]
         public void ShowsDiff()
         {
-            var authors = new List<Author>();
-            var works = new List<Work>();
-            var ratings = new List<Rating>();
             var lines = new List<string>();
+            var deletions = new[]
+            {
+                new DefaultDeletion("victim1", 7u),
+                new DefaultDeletion("victim2", 14u),
+            };
+
             var diff = new FakeDiff(
                 "key",
                 "start",
@@ -147,33 +219,49 @@ namespace DevRating.ConsoleApp.Test
                 "author",
                 "org",
                 10u,
-                new[]
-                {
-                    new DefaultDeletion("victim1", 7u),
-                    new DefaultDeletion("victim2", 14u),
-                },
+                deletions,
                 DateTimeOffset.UtcNow
             );
 
-            var app = new ConsoleApplication(
-                new FakeDatabase(
-                    new FakeDbInstance(),
-                    new FakeEntities(
-                        new FakeWorks(ratings, works, authors),
-                        new FakeRatings(ratings, works, authors),
-                        new FakeAuthors(authors)
-                    )
-                ),
-                new EloFormula()
-            );
-            
+            var app = new ConsoleApplication(new FakeDatabase(), new EloFormula());
+
             app.Save(diff);
 
             app.PrintTo(new FakeOutput(lines), diff);
 
-            var reward = 1;
+            Assert.Equal(deletions.Length, lines.Count(l => l.Contains("victim")));
+        }
 
-            Assert.Equal(reward + ratings.Count, lines.Count);
+        [Fact]
+        public void PrintsSinceCommitOfWork()
+        {
+            var lines = new List<string>();
+            var diff = new FakeDiff();
+
+            var app = new ConsoleApplication(new FakeDatabase(), new EloFormula());
+
+            app.Save(diff);
+
+            app.PrintTo(new FakeOutput(lines), diff);
+
+            Assert.Contains(lines, p => p.Equals("Since: since this commit"));
+        }
+
+        [Fact]
+        public void PrintsLinkOfWork()
+        {
+            var lines = new List<string>();
+            var diff = new FakeDiff(
+                new DefaultEnvelope("E.g. a link to the PR")
+            );
+
+            var app = new ConsoleApplication(new FakeDatabase(), new EloFormula());
+
+            app.Save(diff);
+
+            app.PrintTo(new FakeOutput(lines), diff);
+
+            Assert.Contains(lines, p => p.Equals("Link: E.g. a link to the PR"));
         }
     }
 }

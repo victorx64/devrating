@@ -47,20 +47,15 @@ our [Telegram chat](https://t.me/devratingchat).
 
 ## Print a reward for a work
 
-First, update the rating:
-
 ```
-$ devrating add <path-to-repo> <commit> <commit>
+$ devrating add <path-to-repo> <merge-commit>
 ```
 
-The rating is needed to properly evaluate a reward of a developer for a work.
-The rating is stored in the `devrating.db` file in a working directory.
+Where:
+- `<path-to-repo>` — path to a local git repository.
+- `<merge-commit>` — a merge or squash commit of a merged PR.
 
-Then, print the reward: 
-
-```
-$ devrating show <path-to-repo> <commit> <commit>
-```
+It prints a reward and updates the rating. The rating is stored in `devrating.db` file in a working directory.
 
 ## Print the rating
 
