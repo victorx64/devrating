@@ -95,7 +95,7 @@ namespace DevRating.ConsoleApp
 
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
-                    throw new InvalidOperationException("The diff is not present in the database. " + 
+                    throw new InvalidOperationException("The diff is not present in the database. " +
                         "To insert, run `devrating add <path> (<base> <head> | <merge>) -l [<link>]`.");
                 }
 
@@ -144,15 +144,15 @@ namespace DevRating.ConsoleApp
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                if (rating.CountedDeletions().Filled())
-                {
-                    output.WriteLine($"<{rating.Author().Email()}> Lost {rating.CountedDeletions().Value()} lines. " +
-                        $"New rating: {before:F2} -> {rating.Value():F2}");
-                }
-                else
-                {
-                    output.WriteLine($"<{rating.Author().Email()}> New rating: {before:F2} -> {rating.Value():F2}");
-                }
+                var ignored = rating.IgnoredDeletions().Filled()
+                    ? $" + {rating.IgnoredDeletions().Value()}"
+                    : "";
+
+                var lost = rating.CountedDeletions().Filled()
+                    ? $"Lost {rating.CountedDeletions().Value()}{ignored} lines. "
+                    : "";
+
+                output.WriteLine($"<{rating.Author().Email()}> {lost}New rating: {before:F2} -> {rating.Value():F2}");
             }
         }
     }

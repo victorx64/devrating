@@ -14,28 +14,24 @@ namespace DevRating.VersionControl
         private readonly IEnumerable<Blame> _blames;
 
         public GitProcessBlames(string path, string filename, string start, Envelope stop, SemVersion version)
-            : this(path, filename, start, stop.Filled() ? stop.Value() + ".." : string.Empty, version)
+            : this(
+                new VersionControlProcess("git", $"blame -t -e -l {(stop.Filled() ? stop.Value() + ".." : "")}{start} -- \"{filename}\"", path).Output(), 
+                version, 
+                stop
+            )
         {
         }
 
-        public GitProcessBlames(string path, string filename, string start, string stop, SemVersion version)
-            : this(new VersionControlProcess("git", $"blame -t -e -l {stop}{start} -- \"{filename}\"", path), version)
-        {
-        }
-
-        public GitProcessBlames(Process git, SemVersion version)
-            : this(git.Output(), version)
-        {
-        }
-
-        public GitProcessBlames(IList<string> output, SemVersion version)
+        public GitProcessBlames(IList<string> output, SemVersion version, Envelope stop)
         {
             if (version.Major != 2)
             {
                 throw new NotSupportedException("Required git version is 2.x.x");
             }
 
-            _blames = BlameHunks(output).ToArray();
+            _blames = stop.Filled()
+                ? BlameHunks(output, stop.Value().ToString()!).ToArray()
+                : BlameHunks(output).ToArray();
         }
 
         public Blame AtLine(uint line)
@@ -59,7 +55,38 @@ namespace DevRating.VersionControl
 
                 if (!EqualShas(line, current))
                 {
-                    yield return OutOfRange(current)
+                    yield return (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
+
+                    current = line;
+                    accum = 1u;
+                }
+                else
+                {
+                    accum++;
+                }
+            }
+
+            if (lines.Count > 1)
+            {
+                var i = lines.Count - 1;
+
+                yield return (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
+            }
+        }
+
+        private IEnumerable<Blame> BlameHunks(IList<string> lines, string stop)
+        {
+            var current = lines[0];
+            var accum = 1u;
+            var since = "^" + stop.Substring(0, 39);
+
+            for (var i = 1; i < lines.Count - 1; i++)
+            {
+                var line = lines[i];
+
+                if (!EqualShas(line, current))
+                {
+                    yield return current.StartsWith(since, StringComparison.Ordinal)
                         ? (Blame)new IgnoredBlame(Email(current), (uint)i - accum, accum)
                         : (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
 
@@ -76,16 +103,10 @@ namespace DevRating.VersionControl
             {
                 var i = lines.Count - 1;
 
-                yield return OutOfRange(current)
+                yield return current.StartsWith(since, StringComparison.Ordinal)
                     ? (Blame)new IgnoredBlame(Email(current), (uint)i - accum, accum)
                     : (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
             }
-        }
-
-        /// https://git-scm.com/docs/git-blame#_specifying_ranges
-        private bool OutOfRange(string line)
-        {
-            return line[0] == '^';
         }
 
         private bool EqualShas(string a, string b)
