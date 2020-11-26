@@ -24,9 +24,9 @@ Read the [white paper](docs/white-paper.md)
 (или [по-русски](docs/white-paper-ru.md)).
 
 Also, check the [GitHub Action](https://github.com/victorx64/devrating-gh-action)
-that evaluates rewards for the pull requests. 
+that evaluates rewards for pull requests. 
 
-# Usage
+# Usage with .NET
 
 ## Installation
 
@@ -55,13 +55,45 @@ Where:
 - `<path-to-repo>` — path to a local git repository.
 - `<merge-commit>` — a merge or squash commit of a merged PR.
 
-It prints a reward and updates the rating. The rating is stored in `devrating.db` file in a working directory.
+It prints a reward and updates the rating. The rating is stored in `devrating.db` SQLite file in a working directory.
 
 ## Print the rating
 
 ```
 $ devrating top
 ```
+
+# Usage with Docker
+
+## Instructions
+
+```
+$ docker run -it --rm victorx64/devrating:latest
+```
+
+It should be clear what to do. If not, ask us in
+our [Telegram chat](https://t.me/devratingchat).
+
+## Print a reward for a work
+
+```
+$ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victorx64/devrating:latest add /repo <merge-commit>
+```
+
+Where:
+- `<path-to-repo>` — path to a local git repository.
+- `<working-dir>` — path where the rating will be stored as `devrating.db` SQLite file.
+- `<merge-commit>` — a merge or squash commit of a merged PR.
+
+## Print the rating
+
+```
+$ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victorx64/devrating:latest top
+```
+
+Where:
+- `<path-to-repo>` — path to a local git repository.
+- `<working-dir>` — path where the rating is stored as `devrating.db` SQLite file.
 
 # How it works
 
@@ -88,13 +120,12 @@ First, Dev Rating counts a reward based on a number of added lines and on the
 current rating of the developer:
 
 ```
-r = c * min(l, 250) / (1 - p)
+r = min(l, 250) / (1 - p)
 ```
 
-where `r` - reward, `c` - free coefficient, `l` - number of added lines, 
+where `r` - reward, `l` - number of added lines, 
 `p` - the probability of winning of the developer against a developer with an 
-average rating. In the current version `c = 1`. In future releases, you will 
-be able to specify it with a config file in the repository.
+average rating.
 
 Evaluation of `p`:
 
