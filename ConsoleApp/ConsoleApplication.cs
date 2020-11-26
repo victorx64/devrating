@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -147,6 +148,7 @@ namespace DevRating.ConsoleApp
                     : _formula.DefaultRating();
 
                 var ignored = rating.IgnoredDeletions().Filled()
+                    && rating.IgnoredDeletions().Value().ToInt32(CultureInfo.InvariantCulture) > 0
                     ? $" + {rating.IgnoredDeletions().Value()}"
                     : "";
 
