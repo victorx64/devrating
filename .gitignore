@@ -351,11 +351,11 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-#Idea
+# Idea
 /.idea/
 /.vscode/
 /.sonarqube/
 
-#Dev Rating
+# Dev Rating
 devrating.db
 devrating.db-journal
