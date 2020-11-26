@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -128,8 +129,10 @@ namespace DevRating.ConsoleApp
 
             var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
 
+            var additions = Math.Min(work.Additions(), 250);
+
             output.WriteLine($"<{work.Author().Email()}> Added {work.Additions()} lines. " +
-                $"Reward: {work.Additions() / (1d - percentile):F2}");
+                $"Reward: {additions / (1d - percentile):F2}");
 
             PrintWorkRatingsToConsole(output, work);
         }
@@ -145,6 +148,7 @@ namespace DevRating.ConsoleApp
                     : _formula.DefaultRating();
 
                 var ignored = rating.IgnoredDeletions().Filled()
+                    && rating.IgnoredDeletions().Value().ToInt32(CultureInfo.InvariantCulture) > 0
                     ? $" + {rating.IgnoredDeletions().Value()}"
                     : "";
 

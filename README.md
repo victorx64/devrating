@@ -88,7 +88,7 @@ First, Dev Rating counts a reward based on a number of added lines and on the
 current rating of the developer:
 
 ```
-r = c * l / (1 - p)
+r = c * min(l, 250) / (1 - p)
 ```
 
 where `r` - reward, `c` - free coefficient, `l` - number of added lines, 
