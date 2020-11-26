@@ -7,7 +7,7 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>5.1.1</PackageVersion>
+        <PackageVersion>5.1.2-preview-01</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.LibGit2SharpClient</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
@@ -18,7 +18,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
+      <PackageReference Include="LibGit2Sharp" Version="[0.27.0-preview-0096, )" />
     </ItemGroup>
 
     <ItemGroup>
