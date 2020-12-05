@@ -35,12 +35,12 @@ namespace DevRating.VersionControl
 
         public Envelope Sha()
         {
-            return _release != null ? _release.Sha() : new DefaultEnvelope();
+            return _release is object ? _release.Sha() : new DefaultEnvelope();
         }
 
         public bool HasVersion()
         {
-            return _release != null;
+            return _release is object;
         }
 
         public SemVersion Version()

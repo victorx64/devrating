@@ -4,15 +4,13 @@
 using System;
 using DevRating.Domain;
 using DevRating.VersionControl;
-using LibGit2Sharp;
-using Diff = DevRating.Domain.Diff;
 
-namespace DevRating.LibGit2SharpClient
+namespace DevRating.GitProcessClient
 {
-    public sealed class LibGit2Diff : Diff
+    public sealed class GitProcessDiff : Diff
     {
-        private readonly Commit _start;
-        private readonly Commit _end;
+        private readonly string _start;
+        private readonly string _end;
         private readonly Envelope _since;
         private readonly Additions _additions;
         private readonly Deletions _deletions;
@@ -21,58 +19,12 @@ namespace DevRating.LibGit2SharpClient
         private readonly Envelope _link;
         private readonly string _email;
 
-        public LibGit2Diff(
-            string start,
-            string end,
-            Envelope since,
-            IRepository repository,
-            string key,
-            Envelope link,
-            string organization)
-            : this(
-                repository.Lookup<Commit>(start)
-                    ?? throw new ArgumentNullException(nameof(start), $"Start commit `{start}` not found."),
-                repository.Lookup<Commit>(end)
-                    ?? throw new ArgumentNullException(nameof(end), $"End commit `{end}` not found."),
-                since,
-                repository,
-                key,
-                link,
-                organization
-            )
-        {
-        }
-
-        public LibGit2Diff(
+        public GitProcessDiff(
             string email,
             string start,
             string end,
             Envelope since,
-            IRepository repository,
-            string key,
-            Envelope link,
-            string organization)
-            : this(
-                email,
-                repository.Lookup<Commit>(start)
-                    ?? throw new ArgumentNullException(nameof(start), $"Start commit `{start}` not found."),
-                repository.Lookup<Commit>(end)
-                    ?? throw new ArgumentNullException(nameof(end), $"End commit `{end}` not found."),
-                since,
-                repository,
-                key,
-                link,
-                organization
-            )
-        {
-        }
-
-        public LibGit2Diff(
-            string email,
-            Commit start,
-            Commit end,
-            Envelope since,
-            IRepository repository,
+            string repository,
             string key,
             Envelope link,
             string organization
@@ -82,7 +34,7 @@ namespace DevRating.LibGit2SharpClient
                 start,
                 end,
                 since,
-                new CachedPatches(new LibGit2Patches(start, end, since, repository)),
+                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
                 organization
@@ -90,21 +42,21 @@ namespace DevRating.LibGit2SharpClient
         {
         }
 
-        public LibGit2Diff(
-            Commit start,
-            Commit end,
+        public GitProcessDiff(
+            string start,
+            string end,
             Envelope since,
-            IRepository repository,
+            string repository,
             string key,
             Envelope link,
             string organization
         )
             : this(
-                new GitProcessMailmap(repository.Info.WorkingDirectory ?? repository.Info.Path).MappedEmail(end.Author.Email),
+                new VersionControl.VersionControlProcess("git", $"show -s --format=%ae {end}", repository).Output()[0],
                 start,
                 end,
                 since,
-                new CachedPatches(new LibGit2Patches(start, end, since, repository)),
+                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
                 organization
@@ -112,10 +64,10 @@ namespace DevRating.LibGit2SharpClient
         {
         }
 
-        public LibGit2Diff(
+        public GitProcessDiff(
             string email,
-            Commit start,
-            Commit end,
+            string start,
+            string end,
             Envelope since,
             Patches patches,
             string key,
@@ -136,10 +88,10 @@ namespace DevRating.LibGit2SharpClient
         {
         }
 
-        public LibGit2Diff(
+        public GitProcessDiff(
             string email,
-            Commit start,
-            Commit end,
+            string start,
+            string end,
             Envelope since,
             Additions additions,
             Deletions deletions,
@@ -161,12 +113,12 @@ namespace DevRating.LibGit2SharpClient
 
         public Work From(Works works)
         {
-            return works.GetOperation().Work(_key, _start.Sha, _end.Sha);
+            return works.GetOperation().Work(_key, _start, _end);
         }
 
         public bool PresentIn(Works works)
         {
-            return works.ContainsOperation().Contains(_key, _start.Sha, _end.Sha);
+            return works.ContainsOperation().Contains(_key, _start, _end);
         }
 
         public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
@@ -178,14 +130,15 @@ namespace DevRating.LibGit2SharpClient
                 factory.InsertedWork(
                     _organization,
                     _key,
-                    _start.Sha,
-                    _end.Sha,
+                    _start,
+                    _end,
                     _since,
                     _email,
                     _additions.Count(),
                     _link,
                     createdAt
-                ).Id(),
+                )
+                .Id(),
                 createdAt
             );
         }

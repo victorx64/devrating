@@ -7,19 +7,15 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>5.1.2-preview-02</PackageVersion>
+        <PackageVersion>0.1.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
-        <Title>DevRating.LibGit2SharpClient</Title>
+        <Title>DevRating.GitProcessClient</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Description>Git client that uses LibGit2Sharp</Description>
+        <Description>Git process client</Description>
         <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>
     </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="LibGit2Sharp" Version="[0.27.0-preview-0096, )" />
-    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\VersionControl\DevRating.VersionControl.csproj" />

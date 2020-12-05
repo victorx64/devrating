@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.EloRating;
-using DevRating.LibGit2SharpClient;
+using DevRating.GitProcessClient;
 using DevRating.SqliteClient;
-using LibGit2Sharp;
 using Microsoft.Data.Sqlite;
 
 namespace DevRating.ConsoleApp
@@ -25,15 +25,15 @@ namespace DevRating.ConsoleApp
             }
             else if (args[0].Equals("show", StringComparison.OrdinalIgnoreCase))
             {
-                using var repository = new Repository(args[1]);
+                var repository = args[1];
                 var before = args.Length == 4 ? args[2] : args[2] + "~";
                 var after = args.Length == 4 ? args[3] : args[2];
-                var diff = new LibGit2Diff(
+                var diff = new GitProcessDiff(
                     before,
                     after,
-                    new LibGit2LastMajorUpdateTag(repository, before).Sha(),
+                    new GitProcessLastMajorUpdateTag(repository, before).Sha(),
                     repository,
-                    repository.Network.Remotes.First().Url,
+                    Path.GetDirectoryName(repository)!,
                     new DefaultEnvelope(),
                     organization
                 );
@@ -42,16 +42,16 @@ namespace DevRating.ConsoleApp
             }
             else if (args[0].Equals("add", StringComparison.OrdinalIgnoreCase))
             {
-                using var repository = new Repository(args[1]);
+                var repository = args[1];
                 var before = args.Length == 4 || args.Length == 6 ? args[2] : args[2] + "~";
                 var after = args.Length == 4 || args.Length == 6 ? args[3] : args[2];
                 var link = args.Length == 5 || args.Length == 6 ? new DefaultEnvelope(args.Last()) : new DefaultEnvelope();
-                var diff = new LibGit2Diff(
+                var diff = new GitProcessDiff(
                     before,
                     after,
-                    new LibGit2LastMajorUpdateTag(repository, before).Sha(),
+                    new GitProcessLastMajorUpdateTag(repository, before).Sha(),
                     repository,
-                    repository.Network.Remotes.First().Url,
+                    Path.GetDirectoryName(repository)!,
                     link,
                     organization
                 );

@@ -34,7 +34,7 @@ namespace DevRating.VersionControl
 
             var output = process.StandardOutput
                 .ReadToEnd()
-                .Split('\n');
+                .Split(Environment.NewLine);
 
             process.WaitForExit();
 
