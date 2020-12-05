@@ -2,16 +2,21 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace DevRating.VersionControl
 {
     public sealed class VersionControlAdditions : Additions
     {
-        private readonly string _patch;
+        private readonly IEnumerable<string> _lines;
 
-        public VersionControlAdditions(string patch)
+        public VersionControlAdditions(string patch) : this(patch.Split(Environment.NewLine))
         {
-            _patch = patch;
+        }
+
+        public VersionControlAdditions(IEnumerable<string> patch)
+        {
+            _lines = patch;
         }
 
         public uint Count()
@@ -19,7 +24,7 @@ namespace DevRating.VersionControl
             var dangerous = false;
             var additions = 0u;
 
-            foreach (var line in _patch.Split('\n'))
+            foreach (var line in _lines)
             {
                 if (line.StartsWith("@@ "))
                 {

@@ -18,6 +18,11 @@ namespace DevRating.VersionControl
 
         public IEnumerable<FilePatch> Items()
         {
+            if (_items is object)
+            {
+                return _items;
+            }
+
             lock (_lock)
             {
                 return _items ??= _origin.Items();

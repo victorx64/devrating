@@ -9,12 +9,17 @@ namespace DevRating.VersionControl
 {
     public sealed class VersionControlDeletions : Deletions
     {
-        private readonly string _patch;
+        private readonly IEnumerable<string> _lines;
         private readonly AFileBlames _blames;
 
         public VersionControlDeletions(string patch, AFileBlames blames)
+            : this (patch.Split(Environment.NewLine), blames)
         {
-            _patch = patch;
+        }
+
+        public VersionControlDeletions(IEnumerable<string> patch, AFileBlames blames)
+        {
+            _lines = patch;
             _blames = blames;
         }
 
@@ -32,7 +37,7 @@ namespace DevRating.VersionControl
 
         private IEnumerable<string> HunkHeaders()
         {
-            foreach (var line in _patch.Split('\n'))
+            foreach (var line in _lines)
             {
                 if (line.StartsWith("@@ "))
                 {

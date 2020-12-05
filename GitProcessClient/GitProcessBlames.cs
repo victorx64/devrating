@@ -5,33 +5,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DevRating.Domain;
-using Semver;
+using DevRating.VersionControl;
 
-namespace DevRating.VersionControl
+namespace DevRating.GitProcessClient
 {
     public sealed class GitProcessBlames : AFileBlames
     {
-        private readonly IEnumerable<Blame> _blames;
+        private IEnumerable<Blame>? _blames;
+        private readonly object _lock = new object();
+        private readonly Process _git;
+        private readonly Envelope _stop;
 
-        public GitProcessBlames(string path, string filename, string start, Envelope stop, SemVersion version)
+        public GitProcessBlames(string path, string filename, string start, Envelope stop)
             : this(
-                new VersionControlProcess("git", $"blame -t -e -l {(stop.Filled() ? stop.Value() + ".." : "")}{start} -- \"{filename}\"", path).Output(), 
-                version, 
+                new VersionControlProcess("git", $"blame -t -e -l {(stop.Filled() ? stop.Value() + ".." : "")}{start} -- \"{filename}\"", path),
                 stop
             )
         {
         }
 
-        public GitProcessBlames(IList<string> output, SemVersion version, Envelope stop)
+        public GitProcessBlames(Process git, Envelope stop)
         {
-            if (version.Major != 2)
-            {
-                throw new NotSupportedException("Required git version is 2.x.x");
-            }
-
-            _blames = stop.Filled()
-                ? BlameHunks(output, stop.Value().ToString()!).ToArray()
-                : BlameHunks(output).ToArray();
+            _git = git;
+            _stop = stop;
         }
 
         public Blame AtLine(uint line)
@@ -41,7 +37,27 @@ namespace DevRating.VersionControl
                 return b.ContainsLine(line);
             }
 
-            return _blames.First(predicate);
+            return InitedBlames().First(predicate);
+        }
+
+        private IEnumerable<Blame> InitedBlames()
+        {
+            if (_blames == null)
+            {
+                lock (_lock)
+                {
+                    if (_blames == null)
+                    {
+                        var output = _git.Output();
+
+                        _blames = _stop.Filled()
+                            ? BlameHunks(output, _stop.Value().ToString()!).ToArray()
+                            : BlameHunks(output).ToArray();
+                    }
+                }
+            }
+
+            return _blames;
         }
 
         private IEnumerable<Blame> BlameHunks(IList<string> lines)

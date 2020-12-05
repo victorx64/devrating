@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.LibGit2SharpClient", "LibGit2SharpClient\DevRating.LibGit2SharpClient.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.GitProcessClient", "GitProcessClient\DevRating.GitProcessClient.csproj", "{C3EE37FA-C2A6-494E-BFA1-50C6C845C26C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevRating.Domain", "Domain\DevRating.Domain.csproj", "{DDD238EF-6DC1-4507-8EDC-C23EDFB1E544}"
 EndProject
