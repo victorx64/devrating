@@ -357,5 +357,5 @@ MigrationBackup/
 /.sonarqube/
 
 # Dev Rating
-devrating.db
-devrating.db-journal
+devrating.sqlite3
+devrating.sqlite3-journal

@@ -33,37 +33,37 @@ namespace DevRating.VersionControl.Test
         [Fact]
         public void HasVersionWhenInjected()
         {
-            Assert.True(new VersionControlTag("sha", new SemVersion(3, 4, 5)).HasVersion());
+            Assert.True(new VersionControlTag("sha", new SemVersion(3, 4, 5)).Version() is object);
         }
 
         [Fact]
         public void ParsesVersionWithV()
         {
-            Assert.True(new VersionControlTag("sha", "v1.0.0").HasVersion());
+            Assert.True(new VersionControlTag("sha", "v1.0.0").Version() is object);
         }
 
         [Fact]
         public void ParsesVersionWithCapitalV()
         {
-            Assert.True(new VersionControlTag("sha", "V1.0.0").HasVersion());
+            Assert.True(new VersionControlTag("sha", "V1.0.0").Version() is object);
         }
 
         [Fact]
         public void ParsesVersionWithoutV()
         {
-            Assert.True(new VersionControlTag("sha", "1.0.0").HasVersion());
+            Assert.True(new VersionControlTag("sha", "1.0.0").Version() is object);
         }
 
         [Fact]
         public void DoesNotParseNameWithOtherPrefix()
         {
-            Assert.False(new VersionControlTag("sha", "_1.0.0").HasVersion());
+            Assert.False(new VersionControlTag("sha", "_1.0.0").Version() is object);
         }
 
         [Fact]
         public void DoesNotParseNameWithoutVersion()
         {
-            Assert.False(new VersionControlTag("sha", "random-text").HasVersion());
+            Assert.False(new VersionControlTag("sha", "random-text").Version() is object);
         }
 
         [Fact]

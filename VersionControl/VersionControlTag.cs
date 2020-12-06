@@ -40,14 +40,9 @@ namespace DevRating.VersionControl
             return _sha;
         }
 
-        public bool HasVersion()
+        public SemVersion? Version()
         {
-            return _version is object;
-        }
-
-        public SemVersion Version()
-        {
-            return _version!;
+            return _version;
         }
     }
 }

@@ -54,8 +54,7 @@ namespace DevRating.SqliteClient
                 SELECT w.Id
                 FROM Work w
                 WHERE w.Repository = @Repository AND w.CreatedAt >= @After
-                ORDER BY w.Id DESC
-                LIMIT 100";
+                ORDER BY w.Id DESC";
 
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@After", SqliteType.Integer) {Value = after});

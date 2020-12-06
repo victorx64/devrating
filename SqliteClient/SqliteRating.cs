@@ -54,7 +54,9 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (uint?) (long?) command.ExecuteScalar();
+            var result = command.ExecuteScalar();
+
+            return result is DBNull ? null : (uint?) (long?) result;
         }
 
         public uint? IgnoredDeletions()
@@ -65,7 +67,9 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return (uint?) (long?) command.ExecuteScalar();
+            var result = command.ExecuteScalar();
+
+            return result is DBNull ? null : (uint?) (long?) result;
         }
 
         public Work Work()

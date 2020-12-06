@@ -37,6 +37,7 @@ namespace DevRating.GitProcessClient
                 start,
                 end,
                 since,
+                repository,
                 new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
@@ -56,9 +57,10 @@ namespace DevRating.GitProcessClient
         )
             : this(
                 new VersionControl.VersionControlProcess("git", $"show -s --format=%ae {end}", repository).Output()[0],
-                new VersionControl.VersionControlProcess("git", $"rev-parse {start}", repository).Output()[0],
-                new VersionControl.VersionControlProcess("git", $"rev-parse {end}", repository).Output()[0],
+                start,
+                end,
                 since,
+                repository,
                 new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
@@ -72,6 +74,7 @@ namespace DevRating.GitProcessClient
             string start,
             string end,
             string? since,
+            string repository,
             Patches patches,
             string key,
             string? link,
@@ -79,8 +82,8 @@ namespace DevRating.GitProcessClient
         )
             : this(
                 email,
-                start,
-                end,
+                new VersionControl.VersionControlProcess("git", $"rev-parse {start}", repository).Output()[0],
+                new VersionControl.VersionControlProcess("git", $"rev-parse {end}", repository).Output()[0],
                 since,
                 new TotalAdditions(patches),
                 new TotalDeletions(patches),
@@ -91,7 +94,7 @@ namespace DevRating.GitProcessClient
         {
         }
 
-        public GitProcessDiff(
+        private GitProcessDiff(
             string email,
             string start,
             string end,

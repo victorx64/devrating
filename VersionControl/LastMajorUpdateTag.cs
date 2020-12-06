@@ -10,7 +10,7 @@ namespace DevRating.VersionControl
 
         public LastMajorUpdateTag(IEnumerable<Tag> releases)
             : this(
-                releases.Where(delegate(Tag r) { return r.HasVersion(); })
+                releases.Where(delegate(Tag r) { return r.Version() is object; })
                     .OrderByDescending(delegate(Tag r) { return r.Version(); })
                     .ToList()
             )
@@ -19,8 +19,8 @@ namespace DevRating.VersionControl
 
         private LastMajorUpdateTag(IList<Tag> releases)
             : this(
-                releases.Any() && releases.First().Version().Major != releases.Last().Version().Major
-                    ? releases.Last(delegate(Tag r) { return r.Version().Major == releases.First().Version().Major; })
+                releases.Any() && releases.First().Version()!.Major != releases.Last().Version()!.Major
+                    ? releases.Last(delegate(Tag r) { return r.Version()!.Major == releases.First().Version()!.Major; })
                     : null
             )
         {
@@ -36,14 +36,9 @@ namespace DevRating.VersionControl
             return _release?.Sha();
         }
 
-        public bool HasVersion()
+        public SemVersion? Version()
         {
-            return _release is object;
-        }
-
-        public SemVersion Version()
-        {
-            return _release!.Version();
+            return _release?.Version();
         }
     }
 }

@@ -33,12 +33,7 @@ namespace DevRating.GitProcessClient
             return _release.Sha();
         }
 
-        public bool HasVersion()
-        {
-            return _release.HasVersion();
-        }
-
-        public SemVersion Version()
+        public SemVersion? Version()
         {
             return _release.Version();
         }
