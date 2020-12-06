@@ -22,11 +22,11 @@ namespace DevRating.SqliteClient
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             Id author,
             uint additions,
             Id rating,
-            Envelope link,
+            string? link,
             DateTimeOffset createdAt
         )
         {
@@ -56,10 +56,10 @@ namespace DevRating.SqliteClient
                 SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
-            command.Parameters.Add(new SqliteParameter("@Link", SqliteType.Text) {Value = link.Value()});
+            command.Parameters.Add(new SqliteParameter("@Link", SqliteType.Text) {Value = link ?? (object) DBNull.Value});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
-            command.Parameters.Add(new SqliteParameter("@SinceCommit", SqliteType.Text, 50) {Value = since.Value()});
+            command.Parameters.Add(new SqliteParameter("@SinceCommit", SqliteType.Text, 50) {Value = since ?? (object) DBNull.Value});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Value()});
             command.Parameters.Add(new SqliteParameter("@Additions", SqliteType.Integer) {Value = additions});
             command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) {Value = rating.Value()});

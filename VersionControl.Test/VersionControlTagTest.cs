@@ -11,15 +11,15 @@ namespace DevRating.VersionControl.Test
         {
             var expected = "sha";
 
-            Assert.Equal(expected, new VersionControlTag(expected, string.Empty).Sha().Value());
+            Assert.Equal(expected, new VersionControlTag(expected, string.Empty).Sha());
         }
 
         [Fact]
         public void ReturnsEnvelopedSha()
         {
-            var expected = new DefaultEnvelope("sha");
+            var expected = "sha";
 
-            Assert.Equal(expected, new VersionControlTag(expected, null).Sha());
+            Assert.Equal(expected, new VersionControlTag(expected, null as SemVersion).Sha());
         }
 
         [Fact]

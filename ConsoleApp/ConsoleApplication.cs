@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Globalization;
 using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -111,14 +110,14 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkToConsole(Output output, Work work)
         {
-            if (work.Link().Filled())
+            if (work.Link() is object)
             {
-                output.WriteLine($"Link: {work.Link().Value()}");
+                output.WriteLine($"Link: {work.Link()}");
             }
 
-            if (work.Since().Filled())
+            if (work.Since() is object)
             {
-                output.WriteLine($"Since: {work.Since().Value()}");
+                output.WriteLine($"Since: {work.Since()}");
             }
 
             var usedRating = work.UsedRating();
@@ -147,13 +146,13 @@ namespace DevRating.ConsoleApp
                     ? previous.Value()
                     : _formula.DefaultRating();
 
-                var ignored = rating.IgnoredDeletions().Filled()
-                    && rating.IgnoredDeletions().Value().ToInt32(CultureInfo.InvariantCulture) > 0
-                    ? $" + {rating.IgnoredDeletions().Value()}"
+                var ignored = rating.IgnoredDeletions() is object
+                    && rating.IgnoredDeletions() > 0
+                    ? $" + {rating.IgnoredDeletions()}"
                     : "";
 
-                var lost = rating.CountedDeletions().Filled()
-                    ? $"Lost {rating.CountedDeletions().Value()}{ignored} lines. "
+                var lost = rating.CountedDeletions() is object
+                    ? $"Lost {rating.CountedDeletions()}{ignored} lines. "
                     : "";
 
                 output.WriteLine($"<{rating.Author().Email()}> {lost}New rating: {before:F2} -> {rating.Value():F2}");

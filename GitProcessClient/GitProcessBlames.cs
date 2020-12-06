@@ -14,17 +14,17 @@ namespace DevRating.GitProcessClient
         private IEnumerable<Blame>? _blames;
         private readonly object _lock = new object();
         private readonly Process _git;
-        private readonly Envelope _stop;
+        private readonly string? _stop;
 
-        public GitProcessBlames(string path, string filename, string start, Envelope stop)
+        public GitProcessBlames(string path, string filename, string start, string? stop)
             : this(
-                new VersionControlProcess("git", $"blame -t -e -l {(stop.Filled() ? stop.Value() + ".." : "")}{start} -- \"{filename}\"", path),
+                new VersionControlProcess("git", $"blame -t -e -l {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
                 stop
             )
         {
         }
 
-        public GitProcessBlames(Process git, Envelope stop)
+        public GitProcessBlames(Process git, string? stop)
         {
             _git = git;
             _stop = stop;
@@ -50,8 +50,8 @@ namespace DevRating.GitProcessClient
                     {
                         var output = _git.Output();
 
-                        _blames = _stop.Filled()
-                            ? BlameHunks(output, _stop.Value().ToString()!).ToArray()
+                        _blames = _stop is object
+                            ? BlameHunks(output, _stop).ToArray()
                             : BlameHunks(output).ToArray();
                     }
                 }

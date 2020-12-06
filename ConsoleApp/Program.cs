@@ -34,7 +34,7 @@ namespace DevRating.ConsoleApp
                     new GitProcessLastMajorUpdateTag(repository, before).Sha(),
                     repository,
                     Path.GetDirectoryName(repository)!,
-                    new DefaultEnvelope(),
+                    null,
                     organization
                 );
 
@@ -45,7 +45,7 @@ namespace DevRating.ConsoleApp
                 var repository = args[1];
                 var before = args.Length == 4 || args.Length == 6 ? args[2] : args[2] + "~";
                 var after = args.Length == 4 || args.Length == 6 ? args[3] : args[2];
-                var link = args.Length == 5 || args.Length == 6 ? new DefaultEnvelope(args.Last()) : new DefaultEnvelope();
+                var link = args.Length == 5 || args.Length == 6 ? args.Last() : null;
                 var diff = new GitProcessDiff(
                     before,
                     after,
@@ -61,6 +61,24 @@ namespace DevRating.ConsoleApp
                 app.Save(diff);
 
                 app.PrintTo(output, diff);
+            }
+            else if (args[0].Equals("serialize", StringComparison.OrdinalIgnoreCase))
+            {
+                var repository = args[1];
+                var before = args.Length == 4 || args.Length == 6 ? args[2] : args[2] + "~";
+                var after = args.Length == 4 || args.Length == 6 ? args[3] : args[2];
+                var link = args.Length == 5 || args.Length == 6 ? args.Last() : null;
+                var diff = new GitProcessDiff(
+                    before,
+                    after,
+                    new GitProcessLastMajorUpdateTag(repository, before).Sha(),
+                    repository,
+                    Path.GetDirectoryName(repository)!,
+                    link,
+                    organization
+                );
+
+                System.Console.Write(diff.ToJson());
             }
             else if (args[0].Equals("top", StringComparison.OrdinalIgnoreCase))
             {

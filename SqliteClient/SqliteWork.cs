@@ -109,7 +109,7 @@ namespace DevRating.SqliteClient
             return (string) command.ExecuteScalar()!;
         }
 
-        public Envelope Since()
+        public string? Since()
         {
             using var command = _connection.CreateCommand();
 
@@ -117,7 +117,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
+            return command.ExecuteScalar() as string;
         }
 
         public DateTimeOffset CreatedAt()
@@ -131,7 +131,7 @@ namespace DevRating.SqliteClient
             return DateTimeOffset.Parse(command.ExecuteScalar()!.ToString()!, CultureInfo.InvariantCulture);
         }
 
-        public Envelope Link()
+        public string? Link()
         {
             using var command = _connection.CreateCommand();
 
@@ -139,7 +139,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
+            return command.ExecuteScalar() as string;
         }
     }
 }

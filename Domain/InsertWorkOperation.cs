@@ -11,11 +11,11 @@ namespace DevRating.Domain
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             Id author,
             uint additions,
             Id rating,
-            Envelope link,
+            string? link,
             DateTimeOffset createdAt
         );
     }

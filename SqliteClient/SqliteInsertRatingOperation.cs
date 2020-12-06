@@ -20,8 +20,8 @@ namespace DevRating.SqliteClient
 
         public Rating Insert(
             double value,
-            Envelope counted,
-            Envelope ignored,
+            uint? counted,
+            uint? ignored,
             Id previous,
             Id work,
             Id author,
@@ -55,9 +55,9 @@ namespace DevRating.SqliteClient
             command.Parameters.Add(new SqliteParameter("@WorkId", SqliteType.Integer) {Value = work.Value()});
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Value()});
             command.Parameters.Add(new SqliteParameter("@CountedDeletions", SqliteType.Integer)
-                {Value = counted.Value()});
+                {Value = counted ?? (object) DBNull.Value});
             command.Parameters.Add(new SqliteParameter("@IgnoredDeletions", SqliteType.Integer)
-                {Value = ignored.Value()});
+                {Value = ignored ?? (object) DBNull.Value});
             command.Parameters.Add(new SqliteParameter("@CreatedAt", SqliteType.Integer)
                 {Value = createdAt});
 

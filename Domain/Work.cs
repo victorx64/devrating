@@ -13,8 +13,8 @@ namespace DevRating.Domain
         string Repository();
         string Start();
         string End();
-        Envelope Link();
-        Envelope Since();
+        string? Link();
+        string? Since();
         DateTimeOffset CreatedAt();
     }
 }

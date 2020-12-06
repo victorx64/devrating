@@ -30,10 +30,10 @@ namespace DevRating.DefaultObject.Test
                     "repository",
                     "start",
                     "end",
-                    new DefaultEnvelope(),
+                    null,
                     "new author",
                     0u,
-                    new DefaultEnvelope(),
+                    null,
                     DateTimeOffset.UtcNow);
 
             Assert.Single(authors);
@@ -58,10 +58,10 @@ namespace DevRating.DefaultObject.Test
                     "repository",
                     "start",
                     "end",
-                    new DefaultEnvelope(),
+                    null,
                     "existing author",
                     0u,
-                    new DefaultEnvelope(),
+                    null,
                     DateTimeOffset.UtcNow
                 );
 
@@ -86,10 +86,10 @@ namespace DevRating.DefaultObject.Test
                     "repository",
                     "start",
                     "end",
-                    new DefaultEnvelope(),
+                    null,
                     "existing author",
                     0u,
-                    new DefaultEnvelope(),
+                    null,
                     DateTimeOffset.UtcNow
                 );
 
@@ -113,10 +113,10 @@ namespace DevRating.DefaultObject.Test
                     "repository",
                     "start",
                     "end",
-                    new DefaultEnvelope(),
+                    null,
                     "other author",
                     0u,
-                    new DefaultEnvelope(),
+                    null,
                     DateTimeOffset.UtcNow);
 
             Assert.False(works.Single().UsedRating().Id().Filled());
@@ -144,10 +144,10 @@ namespace DevRating.DefaultObject.Test
                     "repository",
                     "start",
                     "end",
-                    new DefaultEnvelope(),
+                    null,
                     author.Email(),
                     0u,
-                    new DefaultEnvelope(),
+                    null,
                     DateTimeOffset.UtcNow);
 
             Assert.Equal(rating, works.Last().UsedRating());

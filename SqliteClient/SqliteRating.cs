@@ -46,7 +46,7 @@ namespace DevRating.SqliteClient
             return new SqliteRating(_connection, new DefaultId(reader["PreviousRatingId"]));
         }
 
-        public Envelope CountedDeletions()
+        public uint? CountedDeletions()
         {
             using var command = _connection.CreateCommand();
 
@@ -54,10 +54,10 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
+            return (uint?) (long?) command.ExecuteScalar();
         }
 
-        public Envelope IgnoredDeletions()
+        public uint? IgnoredDeletions()
         {
             using var command = _connection.CreateCommand();
 
@@ -65,7 +65,7 @@ namespace DevRating.SqliteClient
 
             command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
 
-            return new DefaultEnvelope((IConvertible) command.ExecuteScalar()!);
+            return (uint?) (long?) command.ExecuteScalar();
         }
 
         public Work Work()

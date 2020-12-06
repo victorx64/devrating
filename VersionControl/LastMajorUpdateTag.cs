@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using DevRating.DefaultObject;
-using DevRating.Domain;
 using Semver;
 
 namespace DevRating.VersionControl
@@ -33,9 +31,9 @@ namespace DevRating.VersionControl
             _release = release;
         }
 
-        public Envelope Sha()
+        public string? Sha()
         {
-            return _release is object ? _release.Sha() : new DefaultEnvelope();
+            return _release?.Sha();
         }
 
         public bool HasVersion()

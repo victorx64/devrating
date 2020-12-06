@@ -43,7 +43,7 @@ namespace DevRating.ConsoleApp.Test
                 "key",
                 "start",
                 "end",
-                new DefaultEnvelope(),
+                null,
                 "author",
                 "org",
                 10u,
@@ -76,7 +76,7 @@ namespace DevRating.ConsoleApp.Test
                             "key",
                             "start",
                             "end",
-                            new DefaultEnvelope(),
+                            null,
                             "author",
                             "org",
                             10u,
@@ -142,7 +142,7 @@ namespace DevRating.ConsoleApp.Test
                     "key",
                     "start",
                     "end",
-                    new DefaultEnvelope(),
+                    null,
                     "author",
                     "org",
                     10u,
@@ -168,7 +168,7 @@ namespace DevRating.ConsoleApp.Test
                 "key",
                 "start",
                 "end",
-                new DefaultEnvelope(),
+                null,
                 "author",
                 "org",
                 10u,
@@ -215,7 +215,7 @@ namespace DevRating.ConsoleApp.Test
                 "key",
                 "start",
                 "end",
-                new DefaultEnvelope(),
+                null,
                 "author",
                 "org",
                 10u,
@@ -251,9 +251,7 @@ namespace DevRating.ConsoleApp.Test
         public void PrintsLinkOfWork()
         {
             var lines = new List<string>();
-            var diff = new FakeDiff(
-                new DefaultEnvelope("E.g. a link to the PR")
-            );
+            var diff = new FakeDiff("E.g. a link to the PR");
 
             var app = new ConsoleApplication(new FakeDatabase(), new EloFormula());
 

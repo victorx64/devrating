@@ -9,8 +9,8 @@ namespace DevRating.Domain
     {
         Rating Insert(
             double value,
-            Envelope counted,
-            Envelope ignored,
+            uint? counted,
+            uint? ignored,
             Id previous,
             Id work,
             Id author,

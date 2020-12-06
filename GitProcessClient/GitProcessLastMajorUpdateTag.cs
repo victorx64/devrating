@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Linq;
-using DevRating.Domain;
 using DevRating.VersionControl;
 using Semver;
 
@@ -29,7 +28,7 @@ namespace DevRating.GitProcessClient
             _release = release;
         }
 
-        public Envelope Sha()
+        public string? Sha()
         {
             return _release.Sha();
         }

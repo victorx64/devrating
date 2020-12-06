@@ -1,6 +1,4 @@
 using System;
-using DevRating.DefaultObject;
-using DevRating.Domain;
 using Semver;
 
 namespace DevRating.VersionControl
@@ -8,9 +6,9 @@ namespace DevRating.VersionControl
     public sealed class VersionControlTag : Tag
     {
         private readonly SemVersion? _version;
-        private readonly Envelope _sha;
+        private readonly string? _sha;
 
-        public VersionControlTag(string sha, string name)
+        public VersionControlTag(string? sha, string name)
             : this(
                 sha,
                 name.StartsWith("v", StringComparison.OrdinalIgnoreCase)
@@ -21,7 +19,7 @@ namespace DevRating.VersionControl
         {
         }
 
-        private VersionControlTag(string sha, string name, bool unused)
+        private VersionControlTag(string? sha, string name, bool unused)
             : this(
                 sha,
                 SemVersion.TryParse(name, out var semver)
@@ -31,25 +29,20 @@ namespace DevRating.VersionControl
         {
         }
 
-        public VersionControlTag(string sha, SemVersion? version)
-            : this(new DefaultEnvelope(sha), version)
-        {
-        }
-
-        public VersionControlTag(Envelope sha, SemVersion? version)
+        public VersionControlTag(string? sha, SemVersion? version)
         {
             _sha = sha;
             _version = version;
         }
 
-        public Envelope Sha()
+        public string? Sha()
         {
             return _sha;
         }
 
         public bool HasVersion()
         {
-            return _version != null;
+            return _version is object;
         }
 
         public SemVersion Version()

@@ -13,7 +13,7 @@ namespace DevRating.VersionControl
         private readonly AFileBlames _blames;
 
         public VersionControlDeletions(string patch, AFileBlames blames)
-            : this (patch.Split(Environment.NewLine), blames)
+            : this (patch.Split('\n'), blames)
         {
         }
 

@@ -1,11 +1,10 @@
-using DevRating.Domain;
 using Semver;
 
 namespace DevRating.VersionControl
 {
     public interface Tag
     {
-        Envelope Sha();
+        string? Sha();
         bool HasVersion();
         SemVersion Version();
     }

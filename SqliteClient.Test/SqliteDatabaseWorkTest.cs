@@ -28,7 +28,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope(),
+                        null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -36,7 +36,7 @@ namespace DevRating.SqliteClient.Test
                         ).Id(),
                         additions,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).Additions()
                 );
@@ -65,7 +65,7 @@ namespace DevRating.SqliteClient.Test
                         repository,
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope(),
+                        null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -73,7 +73,7 @@ namespace DevRating.SqliteClient.Test
                         ).Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).Repository()
                 );
@@ -102,7 +102,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         start,
                         "endCommit",
-                        new DefaultEnvelope(),
+                        null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -110,7 +110,7 @@ namespace DevRating.SqliteClient.Test
                         ).Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).Start()
                 );
@@ -139,7 +139,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         end,
-                        new DefaultEnvelope(),
+                        null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -147,7 +147,7 @@ namespace DevRating.SqliteClient.Test
                         ).Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).End()
                 );
@@ -180,11 +180,11 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope(),
+                        null,
                         author.Id(),
                         2u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).Author().Id()
                 );
@@ -213,18 +213,18 @@ namespace DevRating.SqliteClient.Test
 
                 var previous = database.Entities().Ratings().InsertOperation().Insert(
                     3423,
-                    new DefaultEnvelope(),
-                    new DefaultEnvelope(),
+                    null,
+                    null,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
                         "repo",
                         "startCommit1",
                         "endCommit1",
-                        new DefaultEnvelope(),
+                        null,
                         author.Id(),
                         2u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).Id(),
                     author.Id(),
@@ -237,11 +237,11 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope(),
+                        null,
                         author.Id(),
                         2u,
                         previous.Id(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).UsedRating().Id()
                 );
@@ -270,7 +270,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope(since),
+                        since,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -278,9 +278,10 @@ namespace DevRating.SqliteClient.Test
                         ).Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
-                    ).Since().Value()
+                    )
+                    .Since()
                 );
             }
             finally
@@ -308,7 +309,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope("sinceCommit"),
+                        "sinceCommit",
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -317,7 +318,7 @@ namespace DevRating.SqliteClient.Test
                         .Id(),
                         1u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         moment2
                     )
                     .CreatedAt()
@@ -339,15 +340,15 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                var link = new DefaultEnvelope("Link");
+                var link = "Link";
 
                 Assert.Equal(
-                    link.Value(),
+                    link,
                     database.Entities().Works().InsertOperation().Insert(
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope("sinceCommit"),
+                        "sinceCommit",
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -359,7 +360,7 @@ namespace DevRating.SqliteClient.Test
                         link,
                         DateTimeOffset.UtcNow
                     )
-                    .Link().Value()
+                    .Link()
                 );
             }
             finally
@@ -383,7 +384,7 @@ namespace DevRating.SqliteClient.Test
                         "repo",
                         "startCommit",
                         "endCommit",
-                        new DefaultEnvelope(),
+                        null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
                             "email",
@@ -391,7 +392,7 @@ namespace DevRating.SqliteClient.Test
                         ).Id(),
                         2u,
                         new DefaultId(),
-                        new DefaultEnvelope(),
+                        null,
                         DateTimeOffset.UtcNow
                     ).ToJson
                 );

@@ -11,7 +11,7 @@ namespace DevRating.VersionControl.Fake
         private readonly IList<string> _output;
 
         public FakeProcess(string output)
-            : this (output.Split(Environment.NewLine))
+            : this (output.Split('\n'))
         {
         }
 
