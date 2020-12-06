@@ -56,7 +56,7 @@ namespace DevRating.GitProcessClient
             string organization
         )
             : this(
-                new VersionControl.VersionControlProcess("git", $"show -s --format=%ae {end}", repository).Output()[0],
+                new VersionControl.VersionControlProcess("git", $"show -s --format=%aE {end}", repository).Output()[0],
                 start,
                 end,
                 since,
