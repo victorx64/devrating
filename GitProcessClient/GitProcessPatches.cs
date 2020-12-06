@@ -13,10 +13,10 @@ namespace DevRating.GitProcessClient
     {
         private readonly string _start;
         private readonly string _end;
-        private readonly Envelope _since;
+        private readonly string? _since;
         private readonly string _repository;
 
-        public GitProcessPatches(string start, string end, Envelope since, string repository)
+        public GitProcessPatches(string start, string end, string? since, string repository)
         {
             _start = start;
             _end = end;

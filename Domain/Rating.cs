@@ -9,8 +9,8 @@ namespace DevRating.Domain
     {
         double Value();
         Rating PreviousRating();
-        Envelope CountedDeletions();
-        Envelope IgnoredDeletions();
+        uint? CountedDeletions();
+        uint? IgnoredDeletions();
         Work Work();
         Author Author();
         DateTimeOffset CreatedAt();

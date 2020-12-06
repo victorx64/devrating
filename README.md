@@ -55,7 +55,7 @@ Where:
 - `<path-to-repo>` — path to a local git repository.
 - `<merge-commit>` — a merge or squash commit of a merged PR.
 
-It prints a reward and updates the rating. The rating is stored in `devrating.db` SQLite file in a working directory.
+It prints a reward and updates the rating. The rating is stored in `devrating.sqlite3` SQLite file in a working directory.
 
 ## Print the rating
 
@@ -82,7 +82,7 @@ $ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victor
 
 Where:
 - `<path-to-repo>` — path to a local git repository.
-- `<working-dir>` — path where the rating will be stored as `devrating.db` SQLite file.
+- `<working-dir>` — path where the rating will be stored as `devrating.sqlite3` SQLite file.
 - `<merge-commit>` — a merge or squash commit of a merged PR.
 
 ## Print the rating
@@ -93,7 +93,7 @@ $ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victor
 
 Where:
 - `<path-to-repo>` — path to a local git repository.
-- `<working-dir>` — path where the rating is stored as `devrating.db` SQLite file.
+- `<working-dir>` — path where the rating is stored as `devrating.sqlite3` SQLite file.
 
 # How it works
 

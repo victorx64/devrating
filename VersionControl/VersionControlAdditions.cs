@@ -10,7 +10,7 @@ namespace DevRating.VersionControl
     {
         private readonly IEnumerable<string> _lines;
 
-        public VersionControlAdditions(string patch) : this(patch.Split(Environment.NewLine))
+        public VersionControlAdditions(string patch) : this(patch.Split('\n'))
         {
         }
 

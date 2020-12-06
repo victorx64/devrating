@@ -13,10 +13,10 @@ namespace DevRating.Domain
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             string email,
             uint additions,
-            Envelope link, 
+            string? link, 
             DateTimeOffset createdAt
         );
 

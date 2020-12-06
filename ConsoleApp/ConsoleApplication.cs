@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Globalization;
 using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.Domain;
@@ -38,6 +37,41 @@ namespace DevRating.ConsoleApp
                     output.WriteLine(
                         $"<{author.Email()}> {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
                     );
+                }
+            }
+            finally
+            {
+                transaction.Rollback();
+                _database.Instance().Connection().Close();
+            }
+        }
+
+        public void Total(Output output, string repository, DateTimeOffset after)
+        {
+            _database.Instance().Connection().Open();
+
+            using var transaction = _database.Instance().Connection().BeginTransaction();
+
+            try
+            {
+                if (!_database.Instance().Present())
+                {
+                    _database.Instance().Create();
+                }
+
+                output.WriteLine("Author | Total reward");
+                output.WriteLine("------ | ------------");
+
+                foreach (var item in _database
+                    .Entities()
+                    .Works()
+                    .GetOperation()
+                    .Last(repository, after)
+                    .GroupBy(w => w.Author().Email(), Reward)
+                    .Select(g => new { Key = g.Key, Sum = g.Sum() })
+                    .OrderByDescending(s => s.Sum))
+                {
+                    output.WriteLine($"<{item.Key}> | {item.Sum:F2}");
                 }
             }
             finally
@@ -97,7 +131,7 @@ namespace DevRating.ConsoleApp
                 if (!diff.PresentIn(_database.Entities().Works()))
                 {
                     throw new InvalidOperationException("The diff is not present in the database. " +
-                        "To insert, run `devrating add <path> (<base> <head> | <merge>) -l [<link>]`.");
+                        "To insert, run `devrating add`.");
                 }
 
                 PrintWorkToConsole(output, diff.From(_database.Entities().Works()));
@@ -111,16 +145,49 @@ namespace DevRating.ConsoleApp
 
         private void PrintWorkToConsole(Output output, Work work)
         {
-            if (work.Link().Filled())
+            output.WriteLine($"Author: <{work.Author().Email()}>");
+            output.WriteLine($"base: {work.Start()}");
+            output.WriteLine($"head: {work.End()}");
+
+            if (work.Since() is object)
             {
-                output.WriteLine($"Link: {work.Link().Value()}");
+                output.WriteLine($"Since: {work.Since()}");
             }
 
-            if (work.Since().Filled())
+            if (work.Link() is object)
             {
-                output.WriteLine($"Since: {work.Since().Value()}");
+                output.WriteLine($"Link: {work.Link()}");
             }
 
+            output.WriteLine($"Additions: {work.Additions()}");
+            output.WriteLine($"Reward: {Reward(work):F2}");
+
+            PrintWorkRatingsToConsole(output, work);
+        }
+
+        private void PrintWorkRatingsToConsole(Output output, Work work)
+        {
+            output.WriteLine("Author | Lines lost | Prev rating | New rating");
+            output.WriteLine("------ | ---------- | ----------- | ----------");
+
+            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).Reverse().ToList())
+            {
+                var previous = rating.PreviousRating();
+
+                var before = previous.Id().Filled()
+                    ? previous.Value()
+                    : _formula.DefaultRating();
+
+                var lost = rating.CountedDeletions() is object
+                    ? rating.CountedDeletions().ToString()
+                    : "0";
+
+                output.WriteLine($"<{rating.Author().Email()}> | {lost} | {before:F2} | {rating.Value():F2}");
+            }
+        }
+
+        private double Reward(Work work)
+        {
             var usedRating = work.UsedRating();
 
             var rating = usedRating.Id().Filled()
@@ -131,33 +198,7 @@ namespace DevRating.ConsoleApp
 
             var additions = Math.Min(work.Additions(), 250);
 
-            output.WriteLine($"<{work.Author().Email()}> Added {work.Additions()} lines. " +
-                $"Reward: {additions / (1d - percentile):F2}");
-
-            PrintWorkRatingsToConsole(output, work);
-        }
-
-        private void PrintWorkRatingsToConsole(Output output, Work work)
-        {
-            foreach (var rating in _database.Entities().Ratings().GetOperation().RatingsOf(work.Id()).Reverse().ToList())
-            {
-                var previous = rating.PreviousRating();
-
-                var before = previous.Id().Filled()
-                    ? previous.Value()
-                    : _formula.DefaultRating();
-
-                var ignored = rating.IgnoredDeletions().Filled()
-                    && rating.IgnoredDeletions().Value().ToInt32(CultureInfo.InvariantCulture) > 0
-                    ? $" + {rating.IgnoredDeletions().Value()}"
-                    : "";
-
-                var lost = rating.CountedDeletions().Filled()
-                    ? $"Lost {rating.CountedDeletions().Value()}{ignored} lines. "
-                    : "";
-
-                output.WriteLine($"<{rating.Author().Email()}> {lost}New rating: {before:F2} -> {rating.Value():F2}");
-            }
+            return additions / (1d - percentile);
         }
     }
 }

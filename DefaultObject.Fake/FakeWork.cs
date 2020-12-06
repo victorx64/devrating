@@ -15,8 +15,8 @@ namespace DevRating.DefaultObject.Fake
         private readonly string _repository;
         private readonly string _start;
         private readonly string _end;
-        private readonly Envelope _since;
-        private readonly Envelope _link;
+        private readonly string? _since;
+        private readonly string? _link;
         private readonly DateTimeOffset _createdAt;
 
         public FakeWork(uint additions, Author author)
@@ -26,9 +26,9 @@ namespace DevRating.DefaultObject.Fake
                 "repository",
                 "startCommit",
                 "endCommit",
-                new DefaultEnvelope("sinceCommit"),
+                "sinceCommit",
                 DateTimeOffset.UtcNow,
-                new DefaultEnvelope("link")
+                "link"
             )
         {
         }
@@ -39,9 +39,9 @@ namespace DevRating.DefaultObject.Fake
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             DateTimeOffset createdAt,
-            Envelope link
+            string? link
         )
             : this(
                 additions,
@@ -64,9 +64,9 @@ namespace DevRating.DefaultObject.Fake
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             DateTimeOffset createdAt,
-            Envelope link
+            string? link
         )
             : this(
                 new DefaultId(Guid.NewGuid()),
@@ -91,9 +91,9 @@ namespace DevRating.DefaultObject.Fake
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             DateTimeOffset createdAt,
-            Envelope link
+            string? link
         )
         {
             _id = id;
@@ -148,7 +148,7 @@ namespace DevRating.DefaultObject.Fake
             return _end;
         }
 
-        public Envelope Since()
+        public string? Since()
         {
             return _since;
         }
@@ -158,7 +158,7 @@ namespace DevRating.DefaultObject.Fake
             return _createdAt;
         }
 
-        public Envelope Link()
+        public string? Link()
         {
             return _link;
         }

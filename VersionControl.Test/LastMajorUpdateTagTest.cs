@@ -1,4 +1,3 @@
-using System;
 using Semver;
 using Xunit;
 
@@ -9,19 +8,14 @@ namespace DevRating.VersionControl.Test
         [Fact]
         public void HasNoVersionOnEmptyTagsCollection()
         {
-            Assert.False(new LastMajorUpdateTag(new Tag[0]).HasVersion());
-        }
-
-        [Fact]
-        public void ThrowsFromVersionOnEmptyTagsCollection()
-        {
-            Assert.Throws<NullReferenceException>(() => new LastMajorUpdateTag(new Tag[0]).Version());
+            Assert.False(new LastMajorUpdateTag(new Tag[0]).Version() is object);
         }
 
         [Fact]
         public void HasNoShaOnEmptyTagsCollection()
         {
-            Assert.False(new LastMajorUpdateTag(new Tag[0]).Sha().Filled());
+            Assert.False(new LastMajorUpdateTag(new Tag[0])
+                .Sha() is object);
         }
 
         [Fact]
@@ -34,21 +28,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "no-version"),
                         new VersionControlTag("", "still-no-version"),
                     }
-                ).HasVersion()
-            );
-        }
-
-        [Fact]
-        public void ThrowsFromVersionOnTagsWithoutVersions()
-        {
-            Assert.Throws<NullReferenceException>(() =>
-                new LastMajorUpdateTag(
-                    new[]
-                    {
-                        new VersionControlTag("", "no-version"),
-                        new VersionControlTag("", "still-no-version"),
-                    }
-                ).Version()
+                )
+                .Version() is object
             );
         }
 
@@ -62,7 +43,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "no-version"),
                         new VersionControlTag("", "still-no-version"),
                     }
-                ).Sha().Filled()
+                )
+                .Sha() is object
             );
         }
 
@@ -75,20 +57,8 @@ namespace DevRating.VersionControl.Test
                     {
                         new VersionControlTag("", "0.1.0"),
                     }
-                ).HasVersion()
-            );
-        }
-
-        [Fact]
-        public void ThrowsFromVersionOnSingleTag()
-        {
-            Assert.Throws<NullReferenceException>(() =>
-                new LastMajorUpdateTag(
-                    new[]
-                    {
-                        new VersionControlTag("", "0.1.0"),
-                    }
-                ).Version()
+                )
+                .Version() is object
             );
         }
 
@@ -101,7 +71,8 @@ namespace DevRating.VersionControl.Test
                     {
                         new VersionControlTag("", "0.1.0"),
                     }
-                ).Sha().Filled()
+                )
+                .Sha() is object
             );
         }
 
@@ -115,21 +86,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "no-version"),
                         new VersionControlTag("", "0.1.0"),
                     }
-                ).HasVersion()
-            );
-        }
-
-        [Fact]
-        public void ThrowsFromVersionOnSingleTagWithVersion()
-        {
-            Assert.Throws<NullReferenceException>(() =>
-                new LastMajorUpdateTag(
-                    new[]
-                    {
-                        new VersionControlTag("", "no-version"),
-                        new VersionControlTag("", "0.1.0"),
-                    }
-                ).Version()
+                )
+                .Version() is object
             );
         }
 
@@ -143,23 +101,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "no-version"),
                         new VersionControlTag("", "0.1.0"),
                     }
-                ).Sha().Filled()
-            );
-        }
-
-        [Fact]
-        public void ThrowsFromVersionOnSingleMajorVersion()
-        {
-            Assert.Throws<NullReferenceException>(() =>
-                new LastMajorUpdateTag(
-                    new[]
-                    {
-                        new VersionControlTag("", "10.1.0"),
-                        new VersionControlTag("", "10.2.11"),
-                        new VersionControlTag("", "10.3.2"),
-                        new VersionControlTag("", "10.4.5"),
-                    }
-                ).Version()
+                )
+                .Sha() is object
             );
         }
 
@@ -175,7 +118,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "10.3.2"),
                         new VersionControlTag("", "10.4.5"),
                     }
-                ).HasVersion()
+                )
+                .Version() is object
             );
         }
 
@@ -191,7 +135,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "10.3.2"),
                         new VersionControlTag("", "10.4.5"),
                     }
-                ).Sha().Filled()
+                )
+                .Sha() is object
             );
         }
 
@@ -210,7 +155,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "1.1.0"),
                         new VersionControlTag("", "1.2.0"),
                     }
-                ).Version()
+                )
+                .Version()
             );
         }
 
@@ -228,7 +174,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "1.1.0"),
                         new VersionControlTag("", "1.2.0"),
                     }
-                ).HasVersion()
+                )
+                .Version() is object
             );
         }
 
@@ -247,7 +194,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "1.1.0"),
                         new VersionControlTag("", "1.2.0"),
                     }
-                ).Sha().Value()
+                )
+                .Sha()
             );
         }
 
@@ -266,7 +214,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "0.1.0"),
                         new VersionControlTag("", "1.0.0-alpha"),
                     }
-                ).Version()
+                )
+                .Version()
             );
         }
 
@@ -286,7 +235,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "1.2.0"),
                         new VersionControlTag("", "2.0.0-latest"),
                     }
-                ).Version()
+                )
+                .Version()
             );
         }
 
@@ -305,7 +255,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "1.2.0"),
                         new VersionControlTag("", "2.0.0-latest"),
                     }
-                ).HasVersion()
+                )
+                .Version() is object
             );
         }
 
@@ -325,7 +276,8 @@ namespace DevRating.VersionControl.Test
                         new VersionControlTag("", "1.2.0"),
                         new VersionControlTag("this", "2.0.0-latest"),
                     }
-                ).Sha().Value()
+                )
+                .Sha()
             );
         }
     }

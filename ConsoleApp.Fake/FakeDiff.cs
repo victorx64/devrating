@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using DevRating.DefaultObject;
 using DevRating.Domain;
 
@@ -13,20 +15,20 @@ namespace DevRating.ConsoleApp.Fake
         private readonly string _key;
         private readonly string _start;
         private readonly string _end;
-        private readonly Envelope _since;
-        private readonly Envelope _link;
+        private readonly string? _since;
+        private readonly string? _link;
         private readonly string _email;
         private readonly string _organization;
         private readonly uint _additions;
         private readonly IEnumerable<Deletion> _deletions;
         private readonly DateTimeOffset _createdAt;
 
-        public FakeDiff(Envelope link)
+        public FakeDiff(string? link)
             : this(
                 "key",
                 "start",
                 "end",
-                new DefaultEnvelope("since this commit"),
+                "since this commit",
                 "author",
                 "org",
                 10u,
@@ -46,7 +48,7 @@ namespace DevRating.ConsoleApp.Fake
                 "key",
                 "start",
                 "end",
-                new DefaultEnvelope("since this commit"),
+                "since this commit",
                 "author",
                 "org",
                 10u,
@@ -64,7 +66,7 @@ namespace DevRating.ConsoleApp.Fake
             string key,
             string start,
             string end,
-            Envelope since,
+            string? since,
             string email,
             string organization,
             uint additions,
@@ -80,7 +82,7 @@ namespace DevRating.ConsoleApp.Fake
                 additions,
                 deletions,
                 createdAt,
-                new DefaultEnvelope()
+                null
             )
         {
         }
@@ -89,13 +91,13 @@ namespace DevRating.ConsoleApp.Fake
             string key,
             string start,
             string end,
-            Envelope since,
+            string? since,
             string email,
             string organization,
             uint additions,
             IEnumerable<Deletion> deletions,
             DateTimeOffset createdAt,
-            Envelope link
+            string? link
         )
         {
             _key = key;
@@ -139,6 +141,51 @@ namespace DevRating.ConsoleApp.Fake
                 )
                 .Id(),
                 _createdAt
+            );
+        }
+
+        private class Dto
+        {
+            public string Email { get; set; } = string.Empty;
+            public string Start { get; set; } = string.Empty;
+            public string End { get; set; } = string.Empty;
+            public string Organization { get; set; } = string.Empty;
+            public string? Since { get; set; }
+            public string Key { get; set; } = string.Empty;
+            public string? Link { get; set; }
+            public uint Additions { get; set; }
+            public IEnumerable<DeletionDto> Deletions { get; set; } = new DeletionDto[0];
+
+            internal class DeletionDto
+            {
+                public string Email { get; set; } = string.Empty;
+                public uint Counted { get; set; }
+                public uint Ignored { get; set; }
+            }
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize<Dto>(
+                new Dto
+                {
+                    Additions = _additions,
+                    Deletions = _deletions.Select(deletion =>
+                        new Dto.DeletionDto
+                        {
+                            Counted = deletion.Counted(),
+                            Email = deletion.Email(),
+                            Ignored = deletion.Ignored()
+                        }
+                    ),
+                    End = _end,
+                    Email = _email,
+                    Key = _key,
+                    Link = _link,
+                    Organization = _organization,
+                    Since = _since,
+                    Start = _start
+                }
             );
         }
     }

@@ -24,10 +24,10 @@ namespace DevRating.DefaultObject
             string repository,
             string start,
             string end,
-            Envelope since,
+            string? since,
             string email,
             uint additions,
-            Envelope link,
+            string? link,
             DateTimeOffset createdAt
         )
         {
@@ -83,8 +83,8 @@ namespace DevRating.DefaultObject
                     value,
                     MatchesWithInsertedLosers(organization, deletions, work, value, createdAt)
                 ),
-                new DefaultEnvelope(),
-                new DefaultEnvelope(),
+                null,
+                null,
                 winner.Id(),
                 work,
                 author,
@@ -122,8 +122,8 @@ namespace DevRating.DefaultObject
 
                 _entities.Ratings().InsertOperation().Insert(
                     _formula.LoserNewRating(value, new DefaultMatch(winner, deletion.Counted())),
-                    new DefaultEnvelope(deletion.Counted()),
-                    new DefaultEnvelope(deletion.Ignored()),
+                    deletion.Counted(),
+                    deletion.Ignored(),
                     current.Id(),
                     work,
                     victim,

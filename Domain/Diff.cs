@@ -5,7 +5,7 @@ using System;
 
 namespace DevRating.Domain
 {
-    public interface Diff
+    public interface Diff : JsonObject
     {
         Work From(Works works);
         bool PresentIn(Works works);
