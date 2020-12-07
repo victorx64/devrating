@@ -22,7 +22,9 @@ namespace DevRating.ConsoleApp.Test
 
             new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeOutput(lines), "organization");
 
-            Assert.Empty(lines);
+            var headers = 2;
+
+            Assert.Equal(headers, lines.Count);
         }
 
         [Fact]
@@ -118,7 +120,9 @@ namespace DevRating.ConsoleApp.Test
 
             new ConsoleApplication(database, new EloFormula()).Top(new FakeOutput(lines), organization);
 
-            Assert.Equal(authors.Count, lines.Count);
+            var headers = 2;
+
+            Assert.Equal(authors.Count, lines.Count - headers);
         }
 
         [Fact]
