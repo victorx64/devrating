@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DevRating.Domain;
 using DevRating.VersionControl;
 
 namespace DevRating.GitProcessClient
@@ -43,7 +42,7 @@ namespace DevRating.GitProcessClient
             var old = "unknown";
             var state = State.Diff;
 
-            foreach (var line in new VersionControlProcess("git", $"diff {_start}..{_end} -U0", _repository).Output())
+            foreach (var line in new VersionControlProcess("git", $"diff {_start}..{_end} -U0 -M01", _repository).Output())
             {
                 switch (state)
                 {
