@@ -44,7 +44,7 @@ namespace DevRating.ConsoleApp.Fake
         }
 
         public FakeDiff()
-            : this (
+            : this(
                 "key",
                 "start",
                 "end",
@@ -150,17 +150,17 @@ namespace DevRating.ConsoleApp.Fake
             public string Start { get; set; } = string.Empty;
             public string End { get; set; } = string.Empty;
             public string Organization { get; set; } = string.Empty;
-            public string? Since { get; set; }
+            public string? Since { get; set; } = default;
             public string Key { get; set; } = string.Empty;
-            public string? Link { get; set; }
-            public uint Additions { get; set; }
-            public IEnumerable<DeletionDto> Deletions { get; set; } = new DeletionDto[0];
+            public string? Link { get; set; } = default;
+            public uint Additions { get; set; } = default;
+            public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
 
             internal class DeletionDto
             {
                 public string Email { get; set; } = string.Empty;
-                public uint Counted { get; set; }
-                public uint Ignored { get; set; }
+                public uint Counted { get; set; } = default;
+                public uint Ignored { get; set; } = default;
             }
         }
 

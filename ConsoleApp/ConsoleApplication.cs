@@ -32,10 +32,13 @@ namespace DevRating.ConsoleApp
                     _database.Instance().Create();
                 }
 
+                output.WriteLine("Author | Rating");
+                output.WriteLine("------ | ------");
+
                 foreach (var author in _database.Entities().Authors().GetOperation().TopOfOrganization(organization))
                 {
                     output.WriteLine(
-                        $"<{author.Email()}> {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
+                        $"<{author.Email()}> | {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
                     );
                 }
             }
