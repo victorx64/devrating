@@ -43,5 +43,10 @@ namespace DevRating.DefaultObject.Fake
         {
             return _works;
         }
+
+        public IEnumerable<Work> LastOfOrganization(string organization, DateTimeOffset after)
+        {
+            return _works;
+        }
     }
 }

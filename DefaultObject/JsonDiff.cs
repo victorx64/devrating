@@ -18,7 +18,7 @@ namespace DevRating.DefaultObject
             public string End { get; set; } = string.Empty;
             public string Organization { get; set; } = string.Empty;
             public string? Since { get; set; } = default;
-            public string Key { get; set; } = string.Empty;
+            public string Repository { get; set; } = string.Empty;
             public string? Link { get; set; } = default;
             public uint Additions { get; set; } = default;
             public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
@@ -50,7 +50,7 @@ namespace DevRating.DefaultObject
                 _state.Deletions.Select(d => new DefaultDeletion(d.Email, d.Counted, d.Ignored)),
                 factory.InsertedWork(
                     _state.Organization,
-                    _state.Key,
+                    _state.Repository,
                     _state.Start,
                     _state.End,
                     _state.Since,
@@ -66,12 +66,12 @@ namespace DevRating.DefaultObject
 
         public Work From(Works works)
         {
-            return works.GetOperation().Work(_state.Key, _state.Start, _state.End);
+            return works.GetOperation().Work(_state.Repository, _state.Start, _state.End);
         }
 
         public bool PresentIn(Works works)
         {
-            return works.ContainsOperation().Contains(_state.Key, _state.Start, _state.End);
+            return works.ContainsOperation().Contains(_state.Repository, _state.Start, _state.End);
         }
 
         public string ToJson()

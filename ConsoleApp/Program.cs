@@ -2,12 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
 using DevRating.DefaultObject;
 using DevRating.EloRating;
 using DevRating.GitProcessClient;
 using DevRating.SqliteClient;
 using Microsoft.Data.Sqlite;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.IO;
 
 namespace DevRating.ConsoleApp
 {
@@ -16,81 +18,178 @@ namespace DevRating.ConsoleApp
         private static void Main(string[] args)
         {
             var output = new StandardOutput();
-            var organization = "Current organization";
-            var key = "Stub key";
-
-            if (!args.Any())
-            {
-                PrintUsage(output);
-            }
-            else if (args[0].Equals("show", StringComparison.OrdinalIgnoreCase))
-            {
-                Application().PrintTo(output, new KeyDiff(args[1], args[2], key));
-            }
-            else if (args[0].Equals("add", StringComparison.OrdinalIgnoreCase))
-            {
-                var repository = args[1];
-                var before = args.Length == 4 || args.Length == 6 ? args[2] : args[2] + "~";
-                var after = args.Length == 4 || args.Length == 6 ? args[3] : args[2];
-                var link = args.Length == 5 || args.Length == 6 ? args.Last() : null;
-                var diff = new GitProcessDiff(
-                    before,
-                    after,
-                    new GitProcessLastMajorUpdateTag(repository, before).Sha(),
-                    repository,
-                    key,
-                    link,
-                    organization
-                );
-
-                var app = Application();
-
-                app.Save(diff);
-
-                app.PrintTo(output, diff);
-            }
-            else if (args[0].Equals("serialize", StringComparison.OrdinalIgnoreCase))
-            {
-                var repository = args[1];
-                var before = args.Length == 4 || args.Length == 6 ? args[2] : args[2] + "~";
-                var after = args.Length == 4 || args.Length == 6 ? args[3] : args[2];
-                var link = args.Length == 5 || args.Length == 6 ? args.Last() : null;
-
-                output.WriteLine(
-                    new GitProcessDiff(
-                        before,
-                        after,
-                        new GitProcessLastMajorUpdateTag(repository, before).Sha(),
-                        repository,
-                        key,
+            var addCommand = new Command("add", "Evaluate the reward and insert it into the local DB");
+            var addMergeCommand = new Command("merge", "Evaluate the reward for a merge commit and insert it into the local DB");
+            addMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
+            addMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
+            addMergeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
+            addMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            addMergeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
+            addMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?>(
+                (path, merge, link, name, org) =>
+                {
+                    var first = merge + "~";
+                    var second = merge;
+                    var diff = new GitProcessDiff(
+                        first,
+                        second,
+                        new GitProcessLastMajorUpdateTag(path.FullName, first).Sha(),
+                        path.FullName,
+                        name ?? "unnamed",
                         link,
-                        organization
-                    )
-                    .ToJson()
-                );
-            }
-            else if (args[0].Equals("apply", StringComparison.OrdinalIgnoreCase))
-            {
-                var diff = new JsonDiff(args[1]);
+                        org ?? "none"
+                    );
 
-                var app = Application();
+                    var app = Application();
 
-                app.Save(diff);
+                    app.Save(diff);
 
-                app.PrintTo(output, diff);
-            }
-            else if (args[0].Equals("top", StringComparison.OrdinalIgnoreCase))
-            {
-                Application().Top(output, organization);
-            }
-            else if (args[0].Equals("total", StringComparison.OrdinalIgnoreCase))
-            {
-                Application().Total(output, key, DateTimeOffset.UtcNow - TimeSpan.FromDays(90));
-            }
-            else
-            {
-                PrintUsage(output);
-            }
+                    app.PrintTo(output, diff);
+                }
+            );
+            addCommand.AddCommand(addMergeCommand);
+
+            var addDiffCommand = new Command("diff", "Evaluate the reward for diff and insert it into the local DB");
+            addDiffCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
+            addDiffCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
+            addDiffCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
+            addDiffCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
+            addDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            addDiffCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
+            addDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?>(
+                (path, @base, head, link, name, org) =>
+                {
+                    var diff = new GitProcessDiff(
+                        @base,
+                        head,
+                        new GitProcessLastMajorUpdateTag(path.FullName, @base).Sha(),
+                        path.FullName,
+                        name ?? "unnamed",
+                        link,
+                        org ?? "none"
+                    );
+
+                    var app = Application();
+
+                    app.Save(diff);
+
+                    app.PrintTo(output, diff);
+                }
+            );
+            addCommand.AddCommand(addDiffCommand);
+
+            var serializeCommand = new Command("serialize", "Serialize diff metadata");
+            var serializeMergeCommand = new Command("merge", "Serialize merge commit metadata");
+            serializeMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
+            serializeMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
+            serializeMergeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
+            serializeMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            serializeMergeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
+            serializeMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?>(
+                (path, merge, link, name, org) =>
+                {
+                    var first = merge + "~";
+                    var second = merge;
+                    var diff = new GitProcessDiff(
+                        first,
+                        second,
+                        new GitProcessLastMajorUpdateTag(path.FullName, first).Sha(),
+                        path.FullName,
+                        name ?? "unnamed",
+                        link,
+                        org ?? "none"
+                    );
+
+                    var app = Application();
+
+                    app.Save(diff);
+
+                    app.PrintTo(output, diff);
+                }
+            );
+            serializeCommand.AddCommand(serializeMergeCommand);
+
+            var serializeDiffCommand = new Command("diff", "Serialize diff metadata");
+            serializeDiffCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
+            serializeDiffCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
+            serializeDiffCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
+            serializeDiffCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
+            serializeDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            serializeDiffCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
+            serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?>(
+                (path, @base, head, link, name, org) =>
+                {
+                    var diff = new GitProcessDiff(
+                        @base,
+                        head,
+                        new GitProcessLastMajorUpdateTag(path.FullName, @base).Sha(),
+                        path.FullName,
+                        name ?? "unnamed",
+                        link,
+                        org ?? "none"
+                    );
+
+                    var app = Application();
+
+                    app.Save(diff);
+
+                    app.PrintTo(output, diff);
+                }
+            );
+            serializeCommand.AddCommand(serializeDiffCommand);
+
+            var showCommand = new Command("show", "Print the saved reward from the local DB");
+            showCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
+            showCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
+            showCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            showCommand.Handler = CommandHandler.Create<string, string, string?>(
+                (@base, head, name) =>
+                {
+                    Application().PrintTo(output, new ThinDiff(@base, head, name ?? "unnamed"));
+                }
+            );
+
+            var applyCommand = new Command("apply", "Deserialize diff metadata, evaluate the reward and insert it into the local DB");
+            applyCommand.AddOption(new Option<string>(new[] { "--json", "-j" }, "Serialized diff metadata") { IsRequired = true });
+            applyCommand.Handler = CommandHandler.Create<string>(
+                (json) =>
+                {
+                    var diff = new JsonDiff(json);
+
+                    var app = Application();
+
+                    app.Save(diff);
+
+                    app.PrintTo(output, diff);
+                }
+            );
+
+            var topCommand = new Command("top", "Print the rating on the stability of code");
+            topCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
+            topCommand.Handler = CommandHandler.Create<string?>(
+                (org) =>
+                {
+                    Application().Top(output, org ?? "none");
+                }
+            );
+
+            var totalCommand = new Command("total", "Print the total rewards for the last 90 days");
+            totalCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
+            totalCommand.Handler = CommandHandler.Create<string?>(
+                (org) =>
+                {
+                    Application().Total(output, org ?? "none", DateTimeOffset.UtcNow - TimeSpan.FromDays(90));
+                }
+            );
+
+            // Create a root command with some options
+            var rootCommand = new RootCommand("Dev Rating evaluates rewards based on git diff.");
+            rootCommand.AddCommand(addCommand);
+            rootCommand.AddCommand(showCommand);
+            rootCommand.AddCommand(serializeCommand);
+            rootCommand.AddCommand(topCommand);
+            rootCommand.AddCommand(totalCommand);
+            rootCommand.Invoke(args);
         }
 
         private static ConsoleApplication Application()
@@ -103,34 +202,6 @@ namespace DevRating.ConsoleApp
                 ),
                 new EloFormula()
             );
-        }
-
-        private static void PrintUsage(Output output)
-        {
-            output.WriteLine("Dev Rating evaluates rewards based on git diff.");
-            output.WriteLine();
-            output.WriteLine("Usage:");
-            output.WriteLine("  devrating add <path> (<base> <head> | <merge>) [-l <link>]");
-            output.WriteLine("  devrating serialize <path> (<base> <head> | <merge>) [-l <link>]");
-            output.WriteLine("  devrating apply <json>");
-            output.WriteLine("  devrating show <base> <head>");
-            output.WriteLine("  devrating top");
-            output.WriteLine("  devrating total");
-            output.WriteLine();
-            output.WriteLine("Description:");
-            output.WriteLine("  add         Evaluate the reward and insert it into the local DB");
-            output.WriteLine("  serialize   Serialize diff metadata");
-            output.WriteLine("  apply       Deserialize diff metadata, evaluate the reward and insert it into the local DB");
-            output.WriteLine("  show        Print the saved reward from the local DB");
-            output.WriteLine("  top         Print the rating on the stability of code");
-            output.WriteLine("  total       Print the total rewards for the last 90 days");
-            output.WriteLine();
-            output.WriteLine("  <path>      Path to a local repository. E.g. '~/repos/devrating'");
-            output.WriteLine("  <base>      The first commit of diff");
-            output.WriteLine("  <head>      The second commit of diff");
-            output.WriteLine("  <merge>     A merge commit. Takes diff of <merge>~ and <merge>");
-            output.WriteLine("  <link>      A link to a PR, issue or so");
-            output.WriteLine("  <json>      Serialized diff metadata");
         }
     }
 }
