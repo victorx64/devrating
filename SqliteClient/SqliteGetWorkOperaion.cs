@@ -70,5 +70,31 @@ namespace DevRating.SqliteClient
 
             return works;
         }
+
+        public IEnumerable<Work> LastOfOrganization(string organization, DateTimeOffset after)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT w.Id
+                FROM Work w
+                INNER JOIN Author a on a.Id = w.AuthorId
+                WHERE a.Organization = @Organization AND w.CreatedAt >= @After
+                ORDER BY w.Id DESC";
+
+            command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
+            command.Parameters.Add(new SqliteParameter("@After", SqliteType.Integer) {Value = after});
+
+            using var reader = command.ExecuteReader();
+
+            var works = new List<SqliteWork>();
+
+            while (reader.Read())
+            {
+                works.Add(new SqliteWork(_connection, new DefaultId(reader["Id"])));
+            }
+
+            return works;
+        }
     }
 }

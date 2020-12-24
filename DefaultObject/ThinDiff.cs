@@ -6,17 +6,17 @@ using DevRating.Domain;
 
 namespace DevRating.DefaultObject
 {
-    public sealed class KeyDiff : Diff
+    public sealed class ThinDiff : Diff
     {
         private readonly string _start;
         private readonly string _end;
-        private readonly string _key;
+        private readonly string _repository;
 
-        public KeyDiff(string start, string end, string key)
+        public ThinDiff(string start, string end, string repository)
         {
             _start = start;
             _end = end;
-            _key = key;
+            _repository = repository;
         }
 
         public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
@@ -26,12 +26,12 @@ namespace DevRating.DefaultObject
 
         public Work From(Works works)
         {
-            return works.GetOperation().Work(_key, _start, _end);
+            return works.GetOperation().Work(_repository, _start, _end);
         }
 
         public bool PresentIn(Works works)
         {
-            return works.ContainsOperation().Contains(_key, _start, _end);
+            return works.ContainsOperation().Contains(_repository, _start, _end);
         }
 
         public string ToJson()

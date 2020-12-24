@@ -8,7 +8,8 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>2.5.2</PackageVersion>
+        <PackageVersion>3.0.0-a1</PackageVersion>
+        <Version>3.0.0-a1</Version>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.ConsoleApp</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
@@ -25,6 +26,10 @@
       <ProjectReference Include="..\EloRating\DevRating.EloRating.csproj" />
       <ProjectReference Include="..\GitProcessClient\DevRating.GitProcessClient.csproj" />
       <ProjectReference Include="..\SqliteClient\DevRating.SqliteClient.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
     </ItemGroup>
 
 </Project>
