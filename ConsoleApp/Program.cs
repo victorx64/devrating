@@ -19,7 +19,7 @@ namespace DevRating.ConsoleApp
         {
             var output = new StandardOutput();
             var addCommand = new Command("add", "Evaluate the reward and insert it into the local DB");
-            var addMergeCommand = new Command("merge", "Evaluate the reward for a merge commit and insert it into the local DB");
+            var addMergeCommand = new Command("commit", "Evaluate the reward for a merge commit and insert it into the local DB");
             addMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
             addMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
             addMergeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
@@ -79,7 +79,7 @@ namespace DevRating.ConsoleApp
             addCommand.AddCommand(addDiffCommand);
 
             var serializeCommand = new Command("serialize", "Serialize diff metadata");
-            var serializeMergeCommand = new Command("merge", "Serialize merge commit metadata");
+            var serializeMergeCommand = new Command("commit", "Serialize merge commit metadata");
             serializeMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
             serializeMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
             serializeMergeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
@@ -90,21 +90,19 @@ namespace DevRating.ConsoleApp
                 {
                     var first = merge + "~";
                     var second = merge;
-                    var diff = new GitProcessDiff(
-                        first,
-                        second,
-                        new GitProcessLastMajorUpdateTag(path.FullName, first).Sha(),
-                        path.FullName,
-                        name ?? "unnamed",
-                        link,
-                        org ?? "none"
+
+                    output.WriteLine(
+                        new GitProcessDiff(
+                            first,
+                            second,
+                            new GitProcessLastMajorUpdateTag(path.FullName, first).Sha(),
+                            path.FullName,
+                            name ?? "unnamed",
+                            link,
+                            org ?? "none"
+                        )
+                        .ToJson()
                     );
-
-                    var app = Application();
-
-                    app.Save(diff);
-
-                    app.PrintTo(output, diff);
                 }
             );
             serializeCommand.AddCommand(serializeMergeCommand);
@@ -119,21 +117,18 @@ namespace DevRating.ConsoleApp
             serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?>(
                 (path, @base, head, link, name, org) =>
                 {
-                    var diff = new GitProcessDiff(
-                        @base,
-                        head,
-                        new GitProcessLastMajorUpdateTag(path.FullName, @base).Sha(),
-                        path.FullName,
-                        name ?? "unnamed",
-                        link,
-                        org ?? "none"
+                    output.WriteLine(
+                        new GitProcessDiff(
+                            @base,
+                            head,
+                            new GitProcessLastMajorUpdateTag(path.FullName, @base).Sha(),
+                            path.FullName,
+                            name ?? "unnamed",
+                            link,
+                            org ?? "none"
+                        )
+                        .ToJson()
                     );
-
-                    var app = Application();
-
-                    app.Save(diff);
-
-                    app.PrintTo(output, diff);
                 }
             );
             serializeCommand.AddCommand(serializeDiffCommand);
