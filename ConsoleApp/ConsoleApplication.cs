@@ -35,7 +35,8 @@ namespace DevRating.ConsoleApp
                 output.WriteLine("Author | Rating");
                 output.WriteLine("------ | ------");
 
-                foreach (var author in _database.Entities().Authors().GetOperation().TopOfOrganization(organization))
+                foreach (var author in _database.Entities().Authors().GetOperation()
+                .TopOfOrganization(organization, DateTimeOffset.UtcNow - TimeSpan.FromDays(90)))
                 {
                     output.WriteLine(
                         $"<{author.Email()}> | {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
