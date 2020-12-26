@@ -134,12 +134,14 @@ namespace DevRating.SqliteClient.Test
             {
                 var organization = "organization";
 
+                var moment = DateTimeOffset.UtcNow;
+
                 var author1 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email1", DateTimeOffset.UtcNow);
+                    .Insert(organization, "email1", moment);
                 var author2 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email2", DateTimeOffset.UtcNow);
+                    .Insert(organization, "email2", moment);
                 var author3 = database.Entities().Authors().InsertOperation()
-                    .Insert("ANOTHER organization", "email3", DateTimeOffset.UtcNow);
+                    .Insert("ANOTHER organization", "email3", moment);
 
                 var work1 = database.Entities().Works().InsertOperation().Insert(
                     "repo",
@@ -150,7 +152,7 @@ namespace DevRating.SqliteClient.Test
                     1u,
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -160,7 +162,7 @@ namespace DevRating.SqliteClient.Test
                     new DefaultId(),
                     work1.Id(),
                     author1.Id(),
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -170,7 +172,7 @@ namespace DevRating.SqliteClient.Test
                     new DefaultId(),
                     work1.Id(),
                     author2.Id(),
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
@@ -182,7 +184,7 @@ namespace DevRating.SqliteClient.Test
                     1u,
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -192,11 +194,12 @@ namespace DevRating.SqliteClient.Test
                     new DefaultId(),
                     work2.Id(),
                     author3.Id(),
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 Assert.Equal(author1.Id(),
-                    database.Entities().Authors().GetOperation().TopOfOrganization(organization).First().Id());
+                    database.Entities().Authors().GetOperation()
+                    .TopOfOrganization(organization, moment - TimeSpan.FromDays(1)).First().Id());
             }
             finally
             {
@@ -223,6 +226,7 @@ namespace DevRating.SqliteClient.Test
                     .Insert(organization, "email3", DateTimeOffset.UtcNow);
 
                 var repository = "first repo";
+                var moment = DateTimeOffset.UtcNow;
 
                 var work1 = database.Entities().Works().InsertOperation().Insert(
                     repository,
@@ -233,7 +237,7 @@ namespace DevRating.SqliteClient.Test
                     1u,
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -243,7 +247,7 @@ namespace DevRating.SqliteClient.Test
                     new DefaultId(),
                     work1.Id(),
                     author1.Id(),
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -253,7 +257,7 @@ namespace DevRating.SqliteClient.Test
                     new DefaultId(),
                     work1.Id(),
                     author2.Id(),
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
@@ -265,7 +269,7 @@ namespace DevRating.SqliteClient.Test
                     1u,
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -275,10 +279,11 @@ namespace DevRating.SqliteClient.Test
                     new DefaultId(),
                     work2.Id(),
                     author3.Id(),
-                    DateTimeOffset.UtcNow
+                    moment
                 );
 
-                Assert.Equal(2, database.Entities().Authors().GetOperation().TopOfRepository(repository).Count());
+                Assert.Equal(2, database.Entities().Authors().GetOperation()
+                .TopOfRepository(repository, moment - TimeSpan.FromDays(1)).Count());
             }
             finally
             {
