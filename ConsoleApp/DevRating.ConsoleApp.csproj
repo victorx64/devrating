@@ -8,8 +8,8 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>3.0.0-a1</PackageVersion>
-        <Version>3.0.0-a1</Version>
+        <PackageVersion>3.0.0-a2</PackageVersion>
+        <Version>3.0.0-a2</Version>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.ConsoleApp</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
