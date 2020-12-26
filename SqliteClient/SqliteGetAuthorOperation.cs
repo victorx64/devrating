@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present Viktor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using DevRating.DefaultObject;
@@ -39,7 +40,7 @@ namespace DevRating.SqliteClient
             return new SqliteAuthor(_connection, id);
         }
 
-        public IEnumerable<Author> TopOfOrganization(string organization)
+        public IEnumerable<Author> TopOfOrganization(string organization, DateTimeOffset after)
         {
             using var command = _connection.CreateCommand();
 
@@ -48,11 +49,12 @@ namespace DevRating.SqliteClient
                 FROM Author a
                          INNER JOIN Rating r1 ON a.Id = r1.AuthorId
                          LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
-                WHERE a.Organization = @Organization
+                WHERE a.Organization = @Organization AND r1.CreatedAt > @After
                   AND r2.Id IS NULL
                 ORDER BY r1.Rating DESC";
 
             command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
+            command.Parameters.Add(new SqliteParameter("@After", SqliteType.Integer) {Value = after});
 
             using var reader = command.ExecuteReader();
 
@@ -66,7 +68,7 @@ namespace DevRating.SqliteClient
             return authors;
         }
 
-        public IEnumerable<Author> TopOfRepository(string repository)
+        public IEnumerable<Author> TopOfRepository(string repository, DateTimeOffset after) // TODO: Take 'after' into account
         {
             using var command = _connection.CreateCommand();
 
