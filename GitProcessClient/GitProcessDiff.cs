@@ -156,7 +156,7 @@ namespace DevRating.GitProcessClient
             public string End { get; set; } = string.Empty;
             public string Organization { get; set; } = string.Empty;
             public string? Since { get; set; } = default;
-            public string Key { get; set; } = string.Empty;
+            public string Repository { get; set; } = string.Empty;
             public string? Link { get; set; } = default;
             public uint Additions { get; set; } = default;
             public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
@@ -185,7 +185,7 @@ namespace DevRating.GitProcessClient
                     ),
                     End = _end,
                     Email = _email,
-                    Key = _key,
+                    Repository = _key,
                     Link = _link,
                     Organization = _organization,
                     Since = _since,
