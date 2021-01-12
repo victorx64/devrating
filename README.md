@@ -48,7 +48,7 @@ our [Telegram chat](https://t.me/devratingchat).
 ## Print a reward for a work
 
 ```
-$ devrating add commit <path-to-repo> <merge-commit>
+$ devrating add commit -p <path-to-repo> -m <merge-commit>
 ```
 
 Where:
@@ -77,7 +77,7 @@ our [Telegram chat](https://t.me/devratingchat).
 ## Print a reward for a work
 
 ```
-$ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victorx64/devrating:latest add commit /repo <merge-commit>
+$ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victorx64/devrating:latest add commit -p /repo -m <merge-commit>
 ```
 
 Where:
