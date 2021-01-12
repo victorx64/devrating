@@ -140,7 +140,7 @@ rating of the deleted line author. The
 is used with the following constants:
 
 ```
-k = 2;
+k = 1;
 n = 400;
 ```
 
