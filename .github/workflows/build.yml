@@ -5,17 +5,12 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100
 
     # Speed-up analysis by caching the scanner workspace
     - name: Cache SonarCloud workspace
@@ -36,8 +31,11 @@ jobs:
 
     - name: Install SonarCloud scanner
       if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      shell: powershell
       # The --version argument is optional. If it is omitted the latest version will be installed.
-      run: dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+      run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner --version 4.8.0
 
     - name: Begin SonarScan
       run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"victorx64_devrating" /o:"victorx64" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="./TestResults/coverage.opencover.xml"
