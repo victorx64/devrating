@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -31,14 +31,11 @@ jobs:
 
     - name: Install SonarCloud scanner
       if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-      shell: powershell
       # The --version argument is optional. If it is omitted the latest version will be installed.
-      run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      run: dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
 
     - name: Begin SonarScan
-      run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"victorx64_devrating" /o:"victorx64" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="./TestResults/coverage.opencover.xml"
+      run: JAVA_HOME=$JAVA_HOME_11_X64 ./.sonar/scanner/dotnet-sonarscanner begin /k:"victorx64_devrating" /o:"victorx64" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="./TestResults/coverage.opencover.xml"
 
     - name: Build with dotnet
       run:  dotnet build
@@ -52,6 +49,6 @@ jobs:
           dotnet test ./VersionControl.Test/DevRating.VersionControl.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
 
     - name: End SonarScan
-      run: ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
+      run: JAVA_HOME=$JAVA_HOME_11_X64 ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
