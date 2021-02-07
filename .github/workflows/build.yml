@@ -35,7 +35,7 @@ jobs:
       # The --version argument is optional. If it is omitted the latest version will be installed.
       run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner --version 4.8.0
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
     - name: Begin SonarScan
       run: ./.sonar/scanner/dotnet-sonarscanner begin /k:"victorx64_devrating" /o:"victorx64" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="./TestResults/coverage.opencover.xml"
