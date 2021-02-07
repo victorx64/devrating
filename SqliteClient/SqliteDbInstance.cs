@@ -36,7 +36,6 @@ namespace DevRating.SqliteClient
                 (
                     Id               integer
                         primary key autoincrement,
-                    CreatedAt        integer not null,
                     Rating           real    not null,
                     CountedDeletions integer,
                     IgnoredDeletions integer,

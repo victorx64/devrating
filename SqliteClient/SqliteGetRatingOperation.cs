@@ -62,7 +62,12 @@ namespace DevRating.SqliteClient
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Id FROM Rating WHERE AuthorId = @AuthorId AND CreatedAt >= @After";
+            command.CommandText = @"
+                SELECT r.Id
+                FROM Rating r
+                INNER JOIN Work w ON w.Id = r.WorkId
+                WHERE r.AuthorId = @AuthorId
+                    AND w.CreatedAt >= @After";
 
             command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) {Value = author.Value()});
             command.Parameters.Add(new SqliteParameter("@After", SqliteType.Integer) {Value = after});

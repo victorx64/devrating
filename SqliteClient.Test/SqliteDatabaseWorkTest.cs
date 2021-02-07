@@ -227,8 +227,7 @@ namespace DevRating.SqliteClient.Test
                         null,
                         DateTimeOffset.UtcNow
                     ).Id(),
-                    author.Id(),
-                    DateTimeOffset.UtcNow
+                    author.Id()
                 );
 
                 Assert.Equal(

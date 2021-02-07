@@ -24,8 +24,7 @@ namespace DevRating.SqliteClient
             uint? ignored,
             Id previous,
             Id work,
-            Id author,
-            DateTimeOffset createdAt
+            Id author
         )
         {
             using var command = _connection.CreateCommand();
@@ -37,16 +36,14 @@ namespace DevRating.SqliteClient
                     ,IgnoredDeletions
                     ,PreviousRatingId
                     ,WorkId
-                    ,AuthorId
-                    ,CreatedAt)
+                    ,AuthorId)
                 VALUES
                     (@Rating
                     ,@CountedDeletions
                     ,@IgnoredDeletions
                     ,@PreviousRatingId
                     ,@WorkId
-                    ,@AuthorId
-                    ,@CreatedAt);
+                    ,@AuthorId);
                 SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Rating", SqliteType.Real) {Value = value});
@@ -58,8 +55,6 @@ namespace DevRating.SqliteClient
                 {Value = counted ?? (object) DBNull.Value});
             command.Parameters.Add(new SqliteParameter("@IgnoredDeletions", SqliteType.Integer)
                 {Value = ignored ?? (object) DBNull.Value});
-            command.Parameters.Add(new SqliteParameter("@CreatedAt", SqliteType.Integer)
-                {Value = createdAt});
 
             return new SqliteRating(_connection, new DefaultId(command.ExecuteScalar()!));
         }

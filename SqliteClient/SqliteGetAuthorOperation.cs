@@ -48,8 +48,9 @@ namespace DevRating.SqliteClient
                 SELECT a.Id
                 FROM Author a
                          INNER JOIN Rating r1 ON a.Id = r1.AuthorId
+                         INNER JOIN Work w ON w.Id = r1.WorkId
                          LEFT OUTER JOIN Rating r2 ON (a.id = r2.AuthorId AND r1.Id < r2.Id)
-                WHERE a.Organization = @Organization AND r1.CreatedAt > @After
+                WHERE a.Organization = @Organization AND w.CreatedAt > @After
                   AND r2.Id IS NULL
                 ORDER BY r1.Rating DESC";
 

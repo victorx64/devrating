@@ -46,8 +46,7 @@ namespace DevRating.SqliteClient.Test
                             null,
                             DateTimeOffset.UtcNow
                         ).Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     ).Value()
                 );
             }
@@ -93,8 +92,7 @@ namespace DevRating.SqliteClient.Test
                             null,
                             DateTimeOffset.UtcNow
                         ).Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     ).Author().Id()
                 );
             }
@@ -140,8 +138,7 @@ namespace DevRating.SqliteClient.Test
                         null,
                         new DefaultId(),
                         work.Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     ).Work().Id()
                 );
             }
@@ -187,8 +184,7 @@ namespace DevRating.SqliteClient.Test
                             null,
                             DateTimeOffset.UtcNow
                         ).Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     )
                     .CountedDeletions()
                 );
@@ -235,8 +231,7 @@ namespace DevRating.SqliteClient.Test
                             null,
                             DateTimeOffset.UtcNow
                         ).Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     ).IgnoredDeletions()
                 );
             }
@@ -278,8 +273,7 @@ namespace DevRating.SqliteClient.Test
                         null,
                         DateTimeOffset.UtcNow
                     ).Id(),
-                    author.Id(),
-                    DateTimeOffset.UtcNow
+                    author.Id()
                 );
 
                 Assert.Equal(
@@ -300,60 +294,8 @@ namespace DevRating.SqliteClient.Test
                             null,
                             DateTimeOffset.UtcNow
                         ).Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     ).PreviousRating().Id()
-                );
-            }
-            finally
-            {
-                database.Instance().Connection().Close();
-            }
-        }
-
-        [Fact]
-        public void ReturnsWhenItWasCreated()
-        {
-            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
-
-            database.Instance().Connection().Open();
-            database.Instance().Create();
-
-            try
-            {
-                var moment1 = DateTimeOffset.UtcNow;
-                var moment2 = moment1 + TimeSpan.FromDays(1);
-                var moment3 = moment2 + TimeSpan.FromDays(1);
-
-                var author = database.Entities().Authors().InsertOperation().Insert(
-                    "organization",
-                    "email",
-                    moment1
-                );
-
-                Assert.Equal(
-                    moment3,
-                    database.Entities().Ratings().InsertOperation().Insert(
-                        1100d,
-                        null,
-                        null,
-                        new DefaultId(),
-                        database.Entities().Works().InsertOperation().Insert(
-                            "repo",
-                            "startCommit",
-                            "endCommit",
-                            null,
-                            author.Id(),
-                            1u,
-                            new DefaultId(),
-                            null,
-                            moment2
-                        )
-                        .Id(),
-                        author.Id(),
-                        moment3
-                    )
-                    .CreatedAt()
                 );
             }
             finally
@@ -394,8 +336,7 @@ namespace DevRating.SqliteClient.Test
                             null,
                             DateTimeOffset.UtcNow
                         ).Id(),
-                        author.Id(),
-                        DateTimeOffset.UtcNow
+                        author.Id()
                     )
                     .ToJson);
             }

@@ -15,7 +15,6 @@ namespace DevRating.DefaultObject.Fake
         private readonly Rating _previous;
         private readonly uint? _deletions;
         private readonly uint? _ignored;
-        private readonly DateTimeOffset _createdAt;
 
         public FakeRating(double value, Work work, Author author)
             : this(
@@ -24,8 +23,7 @@ namespace DevRating.DefaultObject.Fake
                 author,
                 new NullRating(),
                 null,
-                null,
-                DateTimeOffset.UtcNow
+                null
             )
         {
         }
@@ -36,10 +34,9 @@ namespace DevRating.DefaultObject.Fake
             Author author,
             Rating previous,
             uint? deletions,
-            uint? ignored,
-            DateTimeOffset createdAt
+            uint? ignored
         )
-            : this(new DefaultId(Guid.NewGuid()), value, work, author, previous, deletions, ignored, createdAt)
+            : this(new DefaultId(Guid.NewGuid()), value, work, author, previous, deletions, ignored)
         {
         }
 
@@ -50,8 +47,7 @@ namespace DevRating.DefaultObject.Fake
             Author author,
             Rating previous,
             uint? deletions,
-            uint? ignored,
-            DateTimeOffset createdAt
+            uint? ignored
         )
         {
             _id = id;
@@ -61,7 +57,6 @@ namespace DevRating.DefaultObject.Fake
             _previous = previous;
             _deletions = deletions;
             _ignored = ignored;
-            _createdAt = createdAt;
         }
 
         public Id Id()
@@ -102,11 +97,6 @@ namespace DevRating.DefaultObject.Fake
         public Author Author()
         {
             return _author;
-        }
-
-        public DateTimeOffset CreatedAt()
-        {
-            throw new NotImplementedException();
         }
     }
 }

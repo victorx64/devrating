@@ -3,7 +3,6 @@
 
 using System;
 using System.Data;
-using System.Globalization;
 using DevRating.DefaultObject;
 using DevRating.Domain;
 using Microsoft.Data.Sqlite;
@@ -100,17 +99,6 @@ namespace DevRating.SqliteClient
             reader.Read();
 
             return new SqliteAuthor(_connection, new DefaultId(reader["AuthorId"]));
-        }
-
-        public DateTimeOffset CreatedAt()
-        {
-            using var command = _connection.CreateCommand();
-
-            command.CommandText = "SELECT CreatedAt FROM Rating WHERE Id = @Id";
-
-            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
-
-            return DateTimeOffset.Parse(command.ExecuteScalar()!.ToString()!, CultureInfo.InvariantCulture);
         }
 
         public double Value()
