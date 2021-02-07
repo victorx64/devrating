@@ -58,10 +58,5 @@ namespace DevRating.DefaultObject.Fake
         {
             throw new NotSupportedException();
         }
-
-        public DateTimeOffset CreatedAt()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -7,7 +7,7 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.1.0</PackageVersion>
+        <PackageVersion>1.2.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.GitProcessClient</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>

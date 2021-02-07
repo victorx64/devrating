@@ -61,8 +61,7 @@ namespace DevRating.DefaultObject.Fake
         {
             bool Predicate(Rating rating)
             {
-                return rating.Author().Id().Equals(author) &&
-                    rating.CreatedAt() >= after;
+                return rating.Author().Id().Equals(author);
             }
 
             return _ratings.Where(Predicate);

@@ -13,8 +13,7 @@ namespace DevRating.Domain
             uint? ignored,
             Id previous,
             Id work,
-            Id author,
-            DateTimeOffset createdAt
+            Id author
         );
     }
 }

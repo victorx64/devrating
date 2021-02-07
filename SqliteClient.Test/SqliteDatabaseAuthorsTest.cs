@@ -161,8 +161,7 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     work1.Id(),
-                    author1.Id(),
-                    moment
+                    author1.Id()
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -171,8 +170,7 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     work1.Id(),
-                    author2.Id(),
-                    moment
+                    author2.Id()
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
@@ -193,8 +191,7 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     work2.Id(),
-                    author3.Id(),
-                    moment
+                    author3.Id()
                 );
 
                 Assert.Equal(author1.Id(),
@@ -246,8 +243,7 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     work1.Id(),
-                    author1.Id(),
-                    moment
+                    author1.Id()
                 );
 
                 database.Entities().Ratings().InsertOperation().Insert(
@@ -256,8 +252,7 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     work1.Id(),
-                    author2.Id(),
-                    moment
+                    author2.Id()
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
@@ -278,8 +273,7 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     work2.Id(),
-                    author3.Id(),
-                    moment
+                    author3.Id()
                 );
 
                 Assert.Equal(2, database.Entities().Authors().GetOperation()

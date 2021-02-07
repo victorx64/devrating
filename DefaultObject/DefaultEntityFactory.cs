@@ -87,8 +87,7 @@ namespace DevRating.DefaultObject
                 null,
                 winner.Id(),
                 work,
-                author,
-                createdAt
+                author
             );
         }
 
@@ -126,8 +125,7 @@ namespace DevRating.DefaultObject
                     deletion.Ignored(),
                     current.Id(),
                     work,
-                    victim,
-                    createdAt
+                    victim
                 );
 
                 matches.Add(new DefaultMatch(value, deletion.Counted()));

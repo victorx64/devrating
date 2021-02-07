@@ -27,8 +27,7 @@ namespace DevRating.DefaultObject.Fake
             uint? ignored,
             Id previous,
             Id work,
-            Id author,
-            DateTimeOffset createdAt
+            Id author
         )
         {
             var rating = new FakeRating(
@@ -38,8 +37,7 @@ namespace DevRating.DefaultObject.Fake
                 Author(author),
                 Rating(previous),
                 counted,
-                ignored,
-                createdAt
+                ignored
             );
 
             _ratings.Add(rating);
