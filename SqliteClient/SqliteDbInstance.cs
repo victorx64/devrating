@@ -30,7 +30,7 @@ namespace DevRating.SqliteClient
                     Repository       nvarchar     not null,
                     Email            nvarchar     not null,
                     constraint UK_Author_Email_Organization
-                        unique (Email, Organization)
+                        unique (Email, Repository, Organization)
                 );
 
                 create table Rating
