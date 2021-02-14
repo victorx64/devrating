@@ -21,8 +21,43 @@ namespace DevRating.SqliteClient.Test
             {
                 var organization = "organization";
 
-                Assert.Equal(organization,
-                    database.Entities().Authors().InsertOperation().Insert(organization, "email", DateTimeOffset.UtcNow).Organization());
+                Assert.Equal(
+                    organization,
+                    database
+                        .Entities()
+                        .Authors()
+                        .InsertOperation()
+                        .Insert(organization, "repo", "email", DateTimeOffset.UtcNow)
+                        .Organization()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void ReturnsValidRepository()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var repo = "repo";
+
+                Assert.Equal(
+                    repo,
+                    database
+                        .Entities()
+                        .Authors()
+                        .InsertOperation()
+                        .Insert("organization", repo, "email", DateTimeOffset.UtcNow)
+                        .Repository()
+                );
             }
             finally
             {
@@ -43,7 +78,7 @@ namespace DevRating.SqliteClient.Test
                 var email = "email";
 
                 Assert.Equal(email,
-                    database.Entities().Authors().InsertOperation().Insert("organization", email, DateTimeOffset.UtcNow).Email());
+                    database.Entities().Authors().InsertOperation().Insert("organization", "repo", email, DateTimeOffset.UtcNow).Email());
             }
             finally
             {
@@ -65,7 +100,7 @@ namespace DevRating.SqliteClient.Test
 
                 Assert.Equal(
                     moment1,
-                    database.Entities().Authors().InsertOperation().Insert("organization", "email", moment1).CreatedAt()
+                    database.Entities().Authors().InsertOperation().Insert("organization", "repo", "email", moment1).CreatedAt()
                 );
             }
             finally
@@ -84,9 +119,11 @@ namespace DevRating.SqliteClient.Test
 
             try
             {
-                Assert.Throws<NotImplementedException>(database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow)
-                    .ToJson);
+                Assert.Throws<NotImplementedException>(
+                    database.Entities().Authors().InsertOperation()
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow)
+                    .ToJson
+                );
             }
             finally
             {

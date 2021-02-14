@@ -18,19 +18,20 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public Author Insert(string organization, string email, DateTimeOffset createdAt)
+        public Author Insert(string organization, string repository, string email, DateTimeOffset createdAt)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
                 INSERT INTO Author
-                    (Organization, Email, CreatedAt)
+                    (Organization, Repository, Email, CreatedAt)
                 VALUES
-                    (@Organization, @Email, @CreatedAt);
+                    (@Organization, @Repository, @Email, @CreatedAt);
                 SELECT last_insert_rowid();";
 
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
             command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@CreatedAt", SqliteType.Integer) {Value = createdAt});
 
             return new SqliteAuthor(_connection, new DefaultId(command.ExecuteScalar()!));

@@ -19,7 +19,7 @@ namespace DevRating.ConsoleApp
             _formula = formula;
         }
 
-        public void Top(Output output, string organization)
+        public void Top(Output output, string organization, string repository)
         {
             _database.Instance().Connection().Open();
 
@@ -35,8 +35,10 @@ namespace DevRating.ConsoleApp
                 output.WriteLine("Author | Rating");
                 output.WriteLine("------ | ------");
 
-                foreach (var author in _database.Entities().Authors().GetOperation()
-                .TopOfOrganization(organization, DateTimeOffset.UtcNow - TimeSpan.FromDays(90)))
+                foreach (
+                    var author in _database.Entities().Authors().GetOperation()
+                        .Top(organization, repository, DateTimeOffset.UtcNow - TimeSpan.FromDays(90))
+                    )
                 {
                     output.WriteLine(
                         $"<{author.Email()}> | {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
@@ -50,7 +52,7 @@ namespace DevRating.ConsoleApp
             }
         }
 
-        public void Total(Output output, string repository, DateTimeOffset after)
+        public void Total(Output output, string organization, string repository, DateTimeOffset after)
         {
             _database.Instance().Connection().Open();
 
@@ -70,7 +72,7 @@ namespace DevRating.ConsoleApp
                     .Entities()
                     .Works()
                     .GetOperation()
-                    .Last(repository, after)
+                    .Last(organization, repository, after)
                     .GroupBy(w => w.Author().Email(), Reward)
                     .Select(g => new { Key = g.Key, Sum = g.Sum() })
                     .OrderByDescending(s => s.Sum))

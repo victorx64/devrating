@@ -20,7 +20,7 @@ namespace DevRating.ConsoleApp.Test
         {
             var lines = new List<string>();
 
-            new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeOutput(lines), "organization");
+            new ConsoleApplication(new FakeDatabase(), new EloFormula()).Top(new FakeOutput(lines), "organization", "repo");
 
             var headers = 2;
 
@@ -32,7 +32,7 @@ namespace DevRating.ConsoleApp.Test
         {
             var db = new FakeDatabase();
 
-            new ConsoleApplication(db, new EloFormula()).Top(new FakeOutput(new List<string>()), "organization");
+            new ConsoleApplication(db, new EloFormula()).Top(new FakeOutput(new List<string>()), "organization", "repo");
 
             Assert.True(db.Instance().Present());
         }
@@ -99,8 +99,8 @@ namespace DevRating.ConsoleApp.Test
         public void PrintsEveryAuthorOnCallingTop()
         {
             var organization = "organization";
-            var author1 = new FakeAuthor(organization, "email1");
-            var author2 = new FakeAuthor(organization, "email1");
+            var author1 = new FakeAuthor(organization, "repo", "email1");
+            var author2 = new FakeAuthor(organization, "repo", "email1");
             var authors = new List<Author> { author1, author2 };
             var work = new FakeWork(1u, author1);
             var works = new List<Work> { work };
@@ -118,7 +118,7 @@ namespace DevRating.ConsoleApp.Test
 
             var lines = new List<string>();
 
-            new ConsoleApplication(database, new EloFormula()).Top(new FakeOutput(lines), organization);
+            new ConsoleApplication(database, new EloFormula()).Top(new FakeOutput(lines), organization, "repo");
 
             var headers = 2;
 

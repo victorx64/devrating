@@ -10,13 +10,15 @@ namespace DevRating.DefaultObject
     {
         private readonly string _start;
         private readonly string _end;
+        private readonly string _organization;
         private readonly string _repository;
 
-        public ThinDiff(string start, string end, string repository)
+        public ThinDiff(string organization, string repository, string start, string end)
         {
+            _organization = organization;
+            _repository = repository;
             _start = start;
             _end = end;
-            _repository = repository;
         }
 
         public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
@@ -26,12 +28,12 @@ namespace DevRating.DefaultObject
 
         public Work From(Works works)
         {
-            return works.GetOperation().Work(_repository, _start, _end);
+            return works.GetOperation().Work(_organization, _repository, _start, _end);
         }
 
         public bool PresentIn(Works works)
         {
-            return works.ContainsOperation().Contains(_repository, _start, _end);
+            return works.ContainsOperation().Contains(_organization, _repository, _start, _end);
         }
 
         public string ToJson()

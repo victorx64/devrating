@@ -8,8 +8,8 @@ namespace DevRating.ConsoleApp
 {
     public interface Application
     {
-        void Top(Output output, string organization);
-        void Total(Output output, string repository, DateTimeOffset after);
+        void Top(Output output, string organization, string repository);
+        void Total(Output output, string organization, string repository, DateTimeOffset after);
         void Save(Diff diff);
         void PrintTo(Output output, Diff diff);
     }

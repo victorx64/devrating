@@ -60,6 +60,17 @@ namespace DevRating.SqliteClient
             return (string) reader["Organization"];
         }
 
+        public string Repository()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT Repository FROM Author WHERE Id = @Id";
+
+            command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) {Value = _id.Value()});
+
+            return (string) command.ExecuteScalar()!;
+        }
+
         public DateTimeOffset CreatedAt()
         {
             using var command = _connection.CreateCommand();

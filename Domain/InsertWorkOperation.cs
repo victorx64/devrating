@@ -8,7 +8,6 @@ namespace DevRating.Domain
     public interface InsertWorkOperation
     {
         Work Insert(
-            string repository,
             string start,
             string end,
             string? since,

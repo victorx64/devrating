@@ -8,9 +8,8 @@ namespace DevRating.Domain
 {
     public interface GetWorkOperation
     {
-        Work Work(string repository, string start, string end);
+        Work Work(string organization, string repository, string start, string end);
         Work Work(Id id);
-        IEnumerable<Work> Last(string repository, DateTimeOffset after);
-        IEnumerable<Work> LastOfOrganization(string organization, DateTimeOffset after);
+        IEnumerable<Work> Last(string organization, string repository, DateTimeOffset after);
     }
 }

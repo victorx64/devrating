@@ -43,7 +43,8 @@ namespace DevRating.DefaultObject.Test
         public void DoesntInsertAuthorIfExistsInOrg()
         {
             var organization = "organization";
-            var authors = new List<Author> {new FakeAuthor(organization, "existing author")};
+            var repository = "repository";
+            var authors = new List<Author> { new FakeAuthor(organization, repository, "existing author") };
 
             new DefaultEntityFactory(
                     new FakeEntities(
@@ -55,7 +56,7 @@ namespace DevRating.DefaultObject.Test
                 )
                 .InsertedWork(
                     organization,
-                    "repository",
+                    repository,
                     "start",
                     "end",
                     null,
@@ -71,7 +72,8 @@ namespace DevRating.DefaultObject.Test
         [Fact]
         public void InsertsNewAuthorIfExistsInAnotherOrg()
         {
-            var authors = new List<Author> {new FakeAuthor("organization", "existing author")};
+            var repository = "repository";
+            var authors = new List<Author> { new FakeAuthor("organization", repository, "existing author") };
 
             new DefaultEntityFactory(
                     new FakeEntities(
@@ -83,7 +85,7 @@ namespace DevRating.DefaultObject.Test
                 )
                 .InsertedWork(
                     "ANOTHER organization",
-                    "repository",
+                    repository,
                     "start",
                     "end",
                     null,
@@ -126,22 +128,23 @@ namespace DevRating.DefaultObject.Test
         public void InsertsNewWorkWithUsedRating()
         {
             var organization = "organization";
-            var author = new FakeAuthor(organization, "the author");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "the author");
             var work = new FakeWork(10u, author);
             var rating = new FakeRating(1500d, work, author);
-            var works = new List<Work> {work};
+            var works = new List<Work> { work };
 
             new DefaultEntityFactory(
                     new FakeEntities(
                         works,
-                        new List<Author> {author},
-                        new List<Rating> {rating}
+                        new List<Author> { author },
+                        new List<Rating> { rating }
                     ),
                     new FakeFormula()
                 )
                 .InsertedWork(
                     organization,
-                    "repository",
+                    repository,
                     "start",
                     "end",
                     null,
@@ -158,20 +161,21 @@ namespace DevRating.DefaultObject.Test
         {
             var ratings = new List<Rating>();
             var organization = "organization";
-            var author = new FakeAuthor(organization, "author");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "author");
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion("single victim", 2);
             var newWork = new FakeWork(0u, author);
 
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {newWork},
+                        new List<Work> { newWork },
                         new List<Author>(),
                         ratings
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
+                .InsertRatings(organization, repository, author.Email(), new[] { deletion }, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfAuthor(Rating r)
             {
@@ -195,7 +199,8 @@ namespace DevRating.DefaultObject.Test
         {
             var ratings = new List<Rating>();
             var organization = "organization";
-            var author = new FakeAuthor(organization, "author");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "author");
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion("AUTHOR", 2);
 
@@ -209,8 +214,9 @@ namespace DevRating.DefaultObject.Test
                 )
                 .InsertRatings(
                     organization,
+                    repository,
                     author.Email(),
-                    new[] {deletion},
+                    new[] { deletion },
                     new FakeWork(0u, author).Id(),
                     DateTimeOffset.UtcNow
                 );
@@ -223,7 +229,8 @@ namespace DevRating.DefaultObject.Test
         {
             var ratings = new List<Rating>();
             var organization = "organization";
-            var author = new FakeAuthor(organization, "author");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "author");
             var formula = new FakeFormula(10, 1);
             var victim = "single victim";
             var deletion = new DefaultDeletion(victim, 2);
@@ -231,13 +238,13 @@ namespace DevRating.DefaultObject.Test
 
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {newWork},
+                        new List<Work> { newWork },
                         new List<Author>(),
                         ratings
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
+                .InsertRatings(organization, repository, author.Email(), new[] { deletion }, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfVictim(Rating r)
             {
@@ -257,7 +264,8 @@ namespace DevRating.DefaultObject.Test
         public void InsertsNewAuthorNewRatingWhenDeleteManyNewVictims()
         {
             var organization = "organization";
-            var author = new FakeAuthor(organization, "author");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "author");
             var ratings = new List<Rating>();
             var formula = new FakeFormula(10, 1);
             var deletion1 = new DefaultDeletion("first victim", 2);
@@ -266,13 +274,13 @@ namespace DevRating.DefaultObject.Test
 
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {work},
+                        new List<Work> { work },
                         new List<Author>(),
                         ratings
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion1, deletion2}, work.Id(),
+                .InsertRatings(organization, repository, author.Email(), new[] { deletion1, deletion2 }, work.Id(),
                     DateTimeOffset.UtcNow);
 
             bool RatingOfAuthor(Rating r)
@@ -297,8 +305,9 @@ namespace DevRating.DefaultObject.Test
         public void InsertsNewAuthorNewRatingWhenDeleteOneOldVictim()
         {
             var organization = "organization";
-            var author = new FakeAuthor(organization, "new author");
-            var victim = new FakeAuthor(organization, "old single victim");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "new author");
+            var victim = new FakeAuthor(organization, repository, "old single victim");
             var work = new FakeWork(3, victim);
             var newWork = new FakeWork(0u, author);
             var ratings = new List<Rating>
@@ -308,16 +317,15 @@ namespace DevRating.DefaultObject.Test
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion(victim.Email(), 2);
 
-
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {work, newWork},
-                        new List<Author> {victim},
+                        new List<Work> { work, newWork },
+                        new List<Author> { victim },
                         ratings
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
+                .InsertRatings(organization, repository, author.Email(), new[] { deletion }, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfAuthor(Rating r)
             {
@@ -340,23 +348,24 @@ namespace DevRating.DefaultObject.Test
         public void InsertsOldVictimNewRating()
         {
             var organization = "organization";
-            var author = new FakeAuthor(organization, "new author");
-            var victim = new FakeAuthor(organization, "old single victim");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "new author");
+            var victim = new FakeAuthor(organization, repository, "old single victim");
             var work = new FakeWork(3, victim);
             var newWork = new FakeWork(0u, author);
-            var ratings = new List<Rating> {new FakeRating(50, work, victim)};
+            var ratings = new List<Rating> { new FakeRating(50, work, victim) };
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion(victim.Email(), 2);
 
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {work, newWork},
+                        new List<Work> { work, newWork },
                         new List<Author>(),
                         ratings
                     ),
                     formula
                 )
-                .InsertRatings(organization, author.Email(), new[] {deletion}, newWork.Id(), DateTimeOffset.UtcNow);
+                .InsertRatings(organization, repository, author.Email(), new[] { deletion }, newWork.Id(), DateTimeOffset.UtcNow);
 
             bool RatingOfVictim(Rating r)
             {
@@ -376,9 +385,10 @@ namespace DevRating.DefaultObject.Test
         public void InsertsNewAuthorNewRatingWhenDeleteManyOldVictims()
         {
             var organization = "organization";
-            var author = new FakeAuthor(organization, "new author");
-            var victim1 = new FakeAuthor(organization, "old first victim");
-            var victim2 = new FakeAuthor(organization, "old second victim");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "new author");
+            var victim1 = new FakeAuthor(organization, repository, "old first victim");
+            var victim2 = new FakeAuthor(organization, repository, "old second victim");
             var work1 = new FakeWork(3, victim1);
             var work2 = new FakeWork(4, victim2);
             var newWork = new FakeWork(0u, author);
@@ -394,7 +404,7 @@ namespace DevRating.DefaultObject.Test
 
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {work1, work2, newWork},
+                        new List<Work> { work1, work2, newWork },
                         new List<Author>(),
                         ratings
                     ),
@@ -402,8 +412,9 @@ namespace DevRating.DefaultObject.Test
                 )
                 .InsertRatings(
                     organization,
+                    repository,
                     author.Email(),
-                    new[] {deletion1, deletion2},
+                    new[] { deletion1, deletion2 },
                     newWork.Id(),
                     DateTimeOffset.UtcNow
                 );
@@ -430,27 +441,29 @@ namespace DevRating.DefaultObject.Test
         public void InsertsOldAuthorNewRatingWhenDeleteOneNewVictim()
         {
             var organization = "organization";
-            var author = new FakeAuthor(organization, "old author");
+            var repository = "repository";
+            var author = new FakeAuthor(organization, repository, "old author");
             var victim = "single new victim";
             var work = new FakeWork(10u, author);
             var rating = new FakeRating(1500d, work, author);
-            var ratings = new List<Rating> {rating};
+            var ratings = new List<Rating> { rating };
             var formula = new FakeFormula(10, 1);
             var deletion = new DefaultDeletion(victim, 2);
             var newWork = new FakeWork(0u, author);
 
             new DefaultEntityFactory(
                     new FakeEntities(
-                        new List<Work> {work, newWork},
-                        new List<Author> {author},
+                        new List<Work> { work, newWork },
+                        new List<Author> { author },
                         ratings
                     ),
                     formula
                 )
                 .InsertRatings(
                     organization,
+                    repository,
                     author.Email(),
-                    new[] {deletion},
+                    new[] { deletion },
                     newWork.Id(),
                     DateTimeOffset.UtcNow
                 );

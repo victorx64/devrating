@@ -22,6 +22,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -36,7 +37,6 @@ namespace DevRating.SqliteClient.Test
                         null,
                         new DefaultId(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "repo",
                             "startCommit",
                             "endCommit",
                             null,
@@ -68,6 +68,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -82,7 +83,6 @@ namespace DevRating.SqliteClient.Test
                         null,
                         new DefaultId(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "repo",
                             "startCommit",
                             "endCommit",
                             null,
@@ -114,12 +114,12 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
 
                 var work = database.Entities().Works().InsertOperation().Insert(
-                    "repo",
                     "startCommit",
                     "endCommit",
                     null,
@@ -160,6 +160,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -174,7 +175,6 @@ namespace DevRating.SqliteClient.Test
                         null,
                         new DefaultId(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "repo",
                             "startCommit",
                             "endCommit",
                             null,
@@ -207,6 +207,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -221,7 +222,6 @@ namespace DevRating.SqliteClient.Test
                         deletions,
                         new DefaultId(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "repo",
                             "startCommit",
                             "endCommit",
                             null,
@@ -253,6 +253,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -263,7 +264,6 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit1",
                         "endCommit1",
                         null,
@@ -284,7 +284,6 @@ namespace DevRating.SqliteClient.Test
                         null,
                         previous.Id(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "repo",
                             "startCommit2",
                             "endCommit2",
                             null,
@@ -316,6 +315,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -326,7 +326,6 @@ namespace DevRating.SqliteClient.Test
                         null,
                         new DefaultId(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "repo",
                             "startCommit1",
                             "endCommit1",
                             null,

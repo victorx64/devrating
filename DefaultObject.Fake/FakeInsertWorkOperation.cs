@@ -22,7 +22,6 @@ namespace DevRating.DefaultObject.Fake
         }
 
         public Work Insert(
-            string repository,
             string start,
             string end,
             string? since,
@@ -38,7 +37,6 @@ namespace DevRating.DefaultObject.Fake
                 additions,
                 Author(author),
                 Rating(rating),
-                repository,
                 start,
                 end,
                 since,

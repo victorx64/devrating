@@ -16,17 +16,20 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public bool Contains(string repository, string start, string end)
+        public bool Contains(string organization, string repository, string start, string end)
         {
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"
-                SELECT Id 
-                FROM Work 
-                WHERE Repository = @Repository 
-                AND StartCommit = @StartCommit
-                AND EndCommit = @EndCommit";
+                SELECT w.Id
+                FROM Work w
+                INNER JOIN Author a on a.Id = w.AuthorId
+                WHERE a.Organization = @Organization
+                AND a.Repository = @Repository
+                AND w.StartCommit = @StartCommit
+                AND w.EndCommit = @EndCommit";
 
+            command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
             command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});

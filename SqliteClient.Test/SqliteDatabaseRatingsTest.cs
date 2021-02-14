@@ -22,7 +22,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
                 Assert.True(
                     database.Entities().Ratings().ContainsOperation().Contains(
@@ -32,7 +32,6 @@ namespace DevRating.SqliteClient.Test
                             null,
                             new DefaultId(),
                             database.Entities().Works().InsertOperation().Insert(
-                                "repo",
                                 "startCommit",
                                 "endCommit",
                                 null,
@@ -64,7 +63,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
                 database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -72,7 +71,6 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
@@ -104,7 +102,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -112,7 +110,6 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
@@ -144,7 +141,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
                 var rating = database.Entities().Ratings().InsertOperation().Insert(
                     1100d,
@@ -152,7 +149,6 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
@@ -203,10 +199,9 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
                 var work = database.Entities().Works().InsertOperation().Insert(
-                    "repo",
                     "startCommit",
                     "endCommit",
                     null,
@@ -264,13 +259,11 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
-                var repository = "repo";
                 var date = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
                 var work1 = database.Entities().Works().InsertOperation().Insert(
-                    repository,
                     "startCommit1",
                     "endCommit1",
                     null,
@@ -291,7 +284,6 @@ namespace DevRating.SqliteClient.Test
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
-                    repository,
                     "startCommit2",
                     "endCommit2",
                     null,

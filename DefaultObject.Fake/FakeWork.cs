@@ -12,7 +12,6 @@ namespace DevRating.DefaultObject.Fake
         private readonly uint _additions;
         private readonly Author _author;
         private readonly Rating _rating;
-        private readonly string _repository;
         private readonly string _start;
         private readonly string _end;
         private readonly string? _since;
@@ -23,7 +22,6 @@ namespace DevRating.DefaultObject.Fake
             : this(
                 additions,
                 author,
-                "repository",
                 "startCommit",
                 "endCommit",
                 "sinceCommit",
@@ -36,7 +34,6 @@ namespace DevRating.DefaultObject.Fake
         public FakeWork(
             uint additions,
             Author author,
-            string repository,
             string start,
             string end,
             string? since,
@@ -47,7 +44,6 @@ namespace DevRating.DefaultObject.Fake
                 additions,
                 author,
                 new NullRating(),
-                repository,
                 start,
                 end,
                 since,
@@ -61,7 +57,6 @@ namespace DevRating.DefaultObject.Fake
             uint additions,
             Author author,
             Rating rating,
-            string repository,
             string start,
             string end,
             string? since,
@@ -73,7 +68,6 @@ namespace DevRating.DefaultObject.Fake
                 additions,
                 author,
                 rating,
-                repository,
                 start,
                 end,
                 since,
@@ -88,7 +82,6 @@ namespace DevRating.DefaultObject.Fake
             uint additions,
             Author author,
             Rating rating,
-            string repository,
             string start,
             string end,
             string? since,
@@ -100,7 +93,6 @@ namespace DevRating.DefaultObject.Fake
             _additions = additions;
             _author = author;
             _rating = rating;
-            _repository = repository;
             _start = start;
             _end = end;
             _since = since;
@@ -131,11 +123,6 @@ namespace DevRating.DefaultObject.Fake
         public Rating UsedRating()
         {
             return _rating;
-        }
-
-        public string Repository()
-        {
-            return _repository;
         }
 
         public string Start()

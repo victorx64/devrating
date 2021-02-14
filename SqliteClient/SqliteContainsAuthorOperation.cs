@@ -16,14 +16,20 @@ namespace DevRating.SqliteClient
             _connection = connection;
         }
 
-        public bool Contains(string organization, string email)
+        public bool Contains(string organization, string repository, string email)
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT Id FROM Author WHERE Email = @Email AND Organization = @Organization";
+            command.CommandText = @"
+                SELECT Id
+                FROM Author
+                WHERE Email = @Email
+                AND Organization = @Organization
+                AND Repository = @Repository";
 
             command.Parameters.Add(new SqliteParameter("@Email", SqliteType.Text) {Value = email});
             command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) {Value = organization});
+            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
 
             using var reader = command.ExecuteReader();
 

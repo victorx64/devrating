@@ -11,24 +11,26 @@ namespace DevRating.DefaultObject.Fake
         private readonly Id _id;
         private readonly string _email;
         private readonly string _organization;
+        private readonly string _repository;
         private readonly DateTimeOffset _createdAt;
 
-        public FakeAuthor(string organization, string email)
-            : this(organization, email, DateTimeOffset.UtcNow)
+        public FakeAuthor(string organization, string repository, string email)
+            : this(organization, repository, email, DateTimeOffset.UtcNow)
         {
         }
 
-        public FakeAuthor(string organization, string email, DateTimeOffset createdAt)
-            : this(new DefaultId(Guid.NewGuid()), email, organization, createdAt)
+        public FakeAuthor(string organization, string repository, string email, DateTimeOffset createdAt)
+            : this(new DefaultId(Guid.NewGuid()), email, organization, repository, createdAt)
         {
         }
 
-        public FakeAuthor(Id id, string email, string organization, DateTimeOffset createdAt)
+        public FakeAuthor(Id id, string email, string organization, string repository, DateTimeOffset createdAt)
         {
             _id = id;
             _email = email;
             _organization = organization;
             _createdAt = createdAt;
+            _repository = repository;
         }
 
         public Id Id()
@@ -54,6 +56,11 @@ namespace DevRating.DefaultObject.Fake
         public DateTimeOffset CreatedAt()
         {
             return _createdAt;
+        }
+
+        public string Repository()
+        {
+            return _repository;
         }
     }
 }

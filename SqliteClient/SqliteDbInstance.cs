@@ -27,6 +27,7 @@ namespace DevRating.SqliteClient
                         primary key autoincrement,
                     CreatedAt        integer      not null,
                     Organization     nvarchar     not null,
+                    Repository       nvarchar     not null,
                     Email            nvarchar     not null,
                     constraint UK_Author_Email_Organization
                         unique (Email, Organization)
@@ -56,7 +57,6 @@ namespace DevRating.SqliteClient
                     Id           integer
                         primary key autoincrement,
                     CreatedAt    integer      not null,
-                    Repository   nvarchar     not null,
                     Link         nvarchar,
                     StartCommit  nvarchar(50) not null,
                     EndCommit    nvarchar(50) not null,

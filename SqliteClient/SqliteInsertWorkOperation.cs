@@ -19,7 +19,6 @@ namespace DevRating.SqliteClient
         }
 
         public Work Insert(
-            string repository,
             string start,
             string end,
             string? since,
@@ -34,8 +33,7 @@ namespace DevRating.SqliteClient
 
             command.CommandText = @"
                 INSERT INTO Work
-                    (Repository
-                    ,Link
+                    (Link
                     ,StartCommit
                     ,EndCommit
                     ,SinceCommit
@@ -44,8 +42,7 @@ namespace DevRating.SqliteClient
                     ,UsedRatingId
                     ,CreatedAt)
                 VALUES
-                    (@Repository
-                    ,@Link
+                    (@Link
                     ,@StartCommit
                     ,@EndCommit
                     ,@SinceCommit
@@ -55,7 +52,6 @@ namespace DevRating.SqliteClient
                     ,@CreatedAt);
                 SELECT last_insert_rowid();";
 
-            command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) {Value = repository});
             command.Parameters.Add(new SqliteParameter("@Link", SqliteType.Text) {Value = link ?? (object) DBNull.Value});
             command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) {Value = start});
             command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) {Value = end});
