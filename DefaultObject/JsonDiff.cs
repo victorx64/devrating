@@ -22,7 +22,7 @@ namespace DevRating.DefaultObject
             public string? Link { get; set; } = default;
             public uint Additions { get; set; } = default;
             public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
-
+            public DateTimeOffset CreatedAt { get; set; } = default;
             internal class DeletionDto
             {
                 public string Email { get; set; } = string.Empty;
@@ -42,7 +42,7 @@ namespace DevRating.DefaultObject
             _state = state;
         }
 
-        public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
+        public void AddTo(EntityFactory factory)
         {
             factory.InsertRatings(
                 _state.Organization,
@@ -58,10 +58,10 @@ namespace DevRating.DefaultObject
                     _state.Email,
                     _state.Additions,
                     _state.Link,
-                    createdAt
+                    _state.CreatedAt
                 )
                 .Id(),
-                createdAt
+                _state.CreatedAt
             );
         }
 
@@ -78,6 +78,11 @@ namespace DevRating.DefaultObject
         public string ToJson()
         {
             return JsonSerializer.Serialize<Dto>(_state);
+        }
+
+        public DateTimeOffset CreatedAt()
+        {
+            return _state.CreatedAt;
         }
     }
 }

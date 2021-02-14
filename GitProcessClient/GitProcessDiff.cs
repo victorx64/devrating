@@ -21,6 +21,7 @@ namespace DevRating.GitProcessClient
         private readonly string _organization;
         private readonly string? _link;
         private readonly string _email;
+        private readonly DateTimeOffset _createdAt;
 
         public GitProcessDiff(
             string email,
@@ -30,8 +31,8 @@ namespace DevRating.GitProcessClient
             string repository,
             string key,
             string? link,
-            string organization
-        )
+            string organization,
+            DateTimeOffset createdAt)
             : this(
                 email,
                 start,
@@ -41,7 +42,8 @@ namespace DevRating.GitProcessClient
                 new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
-                organization
+                organization,
+                createdAt
             )
         {
         }
@@ -53,8 +55,8 @@ namespace DevRating.GitProcessClient
             string repository,
             string key,
             string? link,
-            string organization
-        )
+            string organization,
+            DateTimeOffset createdAt)
             : this(
                 new VersionControl.VersionControlProcess("git", $"show -s --format=%aE {end}", repository).Output()[0],
                 start,
@@ -64,7 +66,8 @@ namespace DevRating.GitProcessClient
                 new CachedPatches(new GitProcessPatches(start, end, since, repository)),
                 key,
                 link,
-                organization
+                organization,
+                createdAt
             )
         {
         }
@@ -78,8 +81,8 @@ namespace DevRating.GitProcessClient
             Patches patches,
             string key,
             string? link,
-            string organization
-        )
+            string organization,
+            DateTimeOffset createdAt)
             : this(
                 email,
                 new VersionControl.VersionControlProcess("git", $"rev-parse {start}", repository).Output()[0],
@@ -89,7 +92,8 @@ namespace DevRating.GitProcessClient
                 new TotalDeletions(patches),
                 key,
                 link,
-                organization
+                organization,
+                createdAt
             )
         {
         }
@@ -103,8 +107,8 @@ namespace DevRating.GitProcessClient
             Deletions deletions,
             string key,
             string? link,
-            string organization
-        )
+            string organization,
+            DateTimeOffset createdAt)
         {
             _email = email;
             _start = start;
@@ -115,6 +119,7 @@ namespace DevRating.GitProcessClient
             _key = key;
             _link = link;
             _organization = organization;
+            _createdAt = createdAt;
         }
 
         public Work From(Works works)
@@ -127,7 +132,7 @@ namespace DevRating.GitProcessClient
             return works.ContainsOperation().Contains(_organization, _key, _start, _end);
         }
 
-        public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
+        public void AddTo(EntityFactory factory)
         {
             factory.InsertRatings(
                 _organization,
@@ -143,10 +148,10 @@ namespace DevRating.GitProcessClient
                     _email,
                     _additions.Count(),
                     _link,
-                    createdAt
+                    _createdAt
                 )
                 .Id(),
-                createdAt
+                _createdAt
             );
         }
 
@@ -161,6 +166,7 @@ namespace DevRating.GitProcessClient
             public string? Link { get; set; } = default;
             public uint Additions { get; set; } = default;
             public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
+            public DateTimeOffset CreatedAt { get; set; } = default;
 
             internal class DeletionDto
             {
@@ -190,9 +196,15 @@ namespace DevRating.GitProcessClient
                     Link = _link,
                     Organization = _organization,
                     Since = _since,
-                    Start = _start
+                    Start = _start,
+                    CreatedAt = _createdAt
                 }
             );
+        }
+
+        public DateTimeOffset CreatedAt()
+        {
+            return _createdAt;
         }
     }
 }

@@ -105,7 +105,7 @@ namespace DevRating.ConsoleApp
                     throw new InvalidOperationException("The diff is already added.");
                 }
 
-                diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula), DateTimeOffset.UtcNow);
+                diff.AddTo(new DefaultEntityFactory(_database.Entities(), _formula));
 
                 transaction.Commit();
             }
