@@ -94,7 +94,7 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
-        public void ReturnsInsertedAuthorByOrgAndEmail()
+        public void ReturnsInsertedAuthorByCreds()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -211,7 +211,7 @@ namespace DevRating.SqliteClient.Test
                 );
 
                 Assert.Equal(
-                    author1.Id(), 
+                    author1.Id(),
                     database.Entities()
                         .Authors()
                         .GetOperation()
@@ -224,6 +224,68 @@ namespace DevRating.SqliteClient.Test
             {
                 database.Instance().Connection().Close();
             }
+        }
+
+        [Fact]
+        public void AllowsSameAuthorForTwoRepos()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var organization = "organization";
+                var email = "email";
+
+                var moment = DateTimeOffset.UtcNow;
+
+                var author1 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "repo1", email, moment);
+                var author2 = database.Entities().Authors().InsertOperation()
+                    .Insert(organization, "repo2", email, moment);
+
+                Assert.Equal(
+                    author1.Organization() + author1.Email(),
+                    author2.Organization() + author2.Email()
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
+        public void ThrowsOnInsertingSameAuthor()
+        {
+            Assert.Throws<Microsoft.Data.Sqlite.SqliteException>(
+                () =>
+                {
+                    var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+                    database.Instance().Connection().Open();
+                    database.Instance().Create();
+
+                    try
+                    {
+                        var organization = "organization";
+                        var email = "email";
+                        var repo = "repo";
+                        var moment = DateTimeOffset.UtcNow;
+
+                        var author1 = database.Entities().Authors().InsertOperation()
+                                .Insert(organization, repo, email, moment);
+                        var author2 = database.Entities().Authors().InsertOperation()
+                                .Insert(organization, repo, email, moment);
+                    }
+                    finally
+                    {
+                        database.Instance().Connection().Close();
+                    }
+                }
+            );
         }
     }
 }
