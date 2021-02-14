@@ -21,7 +21,12 @@ namespace DevRating.DefaultObject
             _end = end;
         }
 
-        public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
+        public void AddTo(EntityFactory factory)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset CreatedAt()
         {
             throw new NotImplementedException();
         }

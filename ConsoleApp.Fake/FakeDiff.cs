@@ -122,7 +122,7 @@ namespace DevRating.ConsoleApp.Fake
             return works.ContainsOperation().Contains(_organization, _key, _start, _end);
         }
 
-        public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
+        public void AddTo(EntityFactory factory)
         {
             factory.InsertRatings(
                 _organization,
@@ -156,6 +156,7 @@ namespace DevRating.ConsoleApp.Fake
             public string? Link { get; set; } = default;
             public uint Additions { get; set; } = default;
             public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
+            public DateTimeOffset CreatedAt { get; set; } = default;
 
             internal class DeletionDto
             {
@@ -185,9 +186,15 @@ namespace DevRating.ConsoleApp.Fake
                     Link = _link,
                     Organization = _organization,
                     Since = _since,
-                    Start = _start
+                    Start = _start,
+                    CreatedAt = _createdAt
                 }
             );
+        }
+
+        public DateTimeOffset CreatedAt()
+        {
+            return _createdAt;
         }
     }
 }
