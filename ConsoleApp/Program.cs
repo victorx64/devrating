@@ -23,10 +23,11 @@ namespace DevRating.ConsoleApp
             addMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
             addMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
             addMergeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
-            addMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
             addMergeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
-            addMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?>(
-                (path, merge, link, name, org) =>
+            addMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            addMergeCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
+            addMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, DateTimeOffset?>(
+                (path, merge, link, org, name, time) =>
                 {
                     var first = merge + "~";
                     var second = merge;
@@ -37,7 +38,8 @@ namespace DevRating.ConsoleApp
                         path.FullName,
                         name ?? "unnamed",
                         link,
-                        org ?? "none"
+                        org ?? "none",
+                        time ?? DateTimeOffset.UtcNow
                     );
 
                     var app = Application();
@@ -54,10 +56,11 @@ namespace DevRating.ConsoleApp
             addDiffCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
             addDiffCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
             addDiffCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
-            addDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
             addDiffCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
-            addDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?>(
-                (path, @base, head, link, name, org) =>
+            addDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            addDiffCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
+            addDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, DateTimeOffset?>(
+                (path, @base, head, link, org, name, time) =>
                 {
                     var diff = new GitProcessDiff(
                         @base,
@@ -66,7 +69,8 @@ namespace DevRating.ConsoleApp
                         path.FullName,
                         name ?? "unnamed",
                         link,
-                        org ?? "none"
+                        org ?? "none",
+                        time ?? DateTimeOffset.UtcNow
                     );
 
                     var app = Application();
@@ -83,10 +87,11 @@ namespace DevRating.ConsoleApp
             serializeMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
             serializeMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
             serializeMergeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
-            serializeMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
             serializeMergeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
-            serializeMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?>(
-                (path, merge, link, name, org) =>
+            serializeMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            serializeMergeCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
+            serializeMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, DateTimeOffset?>(
+                (path, merge, link, org, name, time) =>
                 {
                     var first = merge + "~";
                     var second = merge;
@@ -99,7 +104,8 @@ namespace DevRating.ConsoleApp
                             path.FullName,
                             name ?? "unnamed",
                             link,
-                            org ?? "none"
+                            org ?? "none",
+                            time ?? DateTimeOffset.UtcNow
                         )
                         .ToJson()
                     );
@@ -112,10 +118,11 @@ namespace DevRating.ConsoleApp
             serializeDiffCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
             serializeDiffCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
             serializeDiffCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to a PR, issue or so"));
-            serializeDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
             serializeDiffCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
-            serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?>(
-                (path, @base, head, link, name, org) =>
+            serializeDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            serializeDiffCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
+            serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, DateTimeOffset?>(
+                (path, @base, head, link, org, name, time) =>
                 {
                     output.WriteLine(
                         new GitProcessDiff(
@@ -125,7 +132,8 @@ namespace DevRating.ConsoleApp
                             path.FullName,
                             name ?? "unnamed",
                             link,
-                            org ?? "none"
+                            org ?? "none",
+                            time ?? DateTimeOffset.UtcNow
                         )
                         .ToJson()
                     );
