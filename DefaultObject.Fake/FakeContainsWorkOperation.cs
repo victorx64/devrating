@@ -17,11 +17,12 @@ namespace DevRating.DefaultObject.Fake
             _works = works;
         }
 
-        public bool Contains(string repository, string start, string end)
+        public bool Contains(string organization, string repository, string start, string end)
         {
             bool Predicate(Work work)
             {
-                return work.Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
+                return work.Author().Organization().Equals(organization, StringComparison.OrdinalIgnoreCase) &&
+                       work.Author().Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
                        work.Start().Equals(start, StringComparison.OrdinalIgnoreCase) &&
                        work.End().Equals(end, StringComparison.OrdinalIgnoreCase);
             }

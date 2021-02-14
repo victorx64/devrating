@@ -8,9 +8,8 @@ namespace DevRating.Domain
 {
     public interface GetAuthorOperation
     {
-        Author Author(string organization, string email);
+        Author Author(string organization, string repository, string email);
         Author Author(Id id);
-        IEnumerable<Author> TopOfOrganization(string organization, DateTimeOffset after);
-        IEnumerable<Author> TopOfRepository(string repository, DateTimeOffset after);
+        IEnumerable<Author> Top(string organization, string repository, DateTimeOffset after);
     }
 }

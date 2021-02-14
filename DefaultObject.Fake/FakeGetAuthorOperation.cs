@@ -17,12 +17,13 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public Author Author(string organization, string email)
+        public Author Author(string organization, string repository, string email)
         {
             bool Predicate(Author a)
             {
                 return a.Organization().Equals(organization, StringComparison.OrdinalIgnoreCase) &&
-                       a.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
+                    a.Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
+                    a.Email().Equals(email, StringComparison.OrdinalIgnoreCase);
             }
 
             return _authors.Single(Predicate);
@@ -38,12 +39,7 @@ namespace DevRating.DefaultObject.Fake
             return _authors.Single(Predicate);
         }
 
-        public IEnumerable<Author> TopOfOrganization(string organization, DateTimeOffset after)
-        {
-            return _authors;
-        }
-
-        public IEnumerable<Author> TopOfRepository(string repository, DateTimeOffset after)
+        public IEnumerable<Author> Top(string organization, string repository, DateTimeOffset after)
         {
             return _authors;
         }

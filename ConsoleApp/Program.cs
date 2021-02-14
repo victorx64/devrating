@@ -136,11 +136,12 @@ namespace DevRating.ConsoleApp
             var showCommand = new Command("show", "Print the saved reward from the local DB");
             showCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
             showCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
+            showCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
             showCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
-            showCommand.Handler = CommandHandler.Create<string, string, string?>(
-                (@base, head, name) =>
+            showCommand.Handler = CommandHandler.Create<string, string, string?, string?>(
+                (@base, head, org, name) =>
                 {
-                    Application().PrintTo(output, new ThinDiff(@base, head, name ?? "unnamed"));
+                    Application().PrintTo(output, new ThinDiff(org ?? "none", name ?? "unnamed", @base, head));
                 }
             );
 
@@ -161,19 +162,21 @@ namespace DevRating.ConsoleApp
 
             var topCommand = new Command("top", "Print the rating on the stability of code");
             topCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
-            topCommand.Handler = CommandHandler.Create<string?>(
-                (org) =>
+            topCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            topCommand.Handler = CommandHandler.Create<string?, string?>(
+                (org, name) =>
                 {
-                    Application().Top(output, org ?? "none");
+                    Application().Top(output, org ?? "none", name ?? "unnamed");
                 }
             );
 
             var totalCommand = new Command("total", "Print the total rewards for the last 90 days");
             totalCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "A name of the repository owner"));
-            totalCommand.Handler = CommandHandler.Create<string?>(
-                (org) =>
+            totalCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "A name of the repository"));
+            totalCommand.Handler = CommandHandler.Create<string?, string?>(
+                (org, name) =>
                 {
-                    Application().Total(output, org ?? "none", DateTimeOffset.UtcNow - TimeSpan.FromDays(90));
+                    Application().Total(output, org ?? "none", name ?? "unnamed", DateTimeOffset.UtcNow - TimeSpan.FromDays(90));
                 }
             );
 

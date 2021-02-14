@@ -25,12 +25,12 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     additions,
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             DateTimeOffset.UtcNow
                         ).Id(),
@@ -39,43 +39,6 @@ namespace DevRating.SqliteClient.Test
                         null,
                         DateTimeOffset.UtcNow
                     ).Additions()
-                );
-            }
-            finally
-            {
-                database.Instance().Connection().Close();
-            }
-        }
-
-        [Fact]
-        public void ReturnsValidRepository()
-        {
-            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
-
-            database.Instance().Connection().Open();
-            database.Instance().Create();
-
-            try
-            {
-                var repository = "repo";
-
-                Assert.Equal(
-                    repository,
-                    database.Entities().Works().InsertOperation().Insert(
-                        repository,
-                        "startCommit",
-                        "endCommit",
-                        null,
-                        database.Entities().Authors().InsertOperation().Insert(
-                            "organization",
-                            "email",
-                            DateTimeOffset.UtcNow
-                        ).Id(),
-                        1u,
-                        new DefaultId(),
-                        null,
-                        DateTimeOffset.UtcNow
-                    ).Repository()
                 );
             }
             finally
@@ -99,12 +62,12 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     start,
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         start,
                         "endCommit",
                         null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             DateTimeOffset.UtcNow
                         ).Id(),
@@ -136,12 +99,12 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     end,
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         end,
                         null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             DateTimeOffset.UtcNow
                         ).Id(),
@@ -170,6 +133,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -177,7 +141,6 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     author.Id(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
@@ -207,6 +170,7 @@ namespace DevRating.SqliteClient.Test
             {
                 var author = database.Entities().Authors().InsertOperation().Insert(
                     "organization",
+                    "repo",
                     "email",
                     DateTimeOffset.UtcNow
                 );
@@ -217,7 +181,6 @@ namespace DevRating.SqliteClient.Test
                     null,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit1",
                         "endCommit1",
                         null,
@@ -233,7 +196,6 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     previous.Id(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
@@ -266,12 +228,12 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     since,
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         since,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             DateTimeOffset.UtcNow
                         ).Id(),
@@ -305,12 +267,12 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     moment2,
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         "sinceCommit",
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             moment1
                         )
@@ -344,12 +306,12 @@ namespace DevRating.SqliteClient.Test
                 Assert.Equal(
                     link,
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         "sinceCommit",
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             DateTimeOffset.UtcNow
                         )
@@ -380,12 +342,12 @@ namespace DevRating.SqliteClient.Test
             {
                 Assert.Throws<NotImplementedException>(
                     database.Entities().Works().InsertOperation().Insert(
-                        "repo",
                         "startCommit",
                         "endCommit",
                         null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
+                            "repo",
                             "email",
                             DateTimeOffset.UtcNow
                         ).Id(),

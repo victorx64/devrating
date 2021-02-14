@@ -23,7 +23,7 @@ namespace DevRating.SqliteClient.Test
             {
                 Assert.True(database.Entities().Authors().ContainsOperation()
                     .Contains(database.Entities().Authors().InsertOperation()
-                        .Insert("organization", "email", DateTimeOffset.UtcNow).Id()));
+                        .Insert("organization", "repository", "email", DateTimeOffset.UtcNow).Id()));
             }
             finally
             {
@@ -32,7 +32,7 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
-        public void ChecksInsertedAuthorByOrgAndEmail()
+        public void ChecksInsertedAuthorByCreds()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -42,10 +42,20 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var organization = "organization";
+                var repo = "repo";
 
-                Assert.True(database.Entities().Authors().ContainsOperation().Contains(organization,
-                    database.Entities().Authors().InsertOperation().Insert(organization, "email", DateTimeOffset.UtcNow)
-                        .Email()));
+                Assert.True(
+                    database.Entities().Authors().ContainsOperation().Contains(
+                        organization,
+                        repo,
+                        database
+                            .Entities()
+                            .Authors()
+                            .InsertOperation()
+                            .Insert(organization, repo, "email", DateTimeOffset.UtcNow)
+                            .Email()
+                    )
+                );
             }
             finally
             {
@@ -64,11 +74,17 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var organization = "organization";
+                var repo = "repo";
                 var email = "longer.than.50.longer.than.50.longer.than.50.longer.than.50.longer.than.50";
 
                 Assert.Equal(
                     email,
-                    database.Entities().Authors().InsertOperation().Insert(organization, email, DateTimeOffset.UtcNow).Email()
+                    database
+                        .Entities()
+                        .Authors()
+                        .InsertOperation()
+                        .Insert(organization, repo, email, DateTimeOffset.UtcNow)
+                        .Email()
                 );
             }
             finally
@@ -88,12 +104,13 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var organization = "organization";
+                var repo = "repo";
 
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email", DateTimeOffset.UtcNow);
+                    .Insert(organization, repo, "email", DateTimeOffset.UtcNow);
 
                 Assert.Equal(author.Id(),
-                    database.Entities().Authors().GetOperation().Author(organization, author.Email()).Id());
+                    database.Entities().Authors().GetOperation().Author(organization, repo, author.Email()).Id());
             }
             finally
             {
@@ -112,7 +129,7 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var author = database.Entities().Authors().InsertOperation()
-                    .Insert("organization", "email", DateTimeOffset.UtcNow);
+                    .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
                 Assert.Equal(author.Id(), database.Entities().Authors().GetOperation().Author(author.Id()).Id());
             }
@@ -123,7 +140,7 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
-        public void ReturnsOrganizationTopAuthors()
+        public void ReturnsTop()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -133,18 +150,18 @@ namespace DevRating.SqliteClient.Test
             try
             {
                 var organization = "organization";
+                var repo = "repo";
 
                 var moment = DateTimeOffset.UtcNow;
 
                 var author1 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email1", moment);
+                    .Insert(organization, repo, "email1", moment);
                 var author2 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email2", moment);
+                    .Insert(organization, repo, "email2", moment);
                 var author3 = database.Entities().Authors().InsertOperation()
-                    .Insert("ANOTHER organization", "email3", moment);
+                    .Insert("ANOTHER organization", repo, "email3", moment);
 
                 var work1 = database.Entities().Works().InsertOperation().Insert(
-                    "repo",
                     "start",
                     "end",
                     null,
@@ -174,7 +191,6 @@ namespace DevRating.SqliteClient.Test
                 );
 
                 var work2 = database.Entities().Works().InsertOperation().Insert(
-                    "other repo",
                     "other start",
                     "other end",
                     null,
@@ -194,90 +210,15 @@ namespace DevRating.SqliteClient.Test
                     author3.Id()
                 );
 
-                Assert.Equal(author1.Id(),
-                    database.Entities().Authors().GetOperation()
-                    .TopOfOrganization(organization, moment - TimeSpan.FromDays(1)).First().Id());
-            }
-            finally
-            {
-                database.Instance().Connection().Close();
-            }
-        }
-
-        [Fact]
-        public void ReturnsRepoTopAuthors()
-        {
-            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
-
-            database.Instance().Connection().Open();
-            database.Instance().Create();
-
-            try
-            {
-                var organization = "organization";
-                var author1 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email1", DateTimeOffset.UtcNow);
-                var author2 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email2", DateTimeOffset.UtcNow);
-                var author3 = database.Entities().Authors().InsertOperation()
-                    .Insert(organization, "email3", DateTimeOffset.UtcNow);
-
-                var repository = "first repo";
-                var moment = DateTimeOffset.UtcNow;
-
-                var work1 = database.Entities().Works().InsertOperation().Insert(
-                    repository,
-                    "start",
-                    "end",
-                    null,
-                    author1.Id(),
-                    1u,
-                    new DefaultId(),
-                    null,
-                    moment
+                Assert.Equal(
+                    author1.Id(), 
+                    database.Entities()
+                        .Authors()
+                        .GetOperation()
+                        .Top(organization, repo, moment - TimeSpan.FromDays(1))
+                        .First()
+                        .Id()
                 );
-
-                database.Entities().Ratings().InsertOperation().Insert(
-                    100,
-                    null,
-                    null,
-                    new DefaultId(),
-                    work1.Id(),
-                    author1.Id()
-                );
-
-                database.Entities().Ratings().InsertOperation().Insert(
-                    50,
-                    null,
-                    null,
-                    new DefaultId(),
-                    work1.Id(),
-                    author2.Id()
-                );
-
-                var work2 = database.Entities().Works().InsertOperation().Insert(
-                    "OTHER REPOSITORY",
-                    "some start commit",
-                    "some end commit",
-                    null,
-                    author1.Id(),
-                    1u,
-                    new DefaultId(),
-                    null,
-                    moment
-                );
-
-                database.Entities().Ratings().InsertOperation().Insert(
-                    75,
-                    null,
-                    null,
-                    new DefaultId(),
-                    work2.Id(),
-                    author3.Id()
-                );
-
-                Assert.Equal(2, database.Entities().Authors().GetOperation()
-                .TopOfRepository(repository, moment - TimeSpan.FromDays(1)).Count());
             }
             finally
             {

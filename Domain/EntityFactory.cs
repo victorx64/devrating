@@ -22,6 +22,7 @@ namespace DevRating.Domain
 
         void InsertRatings(
             string organization,
+            string repository,
             string email,
             IEnumerable<Deletion> deletions,
             Id work,

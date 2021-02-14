@@ -17,13 +17,14 @@ namespace DevRating.DefaultObject.Fake
             _works = works;
         }
 
-        public Work Work(string repository, string start, string end)
+        public Work Work(string organization, string repository, string start, string end)
         {
             bool Predicate(Work work)
             {
-                return work.Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
-                       work.Start().Equals(start, StringComparison.OrdinalIgnoreCase) &&
-                       work.End().Equals(end, StringComparison.OrdinalIgnoreCase);
+                return work.Author().Organization().Equals(organization, StringComparison.OrdinalIgnoreCase) &&
+                    work.Author().Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
+                    work.Start().Equals(start, StringComparison.OrdinalIgnoreCase) &&
+                    work.End().Equals(end, StringComparison.OrdinalIgnoreCase);
             }
 
             return _works.Single(Predicate);
@@ -39,12 +40,7 @@ namespace DevRating.DefaultObject.Fake
             return _works.Single(Predicate);
         }
 
-        public IEnumerable<Work> Last(string repository, DateTimeOffset after)
-        {
-            return _works;
-        }
-
-        public IEnumerable<Work> LastOfOrganization(string organization, DateTimeOffset after)
+        public IEnumerable<Work> Last(string organization, string repository, DateTimeOffset after)
         {
             return _works;
         }

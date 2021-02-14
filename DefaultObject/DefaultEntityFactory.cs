@@ -31,10 +31,9 @@ namespace DevRating.DefaultObject
             DateTimeOffset createdAt
         )
         {
-            var author = AuthorInOrg(organization, email, createdAt);
+            var author = AuthorInOrg(organization, repository, email, createdAt);
 
             return _entities.Works().InsertOperation().Insert(
-                repository,
                 start,
                 end,
                 since,
@@ -48,6 +47,7 @@ namespace DevRating.DefaultObject
 
         public void InsertRatings(
             string organization,
+            string repository,
             string email,
             IEnumerable<Deletion> deletions,
             Id work,
@@ -61,18 +61,19 @@ namespace DevRating.DefaultObject
                 return;
             }
 
-            InsertRatings(organization, email, work, items, createdAt);
+            InsertRatings(organization, repository, email, work, items, createdAt);
         }
 
         private void InsertRatings(
             string organization,
+            string repository,
             string email,
             Id work,
             IEnumerable<Deletion> deletions,
             DateTimeOffset createdAt
         )
         {
-            var author = AuthorInOrg(organization, email, createdAt);
+            var author = AuthorInOrg(organization, repository, email, createdAt);
 
             var winner = _entities.Ratings().GetOperation().RatingOf(author);
 
@@ -81,7 +82,7 @@ namespace DevRating.DefaultObject
             _entities.Ratings().InsertOperation().Insert(
                 _formula.WinnerNewRating(
                     value,
-                    MatchesWithInsertedLosers(organization, deletions, work, value, createdAt)
+                    MatchesWithInsertedLosers(organization, repository, deletions, work, value, createdAt)
                 ),
                 null,
                 null,
@@ -103,6 +104,7 @@ namespace DevRating.DefaultObject
 
         private IEnumerable<Match> MatchesWithInsertedLosers(
             string organization,
+            string repository,
             IEnumerable<Deletion> deletions,
             Id work,
             double winner,
@@ -113,7 +115,7 @@ namespace DevRating.DefaultObject
 
             foreach (var deletion in deletions)
             {
-                var victim = AuthorInOrg(organization, deletion.Email(), createdAt);
+                var victim = AuthorInOrg(organization, repository, deletion.Email(), createdAt);
 
                 var current = _entities.Ratings().GetOperation().RatingOf(victim);
 
@@ -134,11 +136,11 @@ namespace DevRating.DefaultObject
             return matches;
         }
 
-        private Id AuthorInOrg(string organization, string email, DateTimeOffset createdAt)
+        private Id AuthorInOrg(string organization, string repository, string email, DateTimeOffset createdAt)
         {
-            return _entities.Authors().ContainsOperation().Contains(organization, email)
-                ? _entities.Authors().GetOperation().Author(organization, email).Id()
-                : _entities.Authors().InsertOperation().Insert(organization, email, createdAt).Id();
+            return _entities.Authors().ContainsOperation().Contains(organization, repository, email)
+                ? _entities.Authors().GetOperation().Author(organization, repository, email).Id()
+                : _entities.Authors().InsertOperation().Insert(organization, repository, email, createdAt).Id();
         }
     }
 }

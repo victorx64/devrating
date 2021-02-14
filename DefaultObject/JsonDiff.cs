@@ -46,6 +46,7 @@ namespace DevRating.DefaultObject
         {
             factory.InsertRatings(
                 _state.Organization,
+                _state.Repository,
                 _state.Email,
                 _state.Deletions.Select(d => new DefaultDeletion(d.Email, d.Counted, d.Ignored)),
                 factory.InsertedWork(
@@ -66,12 +67,12 @@ namespace DevRating.DefaultObject
 
         public Work From(Works works)
         {
-            return works.GetOperation().Work(_state.Repository, _state.Start, _state.End);
+            return works.GetOperation().Work(_state.Organization, _state.Repository, _state.Start, _state.End);
         }
 
         public bool PresentIn(Works works)
         {
-            return works.ContainsOperation().Contains(_state.Repository, _state.Start, _state.End);
+            return works.ContainsOperation().Contains(_state.Organization, _state.Repository, _state.Start, _state.End);
         }
 
         public string ToJson()

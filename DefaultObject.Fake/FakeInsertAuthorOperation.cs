@@ -16,9 +16,9 @@ namespace DevRating.DefaultObject.Fake
             _authors = authors;
         }
 
-        public Author Insert(string organization, string email, DateTimeOffset createdAt)
+        public Author Insert(string organization, string repository, string email, DateTimeOffset createdAt)
         {
-            var author = new FakeAuthor(organization, email, createdAt);
+            var author = new FakeAuthor(organization, repository, email, createdAt);
 
             _authors.Add(author);
 

@@ -7,6 +7,6 @@ namespace DevRating.Domain
 {
     public interface InsertAuthorOperation
     {
-        Author Insert(string organization, string email, DateTimeOffset createdAt);
+        Author Insert(string organization, string repository, string email, DateTimeOffset createdAt);
     }
 }

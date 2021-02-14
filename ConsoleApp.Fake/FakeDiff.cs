@@ -114,18 +114,19 @@ namespace DevRating.ConsoleApp.Fake
 
         public Work From(Works works)
         {
-            return works.GetOperation().Work(_key, _start, _end);
+            return works.GetOperation().Work(_organization, _key, _start, _end);
         }
 
         public bool PresentIn(Works works)
         {
-            return works.ContainsOperation().Contains(_key, _start, _end);
+            return works.ContainsOperation().Contains(_organization, _key, _start, _end);
         }
 
         public void AddTo(EntityFactory factory, DateTimeOffset createdAt)
         {
             factory.InsertRatings(
                 _organization,
+                _key,
                 _email,
                 _deletions,
                 factory.InsertedWork(
