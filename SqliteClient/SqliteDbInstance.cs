@@ -65,9 +65,7 @@ namespace DevRating.SqliteClient
                         references Author on delete cascade,
                     Additions    integer      not null,
                     UsedRatingId integer
-                        references Rating on delete cascade,
-                    constraint UK_Work_Commits
-                        unique (StartCommit, EndCommit)
+                        references Rating on delete cascade
                 );";
 
             command.ExecuteNonQuery();
