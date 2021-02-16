@@ -24,7 +24,6 @@ namespace DevRating.GitProcessClient
         private readonly DateTimeOffset _createdAt;
 
         public GitProcessDiff(
-            string email,
             string start,
             string end,
             string? since,
@@ -32,9 +31,10 @@ namespace DevRating.GitProcessClient
             string key,
             string? link,
             string organization,
-            DateTimeOffset createdAt)
+            DateTimeOffset createdAt,
+            string? email = null
+        )
             : this(
-                email,
                 start,
                 end,
                 since,
@@ -43,37 +43,13 @@ namespace DevRating.GitProcessClient
                 key,
                 link,
                 organization,
-                createdAt
+                createdAt,
+                email
             )
         {
         }
 
         public GitProcessDiff(
-            string start,
-            string end,
-            string? since,
-            string repository,
-            string key,
-            string? link,
-            string organization,
-            DateTimeOffset createdAt)
-            : this(
-                new VersionControl.VersionControlProcess("git", $"show -s --format=%aE {end}", repository).Output()[0],
-                start,
-                end,
-                since,
-                repository,
-                new CachedPatches(new GitProcessPatches(start, end, since, repository)),
-                key,
-                link,
-                organization,
-                createdAt
-            )
-        {
-        }
-
-        public GitProcessDiff(
-            string email,
             string start,
             string end,
             string? since,
@@ -82,9 +58,10 @@ namespace DevRating.GitProcessClient
             string key,
             string? link,
             string organization,
-            DateTimeOffset createdAt)
+            DateTimeOffset createdAt,
+            string? email = null
+        )
             : this(
-                email,
                 new VersionControl.VersionControlProcess("git", $"rev-parse {start}", repository).Output()[0],
                 new VersionControl.VersionControlProcess("git", $"rev-parse {end}", repository).Output()[0],
                 since,
@@ -93,13 +70,13 @@ namespace DevRating.GitProcessClient
                 key,
                 link,
                 organization,
-                createdAt
+                createdAt,
+                email ?? new VersionControl.VersionControlProcess("git", $"show -s --format=%aE {end}", repository).Output()[0]
             )
         {
         }
 
         private GitProcessDiff(
-            string email,
             string start,
             string end,
             string? since,
@@ -108,9 +85,10 @@ namespace DevRating.GitProcessClient
             string key,
             string? link,
             string organization,
-            DateTimeOffset createdAt)
+            DateTimeOffset createdAt,
+            string email
+        )
         {
-            _email = email;
             _start = start;
             _end = end;
             _since = since;
@@ -120,6 +98,7 @@ namespace DevRating.GitProcessClient
             _link = link;
             _organization = organization;
             _createdAt = createdAt;
+            _email = email;
         }
 
         public Work From(Works works)
