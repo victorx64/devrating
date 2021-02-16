@@ -31,6 +31,11 @@ namespace DevRating.DefaultObject
             DateTimeOffset createdAt
         )
         {
+            if (_entities.Works().ContainsOperation().Contains(organization, repository, start, end))
+            {
+                throw new InvalidOperationException("Work is already exist");
+            }
+
             var author = AuthorInOrg(organization, repository, email, createdAt);
 
             return _entities.Works().InsertOperation().Insert(
