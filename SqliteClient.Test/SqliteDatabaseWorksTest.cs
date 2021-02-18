@@ -86,6 +86,49 @@ namespace DevRating.SqliteClient.Test
         }
 
         [Fact]
+        public void ChecksIfANewerWorkExists()
+        {
+            var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
+
+            database.Instance().Connection().Open();
+            database.Instance().Create();
+
+            try
+            {
+                var olderMoment = DateTimeOffset.UtcNow;
+                var newerMoment = olderMoment + TimeSpan.FromHours(1);
+
+                database.Entities().Works().InsertOperation().Insert(
+                    "startCommit",
+                    "endCommit",
+                    null,
+                    database.Entities().Authors().InsertOperation().Insert(
+                        "organization",
+                        "repo",
+                        "email",
+                        newerMoment
+                    ).Id(),
+                    1u,
+                    new DefaultId(),
+                    null,
+                    newerMoment
+                );
+
+                Assert.True(
+                    database.Entities().Works().ContainsOperation().Contains(
+                        "organization",
+                        "repo",
+                        olderMoment
+                    )
+                );
+            }
+            finally
+            {
+                database.Instance().Connection().Close();
+            }
+        }
+
+        [Fact]
         public void ReturnsInsertedWorkById()
         {
             var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
