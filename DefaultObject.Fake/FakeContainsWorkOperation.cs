@@ -39,5 +39,17 @@ namespace DevRating.DefaultObject.Fake
 
             return _works.Any(Predicate);
         }
+
+        public bool Contains(string organization, string repository, DateTimeOffset after)
+        {
+            bool Predicate(Work work)
+            {
+                return work.Author().Organization().Equals(organization, StringComparison.OrdinalIgnoreCase) &&
+                       work.Author().Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
+                       work.CreatedAt() >= after;
+            }
+
+            return _works.Any(Predicate);
+        }
     }
 }

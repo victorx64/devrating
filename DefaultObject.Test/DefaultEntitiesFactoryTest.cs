@@ -125,6 +125,80 @@ namespace DevRating.DefaultObject.Test
         }
 
         [Fact]
+        public void ThrowsOnInsertingSameWorkAgain()
+        {
+            var factory = new DefaultEntityFactory(
+                new FakeEntities(),
+                new FakeFormula()
+            );
+
+            var moment1 = DateTimeOffset.UtcNow;
+            var anotherMoment = moment1 + TimeSpan.FromHours(1);
+
+            factory.InsertedWork(
+                    "organization",
+                    "repository",
+                    "start",
+                    "end",
+                    null,
+                    "author",
+                    0u,
+                    null,
+                    moment1);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                factory.InsertedWork(
+                    "organization",
+                    "repository",
+                    "start",
+                    "end",
+                    null,
+                    "another author",
+                    0u,
+                    null,
+                    anotherMoment);
+            });
+        }
+
+        [Fact]
+        public void ThrowsOnInsertingWorkOlderThanLatest()
+        {
+            var factory = new DefaultEntityFactory(
+                new FakeEntities(),
+                new FakeFormula()
+            );
+
+            var moment1 = DateTimeOffset.UtcNow;
+            var momentBefore = moment1 - TimeSpan.FromHours(1);
+
+            factory.InsertedWork(
+                    "organization",
+                    "repository",
+                    "start",
+                    "end",
+                    null,
+                    "author",
+                    0u,
+                    null,
+                    moment1);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                factory.InsertedWork(
+                    "organization",
+                    "repository",
+                    "another start",
+                    "another end",
+                    null,
+                    "another author",
+                    0u,
+                    null,
+                    momentBefore);
+            });
+        }
+
+        [Fact]
         public void InsertsNewWorkWithUsedRating()
         {
             var organization = "organization";
