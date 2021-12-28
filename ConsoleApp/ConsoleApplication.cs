@@ -1,4 +1,4 @@
-// Copyright (c) 2019-present Viktor Semenov
+// Copyright (c) 2019-present Victor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -43,41 +43,6 @@ namespace DevRating.ConsoleApp
                     output.WriteLine(
                         $"<{author.Email()}> | {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
                     );
-                }
-            }
-            finally
-            {
-                transaction.Rollback();
-                _database.Instance().Connection().Close();
-            }
-        }
-
-        public void Total(Output output, string organization, string repository, DateTimeOffset after)
-        {
-            _database.Instance().Connection().Open();
-
-            using var transaction = _database.Instance().Connection().BeginTransaction();
-
-            try
-            {
-                if (!_database.Instance().Present())
-                {
-                    _database.Instance().Create();
-                }
-
-                output.WriteLine("Author | Total reward");
-                output.WriteLine("------ | ------------");
-
-                foreach (var item in _database
-                    .Entities()
-                    .Works()
-                    .GetOperation()
-                    .Last(organization, repository, after)
-                    .GroupBy(w => w.Author().Email(), Reward)
-                    .Select(g => new { Key = g.Key, Sum = g.Sum() })
-                    .OrderByDescending(s => s.Sum))
-                {
-                    output.WriteLine($"<{item.Key}> | {item.Sum:F2}");
                 }
             }
             finally
@@ -166,7 +131,6 @@ namespace DevRating.ConsoleApp
             }
 
             output.WriteLine($"Additions: {work.Additions()}");
-            output.WriteLine($"Reward: {Reward(work):F2}");
 
             PrintWorkRatingsToConsole(output, work);
         }
@@ -190,21 +154,6 @@ namespace DevRating.ConsoleApp
 
                 output.WriteLine($"<{rating.Author().Email()}> | {lost} | {before:F2} | {rating.Value():F2}");
             }
-        }
-
-        private double Reward(Work work)
-        {
-            var usedRating = work.UsedRating();
-
-            var rating = usedRating.Id().Filled()
-                ? usedRating.Value()
-                : _formula.DefaultRating();
-
-            var percentile = _formula.WinProbabilityOfA(rating, _formula.DefaultRating());
-
-            var additions = Math.Min(work.Additions(), 250);
-
-            return additions / (1d - percentile);
         }
     }
 }

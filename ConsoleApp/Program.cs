@@ -1,4 +1,4 @@
-// Copyright (c) 2019-present Viktor Semenov
+// Copyright (c) 2019-present Victor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -18,8 +18,8 @@ namespace DevRating.ConsoleApp
         private static void Main(string[] args)
         {
             var output = new StandardOutput();
-            var addCommand = new Command("add", "Evaluate the reward and insert it into the local DB");
-            var addMergeCommand = new Command("commit", "Evaluate the reward for a merge commit and insert it into the local DB");
+            var addCommand = new Command("add", "Update the rating");
+            var addMergeCommand = new Command("commit", "Update the rating analyzing a merge commit");
             addMergeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
             addMergeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit. Takes diff of <merge>~ and <merge>") { IsRequired = true });
             addMergeCommand.AddOption(new Option<string>(new[] { "--email", "-a" }, "Email of the PR author"));
@@ -53,7 +53,7 @@ namespace DevRating.ConsoleApp
             );
             addCommand.AddCommand(addMergeCommand);
 
-            var addDiffCommand = new Command("diff", "Evaluate the reward for diff and insert it into the local DB");
+            var addDiffCommand = new Command("diff", "Update the rating analyzing diff");
             addDiffCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
             addDiffCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
             addDiffCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
@@ -149,7 +149,7 @@ namespace DevRating.ConsoleApp
             );
             serializeCommand.AddCommand(serializeDiffCommand);
 
-            var showCommand = new Command("show", "Print the saved reward from the local DB");
+            var showCommand = new Command("show", "Print previously added diff details");
             showCommand.AddOption(new Option<string>(new[] { "--base", "-b" }, "The first commit of diff") { IsRequired = true });
             showCommand.AddOption(new Option<string>(new[] { "--head", "-e" }, "The second commit of diff") { IsRequired = true });
             showCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
@@ -161,7 +161,7 @@ namespace DevRating.ConsoleApp
                 }
             );
 
-            var applyCommand = new Command("apply", "Deserialize diff metadata, evaluate the reward and insert it into the local DB");
+            var applyCommand = new Command("apply", "Deserialize diff metadata and update the rating");
             applyCommand.AddOption(new Option<string>(new[] { "--json", "-j" }, "Serialized diff metadata") { IsRequired = true });
             applyCommand.Handler = CommandHandler.Create<string>(
                 (json) =>
@@ -176,7 +176,7 @@ namespace DevRating.ConsoleApp
                 }
             );
 
-            var topCommand = new Command("top", "Print the rating on the stability of code");
+            var topCommand = new Command("top", "Print the rating");
             topCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
             topCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
             topCommand.Handler = CommandHandler.Create<string?, string?>(
@@ -186,23 +186,12 @@ namespace DevRating.ConsoleApp
                 }
             );
 
-            var totalCommand = new Command("total", "Print the total rewards for the last 90 days");
-            totalCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
-            totalCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
-            totalCommand.Handler = CommandHandler.Create<string?, string?>(
-                (org, name) =>
-                {
-                    Application().Total(output, org ?? "none", name ?? "unnamed", DateTimeOffset.UtcNow - TimeSpan.FromDays(90));
-                }
-            );
-
             // Create a root command with some options
-            var rootCommand = new RootCommand("Dev Rating evaluates rewards based on git diff.");
+            var rootCommand = new RootCommand("Dev Rating suggests optimal PR size for each contributor based on previous PRs stability.");
             rootCommand.AddCommand(addCommand);
             rootCommand.AddCommand(showCommand);
             rootCommand.AddCommand(serializeCommand);
             rootCommand.AddCommand(topCommand);
-            rootCommand.AddCommand(totalCommand);
             rootCommand.Invoke(args);
         }
 

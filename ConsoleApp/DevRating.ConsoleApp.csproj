@@ -8,17 +8,17 @@
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>3.2.0</PackageVersion>
-        <Version>3.2.0</Version>
+        <PackageVersion>22.2.0</PackageVersion>
+        <Version>22.2.0</Version>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.ConsoleApp</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <OutputType>Exe</OutputType>
         <Description>Dev Rating is a tool that evaluates a reward of a developer based on git diff</Description>
-        <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>
+        <Copyright>Copyright © Victor Semenov 2019-present</Copyright>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 

@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <PackageOutputPath>../Package</PackageOutputPath>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>8.1.0</PackageVersion>
+        <PackageVersion>22.2.0</PackageVersion>
         <Authors>Victor Semenov</Authors>
         <Title>DevRating.SqliteClient</Title>
         <PackageProjectUrl>https://devrating.net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/victorx64/devrating</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>Sqlite client for Dev Rating</Description>
-        <Copyright>Copyright © Viktor Semenov 2019-present</Copyright>
+        <Copyright>Copyright © Victor Semenov 2019-present</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
