@@ -42,7 +42,7 @@ namespace DevRating.GitProcessClient
             var old = "unknown";
             var state = State.Diff;
 
-            foreach (var line in new VersionControlProcess("git", $"diff {_start}..{_end} -U0 -M01", _repository).Output())
+            foreach (var line in new VersionControlProcess("git", $"diff {_start}..{_end} -U0 -M01 -w", _repository).Output())
             {
                 switch (state)
                 {

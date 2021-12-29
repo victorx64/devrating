@@ -175,7 +175,7 @@ namespace DevRating.ConsoleApp.Fake
                     Deletions = _deletions.Select(deletion =>
                         new Dto.DeletionDto
                         {
-                            Counted = deletion.Counted(),
+                            Counted = deletion.DeletedLines(),
                             Email = deletion.Email(),
                             Ignored = deletion.Ignored()
                         }

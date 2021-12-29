@@ -20,53 +20,7 @@ namespace DevRating.VersionControl
         public IEnumerable<Deletion> Items()
         {
             return _patches.Items()
-                .SelectMany(HunkDeletions)
-                .GroupBy(DeletionAuthor)
-                .Select(Deletion);
-        }
-
-        private Deletion Deletion(IGrouping<string, Deletion> grouping)
-        {
-            return new DefaultDeletion(
-                DeletionsAuthor(grouping),
-                DeletionsCountsSum(grouping),
-                IgnoredDeletionsCountsSum(grouping)
-            );
-        }
-
-        private IEnumerable<Deletion> HunkDeletions(FilePatch hunk)
-        {
-            return hunk.Deletions().Items();
-        }
-
-        private string DeletionAuthor(Deletion deletion)
-        {
-            return deletion.Email();
-        }
-
-        private string DeletionsAuthor(IGrouping<string, Deletion> grouping)
-        {
-            return grouping.Key;
-        }
-
-        private uint DeletionsCountsSum(IEnumerable<Deletion> grouping)
-        {
-            return (uint) grouping.Sum(DeletionsCount);
-        }
-
-        private long DeletionsCount(Deletion deletion)
-        {
-            return deletion.Counted();
-        }
-
-        private uint IgnoredDeletionsCountsSum(IEnumerable<Deletion> grouping)
-        {
-            return (uint) grouping.Sum(IgnoredDeletionsCount);
-        }
-
-        private long IgnoredDeletionsCount(Deletion deletion)
-        {
-            return deletion.Ignored();
+                .SelectMany(p => p.Deletions().Items());
         }
     }
 }

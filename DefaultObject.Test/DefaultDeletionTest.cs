@@ -20,7 +20,7 @@ namespace DevRating.DefaultObject.Test
         {
             var count = 2u;
 
-            Assert.Equal(count, new DefaultDeletion("some other email", count).Counted());
+            Assert.Equal(count, new DefaultDeletion("some other email", count).DeletedLines());
         }
 
         [Fact]

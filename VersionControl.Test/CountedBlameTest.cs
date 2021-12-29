@@ -10,31 +10,31 @@ namespace DevRating.VersionControl.Test
         [Fact]
         public void ContainsLine()
         {
-            Assert.True(new CountedBlame("email", 1, 1).ContainsLine(1));
+            Assert.True(new AccountableBlame("email", 1, 1).ContainsLine(1));
         }
 
         [Fact]
         public void DoesNotContainLineBefore()
         {
-            Assert.False(new CountedBlame("email", 1, 1).ContainsLine(0));
+            Assert.False(new AccountableBlame("email", 1, 1).ContainsLine(0));
         }
 
         [Fact]
         public void DoesNotContainLineAfter()
         {
-            Assert.False(new CountedBlame("email", 1, 1).ContainsLine(2));
+            Assert.False(new AccountableBlame("email", 1, 1).ContainsLine(2));
         }
 
         [Fact]
         public void ReturnsZeroIgnoredLines()
         {
-            Assert.Equal(0u, new CountedBlame("email", 1, 1).SubDeletion(0, 100).Ignored());
+            Assert.Equal(0u, new AccountableBlame("email", 1, 1).SubDeletion(0, 100).Ignored());
         }
 
         [Fact]
         public void ReturnsAllCountedLinesOnBigDeletionRequest()
         {
-            Assert.Equal(10u, new CountedBlame("email", 1, 10).SubDeletion(0, 100).Counted());
+            Assert.Equal(10u, new AccountableBlame("email", 1, 10).SubDeletion(0, 100).Lines());
         }
     }
 }

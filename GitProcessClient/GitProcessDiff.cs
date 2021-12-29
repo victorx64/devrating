@@ -150,8 +150,8 @@ namespace DevRating.GitProcessClient
             internal class DeletionDto
             {
                 public string Email { get; set; } = string.Empty;
-                public uint Counted { get; set; } = default;
-                public uint Ignored { get; set; } = default;
+                public uint Lines { get; set; } = default;
+                public bool Accountable { get; set; } = default;
             }
         }
 
@@ -164,9 +164,9 @@ namespace DevRating.GitProcessClient
                     Deletions = _deletions.Items().Select(
                         deletion => new Dto.DeletionDto
                         {
-                            Counted = deletion.Counted(),
+                            Lines = deletion.DeletedLines(),
                             Email = deletion.Email(),
-                            Ignored = deletion.Ignored()
+                            Accountable = deletion.Accountable()
                         }
                     ),
                     End = _end,

@@ -74,6 +74,36 @@ Where:
 - `<path-to-repo>` — path to a local git repository.
 - `<working-dir>` — path where the rating is stored as `devrating.sqlite3` SQLite file.
 
+# How it works
+
+When Developer A deletes a line of code, he increases his rating and lowers the 
+rating of the deleted line author (Developer B).
+The [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) is used:
+
+```
+k = 40;
+n = 400;
+
+qA = 10 ^ (ratingA / n);
+qB = 10 ^ (ratingB / n);
+eA = qA / (qA + qB);
+d = k * (1 - eA) * deletionsA / additionsB;
+
+newRatingA = ratingA + d;
+newRatingB = ratingB - d;
+```
+
+where
+  - `additionsB` - number of added lines by Developer B in a PR,
+  - `deletionsA` - number of deleted lines by Developer A from the PR,
+  - `ratingA` - initial rating of Developer A,
+  - `ratingB` - initial rating of Developer B,
+  - `newRatingA` - new rating of Developer A,
+  - `newRatingB` - new rating of Developer B.
+
+When the system meets a new author it sets `1500` rating points to him.
+This is an average rating of the system.
+
 # Build and run
 
 ```

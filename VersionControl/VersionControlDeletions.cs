@@ -57,7 +57,7 @@ namespace DevRating.VersionControl
             {
                 var deletion = _blames.AtLine(i).SubDeletion(i, index + count);
 
-                increment = deletion.Counted() + deletion.Ignored();
+                increment = deletion.DeletedLines();
 
                 yield return deletion;
             }

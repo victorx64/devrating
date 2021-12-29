@@ -28,7 +28,7 @@ namespace DevRating.VersionControl.Test
         [Fact]
         public void ReturnsZeroCountedLines()
         {
-            Assert.Equal(0u, new IgnoredBlame("email", 1, 1).SubDeletion(0, 100).Counted());
+            Assert.Equal(0u, new IgnoredBlame("email", 1, 1).SubDeletion(0, 100).Lines());
         }
 
         [Fact]

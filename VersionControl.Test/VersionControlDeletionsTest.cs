@@ -32,7 +32,7 @@ index 5633fb0..fa22e17 100644
                     new FakeFileBlames(
                         new []
                         {
-                            new CountedBlame("Victim", 0u, 100u),
+                            new AccountableBlame("Victim", 0u, 100u),
                         }
                     )
                 ).Items());
@@ -61,7 +61,7 @@ index 5633fb0..fa22e17 100644
                     new FakeFileBlames(
                         new[]
                         {
-                            new CountedBlame("Victim", 0u, 100u),
+                            new AccountableBlame("Victim", 0u, 100u),
                         }
                     )
                 ).Items());
@@ -91,8 +91,8 @@ index 59bc854..c709613 100644
                         new FakeFileBlames(
                             new[]
                             {
-                                new CountedBlame("Victim1", 2u, 1u),
-                                new CountedBlame("Victim2", 4u, 1u),
+                                new AccountableBlame("Victim1", 2u, 1u),
+                                new AccountableBlame("Victim2", 4u, 1u),
                             }
                         )
                     )
@@ -125,7 +125,7 @@ index 59bc854..c709613 100644
                         new FakeFileBlames(
                             new[]
                             {
-                                new CountedBlame("Victim1", 2u, 3u),
+                                new AccountableBlame("Victim1", 2u, 3u),
                             }
                         )
                     )

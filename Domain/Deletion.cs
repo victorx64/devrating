@@ -6,7 +6,8 @@ namespace DevRating.Domain
     public interface Deletion
     {
         string Email();
-        uint Counted();
-        uint Ignored();
+        uint DeletedLines();
+        uint AvailableLines();
+        bool Accountable();
     }
 }

@@ -16,7 +16,7 @@ namespace DevRating.VersionControl.Test
         {
             long Count(Deletion arg)
             {
-                return arg.Counted();
+                return arg.DeletedLines();
             }
 
             Assert.Equal(
@@ -114,7 +114,7 @@ namespace DevRating.VersionControl.Test
                     )
                     .Items()
                     .Single(DeletionWithTheEmail)
-                    .Counted());
+                    .DeletedLines());
         }
     }
 }

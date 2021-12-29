@@ -132,15 +132,15 @@ namespace DevRating.DefaultObject
                 var value = current.Id().Filled() ? current.Value() : _formula.DefaultRating();
 
                 _entities.Ratings().InsertOperation().Insert(
-                    _formula.LoserNewRating(value, new DefaultMatch(winner, deletion.Counted())),
-                    deletion.Counted(),
+                    _formula.LoserNewRating(value, new DefaultMatch(winner, deletion.DeletedLines())),
+                    deletion.DeletedLines(),
                     deletion.Ignored(),
                     current.Id(),
                     work,
                     victim
                 );
 
-                matches.Add(new DefaultMatch(value, deletion.Counted()));
+                matches.Add(new DefaultMatch(value, deletion.DeletedLines()));
             }
 
             return matches;

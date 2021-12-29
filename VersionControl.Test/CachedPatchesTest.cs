@@ -31,7 +31,7 @@ namespace DevRating.VersionControl.Test
         }
 
         [Fact]
-        public void ReturnsItemsFasterASecondTime()
+        public void ReturnsItemsFasterOnSecondTime()
         {
             var cached = new CachedPatches(
                 new DelayedPatches(

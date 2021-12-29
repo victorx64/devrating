@@ -26,8 +26,9 @@ namespace DevRating.DefaultObject
             internal class DeletionDto
             {
                 public string Email { get; set; } = string.Empty;
-                public uint Counted { get; set; } = default;
-                public uint Ignored { get; set; } = default;
+                public uint DeletedLines { get; set; } = default;
+                public uint AvailableLines { get; set; } = default;
+                public bool Accountable { get; set; } = default;
             }
         }
 
@@ -48,7 +49,7 @@ namespace DevRating.DefaultObject
                 _state.Organization,
                 _state.Repository,
                 _state.Email,
-                _state.Deletions.Select(d => new DefaultDeletion(d.Email, d.Counted, d.Ignored)),
+                _state.Deletions.Select(d => new DefaultDeletion(d.Email, d.DeletedLines, d.AvailableLines, d.Accountable)),
                 factory.InsertedWork(
                     _state.Organization,
                     _state.Repository,

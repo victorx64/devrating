@@ -261,7 +261,7 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion.Counted())
+                        new DefaultMatch(formula.DefaultRating(), deletion.DeletedLines())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -328,7 +328,7 @@ namespace DevRating.DefaultObject.Test
             Assert.Equal(
                 formula.LoserNewRating(
                     formula.DefaultRating(),
-                    new DefaultMatch(formula.DefaultRating(), deletion.Counted())
+                    new DefaultMatch(formula.DefaultRating(), deletion.DeletedLines())
                 ),
                 ratings.Single(RatingOfVictim).Value()
             );
@@ -367,8 +367,8 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion1.Counted()),
-                        new DefaultMatch(formula.DefaultRating(), deletion2.Counted())
+                        new DefaultMatch(formula.DefaultRating(), deletion1.DeletedLines()),
+                        new DefaultMatch(formula.DefaultRating(), deletion2.DeletedLines())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -411,7 +411,7 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion.Counted())
+                        new DefaultMatch(formula.DefaultRating(), deletion.DeletedLines())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -449,7 +449,7 @@ namespace DevRating.DefaultObject.Test
             Assert.Equal(
                 formula.LoserNewRating(
                     formula.DefaultRating(),
-                    new DefaultMatch(formula.DefaultRating(), deletion.Counted())
+                    new DefaultMatch(formula.DefaultRating(), deletion.DeletedLines())
                 ),
                 ratings.Last(RatingOfVictim).Value()
             );
@@ -503,8 +503,8 @@ namespace DevRating.DefaultObject.Test
                     formula.DefaultRating(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion1.Counted()),
-                        new DefaultMatch(formula.DefaultRating(), deletion2.Counted())
+                        new DefaultMatch(formula.DefaultRating(), deletion1.DeletedLines()),
+                        new DefaultMatch(formula.DefaultRating(), deletion2.DeletedLines())
                     }
                 ),
                 ratings.Single(RatingOfAuthor).Value()
@@ -552,7 +552,7 @@ namespace DevRating.DefaultObject.Test
                     rating.Value(),
                     new[]
                     {
-                        new DefaultMatch(formula.DefaultRating(), deletion.Counted())
+                        new DefaultMatch(formula.DefaultRating(), deletion.DeletedLines())
                     }
                 ),
                 ratings.Last(RatingOfAuthor).Value()

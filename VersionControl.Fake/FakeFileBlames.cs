@@ -10,7 +10,7 @@ namespace DevRating.VersionControl.Fake
     {
         private readonly IEnumerable<Blame> _blames;
 
-        public FakeFileBlames() : this(new CountedBlame[0])
+        public FakeFileBlames() : this(new VersionControlBlame[0])
         {
         }
 

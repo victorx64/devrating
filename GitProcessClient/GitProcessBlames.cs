@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-present Victor Semenov
+// Copyright (c) 2019-present Victor Semenov
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -13,19 +13,22 @@ namespace DevRating.GitProcessClient
         private IEnumerable<Blame>? _blames;
         private readonly object _lock = new object();
         private readonly Process _git;
+        private readonly DiffSizes _sizes;
         private readonly string? _stop;
 
         public GitProcessBlames(string path, string filename, string start, string? stop)
             : this(
-                new VersionControlProcess("git", $"blame -t -e -l {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
+                new VersionControlProcess("git", $"blame -t -e -l -w {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
+                new GitProcessDiffSizes(path),
                 stop
             )
         {
         }
 
-        public GitProcessBlames(Process git, string? stop)
+        public GitProcessBlames(Process git, DiffSizes sizes, string? stop)
         {
             _git = git;
+            _sizes = sizes;
             _stop = stop;
         }
 
@@ -70,7 +73,13 @@ namespace DevRating.GitProcessClient
 
                 if (!EqualShas(line, current))
                 {
-                    yield return (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
+                    yield return new VersionControlBlame(
+                        Email(current),
+                        (uint)i - accum,
+                        accum,
+                        true,
+                        _sizes.Additions(current)
+                    );
 
                     current = line;
                     accum = 1u;
@@ -85,7 +94,13 @@ namespace DevRating.GitProcessClient
             {
                 var i = lines.Count - 1;
 
-                yield return (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
+                yield return new VersionControlBlame(
+                    Email(current),
+                    (uint)i - accum,
+                    accum,
+                    true,
+                    _sizes.Additions(current)
+                );
             }
         }
 
@@ -101,10 +116,13 @@ namespace DevRating.GitProcessClient
 
                 if (!EqualShas(line, current))
                 {
-                    yield return current.StartsWith(since, StringComparison.Ordinal)
-                        ? (Blame)new IgnoredBlame(Email(current), (uint)i - accum, accum)
-                        : (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
-
+                    yield return new VersionControlBlame(
+                        Email(current),
+                        (uint)i - accum,
+                        accum,
+                        !current.StartsWith(since, StringComparison.Ordinal),
+                        _sizes.Additions(current)
+                    );
                     current = line;
                     accum = 1u;
                 }
@@ -118,9 +136,13 @@ namespace DevRating.GitProcessClient
             {
                 var i = lines.Count - 1;
 
-                yield return current.StartsWith(since, StringComparison.Ordinal)
-                    ? (Blame)new IgnoredBlame(Email(current), (uint)i - accum, accum)
-                    : (Blame)new CountedBlame(Email(current), (uint)i - accum, accum);
+                yield return new VersionControlBlame(
+                    Email(current),
+                    (uint)i - accum,
+                    accum,
+                    !current.StartsWith(since, StringComparison.Ordinal),
+                    _sizes.Additions(current)
+                );
             }
         }
 

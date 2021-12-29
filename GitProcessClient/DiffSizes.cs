@@ -1,0 +1,10 @@
+// Copyright (c) 2019-present Victor Semenov
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace DevRating.GitProcessClient
+{
+    public interface DiffSizes
+    {
+        uint Additions(string sha);
+    }
+}
