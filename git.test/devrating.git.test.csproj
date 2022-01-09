@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../devrating.git.fake/devrating.git.fake.csproj" />
+    <ProjectReference Include="../git.fake/devrating.git.fake.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@
   <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
 </a>
 
-**Dev Rating** is a command-line tool that suggests the optimal Pull Request size for each contributor so that the PRs will have the same expected durability of the added lines of code.
+**Dev Rating** is a command-line tool that suggests the optimal Pull Request size for each contributor so that the PRs will have the same expected durability of the lines of code.
 
 It counts deleted lines of code in the PRs and builds a rating of contributors based on the code stability. Low-ranked members are encouraged to post more code in PRs because their code statistically lives shorter.
 

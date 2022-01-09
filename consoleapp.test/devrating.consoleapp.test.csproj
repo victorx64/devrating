@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-   <ProjectReference Include="../devrating.consoleapp.fake/devrating.consoleapp.fake.csproj" />
+   <ProjectReference Include="../consoleapp.fake/devrating.consoleapp.fake.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine as build
 
 COPY . .
 
-RUN dotnet publish devrating.consoleapp/devrating.consoleapp.csproj -c Release -o out
+RUN dotnet publish consoleapp/devrating.consoleapp.csproj -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine
 

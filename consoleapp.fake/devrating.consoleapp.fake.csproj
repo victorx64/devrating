@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../devrating.git/devrating.git.csproj" />
+    <ProjectReference Include="../consoleapp/devrating.consoleapp.csproj" />
+    <ProjectReference Include="../factory.fake/devrating.factory.fake.csproj" />
   </ItemGroup>
 
 </Project>

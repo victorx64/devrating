@@ -21,9 +21,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="../devrating.factory/devrating.factory.csproj"/>
-    <ProjectReference Include="../devrating.git/devrating.git.csproj"/>
-    <ProjectReference Include="../devrating.sqlite/devrating.sqlite.csproj"/>
+    <ProjectReference Include="../factory/devrating.factory.csproj"/>
+    <ProjectReference Include="../git/devrating.git.csproj"/>
+    <ProjectReference Include="../sqlite/devrating.sqlite.csproj"/>
   </ItemGroup>
 
 </Project>

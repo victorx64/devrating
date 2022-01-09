@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../devrating.factory/devrating.factory.csproj" />
+    <ProjectReference Include="../factory/devrating.factory.csproj" />
   </ItemGroup>
 </Project>
