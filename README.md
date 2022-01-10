@@ -102,6 +102,10 @@ $O_A = 1 - E_{A\_avg}; $
 where
 - $O_A$ - the optimal added lines number for Developer A in his PRs.
 
+## Ignoring too old lines
+
+The tool doesn't change rating if the deleted line was introduced in previous major versions of code. It reads git tags with `semver` to figure out when was the last major update.
+
 # Build and run
 
 ```
