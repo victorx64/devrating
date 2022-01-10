@@ -22,6 +22,11 @@ public sealed class DefaultFormula : Formula
         return _default;
     }
 
+    public double SuggestedAdditionsCount(double rating)
+    {
+        return 1d - WinProbabilityOfA(rating, _default);
+    }
+
     public double WinnerRatingChange(double winnerOldRating, double loserOldRating)
     {
         return _k * (1d - WinProbabilityOfA(winnerOldRating, loserOldRating));

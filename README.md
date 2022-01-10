@@ -6,11 +6,11 @@
   <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
 </a>
 
-**Dev Rating** is a command-line tool that suggests the optimal Pull Request size for each contributor so that the PRs will have the same expected durability of the lines of code.
+**Dev Rating** is a command-line tool that suggests the optimal Pull Request size for each contributor so that PRs have the same expected reliability of lines of code.
 
-It counts deleted lines of code in the PRs and builds a rating of contributors based on the code stability. Low-ranked members are encouraged to post more code in PRs because their code statistically lives shorter.
+It counts the deleted lines of code in the PR and builds a contributor rating based on code stability. Low-rated members are encouraged to post more code in PR because their code statistically lives less. Having PRs with the same stability makes it easy to calculate the amount of work done.
 
-Having PRs with the same stability makes it easy to calculate how much work has been done.
+In the case of rebased PRs, it treats each commit as a separate PR.
 
 # Usage with .NET
 
@@ -74,9 +74,9 @@ $K = 40; N = 400; $
 $Q_A = 10 ^ {\frac{R_A}{N}}; $  
 $Q_B = 10 ^ {\frac{R_B}{N}}; $
 
-$E_A = \frac{Q_A}{Q_A + Q_B}; $
+$E_{A\_B} = \frac{Q_A}{Q_A + Q_B}; $
 
-$R_\Delta = K(1 - E_A)(\sum_{i = 1} \frac{Del_{Ai}}{Add_{Bi}}); $
+$R_\Delta = K(1 - E_{A\_B})(\sum_{i = 1} \frac{Del_{Ai}}{Add_{Bi}}); $
 
 $R_A^{'} = R_A + R_\Delta; $  
 $R_B^{'} = R_B - R_\Delta; $
@@ -90,6 +90,17 @@ where
 - $R_B^{'}$ - new rating of Developer B.
 
 When the system meets a new author it sets $1500$ rating points to him.
+
+Optimal additions per PR:
+
+$Q_{avg} = 10 ^ {\frac{1500}{N}}; $
+
+$E_{A\_avg} = \frac{Q_A}{Q_A + Q_{avg}}; $
+
+$O_A = 1 - E_{A\_avg}; $
+
+where
+- $O_A$ - the optimal added lines number for Developer A in his PRs.
 
 # Build and run
 

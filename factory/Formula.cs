@@ -4,4 +4,5 @@ public interface Formula
 {
     double DefaultRating();
     double WinnerRatingChange(double winnerOldRating, double loserOldRating);
+    double SuggestedAdditionsCount(double rating);
 }

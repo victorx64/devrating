@@ -20,6 +20,11 @@ public sealed class FakeFormula : Formula
         return _default;
     }
 
+    public double SuggestedAdditionsCount(double rating)
+    {
+        throw new NotImplementedException();
+    }
+
     public double WinnerRatingChange(double winnerOldRating, double loserOldRating)
     {
         return _increase;

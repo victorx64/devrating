@@ -78,9 +78,4 @@ public sealed class JsonDiff : Diff
     {
         return JsonSerializer.Serialize(_state);
     }
-
-    public DateTimeOffset CreatedAt()
-    {
-        return _state.CreatedAt;
-    }
 }

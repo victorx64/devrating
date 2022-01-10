@@ -27,16 +27,20 @@ public sealed class ConsoleApplication : Application
                 _database.Instance().Create();
             }
 
-            output.WriteLine("Author | Rating");
-            output.WriteLine("------ | ------");
+            output.WriteLine("Author | Rating | Optimal additions in a PR");
+            output.WriteLine("------ | ------ | -------------------------");
 
             foreach (
                 var author in _database.Entities().Authors().GetOperation()
                     .Top(organization, repository, DateTimeOffset.UtcNow - TimeSpan.FromDays(90))
                 )
             {
+                var rating = _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value();
+
+                var additions = _formula.SuggestedAdditionsCount(rating) * 25d;
+
                 output.WriteLine(
-                    $"<{author.Email()}> | {_database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value():F2}"
+                    $"<{author.Email()}> | {rating:F2} | {additions:N0}"
                 );
             }
         }
