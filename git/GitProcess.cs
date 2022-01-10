@@ -1,11 +1,13 @@
+using System.Diagnostics;
+
 namespace devrating.git;
 
 public sealed class GitProcess : Process
 {
-    private readonly System.Diagnostics.ProcessStartInfo _info;
+    private readonly ProcessStartInfo _info;
 
     public GitProcess(string filename, string arguments, string directory)
-        : this(new System.Diagnostics.ProcessStartInfo(filename, arguments)
+        : this(new ProcessStartInfo(filename, arguments)
         {
             WorkingDirectory = directory,
             RedirectStandardOutput = true,
@@ -16,7 +18,7 @@ public sealed class GitProcess : Process
     {
     }
 
-    public GitProcess(System.Diagnostics.ProcessStartInfo info)
+    public GitProcess(ProcessStartInfo info)
     {
         _info = info;
     }

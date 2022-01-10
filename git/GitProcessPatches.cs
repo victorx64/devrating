@@ -6,13 +6,15 @@ public sealed class GitProcessPatches : Patches
     private readonly string _end;
     private readonly string? _since;
     private readonly string _repository;
+    private readonly string _branch;
 
-    public GitProcessPatches(string start, string end, string? since, string repository)
+    public GitProcessPatches(string start, string end, string? since, string repository, string branch)
     {
         _start = start;
         _end = end;
         _repository = repository;
         _since = since;
+        _branch = branch;
     }
 
     public IEnumerable<Deletions> Items()
@@ -74,7 +76,8 @@ public sealed class GitProcessPatches : Patches
                     _repository,
                     old,
                     _start,
-                    _since
+                    _since,
+                    _branch
                 )
             )
         );

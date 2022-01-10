@@ -12,8 +12,6 @@ It counts deleted lines of code in the PRs and builds a rating of contributors b
 
 Having PRs with the same stability makes it easy to calculate how much work has been done.
 
-Currently works only with _squashed_ PRs.
-
 # Usage with .NET
 
 Install the tool:

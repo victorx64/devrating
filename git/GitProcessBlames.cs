@@ -8,10 +8,10 @@ public sealed class GitProcessBlames : AFileBlames
     private readonly DiffSizes _sizes;
     private readonly string? _stop;
 
-    public GitProcessBlames(string path, string filename, string start, string? stop)
+    public GitProcessBlames(string path, string filename, string start, string? stop, string branch)
         : this(
             new GitProcess("git", $"blame -t -e -l -w {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
-            new GitProcessDiffSizes(path),
+            new GitProcessDiffSizes(path, branch),
             stop
         )
     {
