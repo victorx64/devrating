@@ -46,10 +46,10 @@ jobs:
 
     - name: Run tests
       run: |
-          dotnet test ./devrating.consoleapp.test/devrating.consoleapp.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
-          dotnet test ./devrating.factory.test/devrating.factory.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-          dotnet test ./devrating.git.test/devrating.git.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-          dotnet test ./devrating.sqlite.test/devrating.sqlite.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
+          dotnet test ./consoleapp.test/devrating.consoleapp.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
+          dotnet test ./factory.test/devrating.factory.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+          dotnet test ./git.test/devrating.git.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
+          dotnet test ./sqlite.test/devrating.sqlite.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
 
     - name: End SonarScan
       run: JAVA_HOME=$JAVA_HOME_11_X64 ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}

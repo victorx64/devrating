@@ -195,6 +195,7 @@ internal static class Program
         rootCommand.AddCommand(addCommand);
         rootCommand.AddCommand(showCommand);
         rootCommand.AddCommand(serializeCommand);
+        rootCommand.AddCommand(applyCommand);
         rootCommand.AddCommand(topCommand);
         rootCommand.Invoke(args);
     }
