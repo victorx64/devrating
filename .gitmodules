@@ -1,0 +1,3 @@
+[submodule "example/glowing-adventure"]
+	path = example/glowing-adventure
+	url = https://github.com/victorx64/glowing-adventure.git

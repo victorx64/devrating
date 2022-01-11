@@ -12,6 +12,10 @@ jobs:
       with:
         fetch-depth: 0
 
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
     # Speed-up analysis by caching the scanner workspace
     - name: Cache SonarCloud workspace
       uses: actions/cache@v1
@@ -42,11 +46,10 @@ jobs:
 
     - name: Run tests
       run: |
-          dotnet test ./DefaultObject.Test/DevRating.DefaultObject.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]*
-          dotnet test ./EloRating.Test/DevRating.EloRating.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-          dotnet test ./SqliteClient.Test/DevRating.SqliteClient.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-          dotnet test ./ConsoleApp.Test/DevRating.ConsoleApp.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json"
-          dotnet test ./VersionControl.Test/DevRating.VersionControl.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.Fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
+          dotnet test ./consoleapp.test/devrating.consoleapp.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.fake]*
+          dotnet test ./factory.test/devrating.factory.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.fake]* /p:MergeWith="../TestResults/coverage.json"
+          dotnet test ./git.test/devrating.git.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.fake]* /p:MergeWith="../TestResults/coverage.json"
+          dotnet test ./sqlite.test/devrating.sqlite.test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:Exclude=[*.fake]* /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat=opencover
 
     - name: End SonarScan
       run: JAVA_HOME=$JAVA_HOME_11_X64 ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}

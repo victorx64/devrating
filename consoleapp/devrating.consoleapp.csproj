@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageOutputPath>../package</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageVersion>22.2.0</PackageVersion>
+    <Version>22.2.0</Version>
+    <Authors>Victor Semenov</Authors>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>devrating</ToolCommandName>
+    <Description>Dev Rating is a command-line tool that suggests the minimal Pull Request size</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="../factory/devrating.factory.csproj"/>
+    <ProjectReference Include="../git/devrating.git.csproj"/>
+    <ProjectReference Include="../sqlite/devrating.sqlite.csproj"/>
+  </ItemGroup>
+
+</Project>
