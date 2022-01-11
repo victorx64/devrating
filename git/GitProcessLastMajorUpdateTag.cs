@@ -1,3 +1,4 @@
+using devrating.factory;
 using Semver;
 
 namespace devrating.git;
@@ -6,10 +7,10 @@ public sealed class GitProcessLastMajorUpdateTag : Tag
 {
     private readonly Tag _release;
 
-    public GitProcessLastMajorUpdateTag(string repository, string before)
+    public GitProcessLastMajorUpdateTag(Log log, string repository, string before)
         : this(
             new LastMajorUpdateTag(
-                new GitProcess("git", $"tag -l --format='%(objectname) %(refname:short)' --merged {before}", repository)
+                new GitProcess(log, "git", $"tag -l --format='%(objectname) %(refname:short)' --merged {before}", repository)
                     .Output()
                     .Where(l => !string.IsNullOrEmpty(l))
                     .Select(t => new GitTag(t.Split(' ')[0], t.Split(' ')[1]))

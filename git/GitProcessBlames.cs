@@ -1,3 +1,5 @@
+using devrating.factory;
+
 namespace devrating.git;
 
 public sealed class GitProcessBlames : AFileBlames
@@ -8,10 +10,10 @@ public sealed class GitProcessBlames : AFileBlames
     private readonly DiffSizes _sizes;
     private readonly string? _stop;
 
-    public GitProcessBlames(string path, string filename, string start, string? stop, string branch)
+    public GitProcessBlames(Log log, string path, string filename, string start, string? stop, string branch)
         : this(
-            new GitProcess("git", $"blame -t -e -l -w {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
-            new GitProcessDiffSizes(path, branch),
+            new GitProcess(log, "git", $"blame -t -e -l -w {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
+            new GitProcessDiffSizes(log, path, branch),
             stop
         )
     {
@@ -78,7 +80,7 @@ public sealed class GitProcessBlames : AFileBlames
                     Email(current),
                     (uint)i - accum,
                     accum,
-                    !current.StartsWith(since, StringComparison.Ordinal),
+                    !current.StartsWith(since, StringComparison.OrdinalIgnoreCase),
                     _sizes.Additions(current)
                 );
                 current = line;
@@ -98,7 +100,7 @@ public sealed class GitProcessBlames : AFileBlames
                 Email(current),
                 (uint)i - accum,
                 accum,
-                !current.StartsWith(since, StringComparison.Ordinal),
+                !current.StartsWith(since, StringComparison.OrdinalIgnoreCase),
                 _sizes.Additions(current)
             );
         }
@@ -106,7 +108,7 @@ public sealed class GitProcessBlames : AFileBlames
 
     private bool EqualShas(string a, string b)
     {
-        return a.Substring(0, 40).Equals(b.Substring(0, 40), StringComparison.Ordinal);
+        return a.Substring(0, 40).Equals(b.Substring(0, 40), StringComparison.OrdinalIgnoreCase);
     }
 
     private string Email(string line)

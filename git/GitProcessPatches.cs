@@ -1,3 +1,5 @@
+using devrating.factory;
+
 namespace devrating.git;
 
 public sealed class GitProcessPatches : Patches
@@ -7,9 +9,11 @@ public sealed class GitProcessPatches : Patches
     private readonly string? _since;
     private readonly string _repository;
     private readonly string _branch;
+    private readonly Log _log;
 
-    public GitProcessPatches(string start, string end, string? since, string repository, string branch)
+    public GitProcessPatches(Log log, string start, string end, string? since, string repository, string branch)
     {
+        _log = log;
         _start = start;
         _end = end;
         _repository = repository;
@@ -36,7 +40,7 @@ public sealed class GitProcessPatches : Patches
         var old = "unknown";
         var state = State.Diff;
 
-        foreach (var line in new GitProcess("git", $"diff {_start}..{_end} -U0 -M01 -w", _repository).Output())
+        foreach (var line in new GitProcess(_log, "git", $"diff {_start}..{_end} -U0 -M01 -w", _repository).Output())
         {
             switch (state)
             {
@@ -73,6 +77,7 @@ public sealed class GitProcessPatches : Patches
             () => (Deletions)new GitDeletions(
                 patch,
                 new GitProcessBlames(
+                    _log,
                     _repository,
                     old,
                     _start,

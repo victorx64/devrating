@@ -1,10 +1,14 @@
-namespace devrating.consoleapp.fake;
+namespace devrating.factory.fake;
 
-public sealed class FakeOutput : Output
+public sealed class FakeLog : Log
 {
     private readonly IList<string> _lines;
 
-    public FakeOutput(IList<string> lines)
+    public FakeLog() : this(new List<string>())
+    {
+    }
+
+    public FakeLog(IList<string> lines)
     {
         _lines = lines;
     }

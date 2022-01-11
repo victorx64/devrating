@@ -1,3 +1,5 @@
+using devrating.factory;
+
 namespace devrating.git;
 
 public sealed class GitProcessFirstMergeCommit : GitObject
@@ -6,11 +8,11 @@ public sealed class GitProcessFirstMergeCommit : GitObject
     private readonly Process _firstParentRevs;
     private readonly Process _ancestryPathRevs;
 
-    public GitProcessFirstMergeCommit(string repository, string after, string destination)
+    public GitProcessFirstMergeCommit(Log log, string repository, string after, string destination)
         : this(
-            new GitProcess("git", $"rev-parse {after}", repository),
-            new GitProcess("git", $"rev-list {after}..{destination} --first-parent", repository),
-            new GitProcess("git", $"rev-list {after}..{destination} --ancestry-path", repository)
+            new GitProcess(log, "git", $"rev-parse {after}", repository),
+            new GitProcess(log, "git", $"rev-list {after}..{destination} --first-parent", repository),
+            new GitProcess(log, "git", $"rev-list {after}..{destination} --ancestry-path", repository)
         )
     {
     }

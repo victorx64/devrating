@@ -1,3 +1,5 @@
+using devrating.factory;
+
 namespace devrating.git;
 
 public sealed class GitProcessDiffSizes : DiffSizes
@@ -6,10 +8,12 @@ public sealed class GitProcessDiffSizes : DiffSizes
     private readonly object _lock = new object();
     private readonly string _repository;
     private readonly string _branch;
+    private readonly Log _log;
 
-    public GitProcessDiffSizes(string repository, string branch)
+    public GitProcessDiffSizes(Log log, string repository, string branch)
     {
         _repository = repository;
+        _log = log;
         _branch = branch;
     }
 
@@ -21,10 +25,11 @@ public sealed class GitProcessDiffSizes : DiffSizes
             {
                 if (!_additions.ContainsKey(sha))
                 {
-                    var merge = new GitProcessFirstMergeCommit(_repository, sha, _branch).Sha();
+                    var merge = new GitProcessFirstMergeCommit(_log, _repository, sha, _branch).Sha();
 
                     // Keep git arguments in sync with GitProcessPatches and GitProcessBlames
                     var stat = new GitProcess(
+                        _log,
                         "git",
                         $"diff {merge} -U0 -M01 -w --shortstat",
                         _repository

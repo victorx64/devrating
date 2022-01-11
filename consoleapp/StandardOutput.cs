@@ -1,6 +1,8 @@
+using devrating.factory;
+
 namespace devrating.consoleapp;
 
-public sealed class StandardOutput : Output
+public sealed class StandardOutput : Log
 {
     public void WriteLine()
     {

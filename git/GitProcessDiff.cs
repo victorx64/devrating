@@ -17,6 +17,7 @@ public sealed class GitProcessDiff : Diff
     private readonly DateTimeOffset _createdAt;
 
     public GitProcessDiff(
+        Log log,
         string start,
         string end,
         string? since,
@@ -29,11 +30,12 @@ public sealed class GitProcessDiff : Diff
         string? email = null
     )
         : this(
+            log,
             start,
             end,
             since,
             repository,
-            new CachedPatches(new GitProcessPatches(start, end, since, repository, branch)),
+            new CachedPatches(new GitProcessPatches(log, start, end, since, repository, branch)),
             key,
             link,
             organization,
@@ -44,6 +46,7 @@ public sealed class GitProcessDiff : Diff
     }
 
     public GitProcessDiff(
+        Log log,
         string start,
         string end,
         string? since,
@@ -56,15 +59,15 @@ public sealed class GitProcessDiff : Diff
         string? email = null
     )
         : this(
-            new GitProcess("git", $"rev-parse {start}", repository).Output()[0],
-            new GitProcess("git", $"rev-parse {end}", repository).Output()[0],
+            new GitProcess(log, "git", $"rev-parse {start}", repository).Output()[0],
+            new GitProcess(log, "git", $"rev-parse {end}", repository).Output()[0],
             since,
             new TotalDeletions(patches),
             key,
             link,
             organization,
             createdAt,
-            email ?? new GitProcess("git", $"show -s --format=%aE {end}", repository).Output()[0]
+            email ?? new GitProcess(log, "git", $"show -s --format=%aE {end}", repository).Output()[0]
         )
     {
     }

@@ -28,9 +28,10 @@ internal static class Program
                 var first = merge + "~";
                 var second = merge;
                 var diff = new GitProcessDiff(
+                    output,
                     first,
                     second,
-                    new GitProcessLastMajorUpdateTag(path.FullName, first).Sha(),
+                    new GitProcessLastMajorUpdateTag(output, path.FullName, first).Sha(),
                     path.FullName,
                     branch ?? "main",
                     name ?? "unnamed",
@@ -63,9 +64,10 @@ internal static class Program
             (path, @base, head, branch, email, link, org, name, time) =>
             {
                 var diff = new GitProcessDiff(
+                    output,
                     @base,
                     head,
-                    new GitProcessLastMajorUpdateTag(path.FullName, @base).Sha(),
+                    new GitProcessLastMajorUpdateTag(output, path.FullName, @base).Sha(),
                     path.FullName,
                     branch ?? "main",
                     name ?? "unnamed",
@@ -102,9 +104,10 @@ internal static class Program
 
                 output.WriteLine(
                     new GitProcessDiff(
+                    output,
                         first,
                         second,
-                        new GitProcessLastMajorUpdateTag(path.FullName, first).Sha(),
+                        new GitProcessLastMajorUpdateTag(output, path.FullName, first).Sha(),
                         path.FullName,
                         branch ?? "main",
                         name ?? "unnamed",
@@ -134,9 +137,10 @@ internal static class Program
             {
                 output.WriteLine(
                     new GitProcessDiff(
+                    output,
                         @base,
                         head,
-                        new GitProcessLastMajorUpdateTag(path.FullName, @base).Sha(),
+                        new GitProcessLastMajorUpdateTag(output, path.FullName, @base).Sha(),
                         path.FullName,
                         branch ?? "main",
                         name ?? "unnamed",
@@ -189,7 +193,7 @@ internal static class Program
         );
 
         var rootCommand = new RootCommand(
-            "Dev Rating suggests the optimal Pull Request size for each contributor " + 
+            "Dev Rating suggests the optimal Pull Request size for each contributor " +
             "so that the PRs will have the same expected durability of the added lines of code."
         );
         rootCommand.AddCommand(addCommand);

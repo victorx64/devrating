@@ -4,7 +4,7 @@ namespace devrating.consoleapp;
 
 public interface Application
 {
-    void Top(Output output, string organization, string repository);
+    void Top(Log output, string organization, string repository);
     void Save(Diff diff);
-    void PrintTo(Output output, Diff diff);
+    void PrintTo(Log output, Diff diff);
 }

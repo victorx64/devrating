@@ -13,7 +13,7 @@ public sealed class ConsoleApplicationTest
         var lines = new List<string>();
 
         new ConsoleApplication(new FakeDatabase(), new FakeFormula())
-            .Top(new FakeOutput(lines), "organization", "repo");
+            .Top(new FakeLog(lines), "organization", "repo");
 
         var headers = 2;
 
@@ -26,7 +26,7 @@ public sealed class ConsoleApplicationTest
         var db = new FakeDatabase();
 
         new ConsoleApplication(db, new FakeFormula())
-            .Top(new FakeOutput(new List<string>()), "organization", "repo");
+            .Top(new FakeLog(new List<string>()), "organization", "repo");
 
         Assert.True(db.Instance().Present());
     }
@@ -54,7 +54,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(new List<string>()), diff);
+        app.PrintTo(new FakeLog(new List<string>()), diff);
 
         Assert.True(db.Instance().Present());
     }
@@ -66,7 +66,7 @@ public sealed class ConsoleApplicationTest
         {
             new ConsoleApplication(new FakeDatabase(), new FakeFormula())
                 .PrintTo(
-                    new FakeOutput(new List<string>()),
+                    new FakeLog(new List<string>()),
                     new FakeDiff(
                         "key",
                         "start",
@@ -111,7 +111,7 @@ public sealed class ConsoleApplicationTest
         var lines = new List<string>();
 
         new ConsoleApplication(database, new FakeFormula())
-            .Top(new FakeOutput(lines), organization, "repo");
+            .Top(new FakeLog(lines), organization, "repo");
 
         var headers = 2;
 
@@ -221,7 +221,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(lines), diff);
+        app.PrintTo(new FakeLog(lines), diff);
 
         Assert.Equal(deletions.Length, lines.Count(l => l.Contains("victim")));
     }
@@ -236,7 +236,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(lines), diff);
+        app.PrintTo(new FakeLog(lines), diff);
 
         Assert.Contains(lines, p => p.Equals("Since: since this commit"));
     }
@@ -251,7 +251,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(lines), diff);
+        app.PrintTo(new FakeLog(lines), diff);
 
         Assert.Contains(lines, p => p.Equals("Link: E.g. a link to the PR"));
     }

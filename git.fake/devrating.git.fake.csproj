@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../git/devrating.git.csproj" />
+    <ProjectReference Include="../factory.fake/devrating.factory.fake.csproj" />
   </ItemGroup>
 
 </Project>
