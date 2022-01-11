@@ -37,7 +37,7 @@ public sealed class ConsoleApplication : Application
             {
                 var rating = _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value();
 
-                var additions = _formula.SuggestedAdditionsCount(rating) * 25d;
+                var additions = _formula.SuggestedAdditionsCount(rating);
 
                 output.WriteLine(
                     $"<{author.Email()}> | {rating:F2} | {additions:N0}"

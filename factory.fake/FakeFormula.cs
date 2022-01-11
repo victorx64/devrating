@@ -29,7 +29,7 @@ public sealed class FakeFormula : Formula
 
     public double SuggestedAdditionsCount(double rating)
     {
-        return 1d - WinProbabilityOfA(rating, _default);
+        return (1d - WinProbabilityOfA(rating, _default)) * 50d;
     }
 
     public double WinnerRatingChange(double winnerOldRating, double loserOldRating)

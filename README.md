@@ -10,7 +10,7 @@
 
 It counts the deleted lines of code in the PR and builds a contributor rating based on code stability. Low-rated members are encouraged to post more code in PR because their code statistically lives less. Having PRs with the same stability makes it easy to calculate the amount of work done.
 
-In the case of rebased PRs, it treats each commit as a separate PR.
+Merge commits authors treated as authors of the PRs. In the case of rebased PRs, it treats each commit as a separate PR.
 
 # Usage with .NET
 
@@ -97,17 +97,19 @@ $Q_{avg} = 10 ^ {\frac{1500}{N}}; $
 
 $E_{A\_avg} = \frac{Q_A}{Q_A + Q_{avg}}; $
 
-$O_A = 1 - E_{A\_avg}; $
+$O_A = 50 (1 - E_{A\_avg}); $
 
 where
 - $O_A$ - the optimal added lines number for Developer A in his PRs.
 
+An average-rated member suggested to add 25 lines of code in PRs.
+
 ## Ignoring too old lines
 
-The tool doesn't change rating if the deleted line was introduced in previous major versions of code. It reads git tags with `semver` to figure out when was the last major update.
+The tool doesn't change rating if deleted line was introduced in previous major versions of code. It reads git tags with `semver` to figure out when was the last major update.
 
 # Build and run
 
 ```
-dotnet run --project ./devrating.consoleapp
+dotnet run --project ./consoleapp
 ```
