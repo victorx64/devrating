@@ -27,7 +27,7 @@ public sealed class ConsoleApplication : Application
                 _database.Instance().Create();
             }
 
-            output.WriteLine("Author | Rating | Optimal additions in a PR");
+            output.WriteLine("Author | Rating | Minimal additions in PR");
             output.WriteLine("------ | ------ | -------------------------");
 
             foreach (

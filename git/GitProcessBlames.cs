@@ -6,24 +6,21 @@ public sealed class GitProcessBlames : AFileBlames
 {
     private IEnumerable<Blame>? _blames;
     private readonly object _lock = new object();
-    private readonly Process _git;
+    private readonly Process _blame;
     private readonly DiffSizes _sizes;
-    private readonly string? _stop;
 
     public GitProcessBlames(Log log, string path, string filename, string start, string? stop, string branch)
         : this(
             new GitProcess(log, "git", $"blame -t -e -l -w {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
-            new GitProcessDiffSizes(log, path, branch),
-            stop
+            new GitProcessDiffSizes(log, path, branch)
         )
     {
     }
 
-    public GitProcessBlames(Process git, DiffSizes sizes, string? stop)
+    public GitProcessBlames(Process blame, DiffSizes sizes)
     {
-        _git = git;
+        _blame = blame;
         _sizes = sizes;
-        _stop = stop;
     }
 
     public Blame AtLine(uint line)
@@ -44,9 +41,9 @@ public sealed class GitProcessBlames : AFileBlames
             {
                 if (_blames == null)
                 {
-                    var output = _git.Output();
+                    var output = _blame.Output();
 
-                    _blames = BlameHunks(output, _stop).ToArray();
+                    _blames = BlameHunks(output).ToArray();
                 }
             }
         }
@@ -54,11 +51,10 @@ public sealed class GitProcessBlames : AFileBlames
         return _blames;
     }
 
-    private IEnumerable<Blame> BlameHunks(IList<string> lines, string? stop)
+    private IEnumerable<Blame> BlameHunks(IList<string> lines)
     {
         var current = lines[0];
         var accum = 1u;
-        var since = "^" + (stop?.Substring(0, stop.Length - 1) ?? "%%%");
 
         for (var i = 1; i < lines.Count - 1; i++)
         {
@@ -66,22 +62,12 @@ public sealed class GitProcessBlames : AFileBlames
 
             if (!EqualShas(line, current))
             {
-                if (
-                    current.StartsWith('^') &&
-                    !current.StartsWith(since, StringComparison.Ordinal)
-                )
-                {
-                    throw new InvalidOperationException(
-                        "git log is not deep enough to know whose line is deleted"
-                    );
-                }
-
                 yield return new GitBlame(
                     Email(current),
                     (uint)i - accum,
                     accum,
-                    !current.StartsWith(since, StringComparison.OrdinalIgnoreCase),
-                    _sizes.Additions(current)
+                    !current.StartsWith('^'),
+                    _sizes.Additions(current.Substring(0, 40))  // TODO: Move additions calculation to GitBlames.SubDeletion(...)
                 );
                 current = line;
                 accum = 1u;
@@ -100,8 +86,8 @@ public sealed class GitProcessBlames : AFileBlames
                 Email(current),
                 (uint)i - accum,
                 accum,
-                !current.StartsWith(since, StringComparison.OrdinalIgnoreCase),
-                _sizes.Additions(current)
+                !current.StartsWith('^'),
+                _sizes.Additions(current.Substring(0, 40))
             );
         }
     }

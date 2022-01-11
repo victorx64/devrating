@@ -11,8 +11,8 @@ public sealed class GitProcessFirstMergeCommit : GitObject
     public GitProcessFirstMergeCommit(Log log, string repository, string after, string destination)
         : this(
             new GitProcess(log, "git", $"rev-parse {after}", repository),
-            new GitProcess(log, "git", $"rev-list {after}..{destination} --first-parent", repository),
-            new GitProcess(log, "git", $"rev-list {after}..{destination} --ancestry-path", repository)
+            new GitProcess(log, "git", $"rev-list {destination} ^{after.TrimStart('^')} --first-parent", repository),
+            new GitProcess(log, "git", $"rev-list {destination} ^{after.TrimStart('^')} --ancestry-path", repository)
         )
     {
     }

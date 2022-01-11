@@ -22,16 +22,18 @@ internal static class Program
         addMergeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
         addMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
         addMergeCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
-        addMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, string?, DateTimeOffset?>(
-            (path, merge, branch, email, link, org, name, time) =>
+        addMergeCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
+        addMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
+            (path, merge, branch, email, link, org, name, time, verbose) =>
             {
+                var debug = verbose == true ? output : (Log)new SinkOutput();
                 var first = merge + "~";
                 var second = merge;
                 var diff = new GitProcessDiff(
-                    output,
+                    debug,
                     first,
                     second,
-                    new GitProcessLastMajorUpdateTag(output, path.FullName, first).Sha(),
+                    new GitProcessLastMajorUpdateTag(debug, path.FullName, first).Sha(),
                     path.FullName,
                     branch ?? "main",
                     name ?? "unnamed",
@@ -60,9 +62,11 @@ internal static class Program
         addDiffCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
         addDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
         addDiffCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
-        addDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, string?, string?, DateTimeOffset?>(
-            (path, @base, head, branch, email, link, org, name, time) =>
+        addDiffCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
+        addDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
+            (path, @base, head, branch, email, link, org, name, time, verbose) =>
             {
+                var debug = verbose == true ? output : (Log)new SinkOutput();
                 var diff = new GitProcessDiff(
                     output,
                     @base,
@@ -96,9 +100,11 @@ internal static class Program
         serializeMergeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
         serializeMergeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
         serializeMergeCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
-        serializeMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, string?, DateTimeOffset?>(
-            (path, merge, branch, email, link, org, name, time) =>
+        serializeMergeCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
+        serializeMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
+            (path, merge, branch, email, link, org, name, time, verbose) =>
             {
+                var debug = verbose == true ? output : (Log)new SinkOutput();
                 var first = merge + "~";
                 var second = merge;
 
@@ -132,9 +138,10 @@ internal static class Program
         serializeDiffCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
         serializeDiffCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
         serializeDiffCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
-        serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, string?, string?, DateTimeOffset?>(
-            (path, @base, head, branch, email, link, org, name, time) =>
+        serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
+            (path, @base, head, branch, email, link, org, name, time, verbose) =>
             {
+                var debug = verbose == true ? output : (Log)new SinkOutput();
                 output.WriteLine(
                     new GitProcessDiff(
                     output,

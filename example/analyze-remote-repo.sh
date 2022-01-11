@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -eo pipefail
+set -eo pipefail && VERBOSE='-v' # verbose mode
+# set -eox pipefail && VERBOSE='-v' # debug mode
 
 BLACK='\033[0;30m'
 RED='\033[0;31m'
@@ -18,7 +20,7 @@ LBLUE='\033[1;34m'
 LPURPLE='\033[1;35m'
 LCYAN='\033[1;36m'
 WHITE='\033[1;37m'
-NC='\033[0m' # No Color
+NC='\033[0m' # No color
 
 # --------------------
 
@@ -32,7 +34,8 @@ git --version
 echo
 
 git submodule update --init -- ./glowing-adventure/
-git -C ./glowing-adventure/ log --pretty='%h `%s` %ae' --graph
+git -C ./glowing-adventure/ fetch # to fetch tags
+git -C ./glowing-adventure/ --no-pager log --pretty='%h `%s` %ae' --graph
 echo
 
 # --------------------
@@ -41,9 +44,22 @@ rm -f ./devrating.sqlite3
 rm -f ./devrating.sqlite3.journal
 
 # --------------------
-printf "${GREEN}Add E merge commit${NC}\n"
 
-git -C ./glowing-adventure/ diff -w -U0 318a516~..318a516
-echo
+function add_main_branch_commit {
+	printf "${GREEN}Add merge commit $1 with$(git -C ./glowing-adventure/ diff  --shortstat -w $1~..$1)${NC}\n"
+	$DEVRATING add commit --merge $1 --path ./glowing-adventure/ --branch main $VERBOSE
+	echo
 
-$DEVRATING add commit --merge 318a516 --path ./glowing-adventure/ --branch main
+	printf "${YELLOW}Minimal PR sizes${NC}\n"
+	$DEVRATING top
+	echo
+}
+
+# --------------------
+
+add_main_branch_commit 29df664
+add_main_branch_commit fc4620c # (tag: v0.1.0)
+add_main_branch_commit 318a516 # (tag: v1.0.0)
+add_main_branch_commit 3ec7ac8
+add_main_branch_commit a06751a
+add_main_branch_commit b9b6bc7

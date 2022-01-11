@@ -35,8 +35,8 @@ public sealed class GitProcessDiffSizes : DiffSizes
                         _repository
                     ).Output()[0];
 
-                    var start = stat.IndexOf("changed, " + "changed, ".Length);
-                    var end = stat.IndexOf(" insertions");
+                    var start = stat.IndexOf("changed, ") + "changed, ".Length;
+                    var end = stat.IndexOf(" insert");
 
                     var insertions = uint.Parse(stat.Substring(start, end - start));
 

@@ -6,7 +6,7 @@
   <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
 </a>
 
-**Dev Rating** is a command-line tool that suggests the optimal Pull Request size for each contributor so that PRs have the same expected reliability of lines of code.
+**Dev Rating** is a command-line tool that suggests the minimal Pull Request size for each contributor so that PRs have the same expected reliability of lines of code.
 
 It counts the deleted lines of code in the PR and builds a contributor rating based on code stability. Low-rated members are encouraged to post more code in PR because their code statistically lives less. Having PRs with the same stability makes it easy to calculate the amount of work done.
 
@@ -91,16 +91,16 @@ where
 
 When the system meets a new author it sets $1500$ rating points to him.
 
-Optimal additions per PR:
+Minimal additions per PR:
 
 $Q_{avg} = 10 ^ {\frac{1500}{N}}; $
 
 $E_{A\_avg} = \frac{Q_A}{Q_A + Q_{avg}}; $
 
-$O_A = 50 (1 - E_{A\_avg}); $
+$M_A = 50 (1 - E_{A\_avg}); $
 
 where
-- $O_A$ - the optimal added lines number for Developer A in his PRs.
+- $M_A$ - the minimal added lines number for Developer A in his PRs.
 
 An average-rated member suggested to add 25 lines of code in PRs.
 
