@@ -2,10 +2,6 @@
 [![Downloads](https://img.shields.io/nuget/dt/devrating.consoleapp.svg)](https://www.nuget.org/packages/devrating.consoleapp/)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 
-<a href="https://www.yegor256.com/2019/11/03/award-2020.html">
-  <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
-</a>
-
 **Dev Rating** is a command-line tool that suggests the minimal Pull Request size for each contributor so that PRs have the same expected reliability of lines of code.
 
 It counts the deleted lines of code in the PR and builds a contributor rating based on code stability. Low-rated members are encouraged to post more code in PR because their code statistically lives less. Having PRs with the same stability makes it easy to calculate the amount of work done.
@@ -113,3 +109,7 @@ The tool doesn't change rating if deleted line was introduced in previous major 
 ```
 dotnet run --project ./consoleapp
 ```
+
+<a href="https://www.yegor256.com/2019/11/03/award-2020.html">
+  <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
+</a>

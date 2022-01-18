@@ -12,4 +12,4 @@ COPY --from=build out/ /app
 
 WORKDIR /workspace
 
-ENTRYPOINT ["dotnet", "/app/devrating.consoleapp.dll"]
+ENTRYPOINT ["/app/devrating.consoleapp"]

@@ -455,5 +455,10 @@ $RECYCLE.BIN/
 
 ## Dev Rating
 /.sonarqube/
+/.github/
+/.devcontainer/
+/*.fake/
+/*.test/
 devrating.sqlite3
 devrating.sqlite3-journal
+/example/
