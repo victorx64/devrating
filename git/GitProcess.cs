@@ -51,6 +51,6 @@ public sealed class GitProcess : Process
 
     public override string ToString()
     {
-        return $"info-07737698: {_info.FileName} {_info.Arguments}";
+        return $"info-07737698: WorkingDir: `{_info.WorkingDirectory}`, FileName: `{_info.FileName}`, Args: `{_info.Arguments}`";
     }
 }
