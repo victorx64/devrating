@@ -68,10 +68,10 @@ internal static class Program
             {
                 var debug = verbose == true ? output : (Log)new SinkOutput();
                 var diff = new GitProcessDiff(
-                    output,
+                    debug,
                     @base,
                     head,
-                    new GitProcessLastMajorUpdateTag(output, path.FullName, @base).Sha(),
+                    new GitProcessLastMajorUpdateTag(debug, path.FullName, @base).Sha(),
                     path.FullName,
                     branch ?? "main",
                     name ?? "unnamed",
@@ -110,10 +110,10 @@ internal static class Program
 
                 output.WriteLine(
                     new GitProcessDiff(
-                    output,
+                        debug,
                         first,
                         second,
-                        new GitProcessLastMajorUpdateTag(output, path.FullName, first).Sha(),
+                        new GitProcessLastMajorUpdateTag(debug, path.FullName, first).Sha(),
                         path.FullName,
                         branch ?? "main",
                         name ?? "unnamed",
@@ -144,10 +144,10 @@ internal static class Program
                 var debug = verbose == true ? output : (Log)new SinkOutput();
                 output.WriteLine(
                     new GitProcessDiff(
-                    output,
+                        debug,
                         @base,
                         head,
-                        new GitProcessLastMajorUpdateTag(output, path.FullName, @base).Sha(),
+                        new GitProcessLastMajorUpdateTag(debug, path.FullName, @base).Sha(),
                         path.FullName,
                         branch ?? "main",
                         name ?? "unnamed",
