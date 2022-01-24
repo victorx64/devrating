@@ -31,7 +31,7 @@ public sealed class GitProcessDiffSizes : DiffSizes
                     var stat = new GitProcess(
                         _log,
                         "git",
-                        $"diff {merge} -U0 -M01 -w --shortstat",
+                        $"diff {merge}~..{merge} -U0 -M01 -w --shortstat",
                         _repository
                     ).Output()[0];
 
