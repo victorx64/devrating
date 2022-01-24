@@ -2,31 +2,12 @@ using System.Text.Json;
 using devrating.entity;
 using devrating.factory;
 using devrating.git;
+using static devrating.git.GitProcessDiff;
 
 namespace devrating.consoleapp;
 
 public sealed class JsonDiff : Diff
 {
-    private class Dto
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Start { get; set; } = string.Empty;
-        public string End { get; set; } = string.Empty;
-        public string Organization { get; set; } = string.Empty;
-        public string? Since { get; set; } = default;
-        public string Repository { get; set; } = string.Empty;
-        public string? Link { get; set; } = default;
-        public IEnumerable<ContemporaryLinesDto> Deletions { get; set; } = Array.Empty<ContemporaryLinesDto>();
-        public DateTimeOffset CreatedAt { get; set; } = default;
-        internal class ContemporaryLinesDto
-        {
-            public string VictimEmail { get; set; } = string.Empty;
-            public uint DeletedLines { get; set; } = default;
-            public uint AllLines { get; set; } = default;
-            public bool DeletionAccountable { get; set; } = default;
-        }
-    }
-
     private readonly Dto _state;
 
     public JsonDiff(string json) : this(JsonSerializer.Deserialize<Dto>(json)!)
