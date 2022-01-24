@@ -100,7 +100,7 @@ public sealed class GitProcessDiff : Diff
         return works.ContainsOperation().Contains(_organization, _key, _start, _end);
     }
 
-    private class Dto
+    public class Dto
     {
         public string Email { get; set; } = string.Empty;
         public string Start { get; set; } = string.Empty;
@@ -109,14 +109,15 @@ public sealed class GitProcessDiff : Diff
         public string? Since { get; set; } = default;
         public string Repository { get; set; } = string.Empty;
         public string? Link { get; set; } = default;
-        public IEnumerable<DeletionDto> Deletions { get; set; } = Array.Empty<DeletionDto>();
+        public IEnumerable<ContemporaryLinesDto> Deletions { get; set; } = Array.Empty<ContemporaryLinesDto>();
         public DateTimeOffset CreatedAt { get; set; } = default;
 
-        internal class DeletionDto
+        public class ContemporaryLinesDto
         {
-            public string Email { get; set; } = string.Empty;
-            public uint Lines { get; set; } = default;
-            public bool Accountable { get; set; } = default;
+            public string VictimEmail { get; set; } = string.Empty;
+            public uint AllLines { get; set; } = default;
+            public uint DeletedLines { get; set; } = default;
+            public bool DeletionAccountable { get; set; } = default;
         }
     }
 
@@ -126,11 +127,12 @@ public sealed class GitProcessDiff : Diff
             new Dto
             {
                 Deletions = _deletions.Items().Select(
-                    deletion => new Dto.DeletionDto
+                    deletion => new Dto.ContemporaryLinesDto
                     {
-                        Lines = deletion.DeletedLines(),
-                        Email = deletion.VictimEmail(),
-                        Accountable = deletion.DeletionAccountable()
+                        AllLines = deletion.AllLines(),
+                        DeletedLines = deletion.DeletedLines(),
+                        VictimEmail = deletion.VictimEmail(),
+                        DeletionAccountable = deletion.DeletionAccountable()
                     }
                 ),
                 End = _end,
