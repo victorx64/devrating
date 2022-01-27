@@ -14,7 +14,7 @@ public sealed class ConsoleApplication : Application
         _formula = formula;
     }
 
-    public void Top(Log output, string organization, string repository)
+    public void Top(Output output, string organization, string repository)
     {
         _database.Instance().Connection().Open();
 
@@ -102,7 +102,7 @@ public sealed class ConsoleApplication : Application
         }
     }
 
-    public void PrintTo(Log output, Diff diff)
+    public void PrintTo(Output output, Diff diff)
     {
         _database.Instance().Connection().Open();
 
@@ -130,7 +130,7 @@ public sealed class ConsoleApplication : Application
         }
     }
 
-    private void PrintWorkToConsole(Log output, Work work)
+    private void PrintWorkToConsole(Output output, Work work)
     {
         output.WriteLine($"Author: <{work.Author().Email()}>");
         output.WriteLine($"base: {work.Start()}");
@@ -149,7 +149,7 @@ public sealed class ConsoleApplication : Application
         PrintWorkRatingsToConsole(output, work);
     }
 
-    private void PrintWorkRatingsToConsole(Log output, Work work)
+    private void PrintWorkRatingsToConsole(Output output, Work work)
     {
         output.WriteLine("Author | Prev rating | New rating");
         output.WriteLine("------ | ----------- | ----------");

@@ -1,4 +1,4 @@
-using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
@@ -8,7 +8,7 @@ public sealed class GitProcessFirstMergeCommit : GitObject
     private readonly Process _firstParentRevs;
     private readonly Process _ancestryPathRevs;
 
-    public GitProcessFirstMergeCommit(Log log, string repository, string after, string destination)
+    public GitProcessFirstMergeCommit(ILoggerFactory log, string repository, string after, string destination)
         : this(
             new GitProcess(log, "git", $"rev-parse {after}", repository),
             new GitProcess(log, "git", $"rev-list {destination} ^{after.TrimStart('^')} --first-parent", repository),

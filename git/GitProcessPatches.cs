@@ -1,4 +1,4 @@
-using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
@@ -9,9 +9,9 @@ public sealed class GitProcessPatches : Patches
     private readonly string? _since;
     private readonly string _repository;
     private readonly string _branch;
-    private readonly Log _log;
+    private readonly ILoggerFactory _log;
 
-    public GitProcessPatches(Log log, string start, string end, string? since, string repository, string branch)
+    public GitProcessPatches(ILoggerFactory log, string start, string end, string? since, string repository, string branch)
     {
         _log = log;
         _start = start;

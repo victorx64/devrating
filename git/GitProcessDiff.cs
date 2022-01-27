@@ -1,6 +1,7 @@
 using System.Text.Json;
 using devrating.entity;
 using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
@@ -17,7 +18,7 @@ public sealed class GitProcessDiff : Diff
     private readonly DateTimeOffset _createdAt;
 
     public GitProcessDiff(
-        Log log,
+        ILoggerFactory log,
         string start,
         string end,
         string? since,
@@ -46,7 +47,7 @@ public sealed class GitProcessDiff : Diff
     }
 
     public GitProcessDiff(
-        Log log,
+        ILoggerFactory log,
         string start,
         string end,
         string? since,
