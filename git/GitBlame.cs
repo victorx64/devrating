@@ -8,21 +8,24 @@ public sealed class GitBlame : Blame
     private readonly uint _count;
     private readonly uint _start;
     private readonly bool _accountable;
-    private readonly uint _totalAdditions;
+    private readonly DiffSizes _sizes;
+    private readonly string _sha;
 
     public GitBlame(
         string email,
         uint start,
         uint count,
         bool accountable,
-        uint totalAdditions
+        DiffSizes sizes,
+        string sha
     )
     {
         _email = email;
         _start = start;
         _count = count;
         _accountable = accountable;
-        _totalAdditions = totalAdditions;
+        _sizes = sizes;
+        _sha = sha;
     }
 
     public bool ContainsLine(uint line)
@@ -36,7 +39,7 @@ public sealed class GitBlame : Blame
         to = Math.Max(Math.Min(_start + _count, to), _start);
         
         return new GitContemporaryLines(
-            _totalAdditions,
+            _sizes.Additions(_sha),
             to - from,
             _accountable,
             _email

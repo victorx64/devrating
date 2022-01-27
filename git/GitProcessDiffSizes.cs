@@ -1,4 +1,4 @@
-using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
@@ -8,9 +8,9 @@ public sealed class GitProcessDiffSizes : DiffSizes
     private readonly object _lock = new object();
     private readonly string _repository;
     private readonly string _branch;
-    private readonly Log _log;
+    private readonly ILoggerFactory _log;
 
-    public GitProcessDiffSizes(Log log, string repository, string branch)
+    public GitProcessDiffSizes(ILoggerFactory log, string repository, string branch)
     {
         _repository = repository;
         _log = log;

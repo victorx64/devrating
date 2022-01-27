@@ -28,7 +28,7 @@ index 5633fb0..fa22e17 100644
                 new FakeFileBlames(
                     new[]
                     {
-                            new GitBlame("Victim", 0u, 100u, true, 1000u),
+                            new GitBlame("Victim", 0u, 100u, true, new FakeDiffSizes(1000u), string.Empty),
                     }
                 )
             ).Items());
@@ -57,7 +57,7 @@ index 5633fb0..fa22e17 100644
                 new FakeFileBlames(
                     new[]
                     {
-                            new GitBlame("Victim", 0u, 100u, true, 1000u),
+                            new GitBlame("Victim", 0u, 100u, true, new FakeDiffSizes(1000u), string.Empty),
                     }
                 )
             ).Items());
@@ -87,8 +87,8 @@ index 59bc854..c709613 100644
                     new FakeFileBlames(
                         new[]
                         {
-                                new GitBlame("Victim1", 2u, 1u, true, 1000u),
-                                new GitBlame("Victim2", 4u, 1u, true, 1000u),
+                                new GitBlame("Victim1", 2u, 1u, true, new FakeDiffSizes(1000u), string.Empty),
+                                new GitBlame("Victim2", 4u, 1u, true, new FakeDiffSizes(1000u), string.Empty),
                         }
                     )
                 )
@@ -121,7 +121,7 @@ index 59bc854..c709613 100644
                     new FakeFileBlames(
                         new[]
                         {
-                                new GitBlame("Victim1", 2u, 3u, true, 1000u),
+                                new GitBlame("Victim1", 2u, 3u, true, new FakeDiffSizes(1000u), string.Empty),
                         }
                     )
                 )

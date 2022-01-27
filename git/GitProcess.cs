@@ -1,14 +1,14 @@
 using System.Diagnostics;
-using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
 public sealed class GitProcess : Process
 {
     private readonly ProcessStartInfo _info;
-    private readonly Log _log;
+    private readonly ILogger _log;
 
-    public GitProcess(Log log, string filename, string arguments, string directory)
+    public GitProcess(ILoggerFactory log, string filename, string arguments, string directory)
         : this(
             log,
             new ProcessStartInfo(filename, arguments)
@@ -22,15 +22,15 @@ public sealed class GitProcess : Process
     {
     }
 
-    public GitProcess(Log log, ProcessStartInfo info)
+    public GitProcess(ILoggerFactory log, ProcessStartInfo info)
     {
         _info = info;
-        _log = log;
+        _log = log.CreateLogger(this.GetType().ToString());
     }
 
     public IList<string> Output()
     {
-        _log.WriteLine($"{ToString()}");
+        _log.LogInformation(new EventId(1770264), ToString());
 
         var process = System.Diagnostics.Process.Start(_info)
             ?? throw new InvalidOperationException("Process.Start() returned null");
@@ -51,6 +51,6 @@ public sealed class GitProcess : Process
 
     public override string ToString()
     {
-        return $"info-07737698: WorkingDir: `{_info.WorkingDirectory}`, FileName: `{_info.FileName}`, Args: `{_info.Arguments}`";
+        return $"`{_info.WorkingDirectory}` `{_info.FileName}` `{_info.Arguments}`";
     }
 }

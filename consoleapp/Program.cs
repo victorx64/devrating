@@ -4,6 +4,7 @@ using devrating.factory;
 using devrating.git;
 using devrating.sqlite;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.consoleapp;
 
@@ -11,6 +12,14 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
+        using var log = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddSystemdConsole();
+        });
+
         var output = new StandardOutput();
         var addCommand = new Command("add", "Update the rating");
         var addMergeCommand = new Command("commit", "Update the rating analyzing a merge commit");
@@ -26,7 +35,7 @@ internal static class Program
         addMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
             (path, merge, branch, email, link, org, name, time, verbose) =>
             {
-                var debug = verbose == true ? output : (Log)new SinkOutput();
+                var debug = verbose == true ? log : new LoggerFactory();
                 var first = merge + "~";
                 var second = merge;
                 var diff = new GitProcessDiff(
@@ -66,7 +75,7 @@ internal static class Program
         addDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
             (path, @base, head, branch, email, link, org, name, time, verbose) =>
             {
-                var debug = verbose == true ? output : (Log)new SinkOutput();
+                var debug = verbose == true ? log : new LoggerFactory();
                 var diff = new GitProcessDiff(
                     debug,
                     @base,
@@ -104,7 +113,7 @@ internal static class Program
         serializeMergeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
             (path, merge, branch, email, link, org, name, time, verbose) =>
             {
-                var debug = verbose == true ? output : (Log)new SinkOutput();
+                var debug = verbose == true ? log : new LoggerFactory();
                 var first = merge + "~";
                 var second = merge;
 
@@ -141,7 +150,7 @@ internal static class Program
         serializeDiffCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string, string?, string?, string?, string?, string?, DateTimeOffset?, bool?>(
             (path, @base, head, branch, email, link, org, name, time, verbose) =>
             {
-                var debug = verbose == true ? output : (Log)new SinkOutput();
+                var debug = verbose == true ? log : new LoggerFactory();
                 output.WriteLine(
                     new GitProcessDiff(
                         debug,

@@ -1,4 +1,4 @@
-using devrating.factory;
+using Microsoft.Extensions.Logging;
 using Semver;
 
 namespace devrating.git;
@@ -7,7 +7,7 @@ public sealed class GitProcessLastMajorUpdateTag : Tag
 {
     private readonly Tag _release;
 
-    public GitProcessLastMajorUpdateTag(Log log, string repository, string before)
+    public GitProcessLastMajorUpdateTag(ILoggerFactory log, string repository, string before)
         : this(
             new LastMajorUpdateTag(
                 new GitProcess(log, "git", $"tag -l --format='%(objectname) %(refname:short)' --merged {before}", repository)

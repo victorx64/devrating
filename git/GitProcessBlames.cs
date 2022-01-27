@@ -1,4 +1,4 @@
-using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
@@ -9,7 +9,7 @@ public sealed class GitProcessBlames : AFileBlames
     private readonly Process _blame;
     private readonly DiffSizes _sizes;
 
-    public GitProcessBlames(Log log, string path, string filename, string start, string? stop, string branch)
+    public GitProcessBlames(ILoggerFactory log, string path, string filename, string start, string? stop, string branch)
         : this(
             new GitProcess(log, "git", $"blame -t -e -l -w {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"", path),
             new GitProcessDiffSizes(log, path, branch)
@@ -67,7 +67,8 @@ public sealed class GitProcessBlames : AFileBlames
                     (uint)i - accum,
                     accum,
                     !current.StartsWith('^'),
-                    _sizes.Additions(current.Substring(0, 40))  // TODO: Move additions calculation to GitBlames.SubDeletion(...)
+                    _sizes,
+                    current.Substring(0, 40)
                 );
                 current = line;
                 accum = 1u;
@@ -87,7 +88,8 @@ public sealed class GitProcessBlames : AFileBlames
                 (uint)i - accum,
                 accum,
                 !current.StartsWith('^'),
-                _sizes.Additions(current.Substring(0, 40))
+                _sizes,
+                current.Substring(0, 40)
             );
         }
     }
