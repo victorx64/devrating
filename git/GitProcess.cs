@@ -25,7 +25,7 @@ public sealed class GitProcess : Process
     public GitProcess(ILoggerFactory log, ProcessStartInfo info)
     {
         _info = info;
-        _log = log.CreateLogger(this.GetType().ToString());
+        _log = log.CreateLogger(this.GetType());
     }
 
     public IList<string> Output()
