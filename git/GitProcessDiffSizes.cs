@@ -25,22 +25,41 @@ public sealed class GitProcessDiffSizes : DiffSizes
             {
                 if (!_additions.ContainsKey(sha))
                 {
-                    var merge = new GitProcessFirstMergeCommit(_log, _repository, sha, _branch).Sha();
+                    String stat;
 
-                    // Keep git arguments in sync with GitProcessPatches and GitProcessBlames
-                    var stat = new GitProcess(
-                        _log,
-                        "git",
-                        $"diff {merge}~..{merge} -U0 -M01 -w --shortstat",
-                        _repository
-                    ).Output()[0];
+                    if (sha.StartsWith('^'))
+                    {
+                        var log = _log.CreateLogger(this.GetType());
+
+                        log.LogWarning(new EventId(1990949), $"We've encountered initial commit `{sha}`. " +
+                            "If it's not initial commit try to clone the repository with deeper history " +
+                            "(do `git clone` with higher `--depth` argument).");
+
+                        // Keep git arguments in sync with GitProcessPatches and GitProcessBlames
+                        stat = new GitProcess(
+                            _log,
+                            "git",
+                            $"show {sha.TrimStart('^')} -U0 -M01 -w --shortstat --pretty=oneline",
+                            _repository
+                        ).Output()[1];
+                    }
+                    else
+                    {
+                        var merge = new GitProcessFirstMergeCommit(_log, _repository, sha, _branch).Sha();
+
+                        // Keep git arguments in sync with GitProcessPatches and GitProcessBlames
+                        stat = new GitProcess(
+                            _log,
+                            "git",
+                            $"diff {merge}~..{merge} -U0 -M01 -w --shortstat",
+                            _repository
+                        ).Output()[0];
+                    }
 
                     var start = stat.IndexOf("changed, ") + "changed, ".Length;
                     var end = stat.IndexOf(" insert");
 
-                    var insertions = uint.Parse(stat.Substring(start, end - start));
-
-                    _additions[sha] = insertions;
+                    _additions[sha] = uint.Parse(stat.Substring(start, end - start));
                 }
             }
         }
