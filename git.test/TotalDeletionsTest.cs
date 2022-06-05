@@ -11,7 +11,7 @@ public sealed class TotalDeletionsTest
     {
         long Count(ContemporaryLines arg)
         {
-            return arg.DeletedLines();
+            return arg.Size();
         }
 
         Assert.Equal(
@@ -23,13 +23,13 @@ public sealed class TotalDeletionsTest
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(100u, 10u, true, "first email"),
+                                new GitContemporaryLines(100u, 10u, "first email"),
                             }),
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(100u, 30u, true, "second email"),
-                                new GitContemporaryLines(100u, 40u, true, "third email"),
+                                new GitContemporaryLines(100u, 30u, "second email"),
+                                new GitContemporaryLines(100u, 40u, "third email"),
                             }),
                     }
                 )
@@ -51,13 +51,13 @@ public sealed class TotalDeletionsTest
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(100u, 10u, true, "email"),
+                                new GitContemporaryLines(100u, 10u, "email"),
                             }),
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(100u, 30u, true, "some email"),
-                                new GitContemporaryLines(100u, 40u, true, "some other email"),
+                                new GitContemporaryLines(100u, 30u, "some email"),
+                                new GitContemporaryLines(100u, 40u, "some other email"),
                             }),
                     }
                 )
@@ -81,13 +81,13 @@ public sealed class TotalDeletionsTest
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(100u, 10u, true, email),
+                                new GitContemporaryLines(100u, 10u, email),
                             }),
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(100u, 30u, true, email),
-                                new GitContemporaryLines(100u, 22u, true, "not the email"),
+                                new GitContemporaryLines(100u, 30u, email),
+                                new GitContemporaryLines(100u, 22u, "not the email"),
                             }),
                     }
                 )

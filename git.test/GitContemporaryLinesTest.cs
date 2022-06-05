@@ -9,7 +9,7 @@ public sealed class GitContemporaryLinesTest
     {
         var email = "some email";
 
-        Assert.Equal(email, new GitContemporaryLines(1, 1, true, email).VictimEmail());
+        Assert.Equal(email, new GitContemporaryLines(1, 1, email).VictimEmail());
     }
 
     [Fact]
@@ -17,14 +17,14 @@ public sealed class GitContemporaryLinesTest
     {
         var count = 2u;
 
-        Assert.Equal(count, new GitContemporaryLines(1, count, true, "some other email").DeletedLines());
+        Assert.Equal(count, new GitContemporaryLines(1, count, "some other email").Size());
     }
 
     [Fact]
-    public void ReturnsAllLinesNumberFromCtor()
+    public void ReturnsWeight()
     {
-        var count = 3u;
+        var weight = 8.4d;
 
-        Assert.Equal(count, new GitContemporaryLines(count, 1, true, "another email").AllLines());
+        Assert.Equal(weight, new GitContemporaryLines(weight, 5u, "another email").Weight());
     }
 }

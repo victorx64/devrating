@@ -1,14 +1,16 @@
 using devrating.git.fake;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace devrating.git.test;
 
-public sealed class GitProcessBlamesTest
+public sealed class GitAFileBlamesTest
 {
     [Fact]
     public void CombinesLinesWithSameRevision()
     {
-        var collection = new GitProcessBlames(
+        var collection = new GitAFileBlames(
+            new LoggerFactory(),
             new FakeProcess(
 @"^7f30cd2 (<svikk@live.ru>              1595608723 +0900  1) sv
 ^7f30cd2 (<svikk@live.ru>              1595608723 +0900  2) sv
@@ -17,20 +19,23 @@ public sealed class GitProcessBlamesTest
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
             ),
-            new FakeDiffSizes(1u)
+            new FakeDiffSizes(1u),
+            true
         );
 
         Assert.Equal(
             3u,
-            collection.AtLine(2).SubDeletion(0, 1000).DeletedLines()
+            collection.AtLine(2).SubDeletion(0, 1000).Size()
         );
     }
 
     [Fact]
     public void IgnoresLinesThatStartWithSpecialChar()
     {
-        Assert.False(
-            new GitProcessBlames(
+        Assert.Equal(
+            0d,
+            new GitAFileBlames(
+                new LoggerFactory(),
                 new FakeProcess(
 @"^7f30cd2 (<svikk@live.ru>              1595608723 +0900  1) sv
 ^7f30cd2 (<svikk@live.ru>              1595608723 +0900  2) sv
@@ -39,19 +44,22 @@ public sealed class GitProcessBlamesTest
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
                 ),
-                new FakeDiffSizes(1u)
+                new FakeDiffSizes(1u),
+                true
             )
             .AtLine(0)
             .SubDeletion(0, 1000)
-            .DeletionAccountable()
+            .Weight()
         );
     }
 
     [Fact]
     public void CountsLinesThatStartWithAlphanumericalChar()
     {
-        Assert.True(
-            new GitProcessBlames(
+        Assert.NotEqual(
+            0d,
+            new GitAFileBlames(
+                new LoggerFactory(),
                 new FakeProcess(
 @"^7f30cd2 (<svikk@live.ru>              1595608723 +0900  1) sv
 ^7f30cd2 (<svikk@live.ru>              1595608723 +0900  2) sv
@@ -60,11 +68,12 @@ public sealed class GitProcessBlamesTest
 661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  5) sv11
 "
                 ),
-                new FakeDiffSizes(1u)
+                new FakeDiffSizes(1u),
+                true
             )
             .AtLine(2)
             .SubDeletion(0, 1000)
-            .DeletionAccountable()
+            .Weight()
         );
     }
 
@@ -73,12 +82,14 @@ public sealed class GitProcessBlamesTest
     {
         Assert.Equal(
             "viktor_semenov@outlook.com",
-            new GitProcessBlames(
+            new GitAFileBlames(
+                new LoggerFactory(),
                 new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
 "
                 ),
-                new FakeDiffSizes(1u)
+                new FakeDiffSizes(1u),
+                true
             )
             .AtLine(0)
             .SubDeletion(0, 1000)
@@ -91,9 +102,11 @@ public sealed class GitProcessBlamesTest
     {
         Assert.Throws<System.InvalidOperationException>(
             () =>
-            new GitProcessBlames(
+            new GitAFileBlames(
+                new LoggerFactory(),
                 new FakeProcess("661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1"),
-                new FakeDiffSizes(1u)
+                new FakeDiffSizes(1u),
+                true
             )
             .AtLine(0)
         );
@@ -104,12 +117,14 @@ public sealed class GitProcessBlamesTest
     {
         Assert.Equal(
             "viktor_semenov@outlook.com",
-            new GitProcessBlames(
+            new GitAFileBlames(
+                new LoggerFactory(),
                 new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
 "
                 ),
-                new FakeDiffSizes(1u)
+                new FakeDiffSizes(1u),
+                true
             )
             .AtLine(0)
             .SubDeletion(0, 1000)

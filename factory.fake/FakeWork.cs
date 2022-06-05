@@ -7,8 +7,7 @@ public sealed class FakeWork : Work
     private readonly Id _id;
     private readonly Author _author;
     private readonly Rating _rating;
-    private readonly string _start;
-    private readonly string _end;
+    private readonly string _commit;
     private readonly string? _since;
     private readonly string? _link;
     private readonly DateTimeOffset _createdAt;
@@ -16,8 +15,7 @@ public sealed class FakeWork : Work
     public FakeWork(Author author)
         : this(
             author,
-            "startCommit",
-            "endCommit",
+            "mergeCommit",
             "sinceCommit",
             DateTimeOffset.UtcNow,
             "link"
@@ -27,8 +25,7 @@ public sealed class FakeWork : Work
 
     public FakeWork(
         Author author,
-        string start,
-        string end,
+        string commit,
         string? since,
         DateTimeOffset createdAt,
         string? link
@@ -36,8 +33,7 @@ public sealed class FakeWork : Work
         : this(
             author,
             new NullRating(),
-            start,
-            end,
+            commit,
             since,
             createdAt,
             link
@@ -48,8 +44,7 @@ public sealed class FakeWork : Work
     public FakeWork(
         Author author,
         Rating rating,
-        string start,
-        string end,
+        string commit,
         string? since,
         DateTimeOffset createdAt,
         string? link
@@ -58,8 +53,7 @@ public sealed class FakeWork : Work
             new DefaultId(Guid.NewGuid()),
             author,
             rating,
-            start,
-            end,
+            commit,
             since,
             createdAt,
             link
@@ -71,8 +65,7 @@ public sealed class FakeWork : Work
         Id id,
         Author author,
         Rating rating,
-        string start,
-        string end,
+        string commit,
         string? since,
         DateTimeOffset createdAt,
         string? link
@@ -81,8 +74,7 @@ public sealed class FakeWork : Work
         _id = id;
         _author = author;
         _rating = rating;
-        _start = start;
-        _end = end;
+        _commit = commit;
         _since = since;
         _createdAt = createdAt;
         _link = link;
@@ -108,14 +100,9 @@ public sealed class FakeWork : Work
         return _rating;
     }
 
-    public string Start()
+    public string Commit()
     {
-        return _start;
-    }
-
-    public string End()
-    {
-        return _end;
+        return _commit;
     }
 
     public string? Since()

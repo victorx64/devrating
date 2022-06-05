@@ -1,7 +1,7 @@
 {
 	"name": "devrating devcontainer",
 	"build": {
-		"dockerfile": "Dockerfile",
+		"dockerfile": "Dockerfile"
 	},
 
 	"settings": {},
@@ -10,9 +10,8 @@
 		"ms-dotnettools.csharp"
 	],
 
-	"remoteUser": "vscode",
 	"features": {
-		"docker-from-docker": "latest",
+		"docker-from-docker": "20.10",
 		"git": "2.34.1"
 	}
 }

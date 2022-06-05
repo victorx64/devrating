@@ -24,8 +24,7 @@ public sealed class DefaultWorkFactoryTest
         .NewWork(
             "organization",
             "repository",
-            "start",
-            "end",
+            "commit",
             null,
             "new author",
             null,
@@ -55,8 +54,7 @@ public sealed class DefaultWorkFactoryTest
         .NewWork(
             organization,
             repository,
-            "start",
-            "end",
+            "commit",
             null,
             "existing author",
             null,
@@ -85,8 +83,7 @@ public sealed class DefaultWorkFactoryTest
         .NewWork(
             "ANOTHER organization",
             repository,
-            "start",
-            "end",
+            "commit",
             null,
             "existing author",
             null,
@@ -114,8 +111,7 @@ public sealed class DefaultWorkFactoryTest
         .NewWork(
             "organization",
             "repository",
-            "start",
-            "end",
+            "commit",
             null,
             "other author",
             null,
@@ -145,8 +141,7 @@ public sealed class DefaultWorkFactoryTest
         factory.NewWork(
             "organization",
             "repository",
-            "start",
-            "end",
+            "commit",
             null,
             "author",
             null,
@@ -158,8 +153,7 @@ public sealed class DefaultWorkFactoryTest
             factory.NewWork(
                 "organization",
                 "repository",
-                "start",
-                "end",
+                "commit",
                 null,
                 "another author",
                 null,
@@ -189,8 +183,7 @@ public sealed class DefaultWorkFactoryTest
         factory.NewWork(
             "organization",
             "repository",
-            "start",
-            "end",
+            "commit",
             null,
             "author",
             null,
@@ -202,8 +195,7 @@ public sealed class DefaultWorkFactoryTest
             factory.NewWork(
                 "organization",
                 "repository",
-                "another start",
-                "another end",
+                "another commit",
                 null,
                 "another author",
                 null,
@@ -235,8 +227,7 @@ public sealed class DefaultWorkFactoryTest
         .NewWork(
             organization,
             repository,
-            "start",
-            "end",
+            "commit",
             null,
             author.Email(),
             null,

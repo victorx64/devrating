@@ -4,41 +4,33 @@ namespace devrating.git;
 
 public sealed class GitContemporaryLines : ContemporaryLines
 {
-    private readonly uint _allLines;
-    private readonly uint _deletedLines;
-    private readonly bool _deletionAccountable;
+    private readonly double _weight;
+    private readonly uint _size;
     private readonly string _victimEmail;
 
     public GitContemporaryLines(
-        uint allLines,
-        uint deletedLines,
-        bool deletionAccountable,
+        double weight,
+        uint size,
         string victimEmail
     )
     {
-        _allLines = allLines;
-        _deletedLines = deletedLines;
-        _deletionAccountable = deletionAccountable;
+        _weight = weight;
+        _size = size;
         _victimEmail = victimEmail;
     }
 
-    public uint AllLines()
+    public double Weight()
     {
-        return _allLines;
-    }
-
-    public uint DeletedLines()
-    {
-        return _deletedLines;
-    }
-
-    public bool DeletionAccountable()
-    {
-        return _deletionAccountable;
+        return _weight;
     }
 
     public string VictimEmail()
     {
         return _victimEmail;
+    }
+
+    public uint Size()
+    {
+        return _size;
     }
 }

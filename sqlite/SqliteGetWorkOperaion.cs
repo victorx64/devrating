@@ -14,7 +14,7 @@ internal sealed class SqliteGetWorkOperation : GetWorkOperation
         _connection = connection;
     }
 
-    public Work Work(string organization, string repository, string start, string end)
+    public Work Work(string organization, string repository, string commit)
     {
         using var command = _connection.CreateCommand();
 
@@ -24,13 +24,11 @@ internal sealed class SqliteGetWorkOperation : GetWorkOperation
                 INNER JOIN Author a on a.Id = w.AuthorId
                 WHERE a.Organization = @Organization
                 AND a.Repository = @Repository
-                AND w.StartCommit = @StartCommit
-                AND w.EndCommit = @EndCommit";
+                AND w.MergeCommit = @MergeCommit";
 
         command.Parameters.Add(new SqliteParameter("@Organization", SqliteType.Text) { Value = organization });
         command.Parameters.Add(new SqliteParameter("@Repository", SqliteType.Text) { Value = repository });
-        command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) { Value = start });
-        command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) { Value = end });
+        command.Parameters.Add(new SqliteParameter("@MergeCommit", SqliteType.Text, 50) { Value = commit });
 
         using var reader = command.ExecuteReader();
 

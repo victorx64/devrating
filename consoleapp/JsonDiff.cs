@@ -2,7 +2,7 @@ using System.Text.Json;
 using devrating.entity;
 using devrating.factory;
 using devrating.git;
-using static devrating.git.GitProcessDiff;
+using static devrating.git.GitDiff;
 
 namespace devrating.consoleapp;
 
@@ -24,8 +24,7 @@ public sealed class JsonDiff : Diff
         var work = factories.WorkFactory().NewWork(
             _state.Organization,
             _state.Repository,
-            _state.Start,
-            _state.End,
+            _state.Commit,
             _state.Since,
             _state.Email,
             _state.Link,
@@ -36,8 +35,7 @@ public sealed class JsonDiff : Diff
             _state.Organization,
             _state.Repository,
             _state.Email,
-            _state.Deletions.Select(d => new GitContemporaryLines(
-                d.AllLines, d.DeletedLines, d.DeletionAccountable, d.VictimEmail)),
+            _state.Deletions.Select(d => new GitContemporaryLines(d.Weight, d.Size, d.VictimEmail)),
             work.Id(),
             _state.CreatedAt
         );
@@ -47,12 +45,12 @@ public sealed class JsonDiff : Diff
 
     public Work RelatedWork(Works works)
     {
-        return works.GetOperation().Work(_state.Organization, _state.Repository, _state.Start, _state.End);
+        return works.GetOperation().Work(_state.Organization, _state.Repository, _state.Commit);
     }
 
     public bool PresentIn(Works works)
     {
-        return works.ContainsOperation().Contains(_state.Organization, _state.Repository, _state.Start, _state.End);
+        return works.ContainsOperation().Contains(_state.Organization, _state.Repository, _state.Commit);
     }
 
     public string ToJson()

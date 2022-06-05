@@ -15,8 +15,7 @@ internal sealed class SqliteInsertWorkOperation : InsertWorkOperation
     }
 
     public Work Insert(
-        string start,
-        string end,
+        string commit,
         string? since,
         Id author,
         Id rating,
@@ -29,16 +28,14 @@ internal sealed class SqliteInsertWorkOperation : InsertWorkOperation
         command.CommandText = @"
                 INSERT INTO Work
                     (Link
-                    ,StartCommit
-                    ,EndCommit
+                    ,MergeCommit
                     ,SinceCommit
                     ,AuthorId
                     ,UsedRatingId
                     ,CreatedAt)
                 VALUES
                     (@Link
-                    ,@StartCommit
-                    ,@EndCommit
+                    ,@MergeCommit
                     ,@SinceCommit
                     ,@AuthorId
                     ,@UsedRatingId
@@ -46,8 +43,7 @@ internal sealed class SqliteInsertWorkOperation : InsertWorkOperation
                 SELECT last_insert_rowid();";
 
         command.Parameters.Add(new SqliteParameter("@Link", SqliteType.Text) { Value = link ?? (object)DBNull.Value });
-        command.Parameters.Add(new SqliteParameter("@StartCommit", SqliteType.Text, 50) { Value = start });
-        command.Parameters.Add(new SqliteParameter("@EndCommit", SqliteType.Text, 50) { Value = end });
+        command.Parameters.Add(new SqliteParameter("@MergeCommit", SqliteType.Text, 50) { Value = commit });
         command.Parameters.Add(new SqliteParameter("@SinceCommit", SqliteType.Text, 50) { Value = since ?? (object)DBNull.Value });
         command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) { Value = author.Value() });
         command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) { Value = rating.Value() });

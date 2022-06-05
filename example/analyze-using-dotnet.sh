@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eo pipefail
-# set -eo pipefail && VERBOSE='-v' # verbose mode
+set -eo pipefail && VERBOSE='-v' # verbose mode
 # set -eox pipefail && VERBOSE='-v' # debug mode
 
 GREEN='\033[0;32m'
@@ -29,15 +29,22 @@ git --version
 echo
 
 git submodule update --init -- ./glowing-adventure/
+
+echo 'Tags'
 git -C ./glowing-adventure/ fetch # to fetch tags
-git -C ./glowing-adventure/ --no-pager log --pretty='%h `%s` %ae' --graph
+git -C ./glowing-adventure/ tag -l --format='%(objectname) %(refname:short)'
+echo
+
+git -C ./glowing-adventure/ --no-pager log --pretty='%H `%s` %aE' --graph
 echo
 
 # --------------------
 
 function add_main_branch_commit {
-	printf "${GREEN}Add merge commit $1 with$(git -C ./glowing-adventure/ diff  --shortstat -w $1~..$1)${NO_COLOR}\n"
-	$DEVRATING add commit --merge $1 --path ./glowing-adventure/ --branch main $VERBOSE
+	printf "${GREEN}----------------------${NO_COLOR}\n"
+	printf "${GREEN}Add merge commit $1 with$(git -C ./glowing-adventure/ diff  --shortstat -U0 -w -M01 $1~..$1)${NO_COLOR}\n"
+
+	$DEVRATING add --merge $1 --path ./glowing-adventure/ --branch main $VERBOSE
 	echo
 
 	printf "${YELLOW}Minimal PR sizes${NO_COLOR}\n"

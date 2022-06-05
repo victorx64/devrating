@@ -159,8 +159,7 @@ public sealed class SqliteDatabaseAuthorsTest
                 .Insert("ANOTHER organization", repo, "email3", moment);
 
             var work1 = database.Entities().Works().InsertOperation().Insert(
-                "start",
-                "end",
+                "commit",
                 null,
                 author1.Id(),
                 new DefaultId(),
@@ -183,8 +182,7 @@ public sealed class SqliteDatabaseAuthorsTest
             );
 
             var work2 = database.Entities().Works().InsertOperation().Insert(
-                "other start",
-                "other end",
+                "other commit",
                 null,
                 author3.Id(),
                 new DefaultId(),

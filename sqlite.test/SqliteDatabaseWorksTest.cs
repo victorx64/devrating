@@ -20,8 +20,7 @@ public sealed class SqliteDatabaseWorksTest
         {
             Assert.True(database.Entities().Works().ContainsOperation().Contains(
                     database.Entities().Works().InsertOperation().Insert(
-                        "startCommit",
-                        "endCommit",
+                        "mergeCommit",
                         null,
                         database.Entities().Authors().InsertOperation().Insert(
                             "organization",
@@ -53,8 +52,7 @@ public sealed class SqliteDatabaseWorksTest
         try
         {
             database.Entities().Works().InsertOperation().Insert(
-                "startCommit",
-                "endCommit",
+                "mergeCommit",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -70,8 +68,7 @@ public sealed class SqliteDatabaseWorksTest
             Assert.True(database.Entities().Works().ContainsOperation().Contains(
                 "organization",
                 "repo",
-                "startCommit",
-                "endCommit"
+                "mergeCommit"
             ));
         }
         finally
@@ -94,8 +91,7 @@ public sealed class SqliteDatabaseWorksTest
             var newerMoment = olderMoment + TimeSpan.FromHours(1);
 
             database.Entities().Works().InsertOperation().Insert(
-                "startCommit",
-                "endCommit",
+                "mergeCommit",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -133,8 +129,7 @@ public sealed class SqliteDatabaseWorksTest
         try
         {
             var work = database.Entities().Works().InsertOperation().Insert(
-                "startCommit",
-                "endCommit",
+                "mergeCommit",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -167,8 +162,7 @@ public sealed class SqliteDatabaseWorksTest
         {
             Assert.Equal(
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     null,
                     database.Entities().Authors().InsertOperation().Insert(
                         "organization",
@@ -183,8 +177,7 @@ public sealed class SqliteDatabaseWorksTest
                 database.Entities().Works().GetOperation().Work(
                     "organization",
                     "repo",
-                    "startCommit",
-                    "endCommit"
+                    "mergeCommit"
                 ).Id()
             );
         }
@@ -207,8 +200,7 @@ public sealed class SqliteDatabaseWorksTest
             var createdAt = DateTimeOffset.UtcNow;
 
             database.Entities().Works().InsertOperation().Insert(
-                "start1",
-                "end1",
+                "commit1",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -222,8 +214,7 @@ public sealed class SqliteDatabaseWorksTest
             );
 
             var last = database.Entities().Works().InsertOperation().Insert(
-                "start2",
-                "end2",
+                "commit2",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -260,8 +251,7 @@ public sealed class SqliteDatabaseWorksTest
             var createdAt = DateTimeOffset.UtcNow;
 
             var first = database.Entities().Works().InsertOperation().Insert(
-                "start1",
-                "end1",
+                "commit1",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -274,8 +264,7 @@ public sealed class SqliteDatabaseWorksTest
             );
 
             database.Entities().Works().InsertOperation().Insert(
-                "start2",
-                "end2",
+                "commit2",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -312,8 +301,7 @@ public sealed class SqliteDatabaseWorksTest
             var createdInPast = createdAt - TimeSpan.FromSeconds(1);
 
             database.Entities().Works().InsertOperation().Insert(
-                "start1",
-                "end1",
+                "commit1",
                 null,
                 database.Entities().Authors().InsertOperation().Insert(
                     "organization",
@@ -327,8 +315,7 @@ public sealed class SqliteDatabaseWorksTest
 
             Assert.Equal(
                 database.Entities().Works().InsertOperation().Insert(
-                    "start2",
-                    "end2",
+                    "commit2",
                     null,
                     database.Entities().Authors().InsertOperation().Insert(
                         "organization",

@@ -11,14 +11,13 @@ public sealed class FakeGetWorkOperation : GetWorkOperation
         _works = works;
     }
 
-    public Work Work(string organization, string repository, string start, string end)
+    public Work Work(string organization, string repository, string commit)
     {
         bool Predicate(Work work)
         {
             return work.Author().Organization().Equals(organization, StringComparison.OrdinalIgnoreCase) &&
                 work.Author().Repository().Equals(repository, StringComparison.OrdinalIgnoreCase) &&
-                work.Start().Equals(start, StringComparison.OrdinalIgnoreCase) &&
-                work.End().Equals(end, StringComparison.OrdinalIgnoreCase);
+                work.Commit().Equals(commit, StringComparison.OrdinalIgnoreCase);
         }
 
         return _works.Single(Predicate);

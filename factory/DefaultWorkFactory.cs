@@ -18,8 +18,7 @@ public sealed class DefaultWorkFactory : WorkFactory
     public Work NewWork(
         string organization,
         string repository,
-        string start,
-        string end,
+        string commit,
         string? since,
         string email,
         string? link,
@@ -31,7 +30,7 @@ public sealed class DefaultWorkFactory : WorkFactory
             throw new InvalidOperationException("An older Work is already exist for this repo");
         }
 
-        if (_works.ContainsOperation().Contains(organization, repository, start, end))
+        if (_works.ContainsOperation().Contains(organization, repository, commit))
         {
             throw new InvalidOperationException("The Work is already present");
         }
@@ -39,8 +38,7 @@ public sealed class DefaultWorkFactory : WorkFactory
         var author = _authorFactory.AuthorAtOrg(organization, repository, email, createdAt);
 
         return _works.InsertOperation().Insert(
-            start,
-            end,
+            commit,
             since,
             author,
             _ratings.GetOperation().RatingOf(author).Id(),

@@ -8,8 +8,8 @@ public sealed class LastMajorUpdateTag : Tag
 
     public LastMajorUpdateTag(IEnumerable<Tag> releases)
         : this(
-            releases.Where(delegate (Tag r) { return r.Version() is object; })
-                .OrderByDescending(delegate (Tag r) { return r.Version(); })
+            releases.Where(r => r.Version() is object)
+                .OrderByDescending(r => r.Version())
                 .ToList()
         )
     {
@@ -18,7 +18,7 @@ public sealed class LastMajorUpdateTag : Tag
     private LastMajorUpdateTag(IList<Tag> releases)
         : this(
             releases.Any() && releases.First().Version()!.Major != releases.Last().Version()!.Major
-                ? releases.Last(delegate (Tag r) { return r.Version()!.Major == releases.First().Version()!.Major; })
+                ? releases.Last(r => r.Version()!.Major == releases.First().Version()!.Major)
                 : null
         )
     {

@@ -2,7 +2,7 @@
 [![Downloads](https://img.shields.io/nuget/dt/devrating.consoleapp.svg)](https://www.nuget.org/packages/devrating.consoleapp/)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=victorx64_devrating&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=victorx64_devrating)
 
-**Dev Rating** is a command-line tool that suggests minimal Pull Request size for each contributor so that the PRs have the same impact to codebase. Having PRs with the same impact makes it easy to calculate the amount of work done.
+**Dev Rating** is a command-line tool that suggests minimal Pull Request size for each contributor so that the PRs will have the same impact to the codebase. Having PRs with the same impact makes it easier to evaluate the amount of work done.
 
 It counts the deleted lines of code in the PRs and builds a contributor rating based on code stability. Low-rated members are encouraged to post more code in PR because their code statistically lives less.
 

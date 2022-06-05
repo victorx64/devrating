@@ -7,8 +7,9 @@ namespace devrating.sqlite.test;
 
 public sealed class SqliteDatabaseWorkTest
 {
+
     [Fact]
-    public void ReturnsValidStartCommit()
+    public void ReturnsValidMergeCommit()
     {
         var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
 
@@ -17,48 +18,11 @@ public sealed class SqliteDatabaseWorkTest
 
         try
         {
-            var start = "startCommit";
-
-            Assert.Equal(
-                start,
-                database.Entities().Works().InsertOperation().Insert(
-                    start,
-                    "endCommit",
-                    null,
-                    database.Entities().Authors().InsertOperation().Insert(
-                        "organization",
-                        "repo",
-                        "email",
-                        DateTimeOffset.UtcNow
-                    ).Id(),
-                    new DefaultId(),
-                    null,
-                    DateTimeOffset.UtcNow
-                ).Start()
-            );
-        }
-        finally
-        {
-            database.Instance().Connection().Close();
-        }
-    }
-
-    [Fact]
-    public void ReturnsValidEndCommit()
-    {
-        var database = new SqliteDatabase(new SqliteConnection("DataSource=:memory:"));
-
-        database.Instance().Connection().Open();
-        database.Instance().Create();
-
-        try
-        {
-            var end = "endCommit";
+            var end = "mergeCommit";
 
             Assert.Equal(
                 end,
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
                     end,
                     null,
                     database.Entities().Authors().InsertOperation().Insert(
@@ -70,7 +34,7 @@ public sealed class SqliteDatabaseWorkTest
                     new DefaultId(),
                     null,
                     DateTimeOffset.UtcNow
-                ).End()
+                ).Commit()
             );
         }
         finally
@@ -99,8 +63,7 @@ public sealed class SqliteDatabaseWorkTest
             Assert.Equal(
                 author.Id(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     null,
                     author.Id(),
                     new DefaultId(),
@@ -136,8 +99,7 @@ public sealed class SqliteDatabaseWorkTest
                 3423,
                 new DefaultId(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit1",
-                    "endCommit1",
+                    "mergeCommit1",
                     null,
                     author.Id(),
                     new DefaultId(),
@@ -150,8 +112,7 @@ public sealed class SqliteDatabaseWorkTest
             Assert.Equal(
                 previous.Id(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     null,
                     author.Id(),
                     previous.Id(),
@@ -181,8 +142,7 @@ public sealed class SqliteDatabaseWorkTest
             Assert.Equal(
                 since,
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     since,
                     database.Entities().Authors().InsertOperation().Insert(
                         "organization",
@@ -219,8 +179,7 @@ public sealed class SqliteDatabaseWorkTest
             Assert.Equal(
                 moment2,
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     "sinceCommit",
                     database.Entities().Authors().InsertOperation().Insert(
                         "organization",
@@ -257,8 +216,7 @@ public sealed class SqliteDatabaseWorkTest
             Assert.Equal(
                 link,
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     "sinceCommit",
                     database.Entities().Authors().InsertOperation().Insert(
                         "organization",

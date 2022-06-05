@@ -18,7 +18,7 @@ public sealed class GitTag : Tag
     {
     }
 
-    private GitTag(string? sha, string name, bool unused)
+    private GitTag(string? sha, string name, bool _)
         : this(
             sha,
             SemVersion.TryParse(name, out var semver)

@@ -280,4 +280,20 @@ public sealed class LastMajorUpdateTagTest
             .Sha()
         );
     }
+
+    [Fact]
+    public void test()
+    {
+        Assert.Equal(
+            "318a516b658d916a35de5ca3c7e7a3bbc76a552f",
+            new LastMajorUpdateTag(
+                new[]
+                {
+                    new GitTag("fc4620cb077b0355d464ebe52ea99abd161e5221", "v0.1.0"),
+                    new GitTag("318a516b658d916a35de5ca3c7e7a3bbc76a552f", "v1.0.0"),
+                }
+            )
+            .Sha()
+        );
+    }
 }

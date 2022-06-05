@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
-public sealed class GitProcessDiff : Diff
+public sealed class GitDiff : Diff
 {
     private readonly string _start;
     private readonly string _end;
@@ -17,7 +17,7 @@ public sealed class GitProcessDiff : Diff
     private readonly string _email;
     private readonly DateTimeOffset _createdAt;
 
-    public GitProcessDiff(
+    public GitDiff(
         ILoggerFactory log,
         string start,
         string end,
@@ -27,53 +27,42 @@ public sealed class GitProcessDiff : Diff
         string key,
         string? link,
         string organization,
-        DateTimeOffset createdAt,
-        string? email = null
+        DateTimeOffset createdAt
     )
         : this(
-            log,
             start,
             end,
             since,
-            repository,
-            new CachedPatches(new GitProcessPatches(log, start, end, since, repository, branch)),
+            new TotalDeletions(
+                new CachedPatches(
+                    new GitPatches(
+                        log,
+                        start,
+                        end,
+                        since,
+                        repository,
+                        new GitDiffSizes(
+                            log,
+                            repository
+                        )
+                    )
+                )
+            ),
             key,
             link,
             organization,
             createdAt,
-            email
+            new GitProcess(
+                log,
+                "git",
+                $"show --no-patch --format=%aE {end}",
+                repository
+            ).Output().First()
         )
     {
     }
 
-    public GitProcessDiff(
-        ILoggerFactory log,
-        string start,
-        string end,
-        string? since,
-        string repository,
-        Patches patches,
-        string key,
-        string? link,
-        string organization,
-        DateTimeOffset createdAt,
-        string? email = null
-    )
-        : this(
-            new GitProcess(log, "git", $"rev-parse {start}", repository).Output()[0],
-            new GitProcess(log, "git", $"rev-parse {end}", repository).Output()[0],
-            since,
-            new TotalDeletions(patches),
-            key,
-            link,
-            organization,
-            createdAt,
-            email ?? new GitProcess(log, "git", $"show -s --format=%aE {end}", repository).Output()[0]
-        )
-    {
-    }
-
-    private GitProcessDiff(
+    private GitDiff(
         string start,
         string end,
         string? since,
@@ -98,14 +87,13 @@ public sealed class GitProcessDiff : Diff
 
     public bool PresentIn(Works works)
     {
-        return works.ContainsOperation().Contains(_organization, _key, _start, _end);
+        return works.ContainsOperation().Contains(_organization, _key, _end);
     }
 
     public class Dto
     {
         public string Email { get; set; } = string.Empty;
-        public string Start { get; set; } = string.Empty;
-        public string End { get; set; } = string.Empty;
+        public string Commit { get; set; } = string.Empty;
         public string Organization { get; set; } = string.Empty;
         public string? Since { get; set; } = default;
         public string Repository { get; set; } = string.Empty;
@@ -116,9 +104,8 @@ public sealed class GitProcessDiff : Diff
         public class ContemporaryLinesDto
         {
             public string VictimEmail { get; set; } = string.Empty;
-            public uint AllLines { get; set; } = default;
-            public uint DeletedLines { get; set; } = default;
-            public bool DeletionAccountable { get; set; } = default;
+            public double Weight { get; set; } = default;
+            public uint Size { get; set; } = default;
         }
     }
 
@@ -130,19 +117,17 @@ public sealed class GitProcessDiff : Diff
                 Deletions = _deletions.Items().Select(
                     deletion => new Dto.ContemporaryLinesDto
                     {
-                        AllLines = deletion.AllLines(),
-                        DeletedLines = deletion.DeletedLines(),
+                        Weight = deletion.Weight(),
+                        Size = deletion.Size(),
                         VictimEmail = deletion.VictimEmail(),
-                        DeletionAccountable = deletion.DeletionAccountable()
                     }
                 ),
-                End = _end,
+                Commit = _end,
                 Email = _email,
                 Repository = _key,
                 Link = _link,
                 Organization = _organization,
                 Since = _since,
-                Start = _start,
                 CreatedAt = _createdAt
             }
         );
@@ -150,7 +135,7 @@ public sealed class GitProcessDiff : Diff
 
     public Work RelatedWork(Works works)
     {
-        return works.GetOperation().Work(_organization, _key, _start, _end);
+        return works.GetOperation().Work(_organization, _key, _end);
     }
 
     public Work NewWork(Factories factories)
@@ -158,7 +143,6 @@ public sealed class GitProcessDiff : Diff
         var work = factories.WorkFactory().NewWork(
             _organization,
             _key,
-            _start,
             _end,
             _since,
             _email,

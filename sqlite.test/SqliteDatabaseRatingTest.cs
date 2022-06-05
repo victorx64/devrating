@@ -32,8 +32,7 @@ public sealed class SqliteDatabaseRatingTest
                     value,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "startCommit",
-                        "endCommit",
+                        "mergeCommit",
                         null,
                         author.Id(),
                         new DefaultId(),
@@ -75,8 +74,7 @@ public sealed class SqliteDatabaseRatingTest
                     value,
                     new DefaultId(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "startCommit",
-                        "endCommit",
+                        "mergeCommit",
                         null,
                         author.Id(),
                         new DefaultId(),
@@ -111,8 +109,7 @@ public sealed class SqliteDatabaseRatingTest
             );
 
             var work = database.Entities().Works().InsertOperation().Insert(
-                "startCommit",
-                "endCommit",
+                "mergeCommit",
                 null,
                 author.Id(),
                 new DefaultId(),
@@ -157,8 +154,7 @@ public sealed class SqliteDatabaseRatingTest
                 12d,
                 new DefaultId(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit1",
-                    "endCommit1",
+                    "mergeCommit1",
                     null,
                     author.Id(),
                     new DefaultId(),
@@ -174,8 +170,7 @@ public sealed class SqliteDatabaseRatingTest
                     1100d,
                     previous.Id(),
                     database.Entities().Works().InsertOperation().Insert(
-                        "startCommit2",
-                        "endCommit2",
+                        "mergeCommit2",
                         null,
                         author.Id(),
                         new DefaultId(),

@@ -52,7 +52,7 @@ public sealed class GitDeletions : Deletions
         {
             var deletion = _blames.AtLine(i).SubDeletion(i, index + count);
 
-            increment = deletion.DeletedLines();
+            increment = deletion.Size();
 
             yield return deletion;
         }

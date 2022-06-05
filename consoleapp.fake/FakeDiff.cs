@@ -7,8 +7,7 @@ namespace devrating.consoleapp.fake;
 public sealed class FakeDiff : Diff
 {
     private readonly string _key;
-    private readonly string _start;
-    private readonly string _end;
+    private readonly string _commit;
     private readonly string? _since;
     private readonly string? _link;
     private readonly string _email;
@@ -19,8 +18,7 @@ public sealed class FakeDiff : Diff
     public FakeDiff(string? link)
         : this(
             "key",
-            "start",
-            "end",
+            "commit",
             "since this commit",
             "author",
             "org",
@@ -38,8 +36,7 @@ public sealed class FakeDiff : Diff
     public FakeDiff()
         : this(
             "key",
-            "start",
-            "end",
+            "commit",
             "since this commit",
             "author",
             "org",
@@ -55,8 +52,7 @@ public sealed class FakeDiff : Diff
 
     public FakeDiff(
         string key,
-        string start,
-        string end,
+        string commit,
         string? since,
         string email,
         string organization,
@@ -64,8 +60,7 @@ public sealed class FakeDiff : Diff
         DateTimeOffset createdAt)
         : this(
             key,
-            start,
-            end,
+            commit,
             since,
             email,
             organization,
@@ -78,8 +73,7 @@ public sealed class FakeDiff : Diff
 
     public FakeDiff(
         string key,
-        string start,
-        string end,
+        string commit,
         string? since,
         string email,
         string organization,
@@ -89,8 +83,7 @@ public sealed class FakeDiff : Diff
     )
     {
         _key = key;
-        _start = start;
-        _end = end;
+        _commit = commit;
         _since = since;
         _email = email;
         _organization = organization;
@@ -101,12 +94,12 @@ public sealed class FakeDiff : Diff
 
     public Work RelatedWork(Works works)
     {
-        return works.GetOperation().Work(_organization, _key, _start, _end);
+        return works.GetOperation().Work(_organization, _key, _commit);
     }
 
     public bool PresentIn(Works works)
     {
-        return works.ContainsOperation().Contains(_organization, _key, _start, _end);
+        return works.ContainsOperation().Contains(_organization, _key, _commit);
     }
 
     public Work NewWork(Factories factories)
@@ -114,8 +107,7 @@ public sealed class FakeDiff : Diff
         var work = factories.WorkFactory().NewWork(
             _organization,
             _key,
-            _start,
-            _end,
+            _commit,
             _since,
             _email,
             _link,
