@@ -24,14 +24,13 @@ internal static class Program
         var addCommand = new Command("add", "Update the rating analyzing a merge commit");
         addCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
         addCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit") { IsRequired = true });
-        addCommand.AddOption(new Option<string>(new[] { "--branch", "-r" }, "The main branch name. 'main' by default"));
         addCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to the PR, issue or so"));
         addCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
         addCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
         addCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
         addCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
-        addCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, DateTimeOffset?, bool?>(
-            (path, merge, branch, link, org, name, time, verbose) =>
+        addCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, DateTimeOffset?, bool?>(
+            (path, merge, link, org, name, time, verbose) =>
             {
                 var debug = verbose == true ? loggerFactory : new LoggerFactory();
 
@@ -41,7 +40,6 @@ internal static class Program
                     new GitProcess(debug, "git", $"rev-parse {merge}", path.FullName).Output().First(),
                     new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
                     path.FullName,
-                    branch ?? "main",
                     name ?? "unnamed",
                     link,
                     org ?? "none",
@@ -59,14 +57,13 @@ internal static class Program
         var serializeCommand = new Command("serialize", "Serialize merge commit metadata");
         serializeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, "Path to a local repository. E.g. '~/repos/devrating'") { IsRequired = true }.ExistingOnly());
         serializeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit") { IsRequired = true });
-        serializeCommand.AddOption(new Option<string>(new[] { "--branch", "-r" }, "The main branch name. 'main' by default"));
         serializeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to the PR, issue or so"));
         serializeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
         serializeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
         serializeCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
         serializeCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
-        serializeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, string?, DateTimeOffset?, bool?>(
-            (path, merge, branch, link, org, name, time, verbose) =>
+        serializeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, DateTimeOffset?, bool?>(
+            (path, merge, link, org, name, time, verbose) =>
             {
                 var debug = verbose == true ? loggerFactory : new LoggerFactory();
 
@@ -77,7 +74,6 @@ internal static class Program
                         new GitProcess(debug, "git", $"rev-parse {merge}", path.FullName).Output().First(),
                         new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
                         path.FullName,
-                        branch ?? "main",
                         name ?? "unnamed",
                         link,
                         org ?? "none",

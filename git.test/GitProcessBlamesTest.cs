@@ -10,7 +10,6 @@ public sealed class GitAFileBlamesTest
     public void CombinesLinesWithSameRevision()
     {
         var collection = new GitAFileBlames(
-            new LoggerFactory(),
             new FakeProcess(
 @"^7f30cd2 (<svikk@live.ru>              1595608723 +0900  1) sv
 ^7f30cd2 (<svikk@live.ru>              1595608723 +0900  2) sv
@@ -35,7 +34,6 @@ public sealed class GitAFileBlamesTest
         Assert.Equal(
             0d,
             new GitAFileBlames(
-                new LoggerFactory(),
                 new FakeProcess(
 @"^7f30cd2 (<svikk@live.ru>              1595608723 +0900  1) sv
 ^7f30cd2 (<svikk@live.ru>              1595608723 +0900  2) sv
@@ -59,7 +57,6 @@ public sealed class GitAFileBlamesTest
         Assert.NotEqual(
             0d,
             new GitAFileBlames(
-                new LoggerFactory(),
                 new FakeProcess(
 @"^7f30cd2 (<svikk@live.ru>              1595608723 +0900  1) sv
 ^7f30cd2 (<svikk@live.ru>              1595608723 +0900  2) sv
@@ -83,7 +80,6 @@ public sealed class GitAFileBlamesTest
         Assert.Equal(
             "viktor_semenov@outlook.com",
             new GitAFileBlames(
-                new LoggerFactory(),
                 new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
 "
@@ -103,7 +99,6 @@ public sealed class GitAFileBlamesTest
         Assert.Throws<System.InvalidOperationException>(
             () =>
             new GitAFileBlames(
-                new LoggerFactory(),
                 new FakeProcess("661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1"),
                 new FakeDiffSizes(1u),
                 true
@@ -118,7 +113,6 @@ public sealed class GitAFileBlamesTest
         Assert.Equal(
             "viktor_semenov@outlook.com",
             new GitAFileBlames(
-                new LoggerFactory(),
                 new FakeProcess(
 @"661ab997 (<viktor_semenov@outlook.com> 1603634378 +0900  1) sv1
 "

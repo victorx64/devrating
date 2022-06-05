@@ -44,7 +44,7 @@ function add_main_branch_commit {
 	printf "${GREEN}----------------------${NO_COLOR}\n"
 	printf "${GREEN}Add merge commit $1 with$(git -C ./glowing-adventure/ diff  --shortstat -U0 -w -M01 $1~..$1)${NO_COLOR}\n"
 
-	$DEVRATING add --merge $1 --path ./glowing-adventure/ --branch main $VERBOSE
+	$DEVRATING add --merge $1 --path ./glowing-adventure/ $VERBOSE
 	echo
 
 	printf "${YELLOW}Minimal PR sizes${NO_COLOR}\n"

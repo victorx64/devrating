@@ -4,18 +4,18 @@ namespace devrating.git;
 
 public sealed class GitPatches : Patches
 {
-    private readonly string _start;
-    private readonly string _end;
+    private readonly string _base;
+    private readonly string _commit;
     private readonly string? _since;
     private readonly string _repository;
     private readonly ILoggerFactory _log;
     private readonly DiffSizes _sizes;
 
-    public GitPatches(ILoggerFactory log, string start, string end, string? since, string repository, DiffSizes sizes)
+    public GitPatches(ILoggerFactory log, string @base, string commit, string? since, string repository, DiffSizes sizes)
     {
         _log = log;
-        _start = start;
-        _end = end;
+        _commit = commit;
+        _base = @base;
         _repository = repository;
         _since = since;
         _sizes = sizes;
@@ -40,7 +40,7 @@ public sealed class GitPatches : Patches
         var old = "unknown";
         var state = State.Diff;
 
-        foreach (var line in new GitProcess(_log, "git", $"diff {_start}..{_end} -U0 {Config.GitDiffArguments}", _repository).Output())
+        foreach (var line in new GitProcess(_log, "git", $"diff {_base}..{_commit} -U0 {Config.GitDiffArguments}", _repository).Output())
         {
             switch (state)
             {
@@ -80,7 +80,7 @@ public sealed class GitPatches : Patches
                     _log,
                     _repository,
                     old,
-                    _start,
+                    _base,
                     _since,
                     _sizes
                 )

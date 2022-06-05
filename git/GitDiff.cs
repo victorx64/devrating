@@ -7,8 +7,7 @@ namespace devrating.git;
 
 public sealed class GitDiff : Diff
 {
-    private readonly string _start;
-    private readonly string _end;
+    private readonly string _commit;
     private readonly string? _since;
     private readonly Deletions _deletions;
     private readonly string _key;
@@ -19,26 +18,24 @@ public sealed class GitDiff : Diff
 
     public GitDiff(
         ILoggerFactory log,
-        string start,
-        string end,
+        string @base,
+        string commit,
         string? since,
         string repository,
-        string branch,
         string key,
         string? link,
         string organization,
         DateTimeOffset createdAt
     )
         : this(
-            start,
-            end,
+            commit,
             since,
             new TotalDeletions(
                 new CachedPatches(
                     new GitPatches(
                         log,
-                        start,
-                        end,
+                        @base,
+                        commit,
                         since,
                         repository,
                         new GitDiffSizes(
@@ -55,7 +52,7 @@ public sealed class GitDiff : Diff
             new GitProcess(
                 log,
                 "git",
-                $"show --no-patch --format=%aE {end}",
+                $"show --no-patch --format=%aE {commit}",
                 repository
             ).Output().First()
         )
@@ -63,8 +60,7 @@ public sealed class GitDiff : Diff
     }
 
     private GitDiff(
-        string start,
-        string end,
+        string commit,
         string? since,
         Deletions deletions,
         string key,
@@ -74,8 +70,7 @@ public sealed class GitDiff : Diff
         string email
     )
     {
-        _start = start;
-        _end = end;
+        _commit = commit;
         _since = since;
         _deletions = deletions;
         _key = key;
@@ -87,7 +82,7 @@ public sealed class GitDiff : Diff
 
     public bool PresentIn(Works works)
     {
-        return works.ContainsOperation().Contains(_organization, _key, _end);
+        return works.ContainsOperation().Contains(_organization, _key, _commit);
     }
 
     public class Dto
@@ -122,7 +117,7 @@ public sealed class GitDiff : Diff
                         VictimEmail = deletion.VictimEmail(),
                     }
                 ),
-                Commit = _end,
+                Commit = _commit,
                 Email = _email,
                 Repository = _key,
                 Link = _link,
@@ -135,7 +130,7 @@ public sealed class GitDiff : Diff
 
     public Work RelatedWork(Works works)
     {
-        return works.GetOperation().Work(_organization, _key, _end);
+        return works.GetOperation().Work(_organization, _key, _commit);
     }
 
     public Work NewWork(Factories factories)
@@ -143,7 +138,7 @@ public sealed class GitDiff : Diff
         var work = factories.WorkFactory().NewWork(
             _organization,
             _key,
-            _end,
+            _commit,
             _since,
             _email,
             _link,

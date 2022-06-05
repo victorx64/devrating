@@ -6,7 +6,6 @@ public sealed class GitAFileBlames : AFileBlames
 {
     private IEnumerable<Blame>? _blames;
     private readonly object _lock = new object();
-    private readonly ILoggerFactory _log;
     private readonly Process _blame;
     private readonly DiffSizes _sizes;
     private readonly bool _accountable;
@@ -15,25 +14,27 @@ public sealed class GitAFileBlames : AFileBlames
         ILoggerFactory log,
         string repository,
         string filename,
-        string start,
-        string? stop,
+        string revision,
+        string? since,
         DiffSizes sizes
     ) : this(
-            log,
             new GitProcess(
                 log,
-                "git", $"blame -t -e -l --first-parent {Config.GitDiffArguments} {(stop is object ? stop + ".." : "")}{start} -- \"{filename}\"",
+                "git", $"blame -t -e -l --first-parent {Config.GitDiffArguments} {(since is object ? since + ".." : "")}{revision} -- \"{filename}\"",
                 repository
             ),
             sizes,
-            !start.Equals(stop, StringComparison.Ordinal)
+            !revision.Equals(since, StringComparison.Ordinal)
         )
     {
+        if (revision.EndsWith('~'))
+        {
+            throw new InvalidOperationException("Use absolute revision");
+        }
     }
 
-    public GitAFileBlames(ILoggerFactory log, Process blame, DiffSizes sizes, bool accountable)
+    public GitAFileBlames(Process blame, DiffSizes sizes, bool accountable)
     {
-        _log = log;
         _blame = blame;
         _sizes = sizes;
         _accountable = accountable;
