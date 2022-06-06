@@ -8,7 +8,7 @@ It counts the deleted lines of code in the PRs and builds a contributor rating b
 
 Merge commits authors treated as authors of the PRs. In the case of rebased PRs, it treats each commit as a separate PR.
 
-# Usage with .NET
+# Usage
 
 Install the tool:
 
@@ -16,10 +16,10 @@ Install the tool:
 $ dotnet tool install -g devrating.consoleapp
 ```
 
-Add a previous PR:
+Add a PR merge commit:
 
 ```
-$ devrating add commit -p <path-to-repo> -m <merge-commit>
+$ devrating add -p <path-to-repo> -m <merge-commit>
 ```
 
 Where:
@@ -34,30 +34,14 @@ Print the suggested PR sizes for each contributor:
 $ devrating top
 ```
 
-# Usage with Docker
-
-Add a previous PR:
+Sample output:
 
 ```
-$ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victorx64/devrating:latest add commit -p /repo -m <merge-commit>
+Author | Rating | Minimal additions in PR
+------ | ------ | -------------------------
+<svikk@live.ru> | 1520.00 | 24
+<viktor_semenov@outlook.com> | 1480.00 | 26
 ```
-
-Where:
-- `<path-to-repo>` — path to a local git repository.
-- `<working-dir>` — path where the rating will be stored as `devrating.sqlite3` SQLite file.
-- `<merge-commit>` — a merge or squash commit of a merged PR.
-
-It updates the rating. Repeat this step for other PRs in historical order. The rating is stored in `devrating.sqlite3` SQLite file in a working directory.
-
-Print the suggested PR sizes for each contributor:
-
-```
-$ docker run -it --rm -v <path-to-repo>:/repo -v <working-dir>:/workspace victorx64/devrating:latest top
-```
-
-Where:
-- `<path-to-repo>` — path to a local git repository.
-- `<working-dir>` — path where the rating is stored as `devrating.sqlite3` SQLite file.
 
 # How it works
 
