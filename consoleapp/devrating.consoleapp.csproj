@@ -8,8 +8,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>../package</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>22.6.0</PackageVersion>
-    <Version>22.6.0</Version>
+    <PackageVersion>22.6.1</PackageVersion>
+    <Version>22.6.1</Version>
     <Authors>Victor Semenov</Authors>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>devrating</ToolCommandName>
