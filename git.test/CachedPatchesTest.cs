@@ -14,7 +14,7 @@ public class CachedPatchesTest
                 new FakeDeletions(
                     new[]
                     {
-                        new GitContemporaryLines(2, 1, true, "some email"),
+                        new GitContemporaryLines(2, 1, "some email"),
                     }
                 ),
             }
@@ -34,7 +34,7 @@ public class CachedPatchesTest
                         new FakeDeletions(
                             new[]
                             {
-                                new GitContemporaryLines(2, 2, true, "some other email"),
+                                new GitContemporaryLines(2, 2, "some other email"),
                             }
                         ),
                     }),

@@ -1,5 +1,6 @@
 using devrating.entity;
 using devrating.factory;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.consoleapp;
 
@@ -7,9 +8,11 @@ public sealed class ConsoleApplication : Application
 {
     private readonly Database _database;
     private readonly Formula _formula;
+    private readonly ILoggerFactory _loggerFactory;
 
-    public ConsoleApplication(Database database, Formula formula)
+    public ConsoleApplication(ILoggerFactory loggerFactory, Database database, Formula formula)
     {
+        _loggerFactory = loggerFactory;
         _database = database;
         _formula = formula;
     }
@@ -37,7 +40,7 @@ public sealed class ConsoleApplication : Application
             {
                 var rating = _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value();
 
-                var additions = _formula.SuggestedAdditionsCount(rating);
+                var additions = _formula.SuggestedAdditionsPerWork(rating);
 
                 output.WriteLine(
                     $"<{author.Email()}> | {rating:F2} | {additions:N0}"
@@ -81,6 +84,7 @@ public sealed class ConsoleApplication : Application
                         authorFactory
                     ),
                     new DefaultRatingFactory(
+                        _loggerFactory,
                         authorFactory,
                         ratings,
                         _formula
@@ -133,8 +137,7 @@ public sealed class ConsoleApplication : Application
     private void PrintWorkToConsole(Output output, Work work)
     {
         output.WriteLine($"Author: <{work.Author().Email()}>");
-        output.WriteLine($"base: {work.Start()}");
-        output.WriteLine($"head: {work.End()}");
+        output.WriteLine($"Commit: {work.Commit()}");
 
         if (work.Since() is object)
         {

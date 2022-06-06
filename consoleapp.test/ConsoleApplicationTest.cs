@@ -1,6 +1,7 @@
 using devrating.consoleapp.fake;
 using devrating.entity;
 using devrating.factory.fake;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace devrating.consoleapp.test;
@@ -12,7 +13,7 @@ public sealed class ConsoleApplicationTest
     {
         var lines = new List<string>();
 
-        new ConsoleApplication(new FakeDatabase(), new FakeFormula())
+        new ConsoleApplication(new LoggerFactory(), new FakeDatabase(), new FakeFormula())
             .Top(new FakeOutput(lines), "organization", "repo");
 
         var headers = 2;
@@ -25,7 +26,7 @@ public sealed class ConsoleApplicationTest
     {
         var db = new FakeDatabase();
 
-        new ConsoleApplication(db, new FakeFormula())
+        new ConsoleApplication(new LoggerFactory(), db, new FakeFormula())
             .Top(new FakeOutput(new List<string>()), "organization", "repo");
 
         Assert.True(db.Instance().Present());
@@ -37,8 +38,7 @@ public sealed class ConsoleApplicationTest
         var db = new FakeDatabase();
         var diff = new FakeDiff(
             "key",
-            "start",
-            "end",
+            "commit",
             null,
             "author",
             "org",
@@ -50,7 +50,7 @@ public sealed class ConsoleApplicationTest
             DateTimeOffset.UtcNow
         );
 
-        var app = new ConsoleApplication(db, new FakeFormula());
+        var app = new ConsoleApplication(new LoggerFactory(), db, new FakeFormula());
 
         app.Save(diff);
 
@@ -64,13 +64,12 @@ public sealed class ConsoleApplicationTest
     {
         void TestCode()
         {
-            new ConsoleApplication(new FakeDatabase(), new FakeFormula())
+            new ConsoleApplication(new LoggerFactory(), new FakeDatabase(), new FakeFormula())
                 .PrintTo(
                     new FakeOutput(new List<string>()),
                     new FakeDiff(
                         "key",
-                        "start",
-                        "end",
+                        "commit",
                         null,
                         "author",
                         "org",
@@ -110,7 +109,7 @@ public sealed class ConsoleApplicationTest
 
         var lines = new List<string>();
 
-        new ConsoleApplication(database, new FakeFormula())
+        new ConsoleApplication(new LoggerFactory(), database, new FakeFormula())
             .Top(new FakeOutput(lines), organization, "repo");
 
         var headers = 2;
@@ -125,7 +124,7 @@ public sealed class ConsoleApplicationTest
         var works = new List<Work>();
         var ratings = new List<Rating>();
 
-        new ConsoleApplication(
+        new ConsoleApplication(new LoggerFactory(), 
             new FakeDatabase(
                 new FakeDbInstance(),
                 new FakeEntities(
@@ -137,8 +136,7 @@ public sealed class ConsoleApplicationTest
         ).Save(
             new FakeDiff(
                 "key",
-                "start",
-                "end",
+                "commit",
                 null,
                 "author",
                 "org",
@@ -162,8 +160,7 @@ public sealed class ConsoleApplicationTest
         var ratings = new List<Rating>();
         var diff = new FakeDiff(
             "key",
-            "start",
-            "end",
+            "commit",
             null,
             "author",
             "org",
@@ -175,7 +172,7 @@ public sealed class ConsoleApplicationTest
             DateTimeOffset.UtcNow
         );
 
-        var application = new ConsoleApplication(
+        var application = new ConsoleApplication(new LoggerFactory(), 
             new FakeDatabase(
                 new FakeDbInstance(),
                 new FakeEntities(
@@ -208,8 +205,7 @@ public sealed class ConsoleApplicationTest
 
         var diff = new FakeDiff(
             "key",
-            "start",
-            "end",
+            "commit",
             null,
             "author",
             "org",
@@ -217,7 +213,7 @@ public sealed class ConsoleApplicationTest
             DateTimeOffset.UtcNow
         );
 
-        var app = new ConsoleApplication(new FakeDatabase(), new FakeFormula());
+        var app = new ConsoleApplication(new LoggerFactory(), new FakeDatabase(), new FakeFormula());
 
         app.Save(diff);
 
@@ -232,7 +228,7 @@ public sealed class ConsoleApplicationTest
         var lines = new List<string>();
         var diff = new FakeDiff();
 
-        var app = new ConsoleApplication(new FakeDatabase(), new FakeFormula());
+        var app = new ConsoleApplication(new LoggerFactory(), new FakeDatabase(), new FakeFormula());
 
         app.Save(diff);
 
@@ -247,7 +243,7 @@ public sealed class ConsoleApplicationTest
         var lines = new List<string>();
         var diff = new FakeDiff("E.g. a link to the PR");
 
-        var app = new ConsoleApplication(new FakeDatabase(), new FakeFormula());
+        var app = new ConsoleApplication(new LoggerFactory(), new FakeDatabase(), new FakeFormula());
 
         app.Save(diff);
 

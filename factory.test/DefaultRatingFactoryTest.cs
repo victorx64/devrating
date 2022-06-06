@@ -1,5 +1,6 @@
 using devrating.entity;
 using devrating.factory.fake;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace devrating.factory.test;
@@ -23,6 +24,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -63,6 +65,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -98,6 +101,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -140,6 +144,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -186,6 +191,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -229,6 +235,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -279,6 +286,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula
@@ -323,6 +331,7 @@ public sealed class DefaultRatingFactoryTest
         );
 
         new DefaultRatingFactory(
+            new LoggerFactory(),
             new DefaultAuthorFactory(entities.Authors()),
             entities.Ratings(),
             formula

@@ -1,4 +1,5 @@
 using devrating.entity;
+using Microsoft.Extensions.Logging;
 
 namespace devrating.factory;
 
@@ -7,9 +8,11 @@ public sealed class DefaultRatingFactory : RatingFactory
     private readonly AuthorFactory _authorFactory;
     private readonly Ratings _ratings;
     private readonly Formula _formula;
+    private readonly ILogger<DefaultRatingFactory> _log;
 
-    public DefaultRatingFactory(AuthorFactory authorFactory, Ratings ratings, Formula formula)
+    public DefaultRatingFactory(ILoggerFactory loggerFactory, AuthorFactory authorFactory, Ratings ratings, Formula formula)
     {
+        _log = loggerFactory.CreateLogger<DefaultRatingFactory>();
         _authorFactory = authorFactory;
         _ratings = ratings;
         _formula = formula;
@@ -43,7 +46,9 @@ public sealed class DefaultRatingFactory : RatingFactory
 
         foreach (var deletion in deletions)
         {
-            if (!deletion.DeletionAccountable()) {
+            if (deletion.Weight() == 0d)
+            {
+                _log.LogInformation(new EventId(1518575), $"{email} ({value:F2}) deleted {deletion.Size()} lines with no rating change");
                 continue;
             }
 
@@ -60,12 +65,12 @@ public sealed class DefaultRatingFactory : RatingFactory
                 ? victimCurrent.Value()
                 : _formula.DefaultRating();
 
-            var change = _formula.WinnerRatingChange(value, victimValue)
-                * (double)deletion.DeletedLines()
-                / (double)deletion.AllLines();
+            var change = _formula.WinnerRatingChange(value, victimValue) * deletion.Weight();
 
             AddChange(ratings, deletor, current, change);
             AddChange(ratings, victim, victimCurrent, -change);
+
+            _log.LogInformation(new EventId(1936766), $"{email} ({value:F2}) deleted {deletion.Size()} lines of {deletion.VictimEmail()} ({victimValue:F2}). Weight: {deletion.Weight():F2}. Rating change: {change:F2}");
         }
 
         return ratings.Select(

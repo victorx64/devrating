@@ -2,23 +2,23 @@ using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
 
-public sealed class GitProcessPatches : Patches
+public sealed class GitPatches : Patches
 {
-    private readonly string _start;
-    private readonly string _end;
+    private readonly string _base;
+    private readonly string _commit;
     private readonly string? _since;
     private readonly string _repository;
-    private readonly string _branch;
     private readonly ILoggerFactory _log;
+    private readonly DiffSizes _sizes;
 
-    public GitProcessPatches(ILoggerFactory log, string start, string end, string? since, string repository, string branch)
+    public GitPatches(ILoggerFactory log, string @base, string commit, string? since, string repository, DiffSizes sizes)
     {
         _log = log;
-        _start = start;
-        _end = end;
+        _commit = commit;
+        _base = @base;
         _repository = repository;
         _since = since;
-        _branch = branch;
+        _sizes = sizes;
     }
 
     public IEnumerable<Deletions> Items()
@@ -40,7 +40,7 @@ public sealed class GitProcessPatches : Patches
         var old = "unknown";
         var state = State.Diff;
 
-        foreach (var line in new GitProcess(_log, "git", $"diff {_start}..{_end} -U0 -M01 -w", _repository).Output())
+        foreach (var line in new GitProcess(_log, "git", $"diff {_base}..{_commit} -U0 {Config.GitDiffArguments}", _repository).Output())
         {
             switch (state)
             {
@@ -76,13 +76,13 @@ public sealed class GitProcessPatches : Patches
         return Task.Run(
             () => (Deletions)new GitDeletions(
                 patch,
-                new GitProcessBlames(
+                new GitAFileBlames(
                     _log,
                     _repository,
                     old,
-                    _start,
+                    _base,
                     _since,
-                    _branch
+                    _sizes
                 )
             )
         );

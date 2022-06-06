@@ -53,8 +53,7 @@ internal sealed class SqliteDbInstance : DbInstance
                         primary key autoincrement,
                     CreatedAt    integer      not null,
                     Link         nvarchar,
-                    StartCommit  nvarchar(50) not null,
-                    EndCommit    nvarchar(50) not null,
+                    MergeCommit  nvarchar(50) not null,
                     SinceCommit  nvarchar(50),
                     AuthorId     integer      not null
                         references Author on delete cascade,

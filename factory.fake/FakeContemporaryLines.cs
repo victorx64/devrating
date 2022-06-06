@@ -25,23 +25,18 @@ public sealed class FakeContemporaryLines : ContemporaryLines
         _victimEmail = victimEmail;
     }
 
-    public uint AllLines()
-    {
-        return _allLines;
-    }
-
-    public uint DeletedLines()
+    public uint Size()
     {
         return _deletedLines;
-    }
-
-    public bool DeletionAccountable()
-    {
-        return _deletionAccountable;
     }
 
     public string VictimEmail()
     {
         return _victimEmail;
+    }
+
+    public double Weight()
+    {
+        return (double)_deletedLines / (double)_allLines;
     }
 }

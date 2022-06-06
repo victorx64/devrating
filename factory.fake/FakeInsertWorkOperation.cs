@@ -16,8 +16,7 @@ public sealed class FakeInsertWorkOperation : InsertWorkOperation
     }
 
     public Work Insert(
-        string start,
-        string end,
+        string commit,
         string? since,
         Id author,
         Id rating,
@@ -29,8 +28,7 @@ public sealed class FakeInsertWorkOperation : InsertWorkOperation
             new DefaultId(Guid.NewGuid()),
             Author(author),
             Rating(rating),
-            start,
-            end,
+            commit,
             since,
             createdAt,
             link

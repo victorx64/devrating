@@ -7,8 +7,7 @@ public interface WorkFactory
     Work NewWork(
         string organization,
         string repository,
-        string start,
-        string end,
+        string commit,
         string? since,
         string email,
         string? link,

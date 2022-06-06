@@ -22,7 +22,7 @@ public sealed class DefaultFormula : Formula
         return _default;
     }
 
-    public double SuggestedAdditionsCount(double rating)
+    public double SuggestedAdditionsPerWork(double rating)
     {
         return (1d - WinProbabilityOfA(rating, _default)) * 50d;
     }

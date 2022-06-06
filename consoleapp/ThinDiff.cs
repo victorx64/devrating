@@ -5,17 +5,15 @@ namespace devrating.consoleapp;
 
 public sealed class ThinDiff : Diff
 {
-    private readonly string _start;
-    private readonly string _end;
+    private readonly string _commit;
     private readonly string _organization;
     private readonly string _repository;
 
-    public ThinDiff(string organization, string repository, string start, string end)
+    public ThinDiff(string organization, string repository, string commit)
     {
         _organization = organization;
         _repository = repository;
-        _start = start;
-        _end = end;
+        _commit = commit;
     }
 
     public DateTimeOffset CreatedAt()
@@ -30,12 +28,12 @@ public sealed class ThinDiff : Diff
 
     public bool PresentIn(Works works)
     {
-        return works.ContainsOperation().Contains(_organization, _repository, _start, _end);
+        return works.ContainsOperation().Contains(_organization, _repository, _commit);
     }
 
     public Work RelatedWork(Works works)
     {
-        return works.GetOperation().Work(_organization, _repository, _start, _end);
+        return works.GetOperation().Work(_organization, _repository, _commit);
     }
 
     public string ToJson()

@@ -52,22 +52,11 @@ internal sealed class SqliteWork : Work
         return new SqliteRating(_connection, new DefaultId(reader["UsedRatingId"]));
     }
 
-    public string Start()
+    public string Commit()
     {
         using var command = _connection.CreateCommand();
 
-        command.CommandText = "SELECT StartCommit FROM Work WHERE Id = @Id";
-
-        command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) { Value = _id.Value() });
-
-        return (string)command.ExecuteScalar()!;
-    }
-
-    public string End()
-    {
-        using var command = _connection.CreateCommand();
-
-        command.CommandText = "SELECT EndCommit FROM Work WHERE Id = @Id";
+        command.CommandText = "SELECT MergeCommit FROM Work WHERE Id = @Id";
 
         command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) { Value = _id.Value() });
 

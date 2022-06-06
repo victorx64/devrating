@@ -27,8 +27,7 @@ public sealed class SqliteDatabaseRatingsTest
                         1100d,
                         new DefaultId(),
                         database.Entities().Works().InsertOperation().Insert(
-                            "startCommit",
-                            "endCommit",
+                            "mergeCommit",
                             null,
                             author.Id(),
                             new DefaultId(),
@@ -63,8 +62,7 @@ public sealed class SqliteDatabaseRatingsTest
                 1100d,
                 new DefaultId(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     null,
                     author.Id(),
                     new DefaultId(),
@@ -99,8 +97,7 @@ public sealed class SqliteDatabaseRatingsTest
                 1100d,
                 new DefaultId(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     null,
                     author.Id(),
                     new DefaultId(),
@@ -135,8 +132,7 @@ public sealed class SqliteDatabaseRatingsTest
                 1100d,
                 new DefaultId(),
                 database.Entities().Works().InsertOperation().Insert(
-                    "startCommit",
-                    "endCommit",
+                    "mergeCommit",
                     null,
                     author.Id(),
                     new DefaultId(),
@@ -187,8 +183,7 @@ public sealed class SqliteDatabaseRatingsTest
                 .Insert("organization", "repo", "email", DateTimeOffset.UtcNow);
 
             var work = database.Entities().Works().InsertOperation().Insert(
-                "startCommit",
-                "endCommit",
+                "mergeCommit",
                 null,
                 author.Id(),
                 new DefaultId(),
@@ -246,8 +241,7 @@ public sealed class SqliteDatabaseRatingsTest
             var date = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
             var work1 = database.Entities().Works().InsertOperation().Insert(
-                "startCommit1",
-                "endCommit1",
+                "mergeCommit1",
                 null,
                 author.Id(),
                 new DefaultId(),
@@ -263,8 +257,7 @@ public sealed class SqliteDatabaseRatingsTest
             );
 
             var work2 = database.Entities().Works().InsertOperation().Insert(
-                "startCommit2",
-                "endCommit2",
+                "mergeCommit2",
                 null,
                 author.Id(),
                 new DefaultId(),
