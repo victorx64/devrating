@@ -37,9 +37,9 @@ $ devrating top
 Sample output:
 
 ```
-Author | Rating | Minimal additions in PR
------- | ------ | -------------------------
-<svikk@live.ru> | 1520.00 | 24
+Author                       | Rating  | Minimal additions in PR
+---------------------------- | ------- | -----------------------
+<svikk@live.ru>              | 1520.00 | 24
 <viktor_semenov@outlook.com> | 1480.00 | 26
 ```
 
@@ -54,9 +54,9 @@ $K = 40; N = 400; $
 $Q_A = 10 ^ {\frac{R_A}{N}}; $  
 $Q_B = 10 ^ {\frac{R_B}{N}}; $
 
-$E_{A\_B} = \frac{Q_A}{Q_A + Q_B}; $
+$E_{A,B} = \frac{Q_A}{Q_A + Q_B}; $
 
-$R_\Delta = K(1 - E_{A\_B})(\sum_{i = 1} \frac{Del_{Ai}}{Add_{Bi}}); $
+$R_\Delta = K(1 - E_{A,B})(\sum_{i = 1} \frac{Del_{Ai}}{Add_{Bi}}); $
 
 $R_A^{'} = R_A + R_\Delta; $  
 $R_B^{'} = R_B - R_\Delta; $
@@ -75,9 +75,9 @@ Minimal additions per PR:
 
 $Q_{avg} = 10 ^ {\frac{1500}{N}}; $
 
-$E_{A\_avg} = \frac{Q_A}{Q_A + Q_{avg}}; $
+$E_{A,avg} = \frac{Q_A}{Q_A + Q_{avg}}; $
 
-$M_A = 50 (1 - E_{A\_avg}); $
+$M_A = 50 (1 - E_{A,avg}); $
 
 where
 - $M_A$ - the minimal added lines number for Developer A in his PRs.
