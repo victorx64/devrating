@@ -13,25 +13,23 @@ Merge commits authors treated as authors of the PRs. In the case of rebased PRs,
 Install the tool:
 
 ```
-$ dotnet tool install -g devrating.consoleapp
+dotnet tool install -g devrating.consoleapp
 ```
 
-Add a PR merge commit:
+Analyze your repository:
 
 ```
-$ devrating add -p <path-to-repo> -m <merge-commit>
+cd <path-to-repo>
+
+git checkout master
+
+devrating update
 ```
-
-Where:
-- `<path-to-repo>` — path to a local git repository.
-- `<merge-commit>` — a merge or squash commit of a merged PR.
-
-It updates the rating. Repeat this step for other PRs in historical order. The rating is stored in `devrating.sqlite3` SQLite file in a working directory.
 
 Print the suggested PR sizes for each contributor:
 
 ```
-$ devrating top
+devrating top
 ```
 
 Sample output:

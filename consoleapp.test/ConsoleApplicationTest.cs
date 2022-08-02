@@ -54,7 +54,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(new List<string>()), diff);
+        app.Print(new FakeOutput(new List<string>()), diff);
 
         Assert.True(db.Instance().Present());
     }
@@ -65,7 +65,7 @@ public sealed class ConsoleApplicationTest
         void TestCode()
         {
             new ConsoleApplication(new LoggerFactory(), new FakeDatabase(), new FakeFormula())
-                .PrintTo(
+                .Print(
                     new FakeOutput(new List<string>()),
                     new FakeDiff(
                         "key",
@@ -217,7 +217,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(lines), diff);
+        app.Print(new FakeOutput(lines), diff);
 
         Assert.Equal(deletions.Length, lines.Count(l => l.Contains("victim")));
     }
@@ -232,7 +232,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(lines), diff);
+        app.Print(new FakeOutput(lines), diff);
 
         Assert.Contains(lines, p => p.Equals("Since: since this commit"));
     }
@@ -247,7 +247,7 @@ public sealed class ConsoleApplicationTest
 
         app.Save(diff);
 
-        app.PrintTo(new FakeOutput(lines), diff);
+        app.Print(new FakeOutput(lines), diff);
 
         Assert.Contains(lines, p => p.Equals("Link: E.g. a link to the PR"));
     }

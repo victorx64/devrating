@@ -17,6 +17,11 @@ public sealed class ConsoleApplication : Application
         _formula = formula;
     }
 
+    public DateTimeOffset PeriodStart()
+    {
+        return DateTimeOffset.UtcNow.AddDays(-90);
+    }
+
     public void Top(Output output, string organization, string repository)
     {
         _database.Instance().Connection().Open();
@@ -35,7 +40,7 @@ public sealed class ConsoleApplication : Application
 
             foreach (
                 var author in _database.Entities().Authors().GetOperation()
-                    .Top(organization, repository, DateTimeOffset.UtcNow - TimeSpan.FromDays(90))
+                    .Top(organization, repository, PeriodStart())
                 )
             {
                 var rating = _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value();
@@ -106,7 +111,29 @@ public sealed class ConsoleApplication : Application
         }
     }
 
-    public void PrintTo(Output output, Diff diff)
+    public bool IsDiffPresent(Diff diff)
+    {
+        _database.Instance().Connection().Open();
+
+        using var transaction = _database.Instance().Connection().BeginTransaction();
+
+        try
+        {
+            if (!_database.Instance().Present())
+            {
+                _database.Instance().Create();
+            }
+
+            return diff.PresentIn(_database.Entities().Works());
+        }
+        finally
+        {
+            transaction.Rollback();
+            _database.Instance().Connection().Close();
+        }
+    }
+
+    public void Print(Output output, Diff diff)
     {
         _database.Instance().Connection().Open();
 
@@ -122,10 +149,10 @@ public sealed class ConsoleApplication : Application
             if (!diff.PresentIn(_database.Entities().Works()))
             {
                 throw new InvalidOperationException("The diff is not present in the database. " +
-                    "To insert, run `devrating add`.");
+                    "To insert, run `devrating update`.");
             }
 
-            PrintWorkToConsole(output, diff.RelatedWork(_database.Entities().Works()));
+            PrintWorkToOutput(output, diff.RelatedWork(_database.Entities().Works()));
         }
         finally
         {
@@ -134,7 +161,7 @@ public sealed class ConsoleApplication : Application
         }
     }
 
-    private void PrintWorkToConsole(Output output, Work work)
+    private void PrintWorkToOutput(Output output, Work work)
     {
         output.WriteLine($"Author: <{work.Author().Email()}>");
         output.WriteLine($"Commit: {work.Commit()}");
@@ -149,10 +176,10 @@ public sealed class ConsoleApplication : Application
             output.WriteLine($"Link: {work.Link()}");
         }
 
-        PrintWorkRatingsToConsole(output, work);
+        PrintWorkRatingsToOutput(output, work);
     }
 
-    private void PrintWorkRatingsToConsole(Output output, Work work)
+    private void PrintWorkRatingsToOutput(Output output, Work work)
     {
         output.WriteLine("Author | Prev rating | New rating");
         output.WriteLine("------ | ----------- | ----------");
