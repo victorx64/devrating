@@ -35,10 +35,18 @@ devrating top
 Sample output:
 
 ```
-Author                       | Rating  | Minimal additions in PR
----------------------------- | ------- | -----------------------
-<svikk@live.ru>              | 1520.00 | 24
-<viktor_semenov@outlook.com> | 1480.00 | 26
+Rating  | PRs (90d) | Suggested additions | Author
+------- | --------- | ------------------- | ------
+1553.86 |        45 |                  21 | <546546+cassidy@users.noreply.github.com>
+1524.85 |        10 |                  23 | <5558798+ash@users.noreply.github.com>
+1513.59 |        13 |                  24 | <94203766+bot@users.noreply.github.com>
+1499.43 |         0 |                  25 | <lena@gmail.com>
+1496.14 |         0 |                  25 | <46346212+ghost@users.noreply.github.com>
+1495.48 |         0 |                  25 | <viktor_semenov@outlook.com>
+1485.74 |         0 |                  26 | <453474572+bob@users.noreply.github.com>
+1481.63 |        96 |                  26 | <alice@gmail.com>
+1475.78 |        12 |                  27 | <john@outlook.com>
+1473.52 |        77 |                  27 | <uri@live.com>
 ```
 
 # How it works

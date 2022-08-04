@@ -27,7 +27,7 @@ public sealed class DefaultWorkFactory : WorkFactory
     {
         if (_works.ContainsOperation().Contains(organization, repository, createdAt))
         {
-            throw new InvalidOperationException("An older Work is already exist for this repo");
+            throw new InvalidOperationException("A newer Work already exists for this repo");
         }
 
         if (_works.ContainsOperation().Contains(organization, repository, commit))

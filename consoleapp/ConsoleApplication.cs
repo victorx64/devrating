@@ -35,8 +35,10 @@ public sealed class ConsoleApplication : Application
                 _database.Instance().Create();
             }
 
-            output.WriteLine("Author | Rating | Minimal additions in PR");
-            output.WriteLine("------ | ------ | -------------------------");
+            var works = _database.Entities().Works().GetOperation().Last(organization, repository, PeriodStart());
+
+            output.WriteLine("Rating  | PRs (90d) | Suggested additions | Author");
+            output.WriteLine("------- | --------- | ------------------- | ------");
 
             foreach (
                 var author in _database.Entities().Authors().GetOperation()
@@ -45,10 +47,12 @@ public sealed class ConsoleApplication : Application
             {
                 var rating = _database.Entities().Ratings().GetOperation().RatingOf(author.Id()).Value();
 
+                var prs = works.Count(w => w.Author().Id().Equals(author.Id()));
+
                 var additions = _formula.SuggestedAdditionsPerWork(rating);
 
                 output.WriteLine(
-                    $"<{author.Email()}> | {rating:F2} | {additions:N0}"
+                    $"{rating,7:F2} |      {prs,4} |                 {additions,3:N0} | <{author.Email()}>"
                 );
             }
         }
@@ -111,7 +115,7 @@ public sealed class ConsoleApplication : Application
         }
     }
 
-    public bool IsDiffPresent(Diff diff)
+    public bool IsCommitPresent(string organization, string repository, string commit)
     {
         _database.Instance().Connection().Open();
 
@@ -124,7 +128,7 @@ public sealed class ConsoleApplication : Application
                 _database.Instance().Create();
             }
 
-            return diff.PresentIn(_database.Entities().Works());
+            return _database.Entities().Works().ContainsOperation().Contains(organization, repository, commit);
         }
         finally
         {
