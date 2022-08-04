@@ -8,5 +8,5 @@ public interface Application
     void Top(Output output, string organization, string repository);
     void Save(Diff diff);
     void Print(Output output, Diff diff);
-    bool IsDiffPresent(Diff diff);
+    bool IsCommitPresent(string organization, string repository, string commit);
 }

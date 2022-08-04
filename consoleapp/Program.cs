@@ -36,32 +36,37 @@ internal static class Program
                 var commits = new GitProcess(
                     debug,
                     "git",
-                    $"rev-list HEAD --first-parent --max-age={app.PeriodStart().ToUnixTimeSeconds()} --reverse --pretty=%aI",
+                    $"rev-list HEAD --first-parent --max-age={app.PeriodStart().ToUnixTimeSeconds()} --reverse",
                     path.FullName).Output();
 
-                for (int i = 2; i < commits.Count - 1; i += 2)
+                org ??= "none";
+                name ??= "unnamed";
+
+                for (int i = 1; i < commits.Count - 1; i++)
                 {
-                    var merge = commits[i].Split(' ')[1];
+                    var merge = commits[i];
 
-                    var createdAt = DateTime.Parse(commits[i + 1]);
-
-                    var diff = new GitDiff(
-                        debug,
-                        new GitProcess(debug, "git", $"rev-parse {merge}~", path.FullName).Output().First(),
-                        merge,
-                        new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
-                        path.FullName,
-                        name ?? "unnamed",
-                        null,
-                        org ?? "none",
-                        createdAt
-                    );
-
-                    if (!app.IsDiffPresent(diff))
+                    if (!app.IsCommitPresent(org, name, merge))
                     {
-                        app.Save(diff);
+                        app.Save(
+                            new GitDiff(
+                                debug,
+                                new GitProcess(debug, "git", $"rev-parse {merge}~", path.FullName).Output().First(),
+                                merge,
+                                new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
+                                path.FullName,
+                                name,
+                                null,
+                                org,
+                                DateTimeOffset.UtcNow
+                            )
+                        );
 
-                        output.WriteLine(merge);
+                        output.WriteLine($"{merge} {i}/{(commits.Count - 2)} added");
+                    }
+                    else
+                    {
+                        output.WriteLine($"{merge} {i}/{(commits.Count - 2)} skipped");
                     }
                 }
             }
