@@ -100,6 +100,4 @@ The tool doesn't change rating if deleted line was introduced in previous major 
 dotnet run --project ./consoleapp
 ```
 
-<a href="https://www.yegor256.com/2019/11/03/award-2020.html">
-  <img src="https://www.yegor256.com/images/award/2020/winner-victorx64.png" height="75" alt='winner'/>
-</a>
+This repository is a [Software Quality Award](https://www.yegor256.com/2019/11/03/award-2020.html) winner.
