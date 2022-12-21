@@ -95,4 +95,15 @@ internal sealed class SqliteWork : Work
 
         return command.ExecuteScalar() as string;
     }
+
+    public string? Paths()
+    {
+        using var command = _connection.CreateCommand();
+
+        command.CommandText = "SELECT Paths FROM Work WHERE Id = @Id";
+
+        command.Parameters.Add(new SqliteParameter("@Id", SqliteType.Integer) { Value = _id.Value() });
+
+        return command.ExecuteScalar() as string;
+    }
 }

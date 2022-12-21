@@ -30,7 +30,8 @@ public sealed class SqliteDatabaseWorksTest
                         ).Id(),
                         new DefaultId(),
                         null,
-                        DateTimeOffset.UtcNow
+                        DateTimeOffset.UtcNow,
+                        null
                     ).Id()
                 )
             );
@@ -62,7 +63,8 @@ public sealed class SqliteDatabaseWorksTest
                 ).Id(),
                 new DefaultId(),
                 null,
-                DateTimeOffset.UtcNow
+                DateTimeOffset.UtcNow,
+                null
             );
 
             Assert.True(database.Entities().Works().ContainsOperation().Contains(
@@ -101,7 +103,8 @@ public sealed class SqliteDatabaseWorksTest
                 ).Id(),
                 new DefaultId(),
                 null,
-                newerMoment
+                newerMoment,
+                null
             );
 
             Assert.True(
@@ -139,7 +142,8 @@ public sealed class SqliteDatabaseWorksTest
                 ).Id(),
                 new DefaultId(),
                 null,
-                DateTimeOffset.UtcNow
+                DateTimeOffset.UtcNow,
+                null
             );
 
             Assert.Equal(work.Id(), database.Entities().Works().GetOperation().Work(work.Id()).Id());
@@ -172,7 +176,8 @@ public sealed class SqliteDatabaseWorksTest
                     ).Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Id(),
                 database.Entities().Works().GetOperation().Work(
                     "organization",
@@ -210,7 +215,8 @@ public sealed class SqliteDatabaseWorksTest
                 ).Id(),
                 new DefaultId(),
                 null,
-                createdAt
+                createdAt,
+                null
             );
 
             var last = database.Entities().Works().InsertOperation().Insert(
@@ -224,7 +230,8 @@ public sealed class SqliteDatabaseWorksTest
                 ).Id(),
                 new DefaultId(),
                 null,
-                createdAt
+                createdAt,
+                null
             );
 
             Assert.Equal(
@@ -260,7 +267,8 @@ public sealed class SqliteDatabaseWorksTest
                     createdAt).Id(),
                 new DefaultId(),
                 null,
-                createdAt
+                createdAt,
+                null
             );
 
             database.Entities().Works().InsertOperation().Insert(
@@ -273,7 +281,8 @@ public sealed class SqliteDatabaseWorksTest
                     createdAt).Id(),
                 new DefaultId(),
                 null,
-                createdAt
+                createdAt,
+                null
             );
 
             Assert.Equal(
@@ -310,7 +319,8 @@ public sealed class SqliteDatabaseWorksTest
                     createdInPast).Id(),
                 new DefaultId(),
                 null,
-                createdInPast
+                createdInPast,
+                null
             );
 
             Assert.Equal(
@@ -324,7 +334,8 @@ public sealed class SqliteDatabaseWorksTest
                         createdAt).Id(),
                     new DefaultId(),
                     null,
-                    createdAt
+                    createdAt,
+                    null
                 ).Id(),
                 database.Entities().Works().GetOperation().Last("organization", "repo", createdAt).Last().Id()
             );

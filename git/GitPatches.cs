@@ -10,8 +10,16 @@ public sealed class GitPatches : Patches
     private readonly string _repository;
     private readonly ILoggerFactory _log;
     private readonly DiffSizes _sizes;
+    private readonly IEnumerable<string> _paths;
 
-    public GitPatches(ILoggerFactory log, string @base, string commit, string? since, string repository, DiffSizes sizes)
+    public GitPatches(
+        ILoggerFactory log,
+        string @base,
+        string commit,
+        string? since,
+        string repository,
+        DiffSizes sizes,
+        IEnumerable<string> paths)
     {
         _log = log;
         _commit = commit;
@@ -19,6 +27,7 @@ public sealed class GitPatches : Patches
         _repository = repository;
         _since = since;
         _sizes = sizes;
+        _paths = paths;
     }
 
     public IEnumerable<Deletions> Items()
@@ -39,8 +48,22 @@ public sealed class GitPatches : Patches
         var patch = new List<string>();
         var old = "unknown";
         var state = State.Diff;
+        var args = new List<string> {
+            "diff",
+            $"{_base}..{_commit}",
+            "-U0",
+            Config.GitDiffWhitespace,
+            Config.GitDiffRenames,
+            "--",
+        };
 
-        foreach (var line in new GitProcess(_log, "git", $"diff {_base}..{_commit} -U0 {Config.GitDiffArguments}", _repository).Output())
+        args.AddRange(_paths);
+
+        foreach (var line in new GitProcess(
+            _log,
+            "git",
+            args,
+            _repository).Output())
         {
             switch (state)
             {

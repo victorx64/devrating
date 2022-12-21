@@ -8,4 +8,5 @@ public interface Work : Entity
     string? Link();
     string? Since();
     DateTimeOffset CreatedAt();
+    string? Paths();
 }

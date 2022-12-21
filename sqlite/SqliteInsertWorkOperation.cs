@@ -20,7 +20,8 @@ internal sealed class SqliteInsertWorkOperation : InsertWorkOperation
         Id author,
         Id rating,
         string? link,
-        DateTimeOffset createdAt
+        DateTimeOffset createdAt,
+        string? paths
     )
     {
         using var command = _connection.CreateCommand();
@@ -32,14 +33,16 @@ internal sealed class SqliteInsertWorkOperation : InsertWorkOperation
                     ,SinceCommit
                     ,AuthorId
                     ,UsedRatingId
-                    ,CreatedAt)
+                    ,CreatedAt
+                    ,Paths)
                 VALUES
                     (@Link
                     ,@MergeCommit
                     ,@SinceCommit
                     ,@AuthorId
                     ,@UsedRatingId
-                    ,@CreatedAt);
+                    ,@CreatedAt
+                    ,@Paths);
                 SELECT last_insert_rowid();";
 
         command.Parameters.Add(new SqliteParameter("@Link", SqliteType.Text) { Value = link ?? (object)DBNull.Value });
@@ -48,6 +51,7 @@ internal sealed class SqliteInsertWorkOperation : InsertWorkOperation
         command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) { Value = author.Value() });
         command.Parameters.Add(new SqliteParameter("@UsedRatingId", SqliteType.Integer) { Value = rating.Value() });
         command.Parameters.Add(new SqliteParameter("@CreatedAt", SqliteType.Integer) { Value = createdAt });
+        command.Parameters.Add(new SqliteParameter("@Paths", SqliteType.Text) { Value = paths ?? (object)DBNull.Value });
 
         return new SqliteWork(_connection, new DefaultId(command.ExecuteScalar()!));
     }

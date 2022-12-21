@@ -8,6 +8,6 @@ public sealed class GitProcessTest
     [Fact]
     public void ReturnsOutputLines()
     {
-        Assert.Equal(2, new GitProcess(new LoggerFactory(), "dotnet", "--version", ".").Output().Count);
+        Assert.Equal(2, new GitProcess(new LoggerFactory(), "dotnet", new[] { "--version" }, ".").Output().Count);
     }
 }

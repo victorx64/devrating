@@ -32,7 +32,8 @@ public sealed class SqliteDatabaseRatingsTest
                             author.Id(),
                             new DefaultId(),
                             null,
-                            DateTimeOffset.UtcNow
+                            DateTimeOffset.UtcNow,
+                            null
                         ).Id(),
                         author.Id()
                     ).Id()
@@ -67,7 +68,8 @@ public sealed class SqliteDatabaseRatingsTest
                     author.Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Id(),
                 author.Id()
             );
@@ -102,7 +104,8 @@ public sealed class SqliteDatabaseRatingsTest
                     author.Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Id(),
                 author.Id()
             );
@@ -137,7 +140,8 @@ public sealed class SqliteDatabaseRatingsTest
                     author.Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Id(),
                 author.Id()
             );
@@ -188,7 +192,8 @@ public sealed class SqliteDatabaseRatingsTest
                 author.Id(),
                 new DefaultId(),
                 null,
-                DateTimeOffset.UtcNow
+                DateTimeOffset.UtcNow,
+                null
             );
 
             var rating = database.Entities().Ratings().InsertOperation().Insert(
@@ -246,7 +251,8 @@ public sealed class SqliteDatabaseRatingsTest
                 author.Id(),
                 new DefaultId(),
                 null,
-                date
+                date,
+                null
             );
 
             var rating1 = database.Entities().Ratings().InsertOperation().Insert(
@@ -262,7 +268,8 @@ public sealed class SqliteDatabaseRatingsTest
                 author.Id(),
                 new DefaultId(),
                 null,
-                work1.CreatedAt() + TimeSpan.FromHours(0.5)
+                work1.CreatedAt() + TimeSpan.FromHours(0.5),
+                null
             );
 
             var rating2 = database.Entities().Ratings().InsertOperation().Insert(

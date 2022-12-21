@@ -8,6 +8,7 @@ public interface InsertWorkOperation
         Id author,
         Id rating,
         string? link,
-        DateTimeOffset createdAt
+        DateTimeOffset createdAt,
+        string? paths
     );
 }

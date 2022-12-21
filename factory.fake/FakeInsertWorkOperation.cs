@@ -21,7 +21,8 @@ public sealed class FakeInsertWorkOperation : InsertWorkOperation
         Id author,
         Id rating,
         string? link,
-        DateTimeOffset createdAt
+        DateTimeOffset createdAt,
+        string? paths
     )
     {
         var work = new FakeWork(
@@ -31,7 +32,8 @@ public sealed class FakeInsertWorkOperation : InsertWorkOperation
             commit,
             since,
             createdAt,
-            link
+            link,
+            paths
         );
 
         _works.Add(work);

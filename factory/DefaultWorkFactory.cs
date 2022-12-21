@@ -1,4 +1,5 @@
 using devrating.entity;
+using System.Text.Json;
 
 namespace devrating.factory;
 
@@ -22,7 +23,8 @@ public sealed class DefaultWorkFactory : WorkFactory
         string? since,
         string email,
         string? link,
-        DateTimeOffset createdAt
+        DateTimeOffset createdAt,
+        IEnumerable<string> paths
     )
     {
         if (_works.ContainsOperation().Contains(organization, repository, createdAt))
@@ -43,7 +45,8 @@ public sealed class DefaultWorkFactory : WorkFactory
             author,
             _ratings.GetOperation().RatingOf(author).Id(),
             link,
-            createdAt
+            createdAt,
+            JsonSerializer.Serialize(paths)
         );
     }
 }

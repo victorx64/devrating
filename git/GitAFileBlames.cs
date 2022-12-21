@@ -20,7 +20,20 @@ public sealed class GitAFileBlames : AFileBlames
     ) : this(
             new GitProcess(
                 log,
-                "git", $"blame -t -e -l --first-parent {Config.GitDiffArguments} {(since is object ? since + ".." : "")}{revision} -- \"{filename}\"",
+                "git",
+                new[]
+                {
+                    "blame",
+                    "-t",
+                    "-e",
+                    "-l",
+                    "--first-parent",
+                    Config.GitDiffWhitespace,
+                    Config.GitDiffRenames,
+                    since is object ? since + ".." + revision : revision,
+                    "--",
+                    filename,
+                },
                 repository
             ),
             sizes,
