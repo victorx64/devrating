@@ -33,7 +33,8 @@ public sealed class SqliteDatabaseWorkTest
                     ).Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Commit()
             );
         }
@@ -68,7 +69,8 @@ public sealed class SqliteDatabaseWorkTest
                     author.Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Author().Id()
             );
         }
@@ -104,7 +106,8 @@ public sealed class SqliteDatabaseWorkTest
                     author.Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Id(),
                 author.Id()
             );
@@ -117,7 +120,8 @@ public sealed class SqliteDatabaseWorkTest
                     author.Id(),
                     previous.Id(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).UsedRating().Id()
             );
         }
@@ -152,7 +156,8 @@ public sealed class SqliteDatabaseWorkTest
                     ).Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 )
                 .Since()
             );
@@ -190,7 +195,8 @@ public sealed class SqliteDatabaseWorkTest
                     .Id(),
                     new DefaultId(),
                     null,
-                    moment2
+                    moment2,
+                    null
                 )
                 .CreatedAt()
             );
@@ -227,7 +233,8 @@ public sealed class SqliteDatabaseWorkTest
                     .Id(),
                     new DefaultId(),
                     link,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 )
                 .Link()
             );

@@ -13,7 +13,14 @@ public sealed class GitLastMajorUpdateTag : Tag
             before,
             new GitProcess(
                 loggerFactory,
-                "git", $"tag -l --format=\"%(objectname) %(refname:short)\" --merged {before}",
+                "git", 
+                new [] {
+                    "tag",
+                    "-l",
+                    "--format=\"%(objectname) %(refname:short)\"",
+                    "--merged",
+                    before,
+                },
                 repository
             )
                 .Output()

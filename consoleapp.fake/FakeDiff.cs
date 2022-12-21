@@ -111,7 +111,8 @@ public sealed class FakeDiff : Diff
             _since,
             _email,
             _link,
-            _createdAt
+            _createdAt,
+            Array.Empty<string>()
         );
 
         factories.RatingFactory().NewRatings(

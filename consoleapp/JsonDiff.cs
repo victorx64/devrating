@@ -28,7 +28,8 @@ public sealed class JsonDiff : Diff
             _state.Since,
             _state.Email,
             _state.Link,
-            _state.CreatedAt
+            _state.CreatedAt,
+            _state.Paths
         );
 
         factories.RatingFactory().NewRatings(

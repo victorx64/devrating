@@ -37,7 +37,8 @@ public sealed class SqliteDatabaseRatingTest
                         author.Id(),
                         new DefaultId(),
                         null,
-                        DateTimeOffset.UtcNow
+                        DateTimeOffset.UtcNow,
+                        null
                     ).Id(),
                     author.Id()
                 ).Value()
@@ -79,7 +80,8 @@ public sealed class SqliteDatabaseRatingTest
                         author.Id(),
                         new DefaultId(),
                         null,
-                        DateTimeOffset.UtcNow
+                        DateTimeOffset.UtcNow,
+                        null
                     ).Id(),
                     author.Id()
                 ).Author().Id()
@@ -114,7 +116,8 @@ public sealed class SqliteDatabaseRatingTest
                 author.Id(),
                 new DefaultId(),
                 null,
-                DateTimeOffset.UtcNow
+                DateTimeOffset.UtcNow,
+                null
             );
 
             Assert.Equal(
@@ -159,7 +162,8 @@ public sealed class SqliteDatabaseRatingTest
                     author.Id(),
                     new DefaultId(),
                     null,
-                    DateTimeOffset.UtcNow
+                    DateTimeOffset.UtcNow,
+                    null
                 ).Id(),
                 author.Id()
             );
@@ -175,7 +179,8 @@ public sealed class SqliteDatabaseRatingTest
                         author.Id(),
                         new DefaultId(),
                         null,
-                        DateTimeOffset.UtcNow
+                        DateTimeOffset.UtcNow,
+                        null
                     ).Id(),
                     author.Id()
                 ).PreviousRating().Id()

@@ -58,7 +58,8 @@ internal sealed class SqliteDbInstance : DbInstance
                     AuthorId     integer      not null
                         references Author on delete cascade,
                     UsedRatingId integer
-                        references Rating on delete cascade
+                        references Rating on delete cascade,
+                    Paths        nvarchar
                 );";
 
         command.ExecuteNonQuery();

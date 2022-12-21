@@ -8,11 +8,16 @@ public sealed class GitDiffSizes : DiffSizes
     private readonly object _lock = new object();
     private readonly string _repository;
     private readonly ILoggerFactory _log;
+    private readonly IEnumerable<string> _paths;
 
-    public GitDiffSizes(ILoggerFactory log, string repository)
+    public GitDiffSizes(
+        ILoggerFactory log,
+        string repository,
+        IEnumerable<string> paths)
     {
         _repository = repository;
         _log = log;
+        _paths = paths;
     }
 
     public uint Additions(string sha)
@@ -35,10 +40,23 @@ public sealed class GitDiffSizes : DiffSizes
                     }
                     else
                     {
+                        var args = new List<string>
+                        {
+                            "diff",
+                            $"{sha}~..{sha}",
+                            "-U0",
+                            Config.GitDiffWhitespace,
+                            Config.GitDiffRenames,
+                            "--shortstat",
+                            "--",
+                        };
+
+                        args.AddRange(_paths);
+
                         var stat = new GitProcess(
                             _log,
                             "git",
-                            $"diff {sha}~..{sha} -U0 {Config.GitDiffArguments} --shortstat",
+                            args,
                             _repository
                         ).Output()[0];
 

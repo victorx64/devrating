@@ -6,5 +6,6 @@ internal sealed class Config
     {
     }
 
-    public const string GitDiffArguments = "-w -M01";
+    public const string GitDiffWhitespace = "-w";
+    public const string GitDiffRenames = "-M01";
 }

@@ -11,6 +11,7 @@ public interface WorkFactory
         string? since,
         string email,
         string? link,
-        DateTimeOffset createdAt
+        DateTimeOffset createdAt,
+        IEnumerable<string> paths
     );
 }

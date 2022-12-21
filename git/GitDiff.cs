@@ -15,6 +15,7 @@ public sealed class GitDiff : Diff
     private readonly string? _link;
     private readonly string _email;
     private readonly DateTimeOffset _createdAt;
+    private readonly IEnumerable<string> _paths;
 
     public GitDiff(
         ILoggerFactory log,
@@ -25,7 +26,8 @@ public sealed class GitDiff : Diff
         string key,
         string? link,
         string organization,
-        DateTimeOffset createdAt
+        DateTimeOffset createdAt,
+        IEnumerable<string> paths
     )
         : this(
             commit,
@@ -40,8 +42,10 @@ public sealed class GitDiff : Diff
                         repository,
                         new GitDiffSizes(
                             log,
-                            repository
-                        )
+                            repository,
+                            paths
+                        ),
+                        paths
                     )
                 )
             ),
@@ -52,9 +56,16 @@ public sealed class GitDiff : Diff
             new GitProcess(
                 log,
                 "git",
-                $"show --no-patch --format=%aE {commit}",
+                new[]
+                {
+                    "show",
+                    "--no-patch",
+                    "--format=%aE",
+                    commit,
+                },
                 repository
-            ).Output().First()
+            ).Output().First(),
+            paths
         )
     {
     }
@@ -67,7 +78,8 @@ public sealed class GitDiff : Diff
         string? link,
         string organization,
         DateTimeOffset createdAt,
-        string email
+        string email,
+        IEnumerable<string> paths
     )
     {
         _commit = commit;
@@ -78,6 +90,7 @@ public sealed class GitDiff : Diff
         _organization = organization;
         _createdAt = createdAt;
         _email = email;
+        _paths = paths;
     }
 
     public bool PresentIn(Works works)
@@ -95,6 +108,7 @@ public sealed class GitDiff : Diff
         public string? Link { get; set; } = default;
         public IEnumerable<ContemporaryLinesDto> Deletions { get; set; } = Array.Empty<ContemporaryLinesDto>();
         public DateTimeOffset CreatedAt { get; set; } = default;
+        public IEnumerable<string> Paths { get; set; } = Array.Empty<string>();
 
         public class ContemporaryLinesDto
         {
@@ -123,7 +137,8 @@ public sealed class GitDiff : Diff
                 Link = _link,
                 Organization = _organization,
                 Since = _since,
-                CreatedAt = _createdAt
+                CreatedAt = _createdAt,
+                Paths = _paths
             }
         );
     }
@@ -142,7 +157,8 @@ public sealed class GitDiff : Diff
             _since,
             _email,
             _link,
-            _createdAt
+            _createdAt,
+            _paths
         );
 
         factories.RatingFactory().NewRatings(

@@ -28,7 +28,8 @@ public sealed class DefaultWorkFactoryTest
             null,
             "new author",
             null,
-            DateTimeOffset.UtcNow
+            DateTimeOffset.UtcNow,
+            Array.Empty<string>()
         );
 
         Assert.Single(authors);
@@ -58,7 +59,8 @@ public sealed class DefaultWorkFactoryTest
             null,
             "existing author",
             null,
-            DateTimeOffset.UtcNow
+            DateTimeOffset.UtcNow,
+            Array.Empty<string>()
         );
 
         Assert.Single(authors);
@@ -87,7 +89,8 @@ public sealed class DefaultWorkFactoryTest
             null,
             "existing author",
             null,
-            DateTimeOffset.UtcNow
+            DateTimeOffset.UtcNow,
+            Array.Empty<string>()
         );
 
         Assert.Equal(2, authors.Count);
@@ -115,7 +118,9 @@ public sealed class DefaultWorkFactoryTest
             null,
             "other author",
             null,
-            DateTimeOffset.UtcNow);
+            DateTimeOffset.UtcNow,
+            Array.Empty<string>()
+        );
 
         Assert.False(works.Single().UsedRating().Id().Filled());
     }
@@ -145,7 +150,8 @@ public sealed class DefaultWorkFactoryTest
             null,
             "author",
             null,
-            moment1
+            moment1,
+            Array.Empty<string>()
         );
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -157,7 +163,8 @@ public sealed class DefaultWorkFactoryTest
                 null,
                 "another author",
                 null,
-                anotherMoment
+                anotherMoment,
+                Array.Empty<string>()
             );
         });
     }
@@ -187,7 +194,8 @@ public sealed class DefaultWorkFactoryTest
             null,
             "author",
             null,
-            moment1
+            moment1,
+            Array.Empty<string>()
         );
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -199,7 +207,8 @@ public sealed class DefaultWorkFactoryTest
                 null,
                 "another author",
                 null,
-                momentBefore
+                momentBefore,
+                Array.Empty<string>()
             );
         });
     }
@@ -231,7 +240,8 @@ public sealed class DefaultWorkFactoryTest
             null,
             author.Email(),
             null,
-            DateTimeOffset.UtcNow
+            DateTimeOffset.UtcNow,
+            Array.Empty<string>()
         );
 
         Assert.Equal(rating, works.Last().UsedRating());

@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using devrating.factory;
 using devrating.git;
 using devrating.sqlite;
@@ -20,14 +19,31 @@ internal static class Program
                 .AddSystemdConsole();
         });
 
+        var pathOption = new Option<DirectoryInfo>(
+            new[] { "--path", "-p" },
+            () => new DirectoryInfo("."),
+            "Path to a local repository. E.g. '~/repos/devrating'")
+        .ExistingOnly();
+        var orgOption = new Option<string?>(new[] { "--org", "-o" }, "Name of the repository owner");
+        var nameOption = new Option<string?>(new[] { "--name", "-n" }, "Name of the repository");
+        var verboseOption = new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode");
+        var gitPathspecArg = new Argument<string[]>("pathspec", "Sets `git diff` <path> argument");
+        var commitArg = new Argument<string>("commit", "A merge commit");
+        var linkOption = new Option<string?>(new[] { "--link", "-l" }, "A link to the PR, issue or so");
+        var timeOption = new Option<DateTimeOffset?>(new[] { "--time", "-t" }, "A moment when the PR was merged");
+        var jsonOption = new Option<string>(new[] { "--json", "-j" }, "Serialized commit metadata") { IsRequired = true };
+
         var output = new StandardOutput();
+
         var updateCommand = new Command("update", "Update the rating by analyzing first-parent commits of the last 90 days");
-        updateCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, () => new DirectoryInfo("."), "Path to a local repository. E.g. '~/repos/devrating'").ExistingOnly());
-        updateCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
-        updateCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
-        updateCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
-        updateCommand.Handler = CommandHandler.Create<DirectoryInfo, string?, string?, bool?>(
-            (path, org, name, verbose) =>
+
+        updateCommand.Add(pathOption);
+        updateCommand.Add(orgOption);
+        updateCommand.Add(nameOption);
+        updateCommand.Add(verboseOption);
+        updateCommand.Add(gitPathspecArg);
+
+        updateCommand.SetHandler((path, org, name, verbose, gitPaths) =>
             {
                 var debug = verbose == true ? loggerFactory : new LoggerFactory();
 
@@ -36,7 +52,13 @@ internal static class Program
                 var commits = new GitProcess(
                     debug,
                     "git",
-                    $"rev-list HEAD --first-parent --max-age={app.PeriodStart().ToUnixTimeSeconds()} --reverse",
+                    new[] {
+                        "rev-list",
+                        "HEAD",
+                        "--first-parent",
+                        $"--max-age={app.PeriodStart().ToUnixTimeSeconds()}",
+                        "--reverse",
+                    },
                     path.FullName).Output();
 
                 org ??= "none";
@@ -51,14 +73,23 @@ internal static class Program
                         app.Save(
                             new GitDiff(
                                 debug,
-                                new GitProcess(debug, "git", $"rev-parse {merge}~", path.FullName).Output().First(),
+                                new GitProcess(
+                                    debug,
+                                    "git",
+                                    new[] {
+                                        "rev-list",
+                                        $"{merge}~",
+                                    },
+                                    path.FullName
+                                ).Output().First(),
                                 merge,
                                 new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
                                 path.FullName,
                                 name,
                                 null,
                                 org,
-                                DateTimeOffset.UtcNow
+                                DateTimeOffset.UtcNow,
+                                gitPaths
                             )
                         );
 
@@ -69,32 +100,54 @@ internal static class Program
                         output.WriteLine($"{merge} {i}/{(commits.Count - 2)} skipped");
                     }
                 }
-            }
+            },
+            pathOption,
+            orgOption,
+            nameOption,
+            verboseOption,
+            gitPathspecArg
         );
 
         var updateByOneCommand = new Command("update-by-one", "Update the rating by analyzing a merge commit");
-        updateByOneCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, () => new DirectoryInfo("."), "Path to a local repository. E.g. '~/repos/devrating'").ExistingOnly());
-        updateByOneCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit") { IsRequired = true });
-        updateByOneCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to the PR, issue or so"));
-        updateByOneCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
-        updateByOneCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
-        updateByOneCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
-        updateByOneCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
-        updateByOneCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, DateTimeOffset?, bool?>(
-            (path, merge, link, org, name, time, verbose) =>
+
+        updateByOneCommand.Add(pathOption);
+        updateByOneCommand.Add(commitArg);
+        updateByOneCommand.Add(linkOption);
+        updateByOneCommand.Add(orgOption);
+        updateByOneCommand.Add(nameOption);
+        updateByOneCommand.Add(timeOption);
+        updateByOneCommand.Add(verboseOption);
+        updateByOneCommand.Add(gitPathspecArg);
+        updateByOneCommand.SetHandler(
+            (path, merge, link, org, name, time, verbose, gitPaths) =>
             {
                 var debug = verbose == true ? loggerFactory : new LoggerFactory();
 
                 var diff = new GitDiff(
                     debug,
-                    new GitProcess(debug, "git", $"rev-parse {merge}~", path.FullName).Output().First(),
-                    new GitProcess(debug, "git", $"rev-parse {merge}", path.FullName).Output().First(),
+                    new GitProcess(
+                        debug,
+                        "git",
+                        new[] {
+                            "rev-parse",
+                            $"{merge}~"
+                        },
+                        path.FullName).Output().First(),
+                    new GitProcess(
+                        debug,
+                        "git",
+                        new[] {
+                            "rev-parse",
+                            merge
+                        },
+                        path.FullName).Output().First(),
                     new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
                     path.FullName,
                     name ?? "unnamed",
                     link,
                     org ?? "none",
-                    time ?? DateTimeOffset.UtcNow
+                    time ?? DateTimeOffset.UtcNow,
+                    gitPaths
                 );
 
                 var app = Application(debug);
@@ -102,53 +155,93 @@ internal static class Program
                 app.Save(diff);
 
                 app.Print(output, diff);
-            }
+            },
+            pathOption,
+            commitArg,
+            linkOption,
+            orgOption,
+            nameOption,
+            timeOption,
+            verboseOption,
+            gitPathspecArg
         );
 
         var serializeCommand = new Command("serialize", "Serialize commit metadata");
-        serializeCommand.AddOption(new Option<DirectoryInfo>(new[] { "--path", "-p" }, () => new DirectoryInfo("."), "Path to a local repository. E.g. '~/repos/devrating'").ExistingOnly());
-        serializeCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "A merge commit") { IsRequired = true });
-        serializeCommand.AddOption(new Option<string>(new[] { "--link", "-l" }, "A link to the PR, issue or so"));
-        serializeCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
-        serializeCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
-        serializeCommand.AddOption(new Option<DateTimeOffset>(new[] { "--time", "-t" }, "A moment when the PR was merged"));
-        serializeCommand.AddOption(new Option<bool>(new[] { "--verbose", "-v" }, "Verbose mode"));
-        serializeCommand.Handler = CommandHandler.Create<DirectoryInfo, string, string?, string?, string?, DateTimeOffset?, bool?>(
-            (path, merge, link, org, name, time, verbose) =>
+        serializeCommand.Add(pathOption);
+        serializeCommand.Add(commitArg);
+        serializeCommand.Add(linkOption);
+        serializeCommand.Add(orgOption);
+        serializeCommand.Add(nameOption);
+        serializeCommand.Add(timeOption);
+        serializeCommand.Add(verboseOption);
+        serializeCommand.Add(gitPathspecArg);
+        serializeCommand.SetHandler(
+            (path, merge, link, org, name, time, verbose, gitPaths) =>
             {
+                System.Console.WriteLine(gitPaths);
+
                 var debug = verbose == true ? loggerFactory : new LoggerFactory();
 
                 output.WriteLine(
                     new GitDiff(
                         debug,
-                        new GitProcess(debug, "git", $"rev-parse {merge}~", path.FullName).Output().First(),
-                        new GitProcess(debug, "git", $"rev-parse {merge}", path.FullName).Output().First(),
-                        new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
+                    new GitProcess(
+                        debug,
+                        "git",
+                        new[] {
+                            "rev-parse",
+                            $"{merge}~"
+                        },
+                        path.FullName
+                    ).Output().First(),
+                    new GitProcess(
+                        debug,
+                        "git",
+                        new[] {
+                            "rev-parse",
+                            merge
+                        },
+                        path.FullName
+                    ).Output().First(),
+                    new GitLastMajorUpdateTag(debug, path.FullName, merge).Sha(),
                         path.FullName,
                         name ?? "unnamed",
                         link,
                         org ?? "none",
-                        time ?? DateTimeOffset.UtcNow
+                        time ?? DateTimeOffset.UtcNow,
+                        gitPaths
                     )
                     .ToJson()
                 );
-            }
+            },
+            pathOption,
+            commitArg,
+            linkOption,
+            orgOption,
+            nameOption,
+            timeOption,
+            verboseOption,
+            gitPathspecArg
         );
 
         var showCommand = new Command("show", "Print previously applied commit details");
-        showCommand.AddOption(new Option<string>(new[] { "--merge", "-m" }, "The merge commit") { IsRequired = true });
-        showCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
-        showCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
-        showCommand.Handler = CommandHandler.Create<string, string?, string?>(
+        showCommand.Add(commitArg);
+        showCommand.Add(orgOption);
+        showCommand.Add(nameOption);
+        showCommand.SetHandler(
             (head, org, name) =>
             {
                 Application(new LoggerFactory()).Print(output, new ThinDiff(org ?? "none", name ?? "unnamed", head));
-            }
+            },
+            commitArg,
+            orgOption,
+            nameOption
         );
 
+
         var applyCommand = new Command("apply", "Deserialize commit metadata and update the rating");
-        applyCommand.AddOption(new Option<string>(new[] { "--json", "-j" }, "Serialized commit metadata") { IsRequired = true });
-        applyCommand.Handler = CommandHandler.Create<string>(
+        applyCommand.Add(jsonOption);
+        applyCommand.SetHandler(
             (json) =>
             {
                 var diff = new JsonDiff(json);
@@ -158,22 +251,25 @@ internal static class Program
                 app.Save(diff);
 
                 app.Print(output, diff);
-            }
+            },
+            jsonOption
         );
 
         var topCommand = new Command("top", "Print the rating of active contributors for the last 90 days");
-        topCommand.AddOption(new Option<string>(new[] { "--org", "-o" }, "Name of the repository owner"));
-        topCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Name of the repository"));
-        topCommand.Handler = CommandHandler.Create<string?, string?>(
+        topCommand.Add(orgOption);
+        topCommand.Add(nameOption);
+        topCommand.SetHandler(
             (org, name) =>
             {
                 Application(new LoggerFactory()).Top(output, org ?? "none", name ?? "unnamed");
-            }
+            },
+            orgOption,
+            nameOption
         );
 
         var rootCommand = new RootCommand(
             "Dev Rating suggests the optimal Pull Request size for each contributor " +
-            "so that the PRs will have the same expected durability of the added lines of code."
+            "so that the PRs will have the same impact to the codebase."
         );
         rootCommand.Name = "devrating";
         rootCommand.AddCommand(updateCommand);

@@ -164,7 +164,8 @@ public sealed class SqliteDatabaseAuthorsTest
                 author1.Id(),
                 new DefaultId(),
                 null,
-                moment
+                moment,
+                null
             );
 
             database.Entities().Ratings().InsertOperation().Insert(
@@ -187,7 +188,8 @@ public sealed class SqliteDatabaseAuthorsTest
                 author3.Id(),
                 new DefaultId(),
                 null,
-                moment
+                moment,
+                null
             );
 
             database.Entities().Ratings().InsertOperation().Insert(

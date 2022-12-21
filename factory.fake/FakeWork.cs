@@ -10,6 +10,7 @@ public sealed class FakeWork : Work
     private readonly string _commit;
     private readonly string? _since;
     private readonly string? _link;
+    private readonly string? _paths;
     private readonly DateTimeOffset _createdAt;
 
     public FakeWork(Author author)
@@ -18,7 +19,8 @@ public sealed class FakeWork : Work
             "mergeCommit",
             "sinceCommit",
             DateTimeOffset.UtcNow,
-            "link"
+            "link",
+            null
         )
     {
     }
@@ -28,7 +30,8 @@ public sealed class FakeWork : Work
         string commit,
         string? since,
         DateTimeOffset createdAt,
-        string? link
+        string? link,
+        string? paths
     )
         : this(
             author,
@@ -36,7 +39,8 @@ public sealed class FakeWork : Work
             commit,
             since,
             createdAt,
-            link
+            link,
+            paths
         )
     {
     }
@@ -47,7 +51,8 @@ public sealed class FakeWork : Work
         string commit,
         string? since,
         DateTimeOffset createdAt,
-        string? link
+        string? link,
+        string? paths
     )
         : this(
             new DefaultId(Guid.NewGuid()),
@@ -56,7 +61,8 @@ public sealed class FakeWork : Work
             commit,
             since,
             createdAt,
-            link
+            link,
+            paths
         )
     {
     }
@@ -68,7 +74,8 @@ public sealed class FakeWork : Work
         string commit,
         string? since,
         DateTimeOffset createdAt,
-        string? link
+        string? link,
+        string? paths
     )
     {
         _id = id;
@@ -78,6 +85,7 @@ public sealed class FakeWork : Work
         _since = since;
         _createdAt = createdAt;
         _link = link;
+        _paths = paths;
     }
 
     public Id Id()
@@ -118,5 +126,10 @@ public sealed class FakeWork : Work
     public string? Link()
     {
         return _link;
+    }
+
+    public string? Paths()
+    {
+        return _paths;
     }
 }

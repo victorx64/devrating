@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace devrating.git;
@@ -8,23 +9,30 @@ public sealed class GitProcess : Process
     private readonly ProcessStartInfo _info;
     private readonly ILogger _log;
 
-    public GitProcess(ILoggerFactory log, string filename, string arguments, string directory)
+    public GitProcess(ILoggerFactory log, string filename, IEnumerable<string> arguments, string directory)
         : this(
             log,
-            new ProcessStartInfo(filename, arguments)
+            new ProcessStartInfo(filename)
             {
                 WorkingDirectory = directory,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 RedirectStandardInput = true
-            }
+            },
+            arguments
         )
     {
     }
 
-    public GitProcess(ILoggerFactory log, ProcessStartInfo info)
+    public GitProcess(ILoggerFactory log, ProcessStartInfo info, IEnumerable<string> arguments)
     {
         _info = info;
+
+        foreach (var arg in arguments)
+        {
+            _info.ArgumentList.Add(arg);
+        }
+
         _log = log.CreateLogger(this.GetType());
     }
 
@@ -51,6 +59,6 @@ public sealed class GitProcess : Process
 
     public override string ToString()
     {
-        return $"`{_info.WorkingDirectory}` `{_info.FileName}` `{_info.Arguments}`";
+        return $"`{_info.WorkingDirectory}` {_info.FileName}, {JsonSerializer.Serialize(_info.ArgumentList)}";
     }
 }
