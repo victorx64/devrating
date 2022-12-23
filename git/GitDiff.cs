@@ -220,7 +220,7 @@ public sealed class GitDiff : Diff
             _repository
         ).Output();
 
-        if (!output.Any())
+        if (!output.Any() || !output[0].Any())
         {
             return 0;
         }

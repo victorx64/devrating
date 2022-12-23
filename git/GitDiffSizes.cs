@@ -60,7 +60,7 @@ public sealed class GitDiffSizes : DiffSizes
                             _repository
                         ).Output();
 
-                        if (!output.Any())
+                        if (!output.Any() || !output[0].Any())
                         {
                             _additions[sha] = 0;
                         }
