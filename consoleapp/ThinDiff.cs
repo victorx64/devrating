@@ -16,6 +16,11 @@ public sealed class ThinDiff : Diff
         _commit = commit;
     }
 
+    public uint Additions()
+    {
+        throw new NotImplementedException();
+    }
+
     public DateTimeOffset CreatedAt()
     {
         throw new NotImplementedException();

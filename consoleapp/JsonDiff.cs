@@ -58,4 +58,9 @@ public sealed class JsonDiff : Diff
     {
         return JsonSerializer.Serialize(_state);
     }
+
+    public uint Additions()
+    {
+        return _state.Additions;
+    }
 }
