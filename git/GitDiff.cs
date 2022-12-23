@@ -7,6 +7,7 @@ namespace devrating.git;
 
 public sealed class GitDiff : Diff
 {
+    private readonly string _base;
     private readonly string _commit;
     private readonly string? _since;
     private readonly Deletions _deletions;
@@ -16,6 +17,8 @@ public sealed class GitDiff : Diff
     private readonly string _email;
     private readonly DateTimeOffset _createdAt;
     private readonly IEnumerable<string> _paths;
+    private readonly ILoggerFactory _log;
+    private readonly string _repository;
 
     public GitDiff(
         ILoggerFactory log,
@@ -65,7 +68,10 @@ public sealed class GitDiff : Diff
                 },
                 repository
             ).Output().First(),
-            paths
+            paths,
+            @base,
+            log,
+            repository
         )
     {
     }
@@ -79,7 +85,10 @@ public sealed class GitDiff : Diff
         string organization,
         DateTimeOffset createdAt,
         string email,
-        IEnumerable<string> paths
+        IEnumerable<string> paths,
+        string @base,
+        ILoggerFactory log,
+        string repository
     )
     {
         _commit = commit;
@@ -91,6 +100,9 @@ public sealed class GitDiff : Diff
         _createdAt = createdAt;
         _email = email;
         _paths = paths;
+        _base = @base;
+        _log = log;
+        _repository = repository;
     }
 
     public bool PresentIn(Works works)
@@ -109,6 +121,7 @@ public sealed class GitDiff : Diff
         public IEnumerable<ContemporaryLinesDto> Deletions { get; set; } = Array.Empty<ContemporaryLinesDto>();
         public DateTimeOffset CreatedAt { get; set; } = default;
         public IEnumerable<string> Paths { get; set; } = Array.Empty<string>();
+        public uint Additions { get; set; } = default;
 
         public class ContemporaryLinesDto
         {
@@ -138,7 +151,8 @@ public sealed class GitDiff : Diff
                 Organization = _organization,
                 Since = _since,
                 CreatedAt = _createdAt,
-                Paths = _paths
+                Paths = _paths,
+                Additions = Additions(),
             }
         );
     }
@@ -171,5 +185,44 @@ public sealed class GitDiff : Diff
         );
 
         return work;
+    }
+
+    public uint Additions()
+    {
+        if (_commit.StartsWith('^'))
+        {
+            var log = _log.CreateLogger(this.GetType());
+
+            log.LogError(new EventId(1735322), $"We've encountered boundary commit `{_commit}`. " +
+                "Try to clone the repository with deeper history " +
+                "(do `git clone` with higher `--depth` argument).");
+
+            throw new InvalidOperationException($"Encountered boundary commit {_commit}");
+        }
+
+        var args = new List<string>
+        {
+            "diff",
+            $"{_base}..{_commit}",
+            "-U0",
+            Config.GitDiffWhitespace,
+            Config.GitDiffRenames,
+            "--shortstat",
+            "--",
+        };
+
+        args.AddRange(_paths);
+
+        var stat = new GitProcess(
+            _log,
+            "git",
+            args,
+            _repository
+        ).Output()[0];
+
+        var start = stat.IndexOf("changed, ") + "changed, ".Length;
+        var end = stat.IndexOf(" insert");
+
+        return uint.Parse(stat.Substring(start, end - start));
     }
 }

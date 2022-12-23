@@ -8,4 +8,5 @@ public interface Diff
     bool PresentIn(Works works);
     Work NewWork(Factories factories);
     string ToJson();
+    uint Additions();
 }

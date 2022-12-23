@@ -131,4 +131,9 @@ public sealed class FakeDiff : Diff
     {
         throw new NotImplementedException();
     }
+
+    public uint Additions()
+    {
+        throw new NotImplementedException();
+    }
 }
