@@ -213,12 +213,19 @@ public sealed class GitDiff : Diff
 
         args.AddRange(_paths);
 
-        var stat = new GitProcess(
+        var output = new GitProcess(
             _log,
             "git",
             args,
             _repository
-        ).Output()[0];
+        ).Output();
+
+        if (!output.Any())
+        {
+            return 0;
+        }
+
+        var stat = output[0];
 
         var start = stat.IndexOf("changed, ") + "changed, ".Length;
         var end = stat.IndexOf(" insert");
