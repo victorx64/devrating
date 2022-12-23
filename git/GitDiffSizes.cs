@@ -53,17 +53,26 @@ public sealed class GitDiffSizes : DiffSizes
 
                         args.AddRange(_paths);
 
-                        var stat = new GitProcess(
+                        var output = new GitProcess(
                             _log,
                             "git",
                             args,
                             _repository
-                        ).Output()[0];
+                        ).Output();
 
-                        var start = stat.IndexOf("changed, ") + "changed, ".Length;
-                        var end = stat.IndexOf(" insert");
+                        if (!output.Any())
+                        {
+                            _additions[sha] = 0;
+                        }
+                        else
+                        {
+                            var stat = output[0];
 
-                        _additions[sha] = uint.Parse(stat.Substring(start, end - start));
+                            var start = stat.IndexOf("changed, ") + "changed, ".Length;
+                            var end = stat.IndexOf(" insert");
+
+                            _additions[sha] = uint.Parse(stat.Substring(start, end - start));
+                        }
                     }
                 }
             }
