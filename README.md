@@ -62,12 +62,13 @@ $Q_B = 10 ^ {\frac{R_B}{N}}; $
 
 $E_{A,B} = \frac{Q_A}{Q_A + Q_B}; $
 
-$R_\Delta = K(1 - E_{A,B})(\sum_{i = 1} \frac{Del_{Ai}}{Add_{Bi}}); $
+$R_\Delta = K(1 - E_{A,B})(\sum_{i = 1}^{n} \frac{Del_{Ai}}{Add_{Bi}}); $
 
 $R_A^{'} = R_A + R_\Delta; $  
 $R_B^{'} = R_B - R_\Delta; $
 
 where
+- $n$ - number of PRs authored by Developer B,
 - $Add_{Bi}$ - number of added lines by Developer B in the $i$-th PR,
 - $Del_{Ai}$ - number of deleted lines by Developer A from the $i$-th PR,
 - $R_A$ - initial rating of Developer A,
