@@ -37,7 +37,7 @@ public sealed class FakeFormula : Formula
         return _increase;
     }
 
-    private double WinProbabilityOfA(double a, double b)
+    public double WinProbabilityOfA(double a, double b)
     {
         var qa = Math.Pow(10d, a / _n);
 
