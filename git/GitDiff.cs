@@ -230,6 +230,10 @@ public sealed class GitDiff : Diff
         var start = stat.IndexOf("changed, ") + "changed, ".Length;
         var end = stat.IndexOf(" insert");
 
+        if (end == -1) {
+            return 0;
+        }
+
         return uint.Parse(stat.Substring(start, end - start));
     }
 }
