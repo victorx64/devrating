@@ -68,4 +68,29 @@ internal sealed class SqliteGetWorkOperation : GetWorkOperation
 
         return works;
     }
+
+    public IEnumerable<Work> Last(Id author, DateTimeOffset after)
+    {
+        using var command = _connection.CreateCommand();
+
+        command.CommandText = @"
+                SELECT w.Id
+                FROM Work w
+                WHERE w.AuthorId = @AuthorId AND w.CreatedAt >= @After
+                ORDER BY w.Id DESC";
+
+        command.Parameters.Add(new SqliteParameter("@AuthorId", SqliteType.Integer) { Value = author.Value() });
+        command.Parameters.Add(new SqliteParameter("@After", SqliteType.Integer) { Value = after });
+
+        using var reader = command.ExecuteReader();
+
+        var works = new List<Work>();
+
+        while (reader.Read())
+        {
+            works.Add(new SqliteWork(_connection, new DefaultId(reader["Id"])));
+        }
+
+        return works;
+    }
 }
