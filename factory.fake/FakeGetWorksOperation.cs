@@ -37,4 +37,9 @@ public sealed class FakeGetWorkOperation : GetWorkOperation
     {
         return _works;
     }
+
+    public IEnumerable<Work> Last(Id author, DateTimeOffset after)
+    {
+        return _works;
+    }
 }
