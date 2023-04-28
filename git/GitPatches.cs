@@ -70,7 +70,7 @@ public sealed class GitPatches : Patches
                 case State.Diff:
                     if (line.StartsWith("--- ", StringComparison.Ordinal))
                     {
-                        old = "." + line.Substring(5);
+                        old = "." + line.Substring(5).TrimEnd();
                         state = State.OldPath;
                     }
 
