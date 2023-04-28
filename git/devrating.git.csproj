@@ -7,7 +7,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>../package</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>23.3.2</PackageVersion>
+    <PackageVersion>23.4.0</PackageVersion>
     <Authors>Victor Semenov</Authors>
   </PropertyGroup>
 
