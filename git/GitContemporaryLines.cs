@@ -21,6 +21,9 @@ public sealed class GitContemporaryLines : ContemporaryLines
 
     public double Weight()
     {
+        if (double.IsNaN(_weight) || double.IsInfinity(_weight))
+            return 0d;
+
         return _weight;
     }
 
