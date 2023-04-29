@@ -27,4 +27,22 @@ public sealed class GitContemporaryLinesTest
 
         Assert.Equal(weight, new GitContemporaryLines(weight, 5u, "another email").Weight());
     }
+
+    [Fact]
+    public void ConvertsNanWeightToZero()
+    {
+        Assert.Equal(0, new GitContemporaryLines(double.NaN, 5u, "email").Weight());
+    }
+
+    [Fact]
+    public void ConvertsPositiveInfinityWeightToZero()
+    {
+        Assert.Equal(0, new GitContemporaryLines(double.PositiveInfinity, 5u, "email").Weight());
+    }
+
+    [Fact]
+    public void ConvertsNegativeInfinityWeightToZero()
+    {
+        Assert.Equal(0, new GitContemporaryLines(double.NegativeInfinity, 5u, "email").Weight());
+    }
 }
